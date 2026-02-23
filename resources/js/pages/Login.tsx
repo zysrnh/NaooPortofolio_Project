@@ -1,9 +1,34 @@
 import { useState, useEffect, FormEvent } from "react";
 import { router } from "@inertiajs/react";
 
+// SVG Icons
+const IconWarning = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+    <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+  </svg>
+);
+const IconEye = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+);
+const IconEyeOff = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+    <line x1="1" y1="1" x2="23" y2="23"/>
+  </svg>
+);
+const IconKey = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+  </svg>
+);
+
 export default function Login() {
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+  const [form, setForm]       = useState({ email: "", password: "" });
+  const [errors, setErrors]   = useState<{ email?: string; password?: string; general?: string }>({});
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -48,12 +73,12 @@ export default function Login() {
         @keyframes shimmer   { from{transform:translateX(-200%)} to{transform:translateX(200%)} }
         @keyframes float     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
 
-        .anim-logo  { animation:slideDown 0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
-        .anim-card  { animation:slideUp   0.65s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
-        .anim-foot  { animation:slideUp   0.5s cubic-bezier(0.16,1,0.3,1) 0.5s both; }
-        .deco-a     { animation:float 4s ease-in-out 0s infinite; }
-        .deco-b     { animation:float 4s ease-in-out 1.2s infinite; }
-        .deco-c     { animation:float 4s ease-in-out 2.4s infinite; }
+        .anim-logo { animation:slideDown 0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+        .anim-card { animation:slideUp   0.65s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+        .anim-foot { animation:slideUp   0.5s cubic-bezier(0.16,1,0.3,1) 0.5s both; }
+        .deco-a    { animation:float 4s ease-in-out 0s infinite; }
+        .deco-b    { animation:float 4s ease-in-out 1.2s infinite; }
+        .deco-c    { animation:float 4s ease-in-out 2.4s infinite; }
 
         .grid-bg {
           position:fixed; inset:0; pointer-events:none;
@@ -86,6 +111,7 @@ export default function Login() {
         .btn-submit:disabled { opacity:0.7; cursor:not-allowed; }
 
         .show-btn {
+          display:flex; align-items:center; gap:5px;
           border:2px solid #0B1957; background:#D1E8FF; padding:4px 10px;
           font-size:11px; font-weight:800; text-transform:uppercase; color:#0B1957;
           cursor:pointer; letter-spacing:0.05em; font-family:inherit;
@@ -151,7 +177,7 @@ export default function Login() {
             {/* General error */}
             {errors.general && (
               <div className="err-shake border-4 border-[#0B1957] bg-[#FFD1D1] p-4 flex items-center gap-3">
-                <span className="text-lg font-black">⚠</span>
+                <IconWarning />
                 <p className="font-black text-[#0B1957] text-sm uppercase tracking-wide">{errors.general}</p>
               </div>
             )}
@@ -176,7 +202,8 @@ export default function Login() {
               <div className="flex items-center justify-between mb-2">
                 <label className="font-black uppercase text-xs tracking-widest text-[#0B1957]">Password</label>
                 <button type="button" className="show-btn" onClick={() => setShowPass(s => !s)}>
-                  {showPass ? "🙈 Hide" : "👁 Show"}
+                  {showPass ? <IconEyeOff /> : <IconEye />}
+                  {showPass ? "Hide" : "Show"}
                 </button>
               </div>
               <input
@@ -204,8 +231,11 @@ export default function Login() {
             </div>
 
             {/* Seeded account hint */}
-            <div className="border-3 border-[#0B1957] bg-[#D1E8FF] shadow-[4px_4px_0_#0B1957] p-4" style={{border:"3px solid #0B1957"}}>
-              <p className="font-black uppercase text-xs text-[#0B1957] tracking-widest mb-3">🔑 Seeded Account</p>
+            <div className="p-4" style={{ border: "3px solid #0B1957", background: "#D1E8FF", boxShadow: "4px 4px 0 #0B1957" }}>
+              <div className="flex items-center gap-2 mb-3">
+                <IconKey />
+                <p className="font-black uppercase text-xs text-[#0B1957] tracking-widest">Seeded Account</p>
+              </div>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { label: "Email",    value: "yusron@dev.com" },
