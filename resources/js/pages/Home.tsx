@@ -4,105 +4,19 @@ import Navbar from "@/components/Navbar";
 import { useEffect, useState, useRef } from "react";
 
 const projects = [
-  {
-    title: "Burger Ordering App",
-    desc: "Website restoran burger dengan sistem pemesanan online",
-    image: "/profile/Mboy.jpeg",
-    stacks: [
-      { label: "Laravel", icon: "/Icon/Laravel.jpg" },
-      { label: "React", icon: "/Icon/React.jpg" },
-    ],
-  },
-  {
-    title: "Beyblade Leaderboard",
-    desc: "Leaderboard turnamen dengan statistik otomatis",
-    image: "/profile/Mboy.jpeg",
-    stacks: [
-      { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
-    ],
-  },
-  {
-    title: "CV Generator Tool",
-    desc: "Generate CV massal dari Excel ke PDF",
-    image: "/profile/Mboy.jpeg",
-    stacks: [
-      { label: "React", icon: "/Icon/React.jpg" },
-      { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
-    ],
-  },
-  {
-    title: "Dashboard Analytics",
-    desc: "Dashboard visualisasi data real-time untuk monitoring bisnis",
-    image: "/profile/Mboy.jpeg",
-    stacks: [
-      { label: "React", icon: "/Icon/React.jpg" },
-      { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
-    ],
-  },
-  {
-    title: "Inventory System",
-    desc: "Sistem manajemen stok dan inventaris gudang berbasis web",
-    image: "/profile/Mboy.jpeg",
-    stacks: [
-      { label: "Laravel", icon: "/Icon/Laravel.jpg" },
-      { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
-    ],
-  },
-  {
-    title: "E-Learning Platform",
-    desc: "Platform belajar online dengan fitur kuis dan sertifikasi",
-    image: "/profile/Mboy.jpeg",
-    stacks: [
-      { label: "React", icon: "/Icon/React.jpg" },
-      { label: "Laravel", icon: "/Icon/Laravel.jpg" },
-    ],
-  },
+  { title: "Burger Ordering App", desc: "Website restoran burger dengan sistem pemesanan online", image: "/profile/Mboy.jpeg", stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "React", icon: "/Icon/React.jpg" }] },
+  { title: "Beyblade Leaderboard", desc: "Leaderboard turnamen dengan statistik otomatis", image: "/profile/Mboy.jpeg", stacks: [{ label: "JavaScript", icon: "/Icon/JavaScript.jpg" }] },
+  { title: "CV Generator Tool", desc: "Generate CV massal dari Excel ke PDF", image: "/profile/Mboy.jpeg", stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }] },
+  { title: "Dashboard Analytics", desc: "Dashboard visualisasi data real-time untuk monitoring bisnis", image: "/profile/Mboy.jpeg", stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }] },
+  { title: "Inventory System", desc: "Sistem manajemen stok dan inventaris gudang berbasis web", image: "/profile/Mboy.jpeg", stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "JavaScript", icon: "/Icon/JavaScript.jpg" }] },
+  { title: "E-Learning Platform", desc: "Platform belajar online dengan fitur kuis dan sertifikasi", image: "/profile/Mboy.jpeg", stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "Laravel", icon: "/Icon/Laravel.jpg" }] },
 ];
 
 const TABS = [
-  {
-    key: "frontend",
-    label: "Frontend",
-    techs: [
-      { label: "React", icon: "/Icon/React.jpg" },
-      { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
-      { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
-      { label: "Tailwind", icon: "/Icon/TypeScript.jpg" },
-      { label: "Vite", icon: "/Icon/JavaScript.jpg" },
-    ],
-  },
-  {
-    key: "backend",
-    label: "Backend",
-    techs: [
-      { label: "Laravel", icon: "/Icon/Laravel.jpg" },
-      { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
-      { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
-      { label: "MySQL", icon: "/Icon/Laravel.jpg" },
-    ],
-  },
-  {
-    key: "tools",
-    label: "Tools",
-    techs: [
-      { label: "Git", icon: "/Icon/JavaScript.jpg" },
-      { label: "GitHub", icon: "/Icon/TypeScript.jpg" },
-      { label: "VS Code", icon: "/Icon/React.jpg" },
-      { label: "Postman", icon: "/Icon/Laravel.jpg" },
-      { label: "Figma", icon: "/Icon/JavaScript.jpg" },
-      { label: "Docker", icon: "/Icon/TypeScript.jpg" },
-    ],
-  },
-  {
-    key: "ai",
-    label: "AI Tools",
-    techs: [
-      { label: "Claude", icon: "/Icon/TypeScript.jpg" },
-      { label: "ChatGPT", icon: "/Icon/JavaScript.jpg" },
-      { label: "Copilot", icon: "/Icon/React.jpg" },
-      { label: "Gemini", icon: "/Icon/Laravel.jpg" },
-    ],
-  },
+  { key: "frontend", label: "Frontend", techs: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }, { label: "JavaScript", icon: "/Icon/JavaScript.jpg" }, { label: "Tailwind", icon: "/Icon/TypeScript.jpg" }, { label: "Vite", icon: "/Icon/JavaScript.jpg" }] },
+  { key: "backend",  label: "Backend",  techs: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "JavaScript", icon: "/Icon/JavaScript.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }, { label: "MySQL", icon: "/Icon/Laravel.jpg" }] },
+  { key: "tools",    label: "Tools",    techs: [{ label: "Git", icon: "/Icon/JavaScript.jpg" }, { label: "GitHub", icon: "/Icon/TypeScript.jpg" }, { label: "VS Code", icon: "/Icon/React.jpg" }, { label: "Postman", icon: "/Icon/Laravel.jpg" }, { label: "Figma", icon: "/Icon/JavaScript.jpg" }, { label: "Docker", icon: "/Icon/TypeScript.jpg" }] },
+  { key: "ai",       label: "AI Tools", techs: [{ label: "Claude", icon: "/Icon/TypeScript.jpg" }, { label: "ChatGPT", icon: "/Icon/JavaScript.jpg" }, { label: "Copilot", icon: "/Icon/React.jpg" }, { label: "Gemini", icon: "/Icon/Laravel.jpg" }] },
 ];
 
 function TechStack() {
@@ -112,66 +26,33 @@ function TechStack() {
   const switchTab = (i: number) => {
     if (i === activeTab) return;
     setAnimating(true);
-    setTimeout(() => {
-      setActiveTab(i);
-      setAnimating(false);
-    }, 180);
+    setTimeout(() => { setActiveTab(i); setAnimating(false); }, 180);
   };
 
-  const current = TABS[activeTab];
-
   return (
-    <section className="max-w-6xl mx-auto px-6 pb-20 anim-about">
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 anim-about">
       <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Tech Stack</h2>
       <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-
-        {/* Tab bar */}
-        <div className="flex border-b-4 border-[#0B1957]">
+        {/* Tab bar — scrollable on mobile */}
+        <div className="flex border-b-4 border-[#0B1957] overflow-x-auto">
           {TABS.map((tab, i) => (
-            <button
-              key={tab.key}
-              onClick={() => switchTab(i)}
-              className={`
-                flex-1 py-3 px-4 font-black uppercase text-sm tracking-wider
-                border-r-4 border-[#0B1957] last:border-r-0
-                transition-all duration-150
-                ${activeTab === i
-                  ? "bg-[#0B1957] text-[#9ECCFA] shadow-inner"
-                  : "bg-[#F8F3EA] text-[#0B1957] hover:bg-[#D1E8FF]"
-                }
-              `}
-            >
-              {/* Active tab indicator line */}
-              {activeTab === i && (
-                <span className="block w-full text-center">{tab.label}</span>
-              )}
-              {activeTab !== i && tab.label}
+            <button key={tab.key} onClick={() => switchTab(i)}
+              className={`flex-shrink-0 flex-1 py-3 px-3 sm:px-4 font-black uppercase text-xs sm:text-sm tracking-wider border-r-4 border-[#0B1957] last:border-r-0 transition-all duration-150 whitespace-nowrap
+                ${activeTab === i ? "bg-[#0B1957] text-[#9ECCFA]" : "bg-[#F8F3EA] text-[#0B1957] hover:bg-[#D1E8FF]"}`}>
+              {tab.label}
             </button>
           ))}
         </div>
-
-        {/* Tab content */}
-        <div
-          className="p-10 min-h-[180px] flex flex-wrap gap-5 items-start content-start"
-          style={{
-            opacity: animating ? 0 : 1,
-            transform: animating ? "translateY(8px)" : "translateY(0)",
-            transition: "opacity 0.18s ease, transform 0.18s ease",
-          }}
-        >
-          {current.techs.map((tech, i) => (
-            <div
-              key={i}
-              className="tech-chip"
-              style={{ animationDelay: `${i * 0.05}s` }}
-            >
+        {/* Content */}
+        <div className="p-6 sm:p-10 min-h-[160px] flex flex-wrap gap-3 sm:gap-5 items-start content-start"
+          style={{ opacity: animating ? 0 : 1, transform: animating ? "translateY(8px)" : "translateY(0)", transition: "opacity 0.18s ease, transform 0.18s ease" }}>
+          {TABS[activeTab].techs.map((tech, i) => (
+            <div key={i} className="tech-chip">
               <img src={tech.icon} alt={tech.label} />
               <span>{tech.label}</span>
             </div>
           ))}
         </div>
-
-        {/* Bottom accent bar */}
         <div className="h-2 bg-[#9ECCFA] border-t-4 border-[#0B1957]" />
       </div>
     </section>
@@ -184,11 +65,20 @@ export default function Home() {
   const [visible, setVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHoveringCarousel, setIsHoveringCarousel] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const totalSlides = Math.ceil(projects.length / 3);
+  // Detect mobile
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
-  // Autoplay
+  const perPage = isMobile ? 1 : 3;
+  const totalSlides = Math.ceil(projects.length / perPage);
+
   useEffect(() => {
     if (!visible || isHoveringCarousel) return;
     autoplayRef.current = setInterval(() => {
@@ -197,23 +87,14 @@ export default function Home() {
     return () => { if (autoplayRef.current) clearInterval(autoplayRef.current); };
   }, [visible, isHoveringCarousel, totalSlides]);
 
-  // Loading
   useEffect(() => {
-    const duration = 1800;
-    const interval = 16;
-    const steps = duration / interval;
+    const duration = 1800, interval = 16, steps = duration / interval;
     let current = 0;
     const timer = setInterval(() => {
       current++;
-      const eased =
-        current < steps * 0.7
-          ? (current / (steps * 0.7)) * 85
-          : 85 + ((current - steps * 0.7) / (steps * 0.3)) * 15;
+      const eased = current < steps * 0.7 ? (current / (steps * 0.7)) * 85 : 85 + ((current - steps * 0.7) / (steps * 0.3)) * 15;
       setProgress(Math.min(Math.round(eased), 100));
-      if (current >= steps) {
-        clearInterval(timer);
-        setTimeout(() => { setLoading(false); setTimeout(() => setVisible(true), 50); }, 200);
-      }
+      if (current >= steps) { clearInterval(timer); setTimeout(() => { setLoading(false); setTimeout(() => setVisible(true), 50); }, 200); }
     }, interval);
     return () => clearInterval(timer);
   }, []);
@@ -243,7 +124,7 @@ export default function Home() {
             </p>
           </div>
           <div className="flex gap-2">
-            {[0,1,2,3,4].map((i) => (
+            {[0,1,2,3,4].map(i => (
               <div key={i} className="h-2 flex-1 border-2 border-[#9ECCFA]"
                 style={{ backgroundColor: progress >= (i+1)*20 ? "#9ECCFA" : "transparent", transition: "background-color 0.15s ease" }} />
             ))}
@@ -257,10 +138,10 @@ export default function Home() {
   return (
     <>
       <style>{`
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes slideRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideUp    { from { opacity:0; transform:translateY(40px);  } to { opacity:1; transform:translateY(0);  } }
+        @keyframes slideDown  { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0);  } }
+        @keyframes slideLeft  { from { opacity:0; transform:translateX(-40px); } to { opacity:1; transform:translateX(0);  } }
+        @keyframes slideRight { from { opacity:0; transform:translateX(40px);  } to { opacity:1; transform:translateX(0);  } }
 
         .anim-navbar    { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-hero-img  { animation: slideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
@@ -271,163 +152,158 @@ export default function Home() {
         .anim-footer    { animation: slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.8s  both; }
 
         .btn-brutal { transition: transform 0.08s ease, box-shadow 0.08s ease; }
-        .btn-brutal:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #0B1957 !important; }
-        .btn-brutal:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0 #0B1957 !important; }
+        .btn-brutal:hover  { transform: translate(2px, 2px);  box-shadow: 2px 2px 0 #0B1957 !important; }
+        .btn-brutal:active { transform: translate(4px, 4px);  box-shadow: 0   0   0 #0B1957 !important; }
 
-        /* CARD — brutal lift with accent shadow color change */
-        .card-brutal {
-          transition: transform 0.15s ease, box-shadow 0.15s ease;
-          cursor: pointer;
-        }
-        .card-brutal:hover {
-          transform: translate(-5px, -5px);
-          box-shadow: 10px 10px 0 #9ECCFA, 12px 12px 0 #0B1957;
-        }
-        .card-brutal:active {
-          transform: translate(0px, 0px);
-          box-shadow: 3px 3px 0 #0B1957;
-        }
-
-        /* Image zoom on card hover */
+        .card-brutal { transition: transform 0.15s ease, box-shadow 0.15s ease; cursor: pointer; }
+        .card-brutal:hover  { transform: translate(-5px,-5px); box-shadow: 10px 10px 0 #9ECCFA, 12px 12px 0 #0B1957; }
+        .card-brutal:active { transform: translate(0,0); box-shadow: 3px 3px 0 #0B1957; }
         .card-brutal:hover .card-img { transform: scale(1.08); }
         .card-img { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
-
-        /* Overlay on hover */
-        .card-overlay {
-          opacity: 0;
-          transition: opacity 0.2s ease;
-        }
+        .card-overlay { opacity: 0; transition: opacity 0.2s ease; }
         .card-brutal:hover .card-overlay { opacity: 1; }
 
         .photo-wrap {
-          position: relative;
-          overflow: hidden;
-          width: 224px;
-          height: 280px;
-          border: 4px solid #0B1957;
-          box-shadow: 10px 10px 0 #0B1957;
-          flex-shrink: 0;
-          transition: transform 0.15s ease, box-shadow 0.15s ease;
+          position: relative; overflow: hidden;
+          border: 4px solid #0B1957; box-shadow: 10px 10px 0 #0B1957;
+          flex-shrink: 0; transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
-        .photo-wrap:hover { transform: translate(-3px, -3px); box-shadow: 13px 13px 0 #0B1957; }
-        .photo-wrap img {
-          position: absolute; top: 0; left: 0;
-          width: 100%; height: 160%;
-          object-fit: cover; object-position: center top;
-        }
+        .photo-wrap:hover { transform: translate(-3px,-3px); box-shadow: 13px 13px 0 #0B1957; }
+        .photo-wrap img { position: absolute; top:0; left:0; width:100%; height:160%; object-fit:cover; object-position:center top; }
 
-        /* Tech chip - icon + label */
+        .contact-card { transition: background 0.15s ease; text-decoration: none; }
+        .contact-card:hover { background: #D1E8FF; }
+        .contact-card:hover .contact-icon { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
+        .contact-icon { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+
         .tech-chip {
-          display: inline-flex; align-items: center; gap: 10px;
-          border: 3px solid #0B1957; padding: 8px 16px 8px 8px;
-          background: #F8F3EA; font-size: 12px; font-weight: 800;
+          display: inline-flex; align-items: center; gap: 8px;
+          border: 3px solid #0B1957; padding: 7px 14px 7px 7px;
+          background: #F8F3EA; font-size: 11px; font-weight: 800;
           text-transform: uppercase; color: #0B1957; letter-spacing: 0.06em;
           transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
           cursor: default; box-shadow: 3px 3px 0 #0B1957;
-          width: calc(25% - 15px);
+          width: calc(25% - 12px); min-width: 120px;
           justify-content: flex-start;
         }
-        .tech-chip:hover {
-          background: #9ECCFA;
-          transform: translate(-2px, -2px);
-          box-shadow: 5px 5px 0 #0B1957;
+        @media (max-width: 640px) {
+          .tech-chip { width: calc(50% - 8px); min-width: 0; }
         }
-        .tech-chip img { width: 28px; height: 28px; object-fit: cover; border: 2px solid #0B1957; flex-shrink: 0; }
+        .tech-chip:hover { background: #9ECCFA; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
+        .tech-chip img { width: 26px; height: 26px; object-fit: cover; border: 2px solid #0B1957; flex-shrink: 0; }
 
         .stack-icon {
           display: inline-flex; align-items: center; justify-content: center;
-          border: 2px solid #0B1957; padding: 3px;
-          background: #D1E8FF;
-          transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
-          cursor: default;
+          border: 2px solid #0B1957; padding: 3px; background: #D1E8FF;
+          transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease; cursor: default;
         }
         .stack-icon:hover { background: #9ECCFA; transform: translate(-2px,-2px); box-shadow: 3px 3px 0 #0B1957; }
         .stack-icon img { width: 28px; height: 28px; object-fit: cover; display: block; }
 
-        /* Dot pagination */
-        .dot {
-          width: 12px; height: 12px;
-          border: 2px solid #0B1957;
-          background: transparent;
-          transition: all 0.2s ease;
-          cursor: pointer;
-          flex-shrink: 0;
-        }
-        .dot.active {
-          background: #0B1957;
-          width: 32px;
-        }
+        .dot { width: 12px; height: 12px; border: 2px solid #0B1957; background: transparent; transition: all 0.2s ease; cursor: pointer; flex-shrink: 0; }
+        .dot.active { background: #0B1957; width: 32px; }
         .dot:hover:not(.active) { background: #9ECCFA; }
 
-        /* Carousel slide transition */
-        .carousel-track {
-          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        .carousel-track { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); }
       `}</style>
 
       <div className="min-h-screen bg-[#D1E8FF]" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}>
         <div className="anim-navbar"><Navbar /></div>
 
         {/* HERO */}
-        <section className="max-w-6xl mx-auto px-6 pt-16 pb-20">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-20">
           <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0px_0px_#0B1957] flex flex-col md:flex-row overflow-hidden">
-            <div className="anim-hero-img md:w-2/5 relative bg-[#9ECCFA] border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957] flex items-center justify-center py-10 px-8 min-h-[320px]">
-              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg, #0B1957 0px, #0B1957 1px, transparent 1px, transparent 32px), repeating-linear-gradient(90deg, #0B1957 0px, #0B1957 1px, transparent 1px, transparent 32px)" }} />
-              <div className="photo-wrap"><img src="/profile/Mboy.jpeg" alt="Yusron" /></div>
+
+            {/* LEFT — Photo */}
+            <div className="anim-hero-img md:w-2/5 relative bg-[#9ECCFA] border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957] flex items-center justify-center py-8 sm:py-10 px-6 sm:px-8 min-h-[260px] sm:min-h-[320px]">
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)" }} />
+              <div className="photo-wrap" style={{ width: "min(180px, 60vw)", height: "min(220px, 75vw)" }}>
+                <img src="/profile/Mboy.jpeg" alt="Yusron" />
+              </div>
             </div>
-            <div className="anim-hero-text md:w-3/5 p-10 flex flex-col justify-center relative">
-              <span className="absolute top-6 right-8 text-8xl font-black text-[#9ECCFA] select-none leading-none" aria-hidden="true">"</span>
-              <h1 className="text-5xl font-black uppercase mb-3 text-[#0B1957]">Yusron</h1>
-              <p className="font-bold uppercase mb-5 text-[#9ECCFA] tracking-wider text-sm border-l-4 border-[#9ECCFA] pl-3">IT Programmer</p>
-              <p className="font-semibold text-[#0B1957] text-lg leading-relaxed mb-8 max-w-md">
+
+            {/* RIGHT — Text */}
+            <div className="anim-hero-text md:w-3/5 p-6 sm:p-10 flex flex-col justify-center relative">
+              <span className="absolute top-4 right-6 text-6xl sm:text-8xl font-black text-[#9ECCFA] select-none leading-none" aria-hidden="true">"</span>
+              <h1 className="text-4xl sm:text-5xl font-black uppercase mb-3 text-[#0B1957]">Yusron</h1>
+              <p className="font-bold uppercase mb-4 sm:mb-5 text-[#9ECCFA] tracking-wider text-sm border-l-4 border-[#9ECCFA] pl-3">IT Programmer</p>
+              <p className="font-semibold text-[#0B1957] text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-md">
                 Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.
               </p>
-              <div className="flex gap-4">
-                <button className="btn-brutal border-4 border-[#0B1957] px-6 py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]">About</button>
-                <button className="btn-brutal border-4 border-[#0B1957] px-6 py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957]">Contact</button>
+              <div className="flex gap-3 sm:gap-4 flex-wrap">
+                <button className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] text-sm sm:text-base">About</button>
+                <button className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] text-sm sm:text-base">Contact</button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* PROJECTS CAROUSEL */}
-        <section className="max-w-6xl mx-auto px-6 pb-20 anim-carousel">
-          {/* Header row */}
+        {/* CONTACT */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-title">
+          <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Contact</h2>
+          <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] flex flex-col md:flex-row">
+
+            <a href="https://wa.me/6283861669565" target="_blank" rel="noopener noreferrer"
+              className="contact-card flex-1 border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957] p-6 sm:p-8 flex flex-row md:flex-col gap-4 items-center md:items-start">
+              <div className="contact-icon bg-[#25D366] border-4 border-[#0B1957] w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-[3px_3px_0_#0B1957]">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              </div>
+              <div>
+                <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">WhatsApp</p>
+                <p className="font-black text-[#0B1957] text-base sm:text-lg">083861669565</p>
+                <p className="font-semibold text-xs text-[#0B1957] mt-1 uppercase tracking-wide">Klik untuk chat →</p>
+              </div>
+            </a>
+
+            <a href="mailto:naooolaf@gmail.com"
+              className="contact-card flex-1 border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957] p-6 sm:p-8 flex flex-row md:flex-col gap-4 items-center md:items-start">
+              <div className="contact-icon bg-[#EA4335] border-4 border-[#0B1957] w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-[3px_3px_0_#0B1957]">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              </div>
+              <div>
+                <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Email</p>
+                <p className="font-black text-[#0B1957] text-base sm:text-lg break-all">naooolaf@gmail.com</p>
+                <p className="font-semibold text-xs text-[#0B1957] mt-1 uppercase tracking-wide">Klik untuk email →</p>
+              </div>
+            </a>
+
+            <a href="https://github.com/zysrnh" target="_blank" rel="noopener noreferrer"
+              className="contact-card flex-1 p-6 sm:p-8 flex flex-row md:flex-col gap-4 items-center md:items-start">
+              <div className="contact-icon bg-[#0B1957] border-4 border-[#0B1957] w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-[3px_3px_0_#9ECCFA]">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#9ECCFA"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </div>
+              <div>
+                <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">GitHub</p>
+                <p className="font-black text-[#0B1957] text-base sm:text-lg">github.com/zysrnh</p>
+                <p className="font-semibold text-xs text-[#0B1957] mt-1 uppercase tracking-wide">Klik untuk lihat repo →</p>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        {/* PROJECTS */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-carousel">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-black uppercase text-[#0B1957]">Projects</h2>
-            <div className="text-sm font-bold text-[#0B1957] uppercase tracking-widest">
-              {currentSlide + 1} / {totalSlides}
-            </div>
+            <div className="text-sm font-bold text-[#0B1957] uppercase tracking-widest">{currentSlide + 1} / {totalSlides}</div>
           </div>
 
-          {/* Carousel wrapper */}
-          <div
-            className="overflow-hidden"
-            onMouseEnter={() => setIsHoveringCarousel(true)}
-            onMouseLeave={() => setIsHoveringCarousel(false)}
-          >
-            <div
-              className="carousel-track flex"
-              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-            >
-              {/* Group into pages of 3 */}
-              {[0, 1].map((page) => (
-                <div key={page} className="min-w-full grid grid-cols-3 gap-6 pr-0">
-                  {projects.slice(page * 3, page * 3 + 3).map((p, i) => (
+          <div className="overflow-hidden" onMouseEnter={() => setIsHoveringCarousel(true)} onMouseLeave={() => setIsHoveringCarousel(false)}>
+            <div className="carousel-track flex" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+              {Array.from({ length: totalSlides }).map((_, page) => (
+                <div key={page} className={`min-w-full grid gap-4 sm:gap-6 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}>
+                  {projects.slice(page * perPage, page * perPage + perPage).map((p, i) => (
                     <div key={i} className="card-brutal bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] overflow-hidden">
-                      {/* Thumbnail */}
-                      <div className="w-full h-44 overflow-hidden border-b-4 border-[#0B1957] relative">
+                      <div className="w-full h-40 sm:h-44 overflow-hidden border-b-4 border-[#0B1957] relative">
                         <img src={p.image} alt={p.title} className="card-img w-full h-full object-cover object-top" />
-                        {/* Hover overlay */}
                         <div className="card-overlay absolute inset-0 bg-[#0B1957] bg-opacity-60 flex items-center justify-center">
                           <span className="text-[#9ECCFA] font-black uppercase text-sm border-2 border-[#9ECCFA] px-4 py-2">View Project →</span>
                         </div>
                         <div className="absolute top-3 right-3 bg-[#0B1957] text-[#9ECCFA] text-xs font-black uppercase px-2 py-1">Project</div>
                       </div>
-                      {/* Body */}
-                      <div className="p-5">
-                        <h3 className="font-black uppercase mb-2 text-[#0B1957]">{p.title}</h3>
-                        <p className="font-semibold text-sm mb-4 text-[#0B1957]">{p.desc}</p>
+                      <div className="p-4 sm:p-5">
+                        <h3 className="font-black uppercase mb-2 text-[#0B1957] text-sm sm:text-base">{p.title}</h3>
+                        <p className="font-semibold text-xs sm:text-sm mb-4 text-[#0B1957]">{p.desc}</p>
                         <div className="flex flex-wrap gap-2">
                           {p.stacks.map((s, j) => (
                             <div key={j} className="stack-icon" title={s.label}>
@@ -443,21 +319,14 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Dot pagination + Lihat Selengkapnya */}
-          <div className="flex items-center justify-between mt-8">
+          <div className="flex items-center justify-between mt-6 sm:mt-8">
             <div className="flex items-center gap-3">
               {Array.from({ length: totalSlides }).map((_, i) => (
-                <div
-                  key={i}
-                  className={`dot ${currentSlide === i ? "active" : ""}`}
-                  onClick={() => goToSlide(i)}
-                />
+                <div key={i} className={`dot ${currentSlide === i ? "active" : ""}`} onClick={() => goToSlide(i)} />
               ))}
             </div>
-
-            <button className="btn-brutal border-4 border-[#0B1957] px-5 py-2 font-black uppercase text-sm shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2">
-              Lihat Selengkapnya
-              <span className="text-base leading-none">→</span>
+            <button className="btn-brutal border-4 border-[#0B1957] px-4 sm:px-5 py-2 font-black uppercase text-xs sm:text-sm shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2">
+              Lihat Selengkapnya <span>→</span>
             </button>
           </div>
         </section>
@@ -466,8 +335,8 @@ export default function Home() {
         <TechStack />
 
         {/* ABOUT */}
-        <section className="max-w-6xl mx-auto px-6 pb-20 anim-about">
-          <div className="bg-[#0B1957] border-4 border-[#0B1957] p-10 shadow-[10px_10px_0_#9ECCFA]">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-about">
+          <div className="bg-[#0B1957] border-4 border-[#0B1957] p-8 sm:p-10 shadow-[10px_10px_0_#9ECCFA]">
             <h2 className="text-2xl font-black uppercase mb-4 text-[#9ECCFA]">About</h2>
             <p className="font-semibold max-w-2xl text-[#D1E8FF]">
               Fokus membuat aplikasi React + Laravel, dashboard, tools internal, dan aplikasi berbasis data dengan desain yang konsisten.
@@ -475,10 +344,10 @@ export default function Home() {
           </div>
         </section>
 
-        <footer className="text-center pb-10 font-bold uppercase text-[#0B1957] anim-footer">
+        <footer className="text-center pb-8 sm:pb-10 font-bold uppercase text-[#0B1957] anim-footer">
           © {new Date().getFullYear()} Yusron
         </footer>
       </div>
     </>
   );
-}
+}  
