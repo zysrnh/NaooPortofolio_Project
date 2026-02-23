@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 const navLinks = [
   { label: "Home",     href: "hero" },
@@ -9,6 +9,9 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const { auth } = usePage<{ auth: { user: { name: string } | null } }>().props;
+  const isLoggedIn = !!auth?.user;
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
 
@@ -18,9 +21,17 @@ export default function Navbar() {
     setMenuOpen(false);
   };
 
-  const goToLogin = () => {
+  const handlePrimaryBtn = () => {
     setMenuOpen(false);
-    router.visit("/login");
+    if (isLoggedIn) {
+      router.visit("/dashboard");
+    } else {
+      router.visit("/login");
+    }
+  };
+
+  const handleContactBtn = () => {
+    scrollTo("contact");
   };
 
   useEffect(() => {
@@ -101,16 +112,16 @@ export default function Navbar() {
           {/* BUTTONS — desktop */}
           <div className="hidden md:flex gap-3">
             <button
-              onClick={goToLogin}
+              onClick={handlePrimaryBtn}
               className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957]"
             >
-              Login
+              {isLoggedIn ? "Dashboard" : "Login"}
             </button>
             <button
-              onClick={goToLogin}
+              onClick={handleContactBtn}
               className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]"
             >
-              Get Started
+              Contact Me
             </button>
           </div>
 
@@ -134,16 +145,16 @@ export default function Navbar() {
           ))}
           <div className="flex gap-3 p-4">
             <button
-              onClick={goToLogin}
+              onClick={handlePrimaryBtn}
               className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] uppercase text-sm"
             >
-              Login
+              {isLoggedIn ? "Dashboard" : "Login"}
             </button>
             <button
-              onClick={goToLogin}
+              onClick={handleContactBtn}
               className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] uppercase text-sm"
             >
-              Get Started
+              Contact Me
             </button>
           </div>
         </div>

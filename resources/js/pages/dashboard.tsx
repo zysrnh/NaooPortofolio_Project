@@ -2,76 +2,19 @@ import { useState, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
 
 // ── SVG Icons ────────────────────────────────────────────────────────────────
-const IconFolder = ({ size = 20 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
-  </svg>
-);
-const IconRocket = ({ size = 20 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/>
-    <path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/>
-    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
-  </svg>
-);
-const IconGear = ({ size = 20 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="3"/>
-    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
-  </svg>
-);
-const IconLayers = ({ size = 20 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-    <polyline points="2 17 12 22 22 17"/>
-    <polyline points="2 12 12 17 22 12"/>
-  </svg>
-);
-const IconGrid = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-    <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-  </svg>
-);
-const IconUser = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-    <circle cx="12" cy="7" r="4"/>
-  </svg>
-);
-const IconLogOut = ({ size = 14 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-    <polyline points="16 17 21 12 16 7"/>
-    <line x1="21" y1="12" x2="9" y2="12"/>
-  </svg>
-);
-const IconMenu = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round">
-    <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-  </svg>
-);
-const IconClose = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-  </svg>
-);
-const IconArrowRight = ({ size = 14 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-  </svg>
-);
-const IconClock = ({ size = 14 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-  </svg>
-);
-const IconBriefcase = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-    <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
-  </svg>
-);
+const IconFolder   = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
+const IconRocket   = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>;
+const IconGear     = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>;
+const IconLayers   = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>;
+const IconGrid     = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>;
+const IconUser     = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+const IconLogOut   = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
+const IconHome     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
+const IconClose    = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+const IconMenu     = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
+const IconArrow    = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
+const IconClock    = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+const IconBriefcase = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>;
 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface Project { title: string; desc: string; status: string; stacks: string[]; date: string; }
@@ -120,7 +63,8 @@ export default function Dashboard() {
     return () => clearInterval(t);
   }, []);
 
-  const handleLogout = () => router.post("/logout");
+  const handleLogout  = () => router.post("/logout");
+  const handleHome    = () => router.visit("/");
 
   const greeting = () => {
     const h = time.getHours();
@@ -153,6 +97,30 @@ export default function Dashboard() {
         }
         .nav-item:hover  { background:rgba(158,204,250,0.1); color:#F8F3EA; padding-left:22px; }
         .nav-item.active { background:rgba(158,204,250,0.15); color:#F8F3EA; border-left-color:#9ECCFA; padding-left:22px; }
+
+        .home-btn-sidebar {
+          display:flex; align-items:center; gap:8px;
+          width:100%; border:3px solid rgba(158,204,250,0.4); padding:9px 14px;
+          background:transparent; font-weight:900; font-size:12px;
+          text-transform:uppercase; color:#9ECCFA; letter-spacing:0.08em;
+          cursor:pointer; font-family:inherit; margin-bottom:8px;
+          transition:background 0.1s ease, border-color 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
+          box-shadow:2px 2px 0 rgba(158,204,250,0.3);
+        }
+        .home-btn-sidebar:hover  { background:rgba(158,204,250,0.1); border-color:#9ECCFA; transform:translate(-1px,-1px); box-shadow:3px 3px 0 rgba(158,204,250,0.4); }
+        .home-btn-sidebar:active { transform:translate(1px,1px); box-shadow:0 0 0; }
+
+        .home-btn-topbar {
+          display:flex; align-items:center; gap:6px;
+          border:3px solid #0B1957; padding:7px 14px;
+          background:#F8F3EA; font-weight:900; font-size:12px;
+          text-transform:uppercase; color:#0B1957; letter-spacing:0.07em;
+          cursor:pointer; font-family:inherit;
+          box-shadow:3px 3px 0 #0B1957;
+          transition:transform 0.08s ease, box-shadow 0.08s ease;
+        }
+        .home-btn-topbar:hover  { transform:translate(2px,2px); box-shadow:1px 1px 0 #0B1957; }
+        .home-btn-topbar:active { transform:translate(3px,3px); box-shadow:0 0 0 #0B1957; }
 
         .stat-card {
           border:4px solid #0B1957; background:#F8F3EA; box-shadow:6px 6px 0 #0B1957;
@@ -200,37 +168,45 @@ export default function Dashboard() {
         }
       `}</style>
 
-      <div
-        className="min-h-screen bg-[#D1E8FF] flex"
-        style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}
-      >
+      <div className="min-h-screen bg-[#D1E8FF] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
+
         {/* ── SIDEBAR desktop ── */}
         <aside className="anim-sidebar hidden md:flex flex-col w-64 bg-[#0B1957] border-r-4 border-[#0B1957] relative min-h-screen flex-shrink-0">
           <div className="grid-bg-dark" />
+
+          {/* Brand */}
           <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative">
             <div className="font-black text-xl text-[#9ECCFA] uppercase tracking-widest">Yusron.dev</div>
             <div className="font-semibold text-xs text-[#D1E8FF] opacity-60 uppercase tracking-wider mt-1">Dashboard</div>
           </div>
+
+          {/* Nav */}
           <nav className="flex-1 py-4 relative">
             {NAV_ITEMS.map(item => (
               <div key={item.key} className={`nav-item ${activeNav === item.key ? "active" : ""}`} onClick={() => setActiveNav(item.key)}>
-                {item.icon}
-                {item.label}
+                {item.icon}{item.label}
               </div>
             ))}
           </nav>
+
+          {/* Bottom actions */}
           <div className="border-t-4 border-[#9ECCFA] p-5 relative">
             <div className="mb-3">
               <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">{user?.name ?? "Yusron"}</p>
               <p className="font-semibold text-xs text-[#D1E8FF] opacity-60 truncate">{user?.email ?? "yusron@dev.com"}</p>
             </div>
+            {/* Back to Homepage */}
+            <button className="home-btn-sidebar" onClick={handleHome}>
+              <IconHome size={13} /> Homepage
+            </button>
+            {/* Logout */}
             <button className="logout-btn w-full" onClick={handleLogout}>
               <IconLogOut /> Logout
             </button>
           </div>
         </aside>
 
-        {/* ── SIDEBAR mobile ── */}
+        {/* ── SIDEBAR mobile overlay ── */}
         {sidebarOpen && (
           <div className="fixed inset-0 bg-[#0B1957] bg-opacity-50 z-30 md:hidden" style={{ backdropFilter: "blur(2px)" }} onClick={() => setSidebarOpen(false)} />
         )}
@@ -261,7 +237,12 @@ export default function Dashboard() {
               <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">{user?.name ?? "Yusron"}</p>
               <p className="font-semibold text-xs text-[#D1E8FF] opacity-60 truncate">{user?.email ?? ""}</p>
             </div>
-            <button className="logout-btn w-full" onClick={handleLogout}><IconLogOut /> Logout</button>
+            <button className="home-btn-sidebar" onClick={handleHome}>
+              <IconHome size={13} /> Homepage
+            </button>
+            <button className="logout-btn w-full" onClick={handleLogout}>
+              <IconLogOut /> Logout
+            </button>
           </div>
         </aside>
 
@@ -282,13 +263,23 @@ export default function Dashboard() {
                 <h2 className="font-black text-lg sm:text-xl text-[#0B1957] uppercase">{user?.name ?? "Yusron"}</h2>
               </div>
             </div>
-            <div className="text-right hidden sm:flex items-center gap-2">
-              <IconClock size={16} />
-              <div>
-                <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">Live Clock</p>
-                <p className="font-black text-lg text-[#0B1957] tabular-nums">
-                  {time.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
-                </p>
+
+            {/* Right side topbar: Home button + Clock */}
+            <div className="flex items-center gap-4">
+              {/* Back to Homepage — visible di topbar */}
+              <button className="home-btn-topbar" onClick={handleHome}>
+                <IconHome size={13} /> Home
+              </button>
+
+              {/* Live clock — desktop only */}
+              <div className="text-right hidden sm:flex items-center gap-2">
+                <IconClock size={16} />
+                <div>
+                  <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">Live Clock</p>
+                  <p className="font-black text-lg text-[#0B1957] tabular-nums">
+                    {time.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                  </p>
+                </div>
               </div>
             </div>
           </header>
@@ -317,7 +308,7 @@ export default function Dashboard() {
                       className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2"
                       onClick={() => setActiveNav("projects")}
                     >
-                      All Projects <IconArrowRight />
+                      All Projects <IconArrow />
                     </button>
                   </div>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -386,12 +377,21 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="btn-brutal w-full border-4 border-[#0B1957] py-4 font-black text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] flex items-center justify-center gap-3"
-                >
-                  <IconLogOut size={16} /> Logout dari Dashboard
-                </button>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleHome}
+                    className="btn-brutal flex-1 border-4 border-[#0B1957] py-4 font-black text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] flex items-center justify-center gap-3"
+                  >
+                    <IconHome size={16} /> Homepage
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="btn-brutal flex-1 border-4 border-[#0B1957] py-4 font-black text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] flex items-center justify-center gap-3"
+                  >
+                    <IconLogOut size={16} /> Logout
+                  </button>
+                </div>
               </div>
             )}
           </main>
@@ -415,7 +415,7 @@ function ProjectCard({ project }: { project: Project }) {
       <div className="flex items-center justify-between border-t-2 border-[#0B1957] pt-3 mt-3">
         <span className="font-black text-xs text-[#0B1957] uppercase opacity-50">{project.date}</span>
         <span className="font-black text-xs text-[#9ECCFA] uppercase cursor-pointer hover:underline flex items-center gap-1">
-          View <IconArrowRight size={12} />
+          View <IconArrow size={12} />
         </span>
       </div>
     </div>

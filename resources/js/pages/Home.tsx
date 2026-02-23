@@ -263,12 +263,6 @@ export default function Home() {
                 >
                   About
                 </button>
-                <button
-                  onClick={() => router.visit("/login")}
-                  className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] text-sm sm:text-base"
-                >
-                  Dashboard →
-                </button>
               </div>
             </div>
           </div>
