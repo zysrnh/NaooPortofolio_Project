@@ -183,11 +183,12 @@ export default function Home() {
           text-transform: uppercase; color: #0B1957; letter-spacing: 0.06em;
           transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
           cursor: default; box-shadow: 3px 3px 0 #0B1957;
-          width: calc(25% - 12px); min-width: 120px;
+          flex: 0 0 calc(25% - 15px);
           justify-content: flex-start;
+          box-sizing: border-box;
         }
         @media (max-width: 640px) {
-          .tech-chip { width: calc(50% - 8px); min-width: 0; }
+          .tech-chip { flex: 0 0 calc(50% - 6px); }
         }
         .tech-chip:hover { background: #9ECCFA; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
         .tech-chip img { width: 26px; height: 26px; object-fit: cover; border: 2px solid #0B1957; flex-shrink: 0; }
@@ -211,7 +212,7 @@ export default function Home() {
         <div className="anim-navbar"><Navbar /></div>
 
         {/* HERO */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-20">
+        <section id="hero" className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-20">
           <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0px_0px_#0B1957] flex flex-col md:flex-row overflow-hidden">
 
             {/* LEFT — Photo */}
@@ -239,7 +240,7 @@ export default function Home() {
         </section>
 
         {/* CONTACT */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-title">
+        <section id="contact" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-title">
           <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Contact</h2>
           <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] flex flex-col md:flex-row">
 
@@ -282,7 +283,7 @@ export default function Home() {
         </section>
 
         {/* PROJECTS */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-carousel">
+        <section id="projects" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-carousel">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-black uppercase text-[#0B1957]">Projects</h2>
             <div className="text-sm font-bold text-[#0B1957] uppercase tracking-widest">{currentSlide + 1} / {totalSlides}</div>
@@ -335,19 +336,111 @@ export default function Home() {
         <TechStack />
 
         {/* ABOUT */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-about">
-          <div className="bg-[#0B1957] border-4 border-[#0B1957] p-8 sm:p-10 shadow-[10px_10px_0_#9ECCFA]">
-            <h2 className="text-2xl font-black uppercase mb-4 text-[#9ECCFA]">About</h2>
-            <p className="font-semibold max-w-2xl text-[#D1E8FF]">
-              Fokus membuat aplikasi React + Laravel, dashboard, tools internal, dan aplikasi berbasis data dengan desain yang konsisten.
-            </p>
+        <section id="about" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-about">
+          <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">About</h2>
+          <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] flex flex-col md:flex-row overflow-hidden">
+
+            {/* LEFT — Text */}
+            <div className="flex-1 p-8 sm:p-10 flex flex-col justify-center">
+              <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-[0.3em] mb-3">Who am I</p>
+              <h3 className="text-3xl sm:text-4xl font-black uppercase text-[#F8F3EA] mb-4 leading-tight">
+                Zaki Yusron<br />Hasyimmi
+              </h3>
+              <div className="w-12 h-1 bg-[#9ECCFA] mb-5" />
+              <p className="font-semibold text-[#D1E8FF] leading-relaxed mb-4">
+                Seorang IT Programmer yang fokus membangun aplikasi web modern dengan React dan Laravel. Saya menikmati proses merancang UI yang rapi dan membangun sistem yang efisien di balik layar.
+              </p>
+              <p className="font-semibold text-[#D1E8FF] leading-relaxed mb-6">
+                Aktif mengeksplorasi teknologi baru, dari tools AI hingga arsitektur fullstack — selalu ingin belajar dan berkembang.
+              </p>
+
+              {/* Info grid */}
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: "Role", value: "IT Programmer" },
+                  { label: "Focus", value: "Fullstack Web" },
+                  { label: "Stack", value: "React + Laravel" },
+                  { label: "Status", value: "Open to Work" },
+                ].map((item, i) => (
+                  <div key={i} className="border-2 border-[#9ECCFA] p-3">
+                    <p className="text-[#9ECCFA] font-black uppercase text-xs tracking-widest mb-1">{item.label}</p>
+                    <p className="text-[#F8F3EA] font-bold text-sm">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* RIGHT — Photo */}
+            <div className="md:w-2/5 relative bg-[#9ECCFA] border-t-4 md:border-t-0 md:border-l-4 border-[#9ECCFA] flex items-center justify-center py-10 px-8 min-h-[280px]">
+              {/* Grid decoration */}
+              <div className="absolute inset-0 opacity-20" style={{
+                backgroundImage: "repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)"
+              }} />
+              {/* Photo */}
+              <div className="photo-wrap" style={{ width: "min(180px, 60vw)", height: "min(220px, 75vw)" }}>
+                <img src="/profile/Mboy.jpeg" alt="Zaki Yusron" />
+              </div>
+            </div>
           </div>
         </section>
 
-        <footer className="text-center pb-8 sm:pb-10 font-bold uppercase text-[#0B1957] anim-footer">
-          © {new Date().getFullYear()} Yusron
+        {/* FOOTER */}
+        <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA] anim-footer">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+
+              {/* Brand */}
+              <div>
+                <div className="font-black text-2xl text-[#0B1957] mb-1">Yusron.dev</div>
+                <p className="font-semibold text-sm text-[#0B1957] opacity-70">Made with ☕ by Zaki Yusron Hasyimmi</p>
+              </div>
+
+              {/* Quick links */}
+              <div className="flex flex-col gap-2">
+                <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Quick Links</p>
+                <div className="flex flex-wrap gap-x-6 gap-y-1">
+                  {["Home", "Projects", "About", "Contact"].map(l => (
+                    <a key={l}
+                      onClick={() => { const el = document.getElementById(l.toLowerCase()); if (el) el.scrollIntoView({ behavior: "smooth" }); }}
+                      className="font-bold text-sm text-[#0B1957] uppercase cursor-pointer hover:underline">
+                      {l}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Social */}
+              <div className="flex flex-col gap-2">
+                <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Connect</p>
+                <div className="flex gap-3">
+                  <a href="https://wa.me/6283861669565" target="_blank" rel="noopener noreferrer"
+                    className="border-4 border-[#0B1957] w-10 h-10 flex items-center justify-center bg-[#25D366] shadow-[3px_3px_0_#0B1957] btn-brutal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  </a>
+                  <a href="mailto:naooolaf@gmail.com"
+                    className="border-4 border-[#0B1957] w-10 h-10 flex items-center justify-center bg-[#EA4335] shadow-[3px_3px_0_#0B1957] btn-brutal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                  </a>
+                  <a href="https://github.com/zysrnh" target="_blank" rel="noopener noreferrer"
+                    className="border-4 border-[#0B1957] w-10 h-10 flex items-center justify-center bg-[#0B1957] shadow-[3px_3px_0_#9ECCFA] btn-brutal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#9ECCFA"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom line */}
+            <div className="border-t-4 border-[#0B1957] mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2">
+              <p className="font-bold uppercase text-xs text-[#0B1957] tracking-widest">
+                © {new Date().getFullYear()} Zaki Yusron Hasyimmi
+              </p>
+              <p className="font-bold uppercase text-xs text-[#0B1957] opacity-50 tracking-widest">
+                Built with React + Vite + Tailwind
+              </p>
+            </div>
+          </div>
         </footer>
       </div>
     </>
   );
-}  
+}
