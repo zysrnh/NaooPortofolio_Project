@@ -2,6 +2,69 @@ import Navbar from "@/components/Navbar";
 import { useEffect, useState, useRef } from "react";
 import { router } from "@inertiajs/react";
 
+// ── Scroll reveal hook with direction detection + varied animations ────────
+function useScrollReveal(ready: boolean) {
+  useEffect(() => {
+    if (!ready) return;
+
+    let lastScrollY = window.scrollY;
+
+    const getTransform = (el: HTMLElement, directionDown: boolean) => {
+      if (el.classList.contains("from-left"))  return "translateX(-50px)";
+      if (el.classList.contains("from-right")) return "translateX(50px)";
+      if (el.classList.contains("from-scale")) return "scale(0.92)";
+      return directionDown ? "translateY(48px)" : "translateY(-48px)";
+    };
+
+    const els = Array.from(document.querySelectorAll(".reveal")) as HTMLElement[];
+
+    // set initial hidden state
+    els.forEach((el) => {
+      el.style.opacity = "0";
+      el.style.transform = getTransform(el, true);
+      el.style.transition = "opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1)";
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const directionDown = window.scrollY >= lastScrollY;
+        lastScrollY = window.scrollY;
+
+        entries.forEach((entry) => {
+          const el = entry.target as HTMLElement;
+          const delay = Number(el.dataset.delay ?? 0);
+
+          if (entry.isIntersecting) {
+            // entering viewport — animate in
+            setTimeout(() => {
+              el.style.opacity = "1";
+              el.style.transform = "translateY(0) translateX(0) scale(1)";
+            }, delay);
+            el.dataset.visible = "true";
+          } else {
+            // leaving viewport — reset so it can re-animate
+            const wasVisible = el.dataset.visible === "true";
+            if (wasVisible) {
+              el.style.transition = "none";
+              el.style.opacity = "0";
+              el.style.transform = getTransform(el, directionDown);
+              // re-enable transition after reset
+              requestAnimationFrame(() => {
+                el.style.transition = "opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1)";
+              });
+              el.dataset.visible = "false";
+            }
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [ready]);
+}
+
 const projects = [
   { title: "Burger Ordering App", desc: "Website restoran burger dengan sistem pemesanan online", image: "/profile/Mboy.jpeg", stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "React", icon: "/Icon/React.jpg" }] },
   { title: "Beyblade Leaderboard", desc: "Leaderboard turnamen dengan statistik otomatis", image: "/profile/Mboy.jpeg", stacks: [{ label: "JavaScript", icon: "/Icon/JavaScript.jpg" }] },
@@ -9,6 +72,22 @@ const projects = [
   { title: "Dashboard Analytics", desc: "Dashboard visualisasi data real-time untuk monitoring bisnis", image: "/profile/Mboy.jpeg", stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }] },
   { title: "Inventory System", desc: "Sistem manajemen stok dan inventaris gudang berbasis web", image: "/profile/Mboy.jpeg", stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "JavaScript", icon: "/Icon/JavaScript.jpg" }] },
   { title: "E-Learning Platform", desc: "Platform belajar online dengan fitur kuis dan sertifikasi", image: "/profile/Mboy.jpeg", stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "Laravel", icon: "/Icon/Laravel.jpg" }] },
+];
+
+// ── Compute stats dynamically from projects ───────────────────────────────
+const totalProjects = projects.length;
+const stackCounts: Record<string, number> = {};
+projects.forEach(p => p.stacks.forEach(s => {
+  stackCounts[s.label] = (stackCounts[s.label] || 0) + 1;
+}));
+const uniqueStacks = Object.keys(stackCounts).length;
+const topStack = Object.entries(stackCounts).sort((a, b) => b[1] - a[1])[0];
+
+const PROJECT_STATS = [
+  { value: totalProjects,               label: "Total Projects",   note: "Semua project" },
+  { value: uniqueStacks,                label: "Tech Stacks Used", note: "Teknologi berbeda" },
+  { value: stackCounts["React"] ?? 0,   label: "React Projects",   note: "Frontend modern" },
+  { value: stackCounts["Laravel"] ?? 0, label: "Laravel Projects", note: "Backend solid" },
 ];
 
 const TABS = [
@@ -29,7 +108,7 @@ function TechStack() {
   };
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 anim-about">
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
       <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Tech Stack</h2>
       <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
         <div className="flex border-b-4 border-[#0B1957] overflow-x-auto">
@@ -51,6 +130,108 @@ function TechStack() {
           ))}
         </div>
         <div className="h-2 bg-[#9ECCFA] border-t-4 border-[#0B1957]" />
+      </div>
+    </section>
+  );
+}
+
+// ── PROJECT COUNT ─────────────────────────────────────────────────────────
+function ProjectCount() {
+  const [counts, setCounts] = useState(PROJECT_STATS.map(() => 0));
+  const sectionRef = useRef<HTMLElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          PROJECT_STATS.forEach((stat, i) => {
+            const duration = 800;
+            const steps = 40;
+            let step = 0;
+            const timer = setInterval(() => {
+              step++;
+              const eased = 1 - Math.pow(1 - step / steps, 3);
+              const current = Math.round(eased * stat.value);
+              setCounts(prev => {
+                const next = [...prev];
+                next[i] = current;
+                return next;
+              });
+              if (step >= steps) clearInterval(timer);
+            }, duration / steps);
+          });
+        }
+      },
+      { threshold: 0.25 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={sectionRef} id="project-stats" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Project Stats</h2>
+
+      <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
+        {/* Grid of stat cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4">
+          {PROJECT_STATS.map((stat, i) => (
+            <div
+              key={i}
+              className="relative flex flex-col items-center justify-center py-10 px-4 text-center overflow-hidden group
+                border-b-4 border-[#0B1957]
+                [&:nth-child(odd)]:border-r-4 [&:nth-child(odd)]:border-r-[#0B1957]
+                md:[&:nth-child(n)]:border-r-4 md:[&:nth-child(n)]:border-r-[#0B1957]
+                md:[&:last-child]:border-r-0
+                [&:nth-child(3)]:border-b-0 [&:nth-child(4)]:border-b-0
+                md:[&:nth-child(3)]:border-b-4 md:[&:nth-child(4)]:border-b-4
+              "
+            >
+              {/* Hover fill sweeps up */}
+              <div className="absolute inset-0 bg-[#0B1957] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+
+              {/* Corner accent */}
+              <div className="absolute top-0 left-0 border-t-[18px] border-l-[18px] border-t-[#9ECCFA] border-l-transparent" />
+
+              {/* Count */}
+              <span
+                className="relative z-10 font-black tabular-nums leading-none text-[#0B1957] group-hover:text-[#9ECCFA] transition-colors duration-300"
+                style={{ fontSize: "clamp(2.8rem, 7vw, 4.5rem)" }}
+              >
+                {counts[i]}
+                <sup className="text-[#9ECCFA] group-hover:text-[#D1E8FF] text-xl align-super ml-0.5 transition-colors duration-300">+</sup>
+              </span>
+
+              {/* Label */}
+              <p className="relative z-10 font-black uppercase text-xs tracking-[0.12em] text-[#0B1957] group-hover:text-[#F8F3EA] transition-colors duration-300 mt-3 leading-snug">
+                {stat.label}
+              </p>
+
+              {/* Sub-note */}
+              <p className="relative z-10 font-semibold text-[10px] uppercase tracking-wide text-[#0B1957] opacity-40 group-hover:text-[#9ECCFA] group-hover:opacity-100 transition-all duration-300 mt-1">
+                {stat.note}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom summary bar */}
+        <div className="bg-[#0B1957] border-t-4 border-[#0B1957] px-6 sm:px-8 py-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-0 justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#9ECCFA] flex-shrink-0" />
+            <span className="font-black uppercase text-xs tracking-[0.2em] text-[#9ECCFA]">Most Used Stack</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="font-black text-[#F8F3EA] uppercase text-sm tracking-wider border-2 border-[#9ECCFA] px-4 py-1">
+              {topStack[0]}
+            </span>
+            <span className="font-bold text-[#D1E8FF] text-xs uppercase tracking-wide">
+              {topStack[1]}x digunakan
+            </span>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -107,6 +288,8 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  useScrollReveal(visible);
+
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -161,10 +344,7 @@ export default function Home() {
         .anim-navbar    { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-hero-img  { animation: slideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
         .anim-hero-text { animation: slideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
-        .anim-title     { animation: slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.3s  both; }
-        .anim-carousel  { animation: slideUp    0.6s cubic-bezier(0.16,1,0.3,1) 0.4s  both; }
-        .anim-about     { animation: slideUp    0.6s cubic-bezier(0.16,1,0.3,1) 0.7s  both; }
-        .anim-footer    { animation: slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.8s  both; }
+        /* reveal classes handled via inline styles by useScrollReveal hook */
 
         .btn-brutal { transition: transform 0.08s ease, box-shadow 0.08s ease; }
         .btn-brutal:hover  { transform: translate(2px, 2px);  box-shadow: 2px 2px 0 #0B1957 !important; }
@@ -206,11 +386,13 @@ export default function Home() {
 
         .stack-icon {
           display: inline-flex; align-items: center; justify-content: center;
-          border: 2px solid #0B1957; padding: 3px; background: #D1E8FF;
-          transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease; cursor: default;
+          border: 3px solid #0B1957; padding: 8px;
+          background-color: #D1E8FF; box-shadow: 3px 3px 0 #0B1957;
+          transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+          cursor: default;
         }
-        .stack-icon:hover { background: #9ECCFA; transform: translate(-2px,-2px); box-shadow: 3px 3px 0 #0B1957; }
-        .stack-icon img { width: 28px; height: 28px; object-fit: cover; display: block; }
+        .stack-icon:hover { background-color: #9ECCFA; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
+        .stack-icon img { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; display: block; }
 
         .dot { width: 12px; height: 12px; border: 2px solid #0B1957; background: transparent; transition: all 0.2s ease; cursor: pointer; flex-shrink: 0; }
         .dot.active { background: #0B1957; width: 32px; }
@@ -237,16 +419,12 @@ export default function Home() {
         {/* ── HERO ── */}
         <section id="hero" className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-20">
           <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0px_0px_#0B1957] flex flex-col md:flex-row overflow-hidden">
-
-            {/* LEFT — Photo */}
             <div className="anim-hero-img md:w-2/5 relative bg-[#9ECCFA] border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957] flex items-center justify-center py-8 sm:py-10 px-6 sm:px-8 min-h-[260px] sm:min-h-[320px]">
               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)" }} />
               <div className="photo-wrap" style={{ width: "min(180px, 60vw)", height: "min(220px, 75vw)" }}>
                 <img src="/profile/Mboy.jpeg" alt="Yusron" />
               </div>
             </div>
-
-            {/* RIGHT — Text */}
             <div className="anim-hero-text md:w-3/5 p-6 sm:p-10 flex flex-col justify-center relative">
               <span className="absolute top-4 right-6 text-6xl sm:text-8xl font-black text-[#9ECCFA] select-none leading-none" aria-hidden="true">"</span>
               <h1 className="text-4xl sm:text-5xl font-black uppercase mb-3 text-[#0B1957]">Yusron</h1>
@@ -254,8 +432,6 @@ export default function Home() {
               <p className="font-semibold text-[#0B1957] text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-md">
                 Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.
               </p>
-
-              {/* ✅ BUTTONS — About scroll + Dashboard /login */}
               <div className="flex gap-3 sm:gap-4 flex-wrap">
                 <button
                   onClick={() => scrollTo("about")}
@@ -269,10 +445,9 @@ export default function Home() {
         </section>
 
         {/* ── CONTACT ── */}
-        <section id="contact" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-title">
+        <section id="contact" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left" data-delay="0">
           <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Contact</h2>
           <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] flex flex-col md:flex-row">
-
             <a href="https://wa.me/6283861669565" target="_blank" rel="noopener noreferrer"
               className="contact-card flex-1 border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957] p-6 sm:p-8 flex flex-row md:flex-col gap-4 items-center md:items-start">
               <div className="contact-icon bg-[#25D366] border-4 border-[#0B1957] w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-[3px_3px_0_#0B1957]">
@@ -284,7 +459,6 @@ export default function Home() {
                 <p className="font-semibold text-xs text-[#0B1957] mt-1 uppercase tracking-wide">Klik untuk chat →</p>
               </div>
             </a>
-
             <a href="mailto:naooolaf@gmail.com"
               className="contact-card flex-1 border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957] p-6 sm:p-8 flex flex-row md:flex-col gap-4 items-center md:items-start">
               <div className="contact-icon bg-[#EA4335] border-4 border-[#0B1957] w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-[3px_3px_0_#0B1957]">
@@ -296,7 +470,6 @@ export default function Home() {
                 <p className="font-semibold text-xs text-[#0B1957] mt-1 uppercase tracking-wide">Klik untuk email →</p>
               </div>
             </a>
-
             <a href="https://github.com/zysrnh" target="_blank" rel="noopener noreferrer"
               className="contact-card flex-1 p-6 sm:p-8 flex flex-row md:flex-col gap-4 items-center md:items-start">
               <div className="contact-icon bg-[#0B1957] border-4 border-[#0B1957] w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-[3px_3px_0_#9ECCFA]">
@@ -312,12 +485,11 @@ export default function Home() {
         </section>
 
         {/* ── PROJECTS ── */}
-        <section id="projects" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-carousel">
+        <section id="projects" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right" data-delay="0">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-black uppercase text-[#0B1957]">Projects</h2>
             <div className="text-sm font-bold text-[#0B1957] uppercase tracking-widest">{currentSlide + 1} / {totalSlides}</div>
           </div>
-
           <div className="overflow-hidden" onMouseEnter={() => setIsHoveringCarousel(true)} onMouseLeave={() => setIsHoveringCarousel(false)}>
             <div className="carousel-track flex" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
               {Array.from({ length: totalSlides }).map((_, page) => (
@@ -348,7 +520,6 @@ export default function Home() {
               ))}
             </div>
           </div>
-
           <div className="flex items-center justify-between mt-6 sm:mt-8">
             <div className="flex items-center gap-3">
               {Array.from({ length: totalSlides }).map((_, i) => (
@@ -365,10 +536,9 @@ export default function Home() {
         <TechStack />
 
         {/* ── ABOUT ── */}
-        <section id="about" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-about">
+        <section id="about" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-scale">
           <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">About</h2>
           <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] flex flex-col md:flex-row overflow-hidden">
-
             <div className="flex-1 p-8 sm:p-10 flex flex-col justify-center">
               <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-[0.3em] mb-3">Who am I</p>
               <h3 className="text-3xl sm:text-4xl font-black uppercase text-[#F8F3EA] mb-4 leading-tight">
@@ -395,7 +565,6 @@ export default function Home() {
                 ))}
               </div>
             </div>
-
             <div className="md:w-2/5 relative bg-[#9ECCFA] border-t-4 md:border-t-0 md:border-l-4 border-[#9ECCFA] flex items-center justify-center py-10 px-8 min-h-[280px]">
               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)" }} />
               <div className="photo-wrap" style={{ width: "min(260px, 70vw)", height: "min(320px, 85vw)" }}>
@@ -405,16 +574,17 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── PROJECT STATS ── */}
+        <ProjectCount />
+
         {/* ── FOOTER ── */}
-        <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA] anim-footer">
+        <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA] reveal">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-
               <div>
                 <div className="font-black text-2xl text-[#0B1957] mb-1">Yusron.dev</div>
                 <p className="font-semibold text-sm text-[#0B1957] opacity-70">Made with ☕ by Zaki Yusron Hasyimmi</p>
               </div>
-
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Quick Links</p>
                 <div className="flex flex-wrap gap-x-6 gap-y-1">
@@ -427,7 +597,6 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Connect</p>
                 <div className="flex gap-3">
@@ -446,7 +615,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
             <div className="border-t-4 border-[#0B1957] mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2">
               <p className="font-bold uppercase text-xs text-[#0B1957] tracking-widest">
                 © {new Date().getFullYear()} Zaki Yusron Hasyimmi
