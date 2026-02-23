@@ -59,6 +59,125 @@ const projects = [
   },
 ];
 
+const TABS = [
+  {
+    key: "frontend",
+    label: "Frontend",
+    techs: [
+      { label: "React", icon: "/Icon/React.jpg" },
+      { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
+      { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
+      { label: "Tailwind", icon: "/Icon/TypeScript.jpg" },
+      { label: "Vite", icon: "/Icon/JavaScript.jpg" },
+    ],
+  },
+  {
+    key: "backend",
+    label: "Backend",
+    techs: [
+      { label: "Laravel", icon: "/Icon/Laravel.jpg" },
+      { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
+      { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
+      { label: "MySQL", icon: "/Icon/Laravel.jpg" },
+    ],
+  },
+  {
+    key: "tools",
+    label: "Tools",
+    techs: [
+      { label: "Git", icon: "/Icon/JavaScript.jpg" },
+      { label: "GitHub", icon: "/Icon/TypeScript.jpg" },
+      { label: "VS Code", icon: "/Icon/React.jpg" },
+      { label: "Postman", icon: "/Icon/Laravel.jpg" },
+      { label: "Figma", icon: "/Icon/JavaScript.jpg" },
+      { label: "Docker", icon: "/Icon/TypeScript.jpg" },
+    ],
+  },
+  {
+    key: "ai",
+    label: "AI Tools",
+    techs: [
+      { label: "Claude", icon: "/Icon/TypeScript.jpg" },
+      { label: "ChatGPT", icon: "/Icon/JavaScript.jpg" },
+      { label: "Copilot", icon: "/Icon/React.jpg" },
+      { label: "Gemini", icon: "/Icon/Laravel.jpg" },
+    ],
+  },
+];
+
+function TechStack() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [animating, setAnimating] = useState(false);
+
+  const switchTab = (i: number) => {
+    if (i === activeTab) return;
+    setAnimating(true);
+    setTimeout(() => {
+      setActiveTab(i);
+      setAnimating(false);
+    }, 180);
+  };
+
+  const current = TABS[activeTab];
+
+  return (
+    <section className="max-w-6xl mx-auto px-6 pb-20 anim-about">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Tech Stack</h2>
+      <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
+
+        {/* Tab bar */}
+        <div className="flex border-b-4 border-[#0B1957]">
+          {TABS.map((tab, i) => (
+            <button
+              key={tab.key}
+              onClick={() => switchTab(i)}
+              className={`
+                flex-1 py-3 px-4 font-black uppercase text-sm tracking-wider
+                border-r-4 border-[#0B1957] last:border-r-0
+                transition-all duration-150
+                ${activeTab === i
+                  ? "bg-[#0B1957] text-[#9ECCFA] shadow-inner"
+                  : "bg-[#F8F3EA] text-[#0B1957] hover:bg-[#D1E8FF]"
+                }
+              `}
+            >
+              {/* Active tab indicator line */}
+              {activeTab === i && (
+                <span className="block w-full text-center">{tab.label}</span>
+              )}
+              {activeTab !== i && tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content */}
+        <div
+          className="p-10 min-h-[180px] flex flex-wrap gap-5 items-start content-start"
+          style={{
+            opacity: animating ? 0 : 1,
+            transform: animating ? "translateY(8px)" : "translateY(0)",
+            transition: "opacity 0.18s ease, transform 0.18s ease",
+          }}
+        >
+          {current.techs.map((tech, i) => (
+            <div
+              key={i}
+              className="tech-chip"
+              style={{ animationDelay: `${i * 0.05}s` }}
+            >
+              <img src={tech.icon} alt={tech.label} />
+              <span>{tech.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom accent bar */}
+        <div className="h-2 bg-[#9ECCFA] border-t-4 border-[#0B1957]" />
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -197,13 +316,33 @@ export default function Home() {
           object-fit: cover; object-position: center top;
         }
 
-        .stack-icon {
-          display: flex; align-items: center; gap: 6px;
-          border: 2px solid #0B1957; padding: 3px 8px 3px 4px;
-          background: #D1E8FF; font-size: 11px; font-weight: 800;
-          text-transform: uppercase; color: #0B1957; letter-spacing: 0.05em;
+        /* Tech chip - icon + label */
+        .tech-chip {
+          display: inline-flex; align-items: center; gap: 10px;
+          border: 3px solid #0B1957; padding: 8px 16px 8px 8px;
+          background: #F8F3EA; font-size: 12px; font-weight: 800;
+          text-transform: uppercase; color: #0B1957; letter-spacing: 0.06em;
+          transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+          cursor: default; box-shadow: 3px 3px 0 #0B1957;
+          width: calc(25% - 15px);
+          justify-content: flex-start;
         }
-        .stack-icon img { width: 20px; height: 20px; object-fit: cover; border: 1px solid #0B1957; flex-shrink: 0; }
+        .tech-chip:hover {
+          background: #9ECCFA;
+          transform: translate(-2px, -2px);
+          box-shadow: 5px 5px 0 #0B1957;
+        }
+        .tech-chip img { width: 28px; height: 28px; object-fit: cover; border: 2px solid #0B1957; flex-shrink: 0; }
+
+        .stack-icon {
+          display: inline-flex; align-items: center; justify-content: center;
+          border: 2px solid #0B1957; padding: 3px;
+          background: #D1E8FF;
+          transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+          cursor: default;
+        }
+        .stack-icon:hover { background: #9ECCFA; transform: translate(-2px,-2px); box-shadow: 3px 3px 0 #0B1957; }
+        .stack-icon img { width: 28px; height: 28px; object-fit: cover; display: block; }
 
         /* Dot pagination */
         .dot {
@@ -291,9 +430,8 @@ export default function Home() {
                         <p className="font-semibold text-sm mb-4 text-[#0B1957]">{p.desc}</p>
                         <div className="flex flex-wrap gap-2">
                           {p.stacks.map((s, j) => (
-                            <div key={j} className="stack-icon">
+                            <div key={j} className="stack-icon" title={s.label}>
                               <img src={s.icon} alt={s.label} />
-                              {s.label}
                             </div>
                           ))}
                         </div>
@@ -305,17 +443,27 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Dot pagination */}
-          <div className="flex items-center justify-center gap-3 mt-8">
-            {Array.from({ length: totalSlides }).map((_, i) => (
-              <div
-                key={i}
-                className={`dot ${currentSlide === i ? "active" : ""}`}
-                onClick={() => goToSlide(i)}
-              />
-            ))}
+          {/* Dot pagination + Lihat Selengkapnya */}
+          <div className="flex items-center justify-between mt-8">
+            <div className="flex items-center gap-3">
+              {Array.from({ length: totalSlides }).map((_, i) => (
+                <div
+                  key={i}
+                  className={`dot ${currentSlide === i ? "active" : ""}`}
+                  onClick={() => goToSlide(i)}
+                />
+              ))}
+            </div>
+
+            <button className="btn-brutal border-4 border-[#0B1957] px-5 py-2 font-black uppercase text-sm shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2">
+              Lihat Selengkapnya
+              <span className="text-base leading-none">→</span>
+            </button>
           </div>
         </section>
+
+        {/* TECH STACK */}
+        <TechStack />
 
         {/* ABOUT */}
         <section className="max-w-6xl mx-auto px-6 pb-20 anim-about">
