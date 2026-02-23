@@ -65,7 +65,14 @@ export default function Home() {
   const [visible, setVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHoveringCarousel, setIsHoveringCarousel] = useState(false);
+  const [showTop, setShowTop] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setShowTop(window.scrollY > 400);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
   const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Detect mobile
@@ -206,6 +213,18 @@ export default function Home() {
         .dot:hover:not(.active) { background: #9ECCFA; }
 
         .carousel-track { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); }
+
+        .back-to-top {
+          position: fixed; bottom: 28px; right: 28px; z-index: 99;
+          width: 48px; height: 48px;
+          border: 4px solid #0B1957; background: #0B1957;
+          box-shadow: 4px 4px 0 #9ECCFA;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer;
+          transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .back-to-top:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #9ECCFA; }
+        .back-to-top:active { transform: translate(0,0); box-shadow: 2px 2px 0 #9ECCFA; }
       `}</style>
 
       <div className="min-h-screen bg-[#D1E8FF]" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}>
@@ -377,7 +396,7 @@ export default function Home() {
                 backgroundImage: "repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)"
               }} />
               {/* Photo */}
-              <div className="photo-wrap" style={{ width: "min(180px, 60vw)", height: "min(220px, 75vw)" }}>
+              <div className="photo-wrap" style={{ width: "min(260px, 70vw)", height: "min(320px, 85vw)" }}>
                 <img src="/profile/Mboy.jpeg" alt="Zaki Yusron" />
               </div>
             </div>
@@ -440,6 +459,19 @@ export default function Home() {
             </div>
           </div>
         </footer>
+
+        {/* BACK TO TOP */}
+        <button
+          className="back-to-top"
+          style={{ opacity: showTop ? 1 : 0, visibility: showTop ? "visible" : "hidden" }}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Back to top"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="18 15 12 9 6 15" />
+          </svg>
+        </button>
+
       </div>
     </>
   );
