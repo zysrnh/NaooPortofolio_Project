@@ -66,6 +66,38 @@ export default function Home() {
     );
   }
 
+  const projects = [
+    {
+      title: "Burger Ordering App",
+      desc: "Website restoran burger dengan sistem pemesanan online",
+      image: "/profile/Mboy.jpeg",
+      stacks: [
+        { label: "Laravel", icon: "/Icon/Laravel.jpg" },
+        { label: "React", icon: "/Icon/React.jpg" },
+      ],
+      cls: "anim-card-1",
+    },
+    {
+      title: "Beyblade Leaderboard",
+      desc: "Leaderboard turnamen dengan statistik otomatis",
+      image: "/profile/Mboy.jpeg",
+      stacks: [
+        { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
+      ],
+      cls: "anim-card-2",
+    },
+    {
+      title: "CV Generator Tool",
+      desc: "Generate CV massal dari Excel ke PDF",
+      image: "/profile/Mboy.jpeg",
+      stacks: [
+        { label: "React", icon: "/Icon/React.jpg" },
+        { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
+      ],
+      cls: "anim-card-3",
+    },
+  ];
+
   return (
     <>
       <style>{`
@@ -92,10 +124,14 @@ export default function Home() {
         .card-brutal:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 #0B1957; }
         .card-brutal:active { transform: translate(0px, 0px); box-shadow: 3px 3px 0 #0B1957; }
 
-        .img-brutal { transition: transform 0.15s ease, box-shadow 0.15s ease; }
-        .img-brutal:hover { transform: translate(-3px, -3px); box-shadow: 13px 13px 0 #0B1957; }
+        /* Project card image hover zoom */
+        .card-brutal:hover .card-img {
+          transform: scale(1.05);
+        }
+        .card-img {
+          transition: transform 0.3s ease;
+        }
 
-        /* PHOTO FIX: absolute positioning, anchor top */
         .photo-wrap {
           position: relative;
           overflow: hidden;
@@ -118,6 +154,28 @@ export default function Home() {
           height: 160%;
           object-fit: cover;
           object-position: center top;
+        }
+
+        /* Stack icon pill */
+        .stack-icon {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          border: 2px solid #0B1957;
+          padding: 3px 8px 3px 4px;
+          background: #D1E8FF;
+          font-size: 11px;
+          font-weight: 800;
+          text-transform: uppercase;
+          color: #0B1957;
+          letter-spacing: 0.05em;
+        }
+        .stack-icon img {
+          width: 20px;
+          height: 20px;
+          object-fit: cover;
+          border: 1px solid #0B1957;
+          flex-shrink: 0;
         }
       `}</style>
 
@@ -143,14 +201,14 @@ export default function Home() {
               <span className="absolute top-6 right-8 text-8xl font-black text-[#9ECCFA] select-none leading-none" aria-hidden="true">"</span>
               <h1 className="text-5xl font-black uppercase mb-3 text-[#0B1957]">Yusron</h1>
               <p className="font-bold uppercase mb-5 text-[#9ECCFA] tracking-wider text-sm border-l-4 border-[#9ECCFA] pl-3">
-                Website Developher
+                IT Programmer
               </p>
               <p className="font-semibold text-[#0B1957] text-lg leading-relaxed mb-8 max-w-md">
                 Saya membangun aplikasi web modern, dashboard, dan tools internal
                 dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.
               </p>
               <div className="flex gap-4">
-                <button className="btn-brutal border-4 border-[#0B1957] px-6 py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]">Projects</button>
+                <button className="btn-brutal border-4 border-[#0B1957] px-6 py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]">About</button>
                 <button className="btn-brutal border-4 border-[#0B1957] px-6 py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957]">Contact</button>
               </div>
             </div>
@@ -161,15 +219,37 @@ export default function Home() {
         <section className="max-w-6xl mx-auto px-6 pb-20">
           <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957] anim-title">Projects</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { title: "Burger Ordering App", desc: "Website restoran burger dengan sistem pemesanan online", stack: "Laravel • React", cls: "anim-card-1" },
-              { title: "Beyblade Leaderboard", desc: "Leaderboard turnamen dengan statistik otomatis", stack: "JavaScript", cls: "anim-card-2" },
-              { title: "CV Generator Tool", desc: "Generate CV massal dari Excel ke PDF", stack: "React • XLSX", cls: "anim-card-3" },
-            ].map((p, i) => (
-              <div key={i} className={`card-brutal bg-[#F8F3EA] border-4 border-[#0B1957] p-6 shadow-[6px_6px_0_#0B1957] cursor-pointer ${p.cls}`}>
-                <h3 className="font-black uppercase mb-2 text-[#0B1957]">{p.title}</h3>
-                <p className="font-semibold text-sm mb-4 text-[#0B1957]">{p.desc}</p>
-                <span className="text-xs font-bold uppercase bg-[#9ECCFA] border-2 border-[#0B1957] px-2 py-1 text-[#0B1957]">{p.stack}</span>
+            {projects.map((p, i) => (
+              <div key={i} className={`card-brutal bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] cursor-pointer overflow-hidden ${p.cls}`}>
+
+                {/* Project thumbnail */}
+                <div className="w-full h-44 overflow-hidden border-b-4 border-[#0B1957] relative">
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className="card-img w-full h-full object-cover object-top"
+                  />
+                  {/* Overlay tag top-right */}
+                  <div className="absolute top-3 right-3 bg-[#0B1957] text-[#9ECCFA] text-xs font-black uppercase px-2 py-1">
+                    Project
+                  </div>
+                </div>
+
+                {/* Card body */}
+                <div className="p-5">
+                  <h3 className="font-black uppercase mb-2 text-[#0B1957]">{p.title}</h3>
+                  <p className="font-semibold text-sm mb-4 text-[#0B1957]">{p.desc}</p>
+
+                  {/* Stack icons */}
+                  <div className="flex flex-wrap gap-2">
+                    {p.stacks.map((s, j) => (
+                      <div key={j} className="stack-icon">
+                        <img src={s.icon} alt={s.label} />
+                        {s.label}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
