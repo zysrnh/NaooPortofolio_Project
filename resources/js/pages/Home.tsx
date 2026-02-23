@@ -1,7 +1,6 @@
-"use client";
-
 import Navbar from "@/components/Navbar";
 import { useEffect, useState, useRef } from "react";
+import { router } from "@inertiajs/react";
 
 const projects = [
   { title: "Burger Ordering App", desc: "Website restoran burger dengan sistem pemesanan online", image: "/profile/Mboy.jpeg", stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "React", icon: "/Icon/React.jpg" }] },
@@ -33,7 +32,6 @@ function TechStack() {
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 anim-about">
       <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Tech Stack</h2>
       <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-        {/* Tab bar — scrollable on mobile */}
         <div className="flex border-b-4 border-[#0B1957] overflow-x-auto">
           {TABS.map((tab, i) => (
             <button key={tab.key} onClick={() => switchTab(i)}
@@ -43,7 +41,6 @@ function TechStack() {
             </button>
           ))}
         </div>
-        {/* Content */}
         <div className="p-6 sm:p-10 min-h-[160px] flex flex-wrap gap-3 sm:gap-5 items-start content-start"
           style={{ opacity: animating ? 0 : 1, transform: animating ? "translateY(8px)" : "translateY(0)", transition: "opacity 0.18s ease, transform 0.18s ease" }}>
           {TABS[activeTab].techs.map((tech, i) => (
@@ -60,22 +57,21 @@ function TechStack() {
 }
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
-  const [visible, setVisible] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [loading, setLoading]                   = useState(true);
+  const [progress, setProgress]                 = useState(0);
+  const [visible, setVisible]                   = useState(false);
+  const [currentSlide, setCurrentSlide]         = useState(0);
   const [isHoveringCarousel, setIsHoveringCarousel] = useState(false);
-  const [showTop, setShowTop] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [showTop, setShowTop]                   = useState(false);
+  const [isMobile, setIsMobile]                 = useState(false);
+  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const handler = () => setShowTop(window.scrollY > 400);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
-  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Detect mobile
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -83,7 +79,7 @@ export default function Home() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const perPage = isMobile ? 1 : 3;
+  const perPage     = isMobile ? 1 : 3;
   const totalSlides = Math.ceil(projects.length / perPage);
 
   useEffect(() => {
@@ -99,18 +95,29 @@ export default function Home() {
     let current = 0;
     const timer = setInterval(() => {
       current++;
-      const eased = current < steps * 0.7 ? (current / (steps * 0.7)) * 85 : 85 + ((current - steps * 0.7) / (steps * 0.3)) * 15;
+      const eased = current < steps * 0.7
+        ? (current / (steps * 0.7)) * 85
+        : 85 + ((current - steps * 0.7) / (steps * 0.3)) * 15;
       setProgress(Math.min(Math.round(eased), 100));
-      if (current >= steps) { clearInterval(timer); setTimeout(() => { setLoading(false); setTimeout(() => setVisible(true), 50); }, 200); }
+      if (current >= steps) {
+        clearInterval(timer);
+        setTimeout(() => { setLoading(false); setTimeout(() => setVisible(true), 50); }, 200);
+      }
     }, interval);
     return () => clearInterval(timer);
   }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const goToSlide = (idx: number) => {
     if (autoplayRef.current) clearInterval(autoplayRef.current);
     setCurrentSlide(idx);
   };
 
+  // ── LOADING SCREEN ────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0B1957] flex flex-col items-center justify-center px-6">
@@ -142,6 +149,7 @@ export default function Home() {
     );
   }
 
+  // ── MAIN PAGE ─────────────────────────────────────────────────────────────
   return (
     <>
       <style>{`
@@ -190,13 +198,9 @@ export default function Home() {
           text-transform: uppercase; color: #0B1957; letter-spacing: 0.06em;
           transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
           cursor: default; box-shadow: 3px 3px 0 #0B1957;
-          flex: 0 0 calc(25% - 15px);
-          justify-content: flex-start;
-          box-sizing: border-box;
+          flex: 0 0 calc(25% - 15px); justify-content: flex-start; box-sizing: border-box;
         }
-        @media (max-width: 640px) {
-          .tech-chip { flex: 0 0 calc(50% - 6px); }
-        }
+        @media (max-width: 640px) { .tech-chip { flex: 0 0 calc(50% - 6px); } }
         .tech-chip:hover { background: #9ECCFA; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
         .tech-chip img { width: 26px; height: 26px; object-fit: cover; border: 2px solid #0B1957; flex-shrink: 0; }
 
@@ -230,7 +234,7 @@ export default function Home() {
       <div className="min-h-screen bg-[#D1E8FF]" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}>
         <div className="anim-navbar"><Navbar /></div>
 
-        {/* HERO */}
+        {/* ── HERO ── */}
         <section id="hero" className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-20">
           <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0px_0px_#0B1957] flex flex-col md:flex-row overflow-hidden">
 
@@ -250,15 +254,27 @@ export default function Home() {
               <p className="font-semibold text-[#0B1957] text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-md">
                 Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.
               </p>
+
+              {/* ✅ BUTTONS — About scroll + Dashboard /login */}
               <div className="flex gap-3 sm:gap-4 flex-wrap">
-                <button className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] text-sm sm:text-base">About</button>
-                <button className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] text-sm sm:text-base">Contact</button>
+                <button
+                  onClick={() => scrollTo("about")}
+                  className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] text-sm sm:text-base"
+                >
+                  About
+                </button>
+                <button
+                  onClick={() => router.visit("/login")}
+                  className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] text-sm sm:text-base"
+                >
+                  Dashboard →
+                </button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* CONTACT */}
+        {/* ── CONTACT ── */}
         <section id="contact" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-title">
           <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Contact</h2>
           <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] flex flex-col md:flex-row">
@@ -301,7 +317,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* PROJECTS */}
+        {/* ── PROJECTS ── */}
         <section id="projects" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-carousel">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-black uppercase text-[#0B1957]">Projects</h2>
@@ -351,15 +367,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* TECH STACK */}
+        {/* ── TECH STACK ── */}
         <TechStack />
 
-        {/* ABOUT */}
+        {/* ── ABOUT ── */}
         <section id="about" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 anim-about">
           <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">About</h2>
           <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] flex flex-col md:flex-row overflow-hidden">
 
-            {/* LEFT — Text */}
             <div className="flex-1 p-8 sm:p-10 flex flex-col justify-center">
               <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-[0.3em] mb-3">Who am I</p>
               <h3 className="text-3xl sm:text-4xl font-black uppercase text-[#F8F3EA] mb-4 leading-tight">
@@ -372,13 +387,11 @@ export default function Home() {
               <p className="font-semibold text-[#D1E8FF] leading-relaxed mb-6">
                 Aktif mengeksplorasi teknologi baru, dari tools AI hingga arsitektur fullstack — selalu ingin belajar dan berkembang.
               </p>
-
-              {/* Info grid */}
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: "Role", value: "IT Programmer" },
-                  { label: "Focus", value: "Fullstack Web" },
-                  { label: "Stack", value: "React + Laravel" },
+                  { label: "Role",   value: "IT Programmer" },
+                  { label: "Focus",  value: "Fullstack Web" },
+                  { label: "Stack",  value: "React + Laravel" },
                   { label: "Status", value: "Open to Work" },
                 ].map((item, i) => (
                   <div key={i} className="border-2 border-[#9ECCFA] p-3">
@@ -389,13 +402,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* RIGHT — Photo */}
             <div className="md:w-2/5 relative bg-[#9ECCFA] border-t-4 md:border-t-0 md:border-l-4 border-[#9ECCFA] flex items-center justify-center py-10 px-8 min-h-[280px]">
-              {/* Grid decoration */}
-              <div className="absolute inset-0 opacity-20" style={{
-                backgroundImage: "repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)"
-              }} />
-              {/* Photo */}
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)" }} />
               <div className="photo-wrap" style={{ width: "min(260px, 70vw)", height: "min(320px, 85vw)" }}>
                 <img src="/profile/Mboy.jpeg" alt="Zaki Yusron" />
               </div>
@@ -403,32 +411,29 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FOOTER */}
+        {/* ── FOOTER ── */}
         <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA] anim-footer">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
 
-              {/* Brand */}
               <div>
                 <div className="font-black text-2xl text-[#0B1957] mb-1">Yusron.dev</div>
                 <p className="font-semibold text-sm text-[#0B1957] opacity-70">Made with ☕ by Zaki Yusron Hasyimmi</p>
               </div>
 
-              {/* Quick links */}
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Quick Links</p>
                 <div className="flex flex-wrap gap-x-6 gap-y-1">
-                  {["Home", "Projects", "About", "Contact"].map(l => (
+                  {["Hero", "Projects", "About", "Contact"].map(l => (
                     <a key={l}
-                      onClick={() => { const el = document.getElementById(l.toLowerCase()); if (el) el.scrollIntoView({ behavior: "smooth" }); }}
+                      onClick={() => scrollTo(l.toLowerCase())}
                       className="font-bold text-sm text-[#0B1957] uppercase cursor-pointer hover:underline">
-                      {l}
+                      {l === "Hero" ? "Home" : l}
                     </a>
                   ))}
                 </div>
               </div>
 
-              {/* Social */}
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Connect</p>
                 <div className="flex gap-3">
@@ -448,7 +453,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Bottom line */}
             <div className="border-t-4 border-[#0B1957] mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2">
               <p className="font-bold uppercase text-xs text-[#0B1957] tracking-widest">
                 © {new Date().getFullYear()} Zaki Yusron Hasyimmi
@@ -460,7 +464,7 @@ export default function Home() {
           </div>
         </footer>
 
-        {/* BACK TO TOP */}
+        {/* ── BACK TO TOP ── */}
         <button
           className="back-to-top"
           style={{ opacity: showTop ? 1 : 0, visibility: showTop ? "visible" : "hidden" }}
@@ -471,7 +475,6 @@ export default function Home() {
             <polyline points="18 15 12 9 6 15" />
           </svg>
         </button>
-
       </div>
     </>
   );

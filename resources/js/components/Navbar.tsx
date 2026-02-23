@@ -1,6 +1,5 @@
-"use client";
-
 import { useState, useEffect } from "react";
+import { router } from "@inertiajs/react";
 
 const navLinks = [
   { label: "Home",     href: "hero" },
@@ -19,7 +18,11 @@ export default function Navbar() {
     setMenuOpen(false);
   };
 
-  // Highlight active section on scroll
+  const goToLogin = () => {
+    setMenuOpen(false);
+    router.visit("/login");
+  };
+
   useEffect(() => {
     const handler = () => {
       const sections = navLinks.map(l => document.getElementById(l.href));
@@ -82,7 +85,7 @@ export default function Navbar() {
 
           {/* LOGO */}
           <div className="logo-hover font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => scrollTo("hero")}>
-            Yusron.dev
+            Y
           </div>
 
           {/* MENU — desktop */}
@@ -97,8 +100,18 @@ export default function Navbar() {
 
           {/* BUTTONS — desktop */}
           <div className="hidden md:flex gap-3">
-            <button className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957]">Login</button>
-            <button className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]">Get Started</button>
+            <button
+              onClick={goToLogin}
+              className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957]"
+            >
+              Login
+            </button>
+            <button
+              onClick={goToLogin}
+              className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]"
+            >
+              Get Started
+            </button>
           </div>
 
           {/* HAMBURGER — mobile */}
@@ -120,8 +133,18 @@ export default function Navbar() {
             </a>
           ))}
           <div className="flex gap-3 p-4">
-            <button className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] uppercase text-sm">Login</button>
-            <button className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] uppercase text-sm">Get Started</button>
+            <button
+              onClick={goToLogin}
+              className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] uppercase text-sm"
+            >
+              Login
+            </button>
+            <button
+              onClick={goToLogin}
+              className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] uppercase text-sm"
+            >
+              Get Started
+            </button>
           </div>
         </div>
       </div>
