@@ -8,17 +8,20 @@ use Illuminate\Http\Request;
 
 class TechStackController extends Controller
 {
-    // ── Public: semua stack (untuk HomepageManager preview) ──────────────────
+    // ── Public: semua stack (untuk HomepageManager & TechStackCRUD) ──────────
     public function index()
     {
         return response()->json(TechStack::latest()->get());
     }
 
-    // ── Public: hanya visible (untuk Homepage fetch) ─────────────────────────
+    // ── Public: hanya visible (untuk Homepage fetch) ──────────────────────────
     public function indexVisible()
     {
         return response()->json(
-            TechStack::where('is_visible', true)->latest()->get()
+            TechStack::where('is_visible', true)
+                ->orderBy('category')
+                ->orderBy('name')
+                ->get()
         );
     }
 
@@ -26,13 +29,14 @@ class TechStackController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'       => 'required|string|max:100',
-            'category'   => 'required|string',
-            'icon'       => 'required|string',
-            'is_visible' => 'boolean',
+            'name'     => 'required|string|max:100',
+            'category' => 'required|string',
+            'icon'     => 'required|string',
         ]);
 
-        $validated['is_visible'] = $validated['is_visible'] ?? true;
+        // Default false — harus di-toggle dulu di HomepageManager
+        $validated['is_visible'] = false;
+
         $stack = TechStack::create($validated);
         return response()->json($stack, 201);
     }
@@ -41,17 +45,16 @@ class TechStackController extends Controller
     public function update(Request $request, TechStack $techStack)
     {
         $validated = $request->validate([
-            'name'       => 'required|string|max:100',
-            'category'   => 'required|string',
-            'icon'       => 'required|string',
-            'is_visible' => 'boolean',
+            'name'     => 'required|string|max:100',
+            'category' => 'required|string',
+            'icon'     => 'required|string',
         ]);
 
         $techStack->update($validated);
         return response()->json($techStack);
     }
 
-    // ── Protected: toggle visibility only ────────────────────────────────────
+    // ── Protected: toggle visibility (untuk HomepageManager) ─────────────────
     public function toggleVisibility(TechStack $techStack)
     {
         $techStack->update(['is_visible' => !$techStack->is_visible]);

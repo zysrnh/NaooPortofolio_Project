@@ -17,15 +17,14 @@ interface TechStack {
   id: number;
   name: string;
   icon: string;
-  category: "Frontend" | "Backend" | "Database" | "DevOps" | "Language" | "Other";
+  category: string; // ← sekarang string bebas, bukan union type
   created_at: string;
 }
 
-type CategoryType = TechStack["category"];
+// Kategori preset — Other akan munculkan input custom
+const PRESET_CATEGORIES = ["Frontend", "Backend", "Database", "DevOps", "Language", "Other"];
 
-const CATEGORIES: CategoryType[] = ["Frontend", "Backend", "Database", "DevOps", "Language", "Other"];
-
-const CATEGORY_STYLE: Record<CategoryType, { bg: string; text: string; border: string }> = {
+const CATEGORY_STYLE: Record<string, { bg: string; text: string; border: string }> = {
   Frontend: { bg: "bg-[#9ECCFA]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
   Backend:  { bg: "bg-[#FFE8A0]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
   Database: { bg: "bg-[#D1E8FF]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
@@ -33,6 +32,10 @@ const CATEGORY_STYLE: Record<CategoryType, { bg: string; text: string; border: s
   Language: { bg: "bg-[#0B1957]", text: "text-[#9ECCFA]", border: "border-[#9ECCFA]"  },
   Other:    { bg: "bg-[#E8E8E8]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
 };
+
+// Fallback style untuk kategori custom
+const getCategoryStyle = (cat: string) =>
+  CATEGORY_STYLE[cat] ?? { bg: "bg-[#E8E8E8]", text: "text-[#0B1957]", border: "border-[#0B1957]" };
 
 // ── CSRF Helper ──────────────────────────────────────────────────────────────
 function getCsrf(): string {
@@ -82,7 +85,6 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-// Fallback SVG untuk icon error
 const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
@@ -142,14 +144,31 @@ interface FormModalProps {
 }
 
 function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) {
-  const [name, setName]               = useState(initial?.name ?? "");
-  const [icon, setIcon]               = useState(initial?.icon ?? "");
-  const [category, setCategory]       = useState<CategoryType>(initial?.category ?? "Frontend");
-  const [iconPreview, setIconPreview] = useState(initial?.icon ?? "");
-  const [dragging, setDragging]       = useState(false);
-  const [nameErr, setNameErr]         = useState("");
-  const [iconErr, setIconErr]         = useState("");
+  // Cek apakah kategori awal adalah preset atau custom
+  const isPreset = (cat: string) => PRESET_CATEGORIES.includes(cat);
+
+  const [name,         setName]         = useState(initial?.name ?? "");
+  const [icon,         setIcon]         = useState(initial?.icon ?? "");
+  const [iconPreview,  setIconPreview]  = useState(initial?.icon ?? "");
+  const [dragging,     setDragging]     = useState(false);
+  const [nameErr,      setNameErr]      = useState("");
+  const [iconErr,      setIconErr]      = useState("");
+  const [catErr,       setCatErr]       = useState("");
+
+  // Kalau kategori awal bukan preset → pilih "Other" dan isi customCat
+  const [selectedCat,  setSelectedCat]  = useState<string>(
+    initial?.category && isPreset(initial.category) ? initial.category : "Other"
+  );
+  const [customCat,    setCustomCat]    = useState(
+    initial?.category && !isPreset(initial.category) ? initial.category : ""
+  );
+
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Kategori final yang dikirim ke API
+  const finalCategory = selectedCat === "Other"
+    ? customCat.trim()
+    : selectedCat;
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith("image/")) { setIconErr("File harus berupa gambar!"); return; }
@@ -163,7 +182,10 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
   const validate = () => {
     let ok = true;
     if (!name.trim()) { setNameErr("Nama wajib diisi!"); ok = false; } else setNameErr("");
-    if (!icon.trim()) { setIconErr("Icon wajib diisi!"); ok = false; } else setIconErr("");
+    if (!icon.trim()) { setIconErr("Icon wajib diisi!"); ok = false; }  else setIconErr("");
+    if (selectedCat === "Other" && !customCat.trim()) {
+      setCatErr("Nama kategori wajib diisi!"); ok = false;
+    } else setCatErr("");
     return ok;
   };
 
@@ -202,17 +224,46 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
           <div>
             <label className="block font-black text-xs uppercase tracking-widest text-[#0B1957] mb-2">Kategori</label>
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map(cat => {
-                const s = CATEGORY_STYLE[cat];
-                const active = category === cat;
+              {PRESET_CATEGORIES.map(cat => {
+                const s = getategoryStyle(cat);
+                const active = selectedCat === cat;
                 return (
                   <button key={cat} type="button"
-                    onClick={() => setCategory(cat)}
-                    className={`border-2 ${s.border} px-3 py-1.5 font-black text-xs uppercase tracking-wide transition-all ${active ? `${s.bg} ${s.text} shadow-[3px_3px_0_#0B1957]` : "bg-transparent text-[#0B1957] opacity-50 hover:opacity-100"}`}
-                  >{cat}</button>
+                    onClick={() => { setSelectedCat(cat); setCatErr(""); }}
+                    className={`border-2 ${s.border} px-3 py-1.5 font-black text-xs uppercase tracking-wide transition-all
+                      ${active ? `${s.bg} ${s.text} shadow-[3px_3px_0_#0B1957]` : "bg-transparent text-[#0B1957] opacity-50 hover:opacity-100"}`}
+                  >
+                    {cat}
+                  </button>
                 );
               })}
             </div>
+
+            {/* Input custom — muncul hanya kalau pilih Other */}
+            {selectedCat === "Other" && (
+              <div className="mt-3">
+                <label className="block font-black text-xs uppercase tracking-widest text-[#0B1957] mb-2">
+                  Nama Kategori Custom <span className="text-red-500">*</span>
+                </label>
+                <input
+                  value={customCat}
+                  onChange={e => { setCustomCat(e.target.value); setCatErr(""); }}
+                  placeholder="Contoh: Platform, Mobile, AI Tools..."
+                  autoFocus
+                  className={`w-full border-4 ${catErr ? "border-red-500" : "border-[#0B1957]"} bg-white px-4 py-3 font-bold text-sm text-[#0B1957] placeholder-[#0B1957] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_#9ECCFA] transition-shadow`}
+                />
+                {catErr && <p className="text-red-500 font-bold text-xs mt-1">{catErr}</p>}
+                {/* Preview badge kategori */}
+                {customCat.trim() && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="font-black text-[10px] text-[#0B1957] opacity-50 uppercase tracking-widest">Preview:</span>
+                    <span className="border-2 border-[#0B1957] bg-[#E8E8E8] px-2 py-0.5 font-black text-xs uppercase text-[#0B1957]">
+                      {customCat.trim()}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Upload Icon */}
@@ -229,7 +280,6 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
             >
               {iconPreview ? (
                 <div className="flex flex-col items-center gap-3">
-                  {/* Preview dengan ukuran fixed konsisten */}
                   <div className="w-20 h-20 border-4 border-[#0B1957] bg-[#D1E8FF] shadow-[4px_4px_0_#0B1957] overflow-hidden">
                     <img src={iconPreview} alt="preview"
                       className="w-full h-full object-cover"
@@ -276,7 +326,9 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
           </button>
           <button disabled={loading}
             className="flex-1 border-4 border-[#0B1957] py-3 font-black uppercase text-sm text-[#F8F3EA] bg-[#0B1957] shadow-[4px_4px_0_#9ECCFA] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ECCFA] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-            onClick={() => { if (validate()) onSave({ name: name.trim(), icon, category }); }}>
+            onClick={() => {
+              if (validate()) onSave({ name: name.trim(), icon, category: finalCategory });
+            }}>
             {loading ? <IconSpin /> : null}
             {loading ? "Menyimpan..." : mode === "add" ? "Tambah" : "Simpan"}
           </button>
@@ -286,11 +338,16 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
   );
 }
 
+// Helper kecil biar gak typo di JSX
+function getategoryStyle(cat: string) {
+  return CATEGORY_STYLE[cat] ?? { bg: "bg-[#E8E8E8]", text: "text-[#0B1957]", border: "border-[#0B1957]" };
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 export default function TechStackCRUD() {
   const [stacks, setStacks]             = useState<TechStack[]>([]);
   const [search, setSearch]             = useState("");
-  const [filterCat, setFilterCat]       = useState<CategoryType | "All">("All");
+  const [filterCat, setFilterCat]       = useState<string>("All");
   const [modal, setModal]               = useState<"add" | "edit" | null>(null);
   const [editTarget, setEditTarget]     = useState<TechStack | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TechStack | null>(null);
@@ -355,13 +412,16 @@ export default function TechStackCRUD() {
     finally { setLoadingDel(false); }
   };
 
+  // Ambil semua kategori unik dari data (termasuk custom)
+  const allCategories = Array.from(new Set(stacks.map(s => s.category))).sort();
+
   const filtered = stacks.filter(s => {
     const matchSearch = s.name.toLowerCase().includes(search.toLowerCase());
     const matchCat    = filterCat === "All" || s.category === filterCat;
     return matchSearch && matchCat;
   });
 
-  const categoryCounts = CATEGORIES.reduce((acc, cat) => {
+  const categoryCounts = allCategories.reduce((acc, cat) => {
     acc[cat] = stacks.filter(s => s.category === cat).length;
     return acc;
   }, {} as Record<string, number>);
@@ -380,37 +440,18 @@ export default function TechStackCRUD() {
         .anim-2 { animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.20s both; }
 
         .stack-card {
-          border: 4px solid #0B1957;
-          background: #F8F3EA;
-          box-shadow: 6px 6px 0 #0B1957;
+          border: 4px solid #0B1957; background: #F8F3EA; box-shadow: 6px 6px 0 #0B1957;
           transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
-        .stack-card:hover {
-          transform: translate(-3px,-3px);
-          box-shadow: 9px 9px 0 #9ECCFA, 11px 11px 0 #0B1957;
-        }
+        .stack-card:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 #9ECCFA, 11px 11px 0 #0B1957; }
 
-        /* ── ICON BOX: fixed 80x80, no padding, overflow hidden ── */
         .icon-box {
-          width: 80px;
-          height: 80px;
-          border: 3px solid #0B1957;
-          background: #D1E8FF;
-          overflow: hidden;
-          flex-shrink: 0;
-          box-shadow: 3px 3px 0 #0B1957;
+          width: 80px; height: 80px; border: 3px solid #0B1957; background: #D1E8FF;
+          overflow: hidden; flex-shrink: 0; box-shadow: 3px 3px 0 #0B1957;
           transition: transform 0.15s ease;
         }
         .stack-card:hover .icon-box { transform: rotate(-3deg) scale(1.05); }
-
-        /* ── ICON IMG: cover agar selalu penuh dan konsisten ── */
-        .icon-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center;
-          display: block;
-        }
+        .icon-img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
 
         .search-input {
           border: 4px solid #0B1957; background: #F8F3EA;
@@ -448,7 +489,7 @@ export default function TechStackCRUD() {
           display: flex; align-items: center; gap: 4px;
           transition: transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .edit-btn:hover  { transform: translate(1px,1px); box-shadow: 1px 1px 0 #0B1957; }
+        .edit-btn:hover { transform: translate(1px,1px); box-shadow: 1px 1px 0 #0B1957; }
 
         .del-btn {
           border: 2px solid #0B1957; background: #FF4444; padding: 6px 10px;
@@ -457,7 +498,7 @@ export default function TechStackCRUD() {
           display: flex; align-items: center; gap: 4px;
           transition: transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .del-btn:hover  { transform: translate(1px,1px); box-shadow: 1px 1px 0 #0B1957; }
+        .del-btn:hover { transform: translate(1px,1px); box-shadow: 1px 1px 0 #0B1957; }
 
         .skeleton { background: #D1E8FF; animation: pulse 1.2s ease infinite; }
       `}</style>
@@ -474,10 +515,10 @@ export default function TechStackCRUD() {
         </button>
       </div>
 
-      {/* ── CATEGORY STATS ── */}
+      {/* ── CATEGORY STATS — dinamis dari data ── */}
       <div className="anim-0 flex flex-wrap gap-3 mb-6">
-        {CATEGORIES.map(cat => {
-          const s = CATEGORY_STYLE[cat];
+        {allCategories.map(cat => {
+          const s = getategoryStyle(cat);
           return (
             <div key={cat} className={`border-2 border-[#0B1957] px-3 py-2 flex items-center gap-2 ${s.bg}`}>
               <span className={`font-black text-sm ${s.text}`}>{categoryCounts[cat]}</span>
@@ -498,7 +539,7 @@ export default function TechStackCRUD() {
           <button className={`cat-filter ${filterCat === "All" ? "active" : ""}`} onClick={() => setFilterCat("All")}>
             All ({stacks.length})
           </button>
-          {CATEGORIES.map(cat => (
+          {allCategories.map(cat => (
             <button key={cat} className={`cat-filter ${filterCat === cat ? "active" : ""}`} onClick={() => setFilterCat(cat)}>
               {cat} ({categoryCounts[cat]})
             </button>
@@ -508,8 +549,6 @@ export default function TechStackCRUD() {
 
       {/* ── GRID ── */}
       <div className="anim-2">
-
-        {/* Loading Skeleton */}
         {loadingFetch && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -523,7 +562,6 @@ export default function TechStackCRUD() {
           </div>
         )}
 
-        {/* Empty State */}
         {!loadingFetch && filtered.length === 0 && (
           <div className="border-4 border-dashed border-[#0B1957] bg-[#F8F3EA] p-12 text-center" style={{ animation: "fadeIn 0.4s ease" }}>
             <div className="text-[#0B1957] opacity-20 flex justify-center mb-4 scale-150"><IconLayers /></div>
@@ -541,33 +579,22 @@ export default function TechStackCRUD() {
           </div>
         )}
 
-        {/* Cards */}
         {!loadingFetch && filtered.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filtered.map((stack, idx) => {
-              const catStyle = CATEGORY_STYLE[stack.category];
+              const catStyle = getategoryStyle(stack.category);
               return (
                 <div key={stack.id} className="stack-card p-4 flex flex-col items-center gap-3"
                   style={{ animation: `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${idx * 0.04}s both` }}>
-
-                  {/* ── ICON: fixed 80×80, object-cover ── */}
                   <div className="icon-box">
-                    <img
-                      src={stack.icon}
-                      alt={stack.name}
-                      className="icon-img"
-                      onError={e => { (e.target as HTMLImageElement).src = FALLBACK_ICON; }}
-                    />
+                    <img src={stack.icon} alt={stack.name} className="icon-img"
+                      onError={e => { (e.target as HTMLImageElement).src = FALLBACK_ICON; }} />
                   </div>
-
                   <p className="font-black uppercase text-sm text-[#0B1957] text-center leading-tight">{stack.name}</p>
-
                   <div className={`border-2 ${catStyle.border} ${catStyle.bg} px-2 py-0.5`}>
                     <span className={`font-black text-xs uppercase tracking-wide ${catStyle.text}`}>{stack.category}</span>
                   </div>
-
                   <p className="font-bold text-xs text-[#0B1957] opacity-40">{formatDate(stack.created_at)}</p>
-
                   <div className="flex gap-2 w-full mt-auto">
                     <button className="edit-btn flex-1 justify-center"
                       onClick={() => { setEditTarget(stack); setModal("edit"); }}>
@@ -585,7 +612,6 @@ export default function TechStackCRUD() {
         )}
       </div>
 
-      {/* ── MODALS ── */}
       {modal === "add" && (
         <FormModal mode="add" loading={loadingForm} onSave={handleAdd} onClose={() => setModal(null)} />
       )}
@@ -598,7 +624,6 @@ export default function TechStackCRUD() {
           onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />
       )}
 
-      {/* ── TOAST ── */}
       {toast && <Toast message={toast.message} type={toast.type} />}
     </>
   );

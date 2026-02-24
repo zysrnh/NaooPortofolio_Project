@@ -1,11 +1,12 @@
 <?php
+// routes/web.php
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Controllers\TechStackController;
 
-// ── Public Pages ─────────────────────────────────────────────────────────────
+// ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
@@ -39,14 +40,19 @@ Route::post('/logout', function () {
 
 // ── API: Tech Stack ───────────────────────────────────────────────────────────
 Route::prefix('api')->group(function () {
-    // Public — homepage bisa fetch tanpa login
-    Route::get('/tech-stacks', [TechStackController::class, 'index']);
 
-    // Protected — create, update, delete butuh login
+    // Public — bisa diakses tanpa login
+    // PENTING: route 'visible' harus SEBELUM '{techStack}'
+    // supaya Laravel tidak salah tangkap "visible" sebagai model ID
+    Route::get('/tech-stacks/visible', [TechStackController::class, 'indexVisible']);
+    Route::get('/tech-stacks',         [TechStackController::class, 'index']);
+
+    // Protected — butuh login
     Route::middleware(['auth'])->group(function () {
-        Route::post  ('/tech-stacks',             [TechStackController::class, 'store']);
-        Route::put   ('/tech-stacks/{techStack}', [TechStackController::class, 'update']);
-        Route::delete('/tech-stacks/{techStack}', [TechStackController::class, 'destroy']);
+        Route::post  ('/tech-stacks',                    [TechStackController::class, 'store']);
+        Route::put   ('/tech-stacks/{techStack}',        [TechStackController::class, 'update']);
+        Route::delete('/tech-stacks/{techStack}',        [TechStackController::class, 'destroy']);
+        Route::patch ('/tech-stacks/{techStack}/toggle', [TechStackController::class, 'toggleVisibility']);
     });
 });
 
