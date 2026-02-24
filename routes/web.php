@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Controllers\TechStackController;
+use App\Http\Controllers\HeroProfileController;
 
 // ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -38,21 +39,24 @@ Route::post('/logout', function () {
     return redirect('/');
 })->middleware('auth')->name('logout');
 
-// ── API: Tech Stack ───────────────────────────────────────────────────────────
+// ── API ───────────────────────────────────────────────────────────────────────
 Route::prefix('api')->group(function () {
 
-    // Public — bisa diakses tanpa login
-    // PENTING: route 'visible' harus SEBELUM '{techStack}'
-    // supaya Laravel tidak salah tangkap "visible" sebagai model ID
-    Route::get('/tech-stacks/visible', [TechStackController::class, 'indexVisible']);
+    // ── Public ──
+    Route::get('/tech-stacks/visible', [TechStackController::class, 'indexVisible']); // HARUS sebelum {techStack}
     Route::get('/tech-stacks',         [TechStackController::class, 'index']);
+    Route::get('/hero',                [HeroProfileController::class, 'show']);
 
-    // Protected — butuh login
+    // ── Protected ──
     Route::middleware(['auth'])->group(function () {
+        // Tech Stack
         Route::post  ('/tech-stacks',                    [TechStackController::class, 'store']);
         Route::put   ('/tech-stacks/{techStack}',        [TechStackController::class, 'update']);
         Route::delete('/tech-stacks/{techStack}',        [TechStackController::class, 'destroy']);
         Route::patch ('/tech-stacks/{techStack}/toggle', [TechStackController::class, 'toggleVisibility']);
+
+        // Hero
+        Route::put('/hero', [HeroProfileController::class, 'update']);
     });
 });
 

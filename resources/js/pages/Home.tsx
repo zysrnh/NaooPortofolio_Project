@@ -134,7 +134,7 @@ const projects = [
   },
 ];
 
-// ── Stats (dari hardcode projects, bukan dari DB) ─────────────────────────────
+// ── Stats ─────────────────────────────────────────────────────────────────────
 const totalProjects = projects.length;
 const stackCounts: Record<string, number> = {};
 projects.forEach(p => p.stacks.forEach(s => {
@@ -150,6 +150,22 @@ const PROJECT_STATS = [
   { value: stackCounts["Laravel"] ?? 0, label: "Laravel Projects", note: "Backend solid" },
 ];
 
+// ── HeroProfile type ──────────────────────────────────────────────────────────
+interface HeroProfile {
+  name:  string;
+  title: string;
+  bio:   string;
+  photo: string | null;
+}
+
+// ── Default hero (fallback kalau API belum siap / error) ──────────────────────
+const DEFAULT_HERO: HeroProfile = {
+  name:  "Yusron",
+  title: "IT Programmer",
+  bio:   "Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.",
+  photo: "/profile/Mboy.jpeg",
+};
+
 // ── TechStack types ───────────────────────────────────────────────────────────
 interface TechStackItem {
   id: number;
@@ -162,14 +178,13 @@ interface TechStackItem {
 // ── Fallback icon kalau gambar error ─────────────────────────────────────────
 const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
 
-// ── TechStack Component — fetch dari API ──────────────────────────────────────
+// ── TechStack Component ───────────────────────────────────────────────────────
 function TechStack() {
   const [stacks, setStacks]       = useState<TechStackItem[]>([]);
   const [loading, setLoading]     = useState(true);
   const [activeTab, setActiveTab] = useState(0);
   const [animating, setAnimating] = useState(false);
 
-  // Fetch hanya yang is_visible = true dari database
   useEffect(() => {
     fetch("/api/tech-stacks/visible")
       .then(r => r.json())
@@ -180,10 +195,7 @@ function TechStack() {
       .catch(() => setLoading(false));
   }, []);
 
-  // Tabs otomatis dari kategori yang ada di DB
   const categories = Array.from(new Set(stacks.map(s => s.category)));
-
-  // Reset active tab kalau data baru load
   useEffect(() => { setActiveTab(0); }, [categories.length]);
 
   const switchTab = (i: number) => {
@@ -193,16 +205,12 @@ function TechStack() {
   };
 
   const currentTechs = stacks.filter(s => s.category === categories[activeTab]);
-
-  // Kalau belum ada data di DB, tampilkan placeholder tabs
   const tabLabels = categories.length > 0 ? categories : ["Frontend", "Backend", "Tools", "AI Tools"];
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
       <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Tech Stack</h2>
       <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-
-        {/* Tabs */}
         <div className="flex border-b-4 border-[#0B1957] overflow-x-auto">
           {tabLabels.map((label, i) => (
             <button
@@ -215,8 +223,6 @@ function TechStack() {
             </button>
           ))}
         </div>
-
-        {/* Content */}
         <div
           className="p-6 sm:p-10 min-h-[180px] flex flex-wrap gap-3 sm:gap-5 items-start content-start"
           style={{
@@ -225,45 +231,29 @@ function TechStack() {
             transition: "opacity 0.18s ease, transform 0.18s ease",
           }}
         >
-          {/* Loading skeleton */}
           {loading && Array.from({ length: 5 }).map((_, i) => (
-            <div
-              key={i}
-              className="tech-chip"
-              style={{ background: "#D1E8FF", opacity: 0.5, animation: `pulse 1.2s ease ${i * 0.1}s infinite` }}
-            >
+            <div key={i} className="tech-chip" style={{ background: "#D1E8FF", opacity: 0.5, animation: `pulse 1.2s ease ${i * 0.1}s infinite` }}>
               <div style={{ width: 26, height: 26, background: "#9ECCFA", border: "2px solid #0B1957", flexShrink: 0 }} />
               <span style={{ color: "transparent", background: "#9ECCFA", borderRadius: 3, minWidth: 60 }}>___</span>
             </div>
           ))}
-
-          {/* Empty state (data sudah load tapi kategori kosong) */}
           {!loading && categories.length === 0 && (
             <p className="font-bold text-xs uppercase text-[#0B1957] opacity-40 tracking-widest self-center w-full text-center py-8">
               Belum ada tech stack — tambahkan di dashboard
             </p>
           )}
-
-          {/* Empty state per kategori */}
           {!loading && categories.length > 0 && currentTechs.length === 0 && (
             <p className="font-bold text-xs uppercase text-[#0B1957] opacity-40 tracking-widest self-center w-full text-center py-8">
               Belum ada stack di kategori ini
             </p>
           )}
-
-          {/* Tech chips dari database */}
           {!loading && currentTechs.map((tech) => (
             <div key={tech.id} className="tech-chip">
-              <img
-                src={tech.icon}
-                alt={tech.name}
-                onError={e => { (e.target as HTMLImageElement).src = FALLBACK_ICON; }}
-              />
+              <img src={tech.icon} alt={tech.name} onError={e => { (e.target as HTMLImageElement).src = FALLBACK_ICON; }} />
               <span>{tech.name}</span>
             </div>
           ))}
         </div>
-
         <div className="h-2 bg-[#9ECCFA] border-t-4 border-[#0B1957]" />
       </div>
     </section>
@@ -357,6 +347,28 @@ export default function Home() {
   const [isHoveringCarousel, setIsHoveringCarousel] = useState(false);
   const [showTop, setShowTop]                       = useState(false);
   const [isMobile, setIsMobile]                     = useState(false);
+
+  // ── Hero profile state — fetch dari /api/hero ─────────────────────────────
+  const [hero, setHero]           = useState<HeroProfile>(DEFAULT_HERO);
+  const [heroLoading, setHeroLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/hero")
+      .then(r => r.json())
+      .then((data: HeroProfile) => {
+        setHero({
+          name:  data.name  || DEFAULT_HERO.name,
+          title: data.title || DEFAULT_HERO.title,
+          bio:   data.bio   || DEFAULT_HERO.bio,
+          photo: data.photo || DEFAULT_HERO.photo,
+        });
+      })
+      .catch(() => {
+        // Gagal fetch → tetap pakai DEFAULT_HERO, tidak crash
+      })
+      .finally(() => setHeroLoading(false));
+  }, []);
+
   const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -421,6 +433,9 @@ export default function Home() {
     router.visit(`/projects/${id}`);
   };
 
+  // Foto yang dipakai — dari API kalau ada, fallback ke default
+  const heroPhoto = hero.photo || DEFAULT_HERO.photo;
+
   // ── LOADING SCREEN ──────────────────────────────────────────────────────────
   if (loading) {
     return (
@@ -462,6 +477,7 @@ export default function Home() {
         @keyframes slideLeft  { from { opacity:0; transform:translateX(-40px); } to { opacity:1; transform:translateX(0);  } }
         @keyframes slideRight { from { opacity:0; transform:translateX(40px);  } to { opacity:1; transform:translateX(0);  } }
         @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:.4} }
+        @keyframes shimmer    { from { transform: translateX(-200%); } to { transform: translateX(200%); } }
 
         .anim-navbar    { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-hero-img  { animation: slideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
@@ -495,7 +511,15 @@ export default function Home() {
           flex-shrink: 0; transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
         .photo-wrap:hover { transform: translate(-3px,-3px); box-shadow: 13px 13px 0 #0B1957; }
-        .photo-wrap img { position: absolute; top:0; left:0; width:100%; height:160%; object-fit:cover; object-position:center top; }
+        .photo-wrap img { position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position:center center; }
+
+        /* Skeleton shimmer untuk hero loading */
+        .hero-skeleton {
+          background: linear-gradient(90deg, #9ECCFA 25%, #D1E8FF 50%, #9ECCFA 75%);
+          background-size: 200% 100%;
+          animation: shimmer-bg 1.2s ease infinite;
+        }
+        @keyframes shimmer-bg { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
         .contact-card { transition: background 0.15s ease; text-decoration: none; }
         .contact-card:hover { background: #D1E8FF; }
@@ -546,19 +570,46 @@ export default function Home() {
         {/* ── HERO ── */}
         <section id="hero" className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-20">
           <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0px_0px_#0B1957] flex flex-col md:flex-row overflow-hidden">
+
+            {/* Foto */}
             <div className="anim-hero-img md:w-2/5 relative bg-[#9ECCFA] border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957] flex items-center justify-center py-8 sm:py-10 px-6 sm:px-8 min-h-[260px] sm:min-h-[320px]">
               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)" }} />
               <div className="photo-wrap" style={{ width: "min(180px, 60vw)", height: "min(220px, 75vw)" }}>
-                <img src="/profile/Mboy.jpeg" alt="Yusron" />
+                {heroLoading ? (
+                  /* Skeleton foto selama API belum selesai */
+                  <div className="hero-skeleton absolute inset-0" />
+                ) : (
+                  <img
+                    src={heroPhoto!}
+                    alt={hero.name}
+                    onError={e => { (e.target as HTMLImageElement).src = "/profile/Mboy.jpeg"; }}
+                  />
+                )}
               </div>
             </div>
+
+            {/* Teks */}
             <div className="anim-hero-text md:w-3/5 p-6 sm:p-10 flex flex-col justify-center relative">
               <span className="absolute top-4 right-6 text-6xl sm:text-8xl font-black text-[#9ECCFA] select-none leading-none" aria-hidden="true">"</span>
-              <h1 className="text-4xl sm:text-5xl font-black uppercase mb-3 text-[#0B1957]">Yusron</h1>
-              <p className="font-bold uppercase mb-4 sm:mb-5 text-[#9ECCFA] tracking-wider text-sm border-l-4 border-[#9ECCFA] pl-3">IT Programmer</p>
-              <p className="font-semibold text-[#0B1957] text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-md">
-                Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.
-              </p>
+
+              {heroLoading ? (
+                /* Skeleton teks */
+                <div className="space-y-3">
+                  <div className="hero-skeleton h-10 w-48 rounded" />
+                  <div className="hero-skeleton h-4 w-32 rounded" />
+                  <div className="hero-skeleton h-4 w-full rounded mt-4" />
+                  <div className="hero-skeleton h-4 w-5/6 rounded" />
+                </div>
+              ) : (
+                <>
+                  <h1 className="text-4xl sm:text-5xl font-black uppercase mb-3 text-[#0B1957]">{hero.name}</h1>
+                  <p className="font-bold uppercase mb-4 sm:mb-5 text-[#9ECCFA] tracking-wider text-sm border-l-4 border-[#9ECCFA] pl-3">{hero.title}</p>
+                  <p className="font-semibold text-[#0B1957] text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-md">
+                    {hero.bio}
+                  </p>
+                </>
+              )}
+
               <div className="flex gap-3 sm:gap-4 flex-wrap">
                 <button onClick={() => scrollTo("about")}
                   className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] text-sm sm:text-base">
@@ -667,7 +718,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── TECH STACK — data dari database ── */}
+        {/* ── TECH STACK ── */}
         <TechStack />
 
         {/* ── ABOUT ── */}
@@ -676,19 +727,29 @@ export default function Home() {
           <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] flex flex-col md:flex-row overflow-hidden">
             <div className="flex-1 p-8 sm:p-10 flex flex-col justify-center">
               <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-[0.3em] mb-3">Who am I</p>
-              <h3 className="text-3xl sm:text-4xl font-black uppercase text-[#F8F3EA] mb-4 leading-tight">
-                Zaki Yusron<br />Hasyimmi
-              </h3>
-              <div className="w-12 h-1 bg-[#9ECCFA] mb-5" />
-              <p className="font-semibold text-[#D1E8FF] leading-relaxed mb-4">
-                Seorang IT Programmer yang fokus membangun aplikasi web modern dengan React dan Laravel. Saya menikmati proses merancang UI yang rapi dan membangun sistem yang efisien di balik layar.
-              </p>
-              <p className="font-semibold text-[#D1E8FF] leading-relaxed mb-6">
-                Aktif mengeksplorasi teknologi baru, dari tools AI hingga arsitektur fullstack — selalu ingin belajar dan berkembang.
-              </p>
+
+              {heroLoading ? (
+                <div className="space-y-3 mb-6">
+                  <div className="bg-[#9ECCFA] opacity-30 h-10 w-64 rounded" />
+                  <div className="w-12 h-1 bg-[#9ECCFA]" />
+                  <div className="bg-[#9ECCFA] opacity-20 h-4 w-full rounded" />
+                  <div className="bg-[#9ECCFA] opacity-20 h-4 w-4/5 rounded" />
+                </div>
+              ) : (
+                <>
+                  <h3 className="text-3xl sm:text-4xl font-black uppercase text-[#F8F3EA] mb-4 leading-tight">
+                    {hero.name}
+                  </h3>
+                  <div className="w-12 h-1 bg-[#9ECCFA] mb-5" />
+                  <p className="font-semibold text-[#D1E8FF] leading-relaxed mb-4">
+                    {hero.bio}
+                  </p>
+                </>
+              )}
+
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: "Role",   value: "IT Programmer" },
+                  { label: "Role",   value: heroLoading ? "…" : hero.title },
                   { label: "Focus",  value: "Fullstack Web" },
                   { label: "Stack",  value: "React + Laravel" },
                   { label: "Status", value: "Open to Work" },
@@ -700,10 +761,19 @@ export default function Home() {
                 ))}
               </div>
             </div>
+
             <div className="md:w-2/5 relative bg-[#9ECCFA] border-t-4 md:border-t-0 md:border-l-4 border-[#9ECCFA] flex items-center justify-center py-10 px-8 min-h-[280px]">
               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)" }} />
               <div className="photo-wrap" style={{ width: "min(260px, 70vw)", height: "min(320px, 85vw)" }}>
-                <img src="/profile/Mboy.jpeg" alt="Zaki Yusron" />
+                {heroLoading ? (
+                  <div className="hero-skeleton absolute inset-0" />
+                ) : (
+                  <img
+                    src={heroPhoto!}
+                    alt={hero.name}
+                    onError={e => { (e.target as HTMLImageElement).src = "/profile/Mboy.jpeg"; }}
+                  />
+                )}
               </div>
             </div>
           </div>
