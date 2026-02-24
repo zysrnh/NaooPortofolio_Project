@@ -64,11 +64,7 @@ function SpotlightCard({ children, className = "", onClick }: SpotlightCardProps
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
-    setSpotlight({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      opacity: 1,
-    });
+    setSpotlight({ x: e.clientX - rect.left, y: e.clientY - rect.top, opacity: 1 });
   }, []);
 
   const handleMouseLeave = useCallback(() => {
@@ -85,11 +81,7 @@ function SpotlightCard({ children, className = "", onClick }: SpotlightCardProps
     >
       <div
         className="spotlight-glow"
-        style={{
-          left: spotlight.x,
-          top: spotlight.y,
-          opacity: spotlight.opacity,
-        }}
+        style={{ left: spotlight.x, top: spotlight.y, opacity: spotlight.opacity }}
       />
       {children}
     </div>
@@ -142,7 +134,7 @@ const projects = [
   },
 ];
 
-// ── Stats ─────────────────────────────────────────────────────────────────────
+// ── Stats (dari hardcode projects, bukan dari DB) ─────────────────────────────
 const totalProjects = projects.length;
 const stackCounts: Record<string, number> = {};
 projects.forEach(p => p.stacks.forEach(s => {
@@ -158,41 +150,41 @@ const PROJECT_STATS = [
   { value: stackCounts["Laravel"] ?? 0, label: "Laravel Projects", note: "Backend solid" },
 ];
 
-// ── Tech Stack tabs ───────────────────────────────────────────────────────────
-const TABS = [
-  { key: "frontend", label: "Frontend", techs: [
-    { label: "React",      icon: "/Icon/React.jpg" },
-    { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
-    { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
-    { label: "Tailwind",   icon: "/Icon/TypeScript.jpg" },
-    { label: "Vite",       icon: "/Icon/JavaScript.jpg" },
-  ]},
-  { key: "backend", label: "Backend", techs: [
-    { label: "Laravel",    icon: "/Icon/Laravel.jpg" },
-    { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
-    { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
-    { label: "MySQL",      icon: "/Icon/Laravel.jpg" },
-  ]},
-  { key: "tools", label: "Tools", techs: [
-    { label: "Git",     icon: "/Icon/JavaScript.jpg" },
-    { label: "GitHub",  icon: "/Icon/TypeScript.jpg" },
-    { label: "VS Code", icon: "/Icon/React.jpg" },
-    { label: "Postman", icon: "/Icon/Laravel.jpg" },
-    { label: "Figma",   icon: "/Icon/JavaScript.jpg" },
-    { label: "Docker",  icon: "/Icon/TypeScript.jpg" },
-  ]},
-  { key: "ai", label: "AI Tools", techs: [
-    { label: "Claude",  icon: "/Icon/TypeScript.jpg" },
-    { label: "ChatGPT", icon: "/Icon/JavaScript.jpg" },
-    { label: "Copilot", icon: "/Icon/React.jpg" },
-    { label: "Gemini",  icon: "/Icon/Laravel.jpg" },
-  ]},
-];
+// ── TechStack types ───────────────────────────────────────────────────────────
+interface TechStackItem {
+  id: number;
+  name: string;
+  icon: string;
+  category: string;
+  created_at: string;
+}
 
-// ── TechStack Component ───────────────────────────────────────────────────────
+// ── Fallback icon kalau gambar error ─────────────────────────────────────────
+const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
+
+// ── TechStack Component — fetch dari API ──────────────────────────────────────
 function TechStack() {
+  const [stacks, setStacks]       = useState<TechStackItem[]>([]);
+  const [loading, setLoading]     = useState(true);
   const [activeTab, setActiveTab] = useState(0);
   const [animating, setAnimating] = useState(false);
+
+  // Fetch hanya yang is_visible = true dari database
+  useEffect(() => {
+    fetch("/api/tech-stacks/visible")
+      .then(r => r.json())
+      .then(data => {
+        setStacks(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  // Tabs otomatis dari kategori yang ada di DB
+  const categories = Array.from(new Set(stacks.map(s => s.category)));
+
+  // Reset active tab kalau data baru load
+  useEffect(() => { setActiveTab(0); }, [categories.length]);
 
   const switchTab = (i: number) => {
     if (i === activeTab) return;
@@ -200,28 +192,78 @@ function TechStack() {
     setTimeout(() => { setActiveTab(i); setAnimating(false); }, 180);
   };
 
+  const currentTechs = stacks.filter(s => s.category === categories[activeTab]);
+
+  // Kalau belum ada data di DB, tampilkan placeholder tabs
+  const tabLabels = categories.length > 0 ? categories : ["Frontend", "Backend", "Tools", "AI Tools"];
+
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
       <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Tech Stack</h2>
       <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
+
+        {/* Tabs */}
         <div className="flex border-b-4 border-[#0B1957] overflow-x-auto">
-          {TABS.map((tab, i) => (
-            <button key={tab.key} onClick={() => switchTab(i)}
+          {tabLabels.map((label, i) => (
+            <button
+              key={label}
+              onClick={() => switchTab(i)}
               className={`flex-shrink-0 flex-1 py-3 px-3 sm:px-4 font-black uppercase text-xs sm:text-sm tracking-wider border-r-4 border-[#0B1957] last:border-r-0 transition-all duration-150 whitespace-nowrap
-                ${activeTab === i ? "bg-[#0B1957] text-[#9ECCFA]" : "bg-[#F8F3EA] text-[#0B1957] hover:bg-[#D1E8FF]"}`}>
-              {tab.label}
+                ${activeTab === i ? "bg-[#0B1957] text-[#9ECCFA]" : "bg-[#F8F3EA] text-[#0B1957] hover:bg-[#D1E8FF]"}`}
+            >
+              {label}
             </button>
           ))}
         </div>
-        <div className="p-6 sm:p-10 min-h-[180px] flex flex-wrap gap-3 sm:gap-5 items-start content-start"
-          style={{ opacity: animating ? 0 : 1, transform: animating ? "translateY(8px)" : "translateY(0)", transition: "opacity 0.18s ease, transform 0.18s ease" }}>
-          {TABS[activeTab].techs.map((tech, i) => (
-            <div key={i} className="tech-chip">
-              <img src={tech.icon} alt={tech.label} />
-              <span>{tech.label}</span>
+
+        {/* Content */}
+        <div
+          className="p-6 sm:p-10 min-h-[180px] flex flex-wrap gap-3 sm:gap-5 items-start content-start"
+          style={{
+            opacity:    animating ? 0 : 1,
+            transform:  animating ? "translateY(8px)" : "translateY(0)",
+            transition: "opacity 0.18s ease, transform 0.18s ease",
+          }}
+        >
+          {/* Loading skeleton */}
+          {loading && Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="tech-chip"
+              style={{ background: "#D1E8FF", opacity: 0.5, animation: `pulse 1.2s ease ${i * 0.1}s infinite` }}
+            >
+              <div style={{ width: 26, height: 26, background: "#9ECCFA", border: "2px solid #0B1957", flexShrink: 0 }} />
+              <span style={{ color: "transparent", background: "#9ECCFA", borderRadius: 3, minWidth: 60 }}>___</span>
+            </div>
+          ))}
+
+          {/* Empty state (data sudah load tapi kategori kosong) */}
+          {!loading && categories.length === 0 && (
+            <p className="font-bold text-xs uppercase text-[#0B1957] opacity-40 tracking-widest self-center w-full text-center py-8">
+              Belum ada tech stack — tambahkan di dashboard
+            </p>
+          )}
+
+          {/* Empty state per kategori */}
+          {!loading && categories.length > 0 && currentTechs.length === 0 && (
+            <p className="font-bold text-xs uppercase text-[#0B1957] opacity-40 tracking-widest self-center w-full text-center py-8">
+              Belum ada stack di kategori ini
+            </p>
+          )}
+
+          {/* Tech chips dari database */}
+          {!loading && currentTechs.map((tech) => (
+            <div key={tech.id} className="tech-chip">
+              <img
+                src={tech.icon}
+                alt={tech.name}
+                onError={e => { (e.target as HTMLImageElement).src = FALLBACK_ICON; }}
+              />
+              <span>{tech.name}</span>
             </div>
           ))}
         </div>
+
         <div className="h-2 bg-[#9ECCFA] border-t-4 border-[#0B1957]" />
       </div>
     </section>
@@ -419,6 +461,7 @@ export default function Home() {
         @keyframes slideDown  { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0);  } }
         @keyframes slideLeft  { from { opacity:0; transform:translateX(-40px); } to { opacity:1; transform:translateX(0);  } }
         @keyframes slideRight { from { opacity:0; transform:translateX(40px);  } to { opacity:1; transform:translateX(0);  } }
+        @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:.4} }
 
         .anim-navbar    { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-hero-img  { animation: slideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
@@ -428,50 +471,22 @@ export default function Home() {
         .btn-brutal:hover  { transform: translate(2px, 2px);  box-shadow: 2px 2px 0 #0B1957 !important; }
         .btn-brutal:active { transform: translate(4px, 4px);  box-shadow: 0   0   0 #0B1957 !important; }
 
-        /* ── SPOTLIGHT CARD ── */
         .spotlight-card {
-          position: relative;
-          overflow: hidden;
-          cursor: pointer;
-          background: #F8F3EA;
-          border: 4px solid #0B1957;
-          box-shadow: 5px 5px 0 #0B1957;
+          position: relative; overflow: hidden; cursor: pointer;
+          background: #F8F3EA; border: 4px solid #0B1957; box-shadow: 5px 5px 0 #0B1957;
           transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
-        .spotlight-card:hover {
-          transform: translate(-3px,-3px);
-          box-shadow: 8px 8px 0 #9ECCFA, 10px 10px 0 #0B1957;
-        }
-        .spotlight-card:hover .card-img {
-          transform: scale(1.05);
-        }
-        .card-img {
-          transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
-        }
-        .card-overlay {
-          opacity: 0;
-          transition: opacity 0.2s ease;
-        }
-        .spotlight-card:hover .card-overlay {
-          opacity: 1;
-        }
+        .spotlight-card:hover { transform: translate(-3px,-3px); box-shadow: 8px 8px 0 #9ECCFA, 10px 10px 0 #0B1957; }
+        .spotlight-card:hover .card-img { transform: scale(1.05); }
+        .card-img { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+        .card-overlay { opacity: 0; transition: opacity 0.2s ease; }
+        .spotlight-card:hover .card-overlay { opacity: 1; }
 
         .spotlight-glow {
-          position: absolute;
-          width: 300px;
-          height: 300px;
-          border-radius: 50%;
+          position: absolute; width: 300px; height: 300px; border-radius: 50%;
           transform: translate(-50%, -50%);
-          background: radial-gradient(
-            circle at center,
-            rgba(158, 204, 250, 0.25) 0%,
-            rgba(158, 204, 250, 0.1) 40%,
-            transparent 70%
-          );
-          pointer-events: none;
-          z-index: 10;
-          transition: opacity 0.3s ease;
-          mix-blend-mode: screen;
+          background: radial-gradient(circle at center, rgba(158,204,250,0.25) 0%, rgba(158,204,250,0.1) 40%, transparent 70%);
+          pointer-events: none; z-index: 10; transition: opacity 0.3s ease; mix-blend-mode: screen;
         }
 
         .photo-wrap {
@@ -517,10 +532,8 @@ export default function Home() {
         .back-to-top {
           position: fixed; bottom: 28px; right: 28px; z-index: 99;
           width: 48px; height: 48px;
-          border: 4px solid #0B1957; background: #0B1957;
-          box-shadow: 4px 4px 0 #9ECCFA;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer;
+          border: 4px solid #0B1957; background: #0B1957; box-shadow: 4px 4px 0 #9ECCFA;
+          display: flex; align-items: center; justify-content: center; cursor: pointer;
           transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.3s ease, visibility 0.3s ease;
         }
         .back-to-top:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #9ECCFA; }
@@ -615,11 +628,7 @@ export default function Home() {
               {Array.from({ length: totalSlides }).map((_, page) => (
                 <div key={page} className={`min-w-full grid gap-4 sm:gap-6 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}>
                   {projects.slice(page * perPage, page * perPage + perPage).map((p, i) => (
-                    <SpotlightCard
-                      key={i}
-                      onClick={() => goToProject(p.id)}
-                    >
-                      {/* Image */}
+                    <SpotlightCard key={i} onClick={() => goToProject(p.id)}>
                       <div className="w-full h-40 sm:h-44 overflow-hidden border-b-4 border-[#0B1957] relative">
                         <img src={p.image} alt={p.title} className="card-img w-full h-full object-cover object-top" />
                         <div className="card-overlay absolute inset-0 bg-[#0B1957] bg-opacity-60 flex items-center justify-center">
@@ -627,7 +636,6 @@ export default function Home() {
                         </div>
                         <div className="absolute top-3 right-3 bg-[#0B1957] text-[#9ECCFA] text-xs font-black uppercase px-2 py-1 z-20">Project</div>
                       </div>
-                      {/* Content */}
                       <div className="p-4 sm:p-5 relative z-20">
                         <h3 className="font-black uppercase mb-2 text-[#0B1957] text-sm sm:text-base">{p.title}</h3>
                         <p className="font-semibold text-xs sm:text-sm mb-4 text-[#0B1957]">{p.desc}</p>
@@ -659,7 +667,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── TECH STACK ── */}
+        {/* ── TECH STACK — data dari database ── */}
         <TechStack />
 
         {/* ── ABOUT ── */}

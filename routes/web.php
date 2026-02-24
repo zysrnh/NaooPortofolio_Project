@@ -37,12 +37,17 @@ Route::post('/logout', function () {
     return redirect('/');
 })->middleware('auth')->name('logout');
 
-// ── API: Tech Stack CRUD (protected) ─────────────────────────────────────────
-Route::middleware(['auth'])->prefix('api')->group(function () {
-    Route::get   ('/tech-stacks',             [TechStackController::class, 'index']);
-    Route::post  ('/tech-stacks',             [TechStackController::class, 'store']);
-    Route::put   ('/tech-stacks/{techStack}', [TechStackController::class, 'update']);
-    Route::delete('/tech-stacks/{techStack}', [TechStackController::class, 'destroy']);
+// ── API: Tech Stack ───────────────────────────────────────────────────────────
+Route::prefix('api')->group(function () {
+    // Public — homepage bisa fetch tanpa login
+    Route::get('/tech-stacks', [TechStackController::class, 'index']);
+
+    // Protected — create, update, delete butuh login
+    Route::middleware(['auth'])->group(function () {
+        Route::post  ('/tech-stacks',             [TechStackController::class, 'store']);
+        Route::put   ('/tech-stacks/{techStack}', [TechStackController::class, 'update']);
+        Route::delete('/tech-stacks/{techStack}', [TechStackController::class, 'destroy']);
+    });
 });
 
 require __DIR__.'/settings.php';
