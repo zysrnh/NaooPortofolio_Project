@@ -85,7 +85,7 @@ const PROJECTS: Record<string, ProjectData> = {
     title: "Beyblade Leaderboard",
     subtitle: "Leaderboard turnamen dengan statistik otomatis",
     desc: "Leaderboard turnamen dengan statistik otomatis",
-    longDesc: "Sistem leaderboard untuk turnamen Beyblade yang menampilkan ranking pemain, statistik pertandingan, dan riwayat hasil secara real-time. Data diperbarui otomatis setelah setiap match selesai diinput.",
+    longDesc: "Sistem leaderboard untuk turnamen Beyblade yang menampilkan ranking pemain, statistik pertandingan, dan riwayat hasil secara real-time.",
     status: "Hosted",
     date: "Mar 2025", duration: "1 Bulan",
     images: ["/profile/Mboy.jpeg", "/profile/Mboy.jpeg"],
@@ -195,7 +195,56 @@ const STATUS_STYLE: Record<string, { bg: string; text: string; dot: string }> = 
   "Planning":    { bg: "bg-[#F8F3EA]",  text: "text-[#0B1957]", dot: "bg-[#9ECCFA]" },
 };
 
-// ── Spotlight Card Component ──────────────────────────────────────────────────
+// ── useInView ──────────────────────────────────────────────────────────────────
+function useInView(threshold = 0.12) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
+    }, { threshold });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
+}
+
+// ── AnimBlock: scroll-triggered reveal ────────────────────────────────────────
+function AnimBlock({
+  children, delay = 0, from = "bottom", className = "", style = {}
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  from?: "bottom" | "left" | "right" | "none";
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const { ref, inView } = useInView();
+  const translateMap = {
+    bottom: "translateY(36px)",
+    left:   "translateX(-36px)",
+    right:  "translateX(36px)",
+    none:   "none",
+  };
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translate(0,0)" : translateMap[from],
+        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ── SpotlightCard ──────────────────────────────────────────────────────────────
 interface SpotlightCardProps {
   children: React.ReactNode;
   className?: string;
@@ -211,13 +260,8 @@ function SpotlightCard({ children, className = "", style = {}, onClick }: Spotli
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
-    setSpotlight({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      opacity: 1,
-    });
+    setSpotlight({ x: e.clientX - rect.left, y: e.clientY - rect.top, opacity: 1 });
   }, []);
-
   const handleMouseLeave = useCallback(() => {
     setSpotlight(prev => ({ ...prev, opacity: 0 }));
   }, []);
@@ -231,16 +275,32 @@ function SpotlightCard({ children, className = "", style = {}, onClick }: Spotli
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
     >
-      {/* Spotlight overlay */}
-      <div
-        className="spotlight-glow"
-        style={{
-          left: spotlight.x,
-          top: spotlight.y,
-          opacity: spotlight.opacity,
-        }}
-      />
+      <div className="spotlight-glow" style={{ left: spotlight.x, top: spotlight.y, opacity: spotlight.opacity }} />
       {children}
+    </div>
+  );
+}
+
+// ── FeatureItem with stagger ───────────────────────────────────────────────────
+function FeatureItem({ title, desc, index }: { title: string; desc: string; index: number }) {
+  const { ref, inView } = useInView(0.1);
+  return (
+    <div
+      ref={ref}
+      className="feature-item p-5 flex gap-4 items-start"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateX(0)" : "translateX(-24px)",
+        transition: `opacity 0.6s cubic-bezier(0.16,1,0.3,1) ${index * 80}ms, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${index * 80}ms`,
+      }}
+    >
+      <div className="flex-shrink-0 w-7 h-7 bg-[#0B1957] border-2 border-[#0B1957] flex items-center justify-center text-[#9ECCFA] mt-0.5">
+        <IconCheck />
+      </div>
+      <div>
+        <p className="font-black uppercase text-sm text-[#0B1957] mb-1 tracking-wide">{title}</p>
+        <p className="font-semibold text-sm text-[#0B1957] opacity-70 leading-relaxed">{desc}</p>
+      </div>
     </div>
   );
 }
@@ -249,17 +309,23 @@ interface Props { projectId: string; }
 
 export default function ProjectDetail({ projectId }: Props) {
   const project = PROJECTS[projectId];
-  const [visible, setVisible]     = useState(false);
+  const [pageIn,    setPageIn]    = useState(false);
   const [activeImg, setActiveImg] = useState(0);
-  const [lightbox, setLightbox]   = useState<number | null>(null);
-  const [showTop, setShowTop]     = useState(false);
+  const [lightbox,  setLightbox]  = useState<number | null>(null);
+  const [showTop,   setShowTop]   = useState(false);
+  const [heroOffset, setHeroOffset] = useState(0);
 
-  useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
+  useEffect(() => { const t = setTimeout(() => setPageIn(true), 40); return () => clearTimeout(t); }, []);
+
   useEffect(() => {
-    const h = () => setShowTop(window.scrollY > 300);
+    const h = () => {
+      setShowTop(window.scrollY > 300);
+      setHeroOffset(window.scrollY * 0.15);
+    };
     window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
+
   useEffect(() => {
     if (lightbox === null) return;
     const h = (e: KeyboardEvent) => {
@@ -279,7 +345,7 @@ export default function ProjectDetail({ projectId }: Props) {
           <p className="font-bold text-[#0B1957] mb-6">Project tidak ditemukan</p>
           <button onClick={() => router.visit("/projects")}
             className="btn-brutal border-4 border-[#0B1957] px-6 py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]">
-            ← Kembali ke Projects
+            Kembali ke Projects
           </button>
         </div>
       </div>
@@ -291,112 +357,216 @@ export default function ProjectDetail({ projectId }: Props) {
   return (
     <>
       <style>{`
-        @keyframes slideUp    { from{opacity:0;transform:translateY(40px)}  to{opacity:1;transform:translateY(0)} }
-        @keyframes slideLeft  { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
-        @keyframes slideRight { from{opacity:0;transform:translateX(40px)}  to{opacity:1;transform:translateX(0)} }
-        @keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+        /* ── Keyframes ── */
+        @keyframes fadeSlideUp   { from{opacity:0;transform:translateY(40px)}  to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeSlideLeft { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes fadeSlideRight{ from{opacity:0;transform:translateX(40px)}  to{opacity:1;transform:translateX(0)} }
+        @keyframes fadeIn        { from{opacity:0} to{opacity:1} }
+        @keyframes scaleIn       { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
+        @keyframes shimmer       { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        @keyframes floatBadge    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+        @keyframes progressBar   { from{width:0} to{width:100%} }
 
-        .anim-0 { animation: slideUp    0.6s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
-        .anim-1 { animation: slideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
-        .anim-2 { animation: slideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s  both; }
-        .anim-3 { animation: slideUp    0.6s cubic-bezier(0.16,1,0.3,1) 0.3s  both; }
-        .anim-4 { animation: slideUp    0.6s cubic-bezier(0.16,1,0.3,1) 0.4s  both; }
-        .anim-5 { animation: slideUp    0.6s cubic-bezier(0.16,1,0.3,1) 0.5s  both; }
-
-        .btn-brutal { transition: transform 0.08s ease, box-shadow 0.08s ease; }
-        .btn-brutal:hover  { transform: translate(2px,2px);  box-shadow: 2px 2px 0 #0B1957 !important; }
-        .btn-brutal:active { transform: translate(4px,4px);  box-shadow: 0 0 0   #0B1957 !important; }
-
-        .thumb-item { border: 3px solid #0B1957; overflow: hidden; cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; box-shadow: 3px 3px 0 #0B1957; }
-        .thumb-item:hover  { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
-        .thumb-item.active { box-shadow: 4px 4px 0 #9ECCFA, 6px 6px 0 #0B1957; }
-
-        .tech-card { border: 4px solid #0B1957; background: #F8F3EA; box-shadow: 6px 6px 0 #0B1957; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-        .tech-card:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 #9ECCFA, 11px 11px 0 #0B1957; }
-
-        .feature-item { border: 3px solid #0B1957; background: #F8F3EA; box-shadow: 4px 4px 0 #0B1957; transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; }
-        .feature-item:hover { background: #D1E8FF; transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #0B1957; }
-
-        .back-btn { display: inline-flex; align-items: center; gap: 8px; border: 4px solid #0B1957; padding: 10px 20px; font-weight: 900; font-size: 13px; text-transform: uppercase; color: #0B1957; background: #F8F3EA; cursor: pointer; box-shadow: 4px 4px 0 #0B1957; letter-spacing: 0.07em; transition: transform 0.08s ease, box-shadow 0.08s ease; }
-        .back-btn:hover  { transform: translate(2px,2px);  box-shadow: 2px 2px 0 #0B1957; }
-        .back-btn:active { transform: translate(4px,4px);  box-shadow: 0 0 0 #0B1957; }
-
-        .lightbox-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(11,25,87,0.92); display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; backdrop-filter: blur(4px); }
-        .lightbox-img { max-width: 90vw; max-height: 85vh; border: 4px solid #9ECCFA; box-shadow: 0 0 0 4px #0B1957, 10px 10px 0 #9ECCFA; object-fit: contain; animation: slideUp 0.3s cubic-bezier(0.16,1,0.3,1); }
-
-        .back-to-top { position: fixed; bottom: 28px; right: 28px; z-index: 99; width: 48px; height: 48px; border: 4px solid #0B1957; background: #0B1957; box-shadow: 4px 4px 0 #9ECCFA; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.3s ease, visibility 0.3s ease; }
-        .back-to-top:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #9ECCFA; }
-        .back-to-top:active { transform: translate(0,0); box-shadow: 2px 2px 0 #9ECCFA; }
-
-        /* ── SPOTLIGHT CARD ── */
-        .spotlight-card {
-          position: relative;
-          overflow: hidden;
-          cursor: pointer;
-          background: #F8F3EA;
-          border: 4px solid #0B1957;
-          box-shadow: 5px 5px 0 #0B1957;
-          transition: transform 0.15s ease, box-shadow 0.15s ease;
+        /* ── Page wrapper ── */
+        .page-enter {
+          opacity: 0;
+          transition: opacity 0.4s ease;
         }
-        .spotlight-card:hover {
-          transform: translate(-3px,-3px);
-          box-shadow: 8px 8px 0 #9ECCFA, 10px 10px 0 #0B1957;
-        }
-        .spotlight-card:hover .card-img-inner {
-          transform: scale(1.05);
-        }
-        .card-img-inner {
-          transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
-        }
-        .spotlight-card:hover .card-overlay-inner {
+        .page-enter.visible {
           opacity: 1;
         }
-        .card-overlay-inner {
-          opacity: 0;
-          transition: opacity 0.2s ease;
+
+        /* ── Hero entrance (timed) ── */
+        .hero-in    { animation: fadeSlideUp   0.7s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+        .back-in    { animation: fadeSlideLeft 0.5s cubic-bezier(0.16,1,0.3,1) 0.0s  both; }
+        .gallery-in { animation: fadeSlideLeft 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s  both; }
+        .desc-in    { animation: fadeSlideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
+        .sidebar-in { animation: fadeSlideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s  both; }
+
+        /* ── Hero grid pattern ── */
+        .hero-grid {
+          background-image:
+            repeating-linear-gradient(0deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px),
+            repeating-linear-gradient(90deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px);
         }
 
-        .spotlight-glow {
-          position: absolute;
-          width: 300px;
-          height: 300px;
-          border-radius: 50%;
-          transform: translate(-50%, -50%);
-          background: radial-gradient(
-            circle at center,
-            rgba(158, 204, 250, 0.25) 0%,
-            rgba(158, 204, 250, 0.1) 40%,
-            transparent 70%
-          );
-          pointer-events: none;
-          z-index: 10;
-          transition: opacity 0.3s ease;
-          mix-blend-mode: screen;
+        /* ── Buttons ── */
+        .btn-brutal {
+          transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
+        .btn-brutal:hover  { transform: translate(2px,2px);  box-shadow: 2px 2px 0 #0B1957 !important; }
+        .btn-brutal:active { transform: translate(4px,4px);  box-shadow: 0 0 0 #0B1957 !important; }
+
+        .back-btn {
+          display: inline-flex; align-items: center; gap: 8px;
+          border: 4px solid #0B1957; padding: 10px 20px;
+          font-weight: 900; font-size: 13px; text-transform: uppercase;
+          color: #0B1957; background: #F8F3EA; cursor: pointer;
+          box-shadow: 4px 4px 0 #0B1957; letter-spacing: 0.07em;
+          transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .back-btn:hover  { transform: translate(2px,2px); box-shadow: 2px 2px 0 #0B1957; }
+        .back-btn:active { transform: translate(4px,4px); box-shadow: 0 0 0 #0B1957; }
+        .back-btn svg    { transition: transform 0.2s ease; }
+        .back-btn:hover svg { transform: translateX(-4px); }
+
+        /* ── Gallery ── */
+        .main-img-wrap {
+          border: 4px solid #0B1957;
+          overflow: hidden;
+          box-shadow: 8px 8px 0 #0B1957;
+          cursor: zoom-in;
+          position: relative;
+        }
+        .main-img-wrap img {
+          transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+        .main-img-wrap:hover img { transform: scale(1.04); }
+        .zoom-badge { opacity: 0; transition: opacity 0.2s ease; }
+        .main-img-wrap:hover .zoom-badge { opacity: 1; }
+
+        .thumb-item {
+          border: 3px solid #0B1957;
+          overflow: hidden;
+          cursor: pointer;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
+          box-shadow: 3px 3px 0 #0B1957;
+        }
+        .thumb-item:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
+        .thumb-item.active { box-shadow: 4px 4px 0 #9ECCFA, 6px 6px 0 #0B1957; }
+
+        /* ── Cards ── */
+        .tech-card {
+          border: 4px solid #0B1957; background: #F8F3EA;
+          box-shadow: 6px 6px 0 #0B1957;
+          transition: transform 0.18s cubic-bezier(0.16,1,0.3,1), box-shadow 0.18s cubic-bezier(0.16,1,0.3,1);
+        }
+        .tech-card:hover {
+          transform: translate(-3px,-3px);
+          box-shadow: 9px 9px 0 #9ECCFA, 11px 11px 0 #0B1957;
+        }
+
+        .feature-item {
+          border: 3px solid #0B1957; background: #F8F3EA;
+          box-shadow: 4px 4px 0 #0B1957;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+        .feature-item:hover {
+          background: #D1E8FF;
+          transform: translate(-2px,-2px);
+          box-shadow: 6px 6px 0 #0B1957;
+        }
+
+        /* ── Spotlight card ── */
+        .spotlight-card {
+          position: relative; overflow: hidden; cursor: pointer;
+          background: #F8F3EA; border: 4px solid #0B1957;
+          box-shadow: 5px 5px 0 #0B1957;
+          transition: transform 0.18s cubic-bezier(0.16,1,0.3,1), box-shadow 0.18s cubic-bezier(0.16,1,0.3,1);
+        }
+        .spotlight-card:hover {
+          transform: translate(-4px,-4px);
+          box-shadow: 9px 9px 0 #9ECCFA, 11px 11px 0 #0B1957;
+        }
+        .spotlight-card:hover .card-img-inner { transform: scale(1.06); }
+        .card-img-inner { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); }
+        .spotlight-card:hover .card-overlay-inner { opacity: 1; }
+        .card-overlay-inner { opacity: 0; transition: opacity 0.22s ease; }
+        .spotlight-glow {
+          position: absolute; width: 300px; height: 300px; border-radius: 50%;
+          transform: translate(-50%,-50%);
+          background: radial-gradient(circle at center, rgba(158,204,250,0.25) 0%, rgba(158,204,250,0.1) 40%, transparent 70%);
+          pointer-events: none; z-index: 10;
+          transition: opacity 0.3s ease; mix-blend-mode: screen;
+        }
+
+        /* ── Lightbox ── */
+        .lightbox-overlay {
+          position: fixed; inset: 0; z-index: 100;
+          background: rgba(11,25,87,0.93);
+          display: flex; align-items: center; justify-content: center;
+          animation: fadeIn 0.2s ease; backdrop-filter: blur(6px);
+        }
+        .lightbox-img {
+          max-width: 90vw; max-height: 85vh;
+          border: 4px solid #9ECCFA;
+          box-shadow: 0 0 0 4px #0B1957, 10px 10px 0 #9ECCFA;
+          object-fit: contain;
+          animation: scaleIn 0.3s cubic-bezier(0.16,1,0.3,1);
+        }
+        .lb-btn {
+          border: 4px solid #9ECCFA; background: #0B1957; color: #9ECCFA;
+          width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+          cursor: pointer; transition: transform 0.1s ease, box-shadow 0.1s ease;
+          box-shadow: 3px 3px 0 #9ECCFA;
+        }
+        .lb-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #9ECCFA; }
+        .lb-btn:active { transform: translate(2px,2px); box-shadow: 0 0 0 #9ECCFA; }
+
+        /* ── Back to top ── */
+        .back-to-top {
+          position: fixed; bottom: 28px; right: 28px; z-index: 99;
+          width: 48px; height: 48px; border: 4px solid #0B1957;
+          background: #0B1957; box-shadow: 4px 4px 0 #9ECCFA;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer;
+          transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .back-to-top:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #9ECCFA; }
+        .back-to-top:active { transform: translate(2px,2px); box-shadow: 0 0 0 #9ECCFA; }
+
+        /* ── Info row hover ── */
+        .info-row {
+          transition: background 0.15s ease;
+        }
+        .info-row:hover { background: rgba(158,204,250,0.08); }
+
+        /* ── Section heading line ── */
+        .section-heading {
+          position: relative; display: inline-block;
+        }
+        .section-heading::after {
+          content: '';
+          position: absolute; left: 0; bottom: -4px;
+          height: 3px; background: #0B1957;
+          width: 0;
+          transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+        .section-heading.visible::after { width: 100%; }
       `}</style>
 
-      <div className="min-h-screen bg-[#D1E8FF]" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}>
+      <div className={`min-h-screen bg-[#D1E8FF] page-enter ${pageIn ? "visible" : ""}`}>
         <Navbar />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-20">
 
           {/* BACK */}
-          <div className="anim-0 mb-8">
+          <div className="back-in mb-8">
             <button className="back-btn" onClick={() => router.visit("/projects")}>
               <IconArrowLeft /> Kembali ke Projects
             </button>
           </div>
 
           {/* HERO */}
-          <div className="anim-0 bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] p-8 sm:p-10 mb-8 relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "repeating-linear-gradient(0deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px)" }} />
+          <div className="hero-in bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] p-8 sm:p-10 mb-8 relative overflow-hidden">
+            <div
+              className="absolute inset-0 opacity-10 hero-grid"
+              style={{ transform: `translateY(${heroOffset}px)`, transition: "transform 0.1s linear" }}
+            />
+            <div className="absolute top-0 right-0 w-48 h-48 opacity-5" style={{
+              background: "radial-gradient(circle at top right, #9ECCFA, transparent 70%)"
+            }} />
+
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div>
                 <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-[0.3em] mb-2">Project Detail</p>
-                <h1 className="text-3xl sm:text-5xl font-black uppercase text-[#F8F3EA] mb-3 leading-tight">{project.title}</h1>
+                <h1 className="text-3xl sm:text-5xl font-black uppercase text-[#F8F3EA] mb-3 leading-tight">
+                  {project.title}
+                </h1>
                 <p className="font-semibold text-[#D1E8FF] text-base sm:text-lg max-w-2xl">{project.subtitle}</p>
               </div>
               <div className="flex flex-col gap-3 flex-shrink-0">
-                <div className={`inline-flex items-center gap-2 border-4 border-[#F8F3EA] px-4 py-2 ${statusStyle.bg}`}>
+                <div className={`inline-flex items-center gap-2 border-4 border-[#F8F3EA] px-4 py-2 ${statusStyle.bg}`}
+                  style={{ animation: "floatBadge 3s ease-in-out 1s infinite" }}>
                   <div className={`w-2 h-2 rounded-full ${statusStyle.dot}`} />
                   <span className={`font-black uppercase text-sm tracking-wider ${statusStyle.text}`}>{project.status}</span>
                 </div>
@@ -412,16 +582,25 @@ export default function ProjectDetail({ projectId }: Props) {
             </div>
           </div>
 
-          {/* GRID */}
+          {/* MAIN GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            {/* LEFT COL */}
             <div className="lg:col-span-2 space-y-8">
 
               {/* GALLERY */}
-              <div className="anim-1">
-                <h2 className="text-xl font-black uppercase mb-4 text-[#0B1957]">Gallery</h2>
-                <div className="relative border-4 border-[#0B1957] overflow-hidden shadow-[8px_8px_0_#0B1957] cursor-zoom-in group" onClick={() => setLightbox(activeImg)}>
-                  <img src={project.images[activeImg]} alt={`screenshot ${activeImg + 1}`} className="w-full h-64 sm:h-96 object-cover object-top transition-transform duration-500 group-hover:scale-105" />
-                  <div className="absolute top-3 right-3 bg-[#0B1957] border-2 border-[#9ECCFA] px-3 py-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="gallery-in">
+                <SectionHeading>Gallery</SectionHeading>
+                <div
+                  className="main-img-wrap"
+                  onClick={() => setLightbox(activeImg)}
+                >
+                  <img
+                    src={project.images[activeImg]}
+                    alt={`screenshot ${activeImg + 1}`}
+                    className="w-full h-64 sm:h-96 object-cover object-top"
+                  />
+                  <div className="zoom-badge absolute top-3 right-3 bg-[#0B1957] border-2 border-[#9ECCFA] px-3 py-2 flex items-center gap-2">
                     <IconZoom /><span className="text-[#9ECCFA] font-black uppercase text-xs">Zoom</span>
                   </div>
                   <div className="absolute bottom-3 left-3 bg-[#0B1957] border-2 border-[#9ECCFA] px-3 py-1">
@@ -431,7 +610,14 @@ export default function ProjectDetail({ projectId }: Props) {
                 {project.images.length > 1 && (
                   <div className="flex gap-3 mt-4">
                     {project.images.map((img, i) => (
-                      <div key={i} className={`thumb-item flex-1 h-20 ${activeImg === i ? "active" : ""}`} onClick={() => setActiveImg(i)}>
+                      <div
+                        key={i}
+                        className={`thumb-item flex-1 h-20 ${activeImg === i ? "active" : ""}`}
+                        onClick={() => setActiveImg(i)}
+                        style={{
+                          transition: `transform 0.15s ease ${i * 40}ms, box-shadow 0.15s ease ${i * 40}ms, opacity 0.4s ease ${i * 60}ms`,
+                        }}
+                      >
                         <img src={img} alt={`thumb ${i + 1}`} className="w-full h-full object-cover object-top" />
                       </div>
                     ))}
@@ -440,53 +626,52 @@ export default function ProjectDetail({ projectId }: Props) {
               </div>
 
               {/* DESCRIPTION */}
-              <div className="anim-2">
-                <h2 className="text-xl font-black uppercase mb-4 text-[#0B1957]">Deskripsi</h2>
+              <AnimBlock from="right" delay={50}>
+                <SectionHeading>Deskripsi</SectionHeading>
                 <div className="bg-[#F8F3EA] border-4 border-[#0B1957] p-6 sm:p-8 shadow-[6px_6px_0_#0B1957]">
                   <p className="font-semibold text-[#0B1957] leading-relaxed text-base">{project.longDesc}</p>
                 </div>
-              </div>
+              </AnimBlock>
 
               {/* FEATURES */}
-              <div className="anim-3">
-                <h2 className="text-xl font-black uppercase mb-4 text-[#0B1957]">Fitur-Fitur</h2>
+              <AnimBlock from="bottom" delay={80}>
+                <SectionHeading>Fitur-Fitur</SectionHeading>
                 <div className="space-y-3">
                   {project.features.map((f, i) => (
-                    <div key={i} className="feature-item p-5 flex gap-4 items-start">
-                      <div className="flex-shrink-0 w-7 h-7 bg-[#0B1957] border-2 border-[#0B1957] flex items-center justify-center text-[#9ECCFA] mt-0.5">
-                        <IconCheck />
-                      </div>
-                      <div>
-                        <p className="font-black uppercase text-sm text-[#0B1957] mb-1 tracking-wide">{f.title}</p>
-                        <p className="font-semibold text-sm text-[#0B1957] opacity-70 leading-relaxed">{f.desc}</p>
-                      </div>
-                    </div>
+                    <FeatureItem key={i} title={f.title} desc={f.desc} index={i} />
                   ))}
                 </div>
-              </div>
+              </AnimBlock>
             </div>
 
             {/* SIDEBAR */}
             <div className="space-y-8">
 
               {/* TECH STACK */}
-              <div className="anim-4">
-                <h2 className="text-xl font-black uppercase mb-4 text-[#0B1957]">Tech Stack</h2>
+              <AnimBlock from="right" delay={100}>
+                <SectionHeading>Tech Stack</SectionHeading>
                 <div className="flex flex-wrap gap-3">
                   {project.stacks.map((tech, i) => (
-                    <div key={i} className="tech-card p-4 flex items-center justify-center w-[calc(50%-6px)]" title={tech.label}>
+                    <div
+                      key={i}
+                      className="tech-card p-4 flex items-center justify-center w-[calc(50%-6px)]"
+                      title={tech.label}
+                      style={{
+                        transition: `transform 0.18s ease ${i * 60}ms, box-shadow 0.18s ease ${i * 60}ms`,
+                      }}
+                    >
                       <div className="border-2 border-[#0B1957] p-2 bg-[#D1E8FF]">
                         <img src={tech.icon} alt={tech.label} className="w-12 h-12 object-contain" />
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </AnimBlock>
 
               {/* LINKS */}
               {(project.demoUrl || project.githubUrl) && (
-                <div className="anim-5">
-                  <h2 className="text-xl font-black uppercase mb-4 text-[#0B1957]">Links</h2>
+                <AnimBlock from="right" delay={140}>
+                  <SectionHeading>Links</SectionHeading>
                   <div className="space-y-3">
                     {project.demoUrl && (
                       <a href={project.demoUrl} target="_blank" rel="noopener noreferrer"
@@ -501,12 +686,12 @@ export default function ProjectDetail({ projectId }: Props) {
                       </a>
                     )}
                   </div>
-                </div>
+                </AnimBlock>
               )}
 
               {/* INFO */}
-              <div className="anim-5">
-                <h2 className="text-xl font-black uppercase mb-4 text-[#0B1957]">Info</h2>
+              <AnimBlock from="right" delay={180}>
+                <SectionHeading>Info</SectionHeading>
                 <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[6px_6px_0_#9ECCFA] overflow-hidden">
                   {[
                     { label: "Status",  value: project.status },
@@ -514,88 +699,102 @@ export default function ProjectDetail({ projectId }: Props) {
                     { label: "Durasi",  value: project.duration },
                     { label: "Stack",   value: project.stacks.map(s => s.label).join(", ") },
                   ].map((item, i) => (
-                    <div key={i} className="flex justify-between items-center px-5 py-4 border-b-2 border-[#9ECCFA] last:border-b-0">
+                    <div key={i} className="info-row flex justify-between items-center px-5 py-4 border-b-2 border-[#9ECCFA] last:border-b-0"
+                      style={{
+                        opacity: 0,
+                        animation: `fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${0.4 + i * 0.07}s forwards`,
+                      }}>
                       <p className="font-black text-xs uppercase text-[#9ECCFA] tracking-widest">{item.label}</p>
                       <p className="font-bold text-sm text-[#F8F3EA] text-right max-w-[60%]">{item.value}</p>
                     </div>
                   ))}
                 </div>
-              </div>
+              </AnimBlock>
             </div>
           </div>
 
-          {/* OTHER PROJECTS — dengan SpotlightCard */}
-          <div className="mt-16">
-            <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Project Lainnya</h2>
+          {/* OTHER PROJECTS */}
+          <AnimBlock from="bottom" delay={50} className="mt-16">
+            <SectionHeading>Project Lainnya</SectionHeading>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {Object.values(PROJECTS).filter(p => p.id !== project.id).slice(0, 3).map((p, i) => (
-                <SpotlightCard
-                  key={i}
-                  onClick={() => router.visit(`/projects/${p.id}`)}
-                >
-                  {/* image */}
-                  <div className="overflow-hidden border-b-4 border-[#0B1957] relative">
-                    <img
-                      src={p.images[0]}
-                      alt={p.title}
-                      className="card-img-inner w-full h-32 object-cover object-top"
-                    />
-                    <div className="card-overlay-inner absolute inset-0 bg-[#0B1957] bg-opacity-55 flex items-center justify-center">
-                      <span className="text-[#9ECCFA] font-black uppercase text-xs border-2 border-[#9ECCFA] px-3 py-1.5">Lihat Detail →</span>
+                <AnimBlock key={i} from="bottom" delay={i * 80}>
+                  <SpotlightCard onClick={() => router.visit(`/projects/${p.id}`)}>
+                    <div className="overflow-hidden border-b-4 border-[#0B1957] relative">
+                      <img src={p.images[0]} alt={p.title} className="card-img-inner w-full h-32 object-cover object-top" />
+                      <div className="card-overlay-inner absolute inset-0 bg-[#0B1957] bg-opacity-55 flex items-center justify-center">
+                        <span className="text-[#9ECCFA] font-black uppercase text-xs border-2 border-[#9ECCFA] px-3 py-1.5">Lihat Detail →</span>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* content */}
-                  <div className="p-5 relative z-20">
-                    <p className="font-black uppercase text-sm text-[#0B1957] mb-2">{p.title}</p>
-                    <p className="font-semibold text-xs text-[#0B1957] opacity-60 mb-3 leading-relaxed">{p.desc}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {p.stacks.map((s, j) => (
-                        <div key={j} title={s.label} className="border-2 border-[#0B1957] bg-[#D1E8FF] p-1">
-                          <img src={s.icon} alt={s.label} className="w-6 h-6 object-contain" />
-                        </div>
-                      ))}
+                    <div className="p-5 relative z-20">
+                      <p className="font-black uppercase text-sm text-[#0B1957] mb-2">{p.title}</p>
+                      <p className="font-semibold text-xs text-[#0B1957] opacity-60 mb-3 leading-relaxed">{p.desc}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {p.stacks.map((s, j) => (
+                          <div key={j} title={s.label} className="border-2 border-[#0B1957] bg-[#D1E8FF] p-1">
+                            <img src={s.icon} alt={s.label} className="w-6 h-6 object-contain" />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </SpotlightCard>
+                  </SpotlightCard>
+                </AnimBlock>
               ))}
             </div>
-          </div>
+          </AnimBlock>
         </div>
 
         {/* LIGHTBOX */}
         {lightbox !== null && (
           <div className="lightbox-overlay" onClick={() => setLightbox(null)}>
-            <button className="absolute top-6 right-6 border-4 border-[#9ECCFA] bg-[#0B1957] text-[#9ECCFA] w-12 h-12 flex items-center justify-center z-10" onClick={() => setLightbox(null)} style={{ boxShadow: "3px 3px 0 #9ECCFA" }}>
+            <button className="lb-btn absolute top-6 right-6 z-10" onClick={() => setLightbox(null)}>
               <IconClose />
             </button>
             {project.images.length > 1 && (
-              <button className="absolute left-4 sm:left-8 border-4 border-[#9ECCFA] bg-[#0B1957] text-[#9ECCFA] w-12 h-12 flex items-center justify-center" style={{ boxShadow: "3px 3px 0 #9ECCFA" }}
+              <button className="lb-btn absolute left-4 sm:left-8"
                 onClick={e => { e.stopPropagation(); setLightbox(i => i !== null ? (i - 1 + project.images.length) % project.images.length : null); }}>
                 <IconChevronLeft />
               </button>
             )}
-            <img src={project.images[lightbox]} alt={`lightbox ${lightbox + 1}`} className="lightbox-img" onClick={e => e.stopPropagation()} />
+            <img src={project.images[lightbox]} alt="" className="lightbox-img" onClick={e => e.stopPropagation()} />
             {project.images.length > 1 && (
-              <button className="absolute right-4 sm:right-8 border-4 border-[#9ECCFA] bg-[#0B1957] text-[#9ECCFA] w-12 h-12 flex items-center justify-center" style={{ boxShadow: "3px 3px 0 #9ECCFA" }}
+              <button className="lb-btn absolute right-4 sm:right-8"
                 onClick={e => { e.stopPropagation(); setLightbox(i => i !== null ? (i + 1) % project.images.length : null); }}>
                 <IconChevronRight />
               </button>
             )}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 border-2 border-[#9ECCFA] bg-[#0B1957] px-4 py-2">
-              <span className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">{lightbox + 1} / {project.images.length}</span>
+              <span className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">
+                {lightbox + 1} / {project.images.length}
+              </span>
             </div>
           </div>
         )}
 
         {/* BACK TO TOP */}
-        <button className="back-to-top" style={{ opacity: showTop ? 1 : 0, visibility: showTop ? "visible" : "hidden" }}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Back to top">
+        <button
+          className="back-to-top"
+          style={{ opacity: showTop ? 1 : 0, visibility: showTop ? "visible" : "hidden" }}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Back to top"
+        >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="18 15 12 9 6 15" />
           </svg>
         </button>
       </div>
     </>
+  );
+}
+
+// ── SectionHeading with animated underline ─────────────────────────────────────
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  const { ref, inView } = useInView(0.3);
+  return (
+    <div ref={ref} className="mb-4">
+      <h2 className={`section-heading text-xl font-black uppercase text-[#0B1957] ${inView ? "visible" : ""}`}>
+        {children}
+      </h2>
+    </div>
   );
 }

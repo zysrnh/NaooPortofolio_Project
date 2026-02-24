@@ -64,11 +64,10 @@ const EMPTY_FORM: ProjectData = {
 };
 
 const STATUS_OPTS = ["Hosted", "In Progress", "Planning"] as const;
-const STATUS_STYLE: Record<string, string> = {
-  "Hosted":      "bg-[#9ECCFA]",
-  "In Progress": "bg-[#FFE8A0]",
-  "Planning":    "bg-[#F8F3EA]",
-};
+
+// ── CSRF Helper ───────────────────────────────────────────────────────────────
+const getCsrf = (): string =>
+  document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ?? "";
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 function Toast({ msg, type, onDone }: { msg: string; type: "ok" | "err"; onDone: () => void }) {
@@ -145,7 +144,13 @@ export default function ProjectCRUD() {
     setUploading(true);
     const fd = new FormData(); fd.append("image", file);
     try {
-      const r = await fetch("/api/admin/projects/upload-image", { method:"POST", body:fd });
+      const r = await fetch("/api/admin/projects/upload-image", {
+        method: "POST",
+        headers: {
+          "X-CSRF-TOKEN": getCsrf(), // ← CSRF fix (jangan set Content-Type untuk FormData)
+        },
+        body: fd,
+      });
       const d = await r.json();
       if (d.url) { setForm(f => ({ ...f, images:[...f.images, d.url] })); showToast("Gambar diupload"); }
       else showToast("Upload gagal","err");
@@ -181,7 +186,15 @@ export default function ProjectCRUD() {
     try {
       const isEdit = !!editTarget;
       const url    = isEdit ? `/api/admin/projects/${editTarget!.id}` : "/api/admin/projects";
-      const r = await fetch(url, { method:isEdit?"PUT":"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body:JSON.stringify({ ...form, demo_url:form.demo_url||null, github_url:form.github_url||null }) });
+      const r = await fetch(url, {
+        method: isEdit ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-CSRF-TOKEN": getCsrf(), // ← CSRF fix
+        },
+        body: JSON.stringify({ ...form, demo_url:form.demo_url||null, github_url:form.github_url||null }),
+      });
       if (!r.ok) {
         const d = await r.json();
         if (d.errors) setErrors(Object.fromEntries(Object.entries(d.errors).map(([k,v])=>[k,(v as string[])[0]])));
@@ -196,15 +209,31 @@ export default function ProjectCRUD() {
 
   // delete
   const handleDelete = async (id:number) => {
-    try { await fetch(`/api/admin/projects/${id}`,{method:"DELETE"}); showToast("Project dihapus"); fetchAll(); }
-    catch { showToast("Gagal hapus","err"); }
+    try {
+      await fetch(`/api/admin/projects/${id}`, {
+        method: "DELETE",
+        headers: {
+          "X-CSRF-TOKEN": getCsrf(), // ← CSRF fix
+        },
+      });
+      showToast("Project dihapus");
+      fetchAll();
+    } catch { showToast("Gagal hapus","err"); }
     finally { setDeleteId(null); }
   };
 
   // toggle
   const handleToggle = async (id:number) => {
-    try { const r=await fetch(`/api/admin/projects/${id}/toggle`,{method:"PATCH"}); const d=await r.json(); setProjects(ps=>ps.map(p=>p.id===id?{...p,visible:d.visible}:p)); }
-    catch { showToast("Gagal toggle","err"); }
+    try {
+      const r = await fetch(`/api/admin/projects/${id}/toggle`, {
+        method: "PATCH",
+        headers: {
+          "X-CSRF-TOKEN": getCsrf(), // ← CSRF fix
+        },
+      });
+      const d = await r.json();
+      setProjects(ps => ps.map(p => p.id === id ? { ...p, visible: d.visible } : p));
+    } catch { showToast("Gagal toggle","err"); }
   };
 
   const stacksByCategory = techStacks.reduce<Record<string,TechStackOption[]>>((acc,s)=>{ if(!acc[s.category])acc[s.category]=[]; acc[s.category].push(s); return acc; },{});

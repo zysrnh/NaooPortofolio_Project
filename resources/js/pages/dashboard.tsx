@@ -397,18 +397,10 @@ export default function Dashboard() {
 
             {/* ── PROJECTS ── */}
             {activeNav === "projects" && (
-              <div className="content-fade space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="font-black text-2xl uppercase text-[#0B1957]">All Projects</h2>
-                  <span className="border-4 border-[#0B1957] bg-[#0B1957] text-[#9ECCFA] font-black text-xs px-3 py-2 uppercase tracking-widest">
-                    {PROJECTS.length} Total
-                  </span>
-                </div>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {PROJECTS.map((p, i) => <ProjectCard key={i} project={p} />)}
-                </div>
-              </div>
-            )}
+  <div className="content-fade">
+    <ProjectCRUD />
+  </div>
+)}
 
             {/* ── TECH STACK CRUD ── */}
             {activeNav === "stacks" && (
