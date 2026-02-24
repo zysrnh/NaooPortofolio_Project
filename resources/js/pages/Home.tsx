@@ -49,6 +49,74 @@ function useScrollReveal(ready: boolean) {
   }, [ready]);
 }
 
+// ── FloatingBlocks Component ──────────────────────────────────────────────────
+// Kotak-kotak mengambang fixed di posisi tertentu, animasi naik-turun seperti login
+const BLOCK_CONFIGS = [
+  // kiri — pakai left negatif biar sebagian tersembunyi di mobile
+  { top: "8%",  left: "-16px", size: 64,  color: "#9ECCFA", type: "filled",  animDelay: "0s"   },
+  { top: "55%", left: "-6px",  size: 20,  color: "#0B1957", type: "outline", animDelay: "1.2s" },
+  { top: "30%", left: "-4px",  size: 14,  color: "#9ECCFA", type: "filled",  animDelay: "2.4s" },
+  { top: "75%", left: "-10px", size: 40,  color: "#F8F3EA", type: "outline", animDelay: "0.6s" },
+  // kanan — pakai right style lewat transform agar selalu nempel di tepi kanan
+  { top: "12%", right: "-16px", size: 28,  color: "#0B1957", type: "filled",  animDelay: "1.8s" },
+  { top: "45%", right: "-6px",  size: 48,  color: "#9ECCFA", type: "outline", animDelay: "0.3s" },
+  { top: "70%", right: "-4px",  size: 16,  color: "#F8F3EA", type: "filled",  animDelay: "2.1s" },
+  { top: "85%", right: "-10px", size: 36,  color: "#9ECCFA", type: "outline", animDelay: "1.5s" },
+] as const;
+
+function FloatingBlocks() {
+  return (
+    <>
+      <style>{`
+        @keyframes floatBob {
+          0%,100% { transform: translateY(0px);   }
+          50%      { transform: translateY(-12px); }
+        }
+      `}</style>
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 0,
+          overflow: "hidden",
+        }}
+        aria-hidden="true"
+      >
+        {BLOCK_CONFIGS.map((cfg, i) => {
+          const shadow = cfg.type === "filled"
+            ? `4px 4px 0 rgba(11,25,87,0.45)`
+            : `4px 4px 0 ${cfg.color === "#0B1957" ? "rgba(158,204,250,0.35)" : "rgba(11,25,87,0.3)"}`;
+          const border = cfg.type === "outline"
+            ? `4px solid ${cfg.color}`
+            : `3px solid rgba(11,25,87,0.3)`;
+          const bg = cfg.type === "filled" ? cfg.color : "transparent";
+          const pos: React.CSSProperties = "right" in cfg
+            ? { right: (cfg as any).right }
+            : { left: (cfg as any).left };
+
+          return (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                top: cfg.top,
+                ...pos,
+                width: cfg.size,
+                height: cfg.size,
+                background: bg,
+                border,
+                boxShadow: shadow,
+                animation: `floatBob ${3.5 + i * 0.4}s ease-in-out ${cfg.animDelay} infinite`,
+              }}
+            />
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
 // ── SpotlightCard Component ───────────────────────────────────────────────────
 interface SpotlightCardProps {
   children: React.ReactNode;
@@ -478,6 +546,7 @@ export default function Home() {
         @keyframes slideRight { from { opacity:0; transform:translateX(40px);  } to { opacity:1; transform:translateX(0);  } }
         @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:.4} }
         @keyframes shimmer    { from { transform: translateX(-200%); } to { transform: translateX(200%); } }
+        body { background-color: #D1E8FF; }
 
         .anim-navbar    { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-hero-img  { animation: slideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
@@ -564,7 +633,9 @@ export default function Home() {
         .back-to-top:active { transform: translate(0,0); box-shadow: 2px 2px 0 #9ECCFA; }
       `}</style>
 
-      <div className="min-h-screen bg-[#D1E8FF]" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}>
+      <div className="min-h-screen relative" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}>
+        {/* ── FLOATING BLOCKS BACKGROUND ── */}
+        <FloatingBlocks />
         <div className="anim-navbar"><Navbar /></div>
 
         {/* ── HERO ── */}

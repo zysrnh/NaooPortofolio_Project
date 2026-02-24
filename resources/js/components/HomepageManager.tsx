@@ -897,7 +897,7 @@ export default function HomepageManager() {
               <span className="ml-1 border-2 border-[#0B1957] bg-[#9ECCFA] px-2 py-0.5 font-black text-[9px] uppercase tracking-wide text-[#0B1957]">Live</span>
             )}
           </div>
-
+          
           <div key={activeSection} className="hm-content-fade">
             {activeSection === "techstack" && <TechStackVisibility />}
             {activeSection === "hero"      && <HeroSection />}
