@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Controllers\TechStackController;
 use App\Http\Controllers\HeroProfileController;
+use App\Http\Controllers\ProjectController;
 
 // ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -43,9 +44,13 @@ Route::post('/logout', function () {
 Route::prefix('api')->group(function () {
 
     // ── Public ──
-    Route::get('/tech-stacks/visible', [TechStackController::class, 'indexVisible']); // HARUS sebelum {techStack}
+    Route::get('/tech-stacks/visible', [TechStackController::class, 'indexVisible']);
     Route::get('/tech-stacks',         [TechStackController::class, 'index']);
     Route::get('/hero',                [HeroProfileController::class, 'show']);
+
+    // Projects publik
+    Route::get('/projects',        [ProjectController::class, 'index']);
+    Route::get('/projects/{slug}', [ProjectController::class, 'show']);
 
     // ── Protected ──
     Route::middleware(['auth'])->group(function () {
@@ -57,6 +62,14 @@ Route::prefix('api')->group(function () {
 
         // Hero
         Route::put('/hero', [HeroProfileController::class, 'update']);
+
+        // Projects (admin CRUD)
+        Route::get   ('/admin/projects',                  [ProjectController::class, 'adminIndex']);
+        Route::post  ('/admin/projects',                  [ProjectController::class, 'store']);
+        Route::post  ('/admin/projects/upload-image',     [ProjectController::class, 'uploadImage']);
+        Route::put   ('/admin/projects/{project}',        [ProjectController::class, 'update']);
+        Route::delete('/admin/projects/{project}',        [ProjectController::class, 'destroy']);
+        Route::patch ('/admin/projects/{project}/toggle', [ProjectController::class, 'toggleVisibility']);
     });
 });
 
