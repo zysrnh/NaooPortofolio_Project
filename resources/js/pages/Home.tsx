@@ -52,17 +52,15 @@ function useScrollReveal(ready: boolean) {
 // ── FloatingBlocks Component ──────────────────────────────────────────────────
 // Kotak-kotak mengambang fixed di posisi tertentu, animasi naik-turun seperti login
 const BLOCK_CONFIGS = [
-  // kiri — pakai left negatif biar sebagian tersembunyi di mobile
-  { top: "8%",  left: "-16px", size: 64,  color: "#9ECCFA", type: "filled",  animDelay: "0s"   },
-  { top: "55%", left: "-6px",  size: 20,  color: "#0B1957", type: "outline", animDelay: "1.2s" },
-  { top: "30%", left: "-4px",  size: 14,  color: "#9ECCFA", type: "filled",  animDelay: "2.4s" },
-  { top: "75%", left: "-10px", size: 40,  color: "#F8F3EA", type: "outline", animDelay: "0.6s" },
-  // kanan — pakai right style lewat transform agar selalu nempel di tepi kanan
-  { top: "12%", right: "-16px", size: 28,  color: "#0B1957", type: "filled",  animDelay: "1.8s" },
-  { top: "45%", right: "-6px",  size: 48,  color: "#9ECCFA", type: "outline", animDelay: "0.3s" },
-  { top: "70%", right: "-4px",  size: 16,  color: "#F8F3EA", type: "filled",  animDelay: "2.1s" },
-  { top: "85%", right: "-10px", size: 36,  color: "#9ECCFA", type: "outline", animDelay: "1.5s" },
-] as const;
+  { top: "8%",  left: "3%",   size: 64,  color: "#9ECCFA", type: "filled",  animDelay: "0s"    },
+  { top: "55%", left: "2%",   size: 20,  color: "#0B1957", type: "outline", animDelay: "1.2s"  },
+  { top: "30%", left: "1.5%", size: 14,  color: "#9ECCFA", type: "filled",  animDelay: "2.4s"  },
+  { top: "75%", left: "4%",   size: 40,  color: "#F8F3EA", type: "outline", animDelay: "0.6s"  },
+  { top: "12%", left: "92%",  size: 28,  color: "#0B1957", type: "filled",  animDelay: "1.8s"  },
+  { top: "45%", left: "94%",  size: 48,  color: "#9ECCFA", type: "outline", animDelay: "0.3s"  },
+  { top: "70%", left: "91%",  size: 16,  color: "#F8F3EA", type: "filled",  animDelay: "2.1s"  },
+  { top: "85%", left: "93%",  size: 36,  color: "#9ECCFA", type: "outline", animDelay: "1.5s"  },
+];
 
 function FloatingBlocks() {
   return (
@@ -87,13 +85,12 @@ function FloatingBlocks() {
           const shadow = cfg.type === "filled"
             ? `4px 4px 0 rgba(11,25,87,0.45)`
             : `4px 4px 0 ${cfg.color === "#0B1957" ? "rgba(158,204,250,0.35)" : "rgba(11,25,87,0.3)"}`;
+
           const border = cfg.type === "outline"
             ? `4px solid ${cfg.color}`
             : `3px solid rgba(11,25,87,0.3)`;
+
           const bg = cfg.type === "filled" ? cfg.color : "transparent";
-          const pos: React.CSSProperties = "right" in cfg
-            ? { right: (cfg as any).right }
-            : { left: (cfg as any).left };
 
           return (
             <div
@@ -101,7 +98,7 @@ function FloatingBlocks() {
               style={{
                 position: "absolute",
                 top: cfg.top,
-                ...pos,
+                left: cfg.left,
                 width: cfg.size,
                 height: cfg.size,
                 background: bg,
@@ -920,4 +917,4 @@ export default function Home() {
       </div>
     </>
   );
-}
+} 
