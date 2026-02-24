@@ -1,80 +1,148 @@
 import Navbar from "@/components/Navbar";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { router } from "@inertiajs/react";
 
-// ── Scroll reveal hook with direction detection + varied animations ────────
+// ── Scroll reveal hook ────────────────────────────────────────────────────────
 function useScrollReveal(ready: boolean) {
   useEffect(() => {
     if (!ready) return;
-
     let lastScrollY = window.scrollY;
-
     const getTransform = (el: HTMLElement, directionDown: boolean) => {
       if (el.classList.contains("from-left"))  return "translateX(-50px)";
       if (el.classList.contains("from-right")) return "translateX(50px)";
       if (el.classList.contains("from-scale")) return "scale(0.92)";
       return directionDown ? "translateY(48px)" : "translateY(-48px)";
     };
-
     const els = Array.from(document.querySelectorAll(".reveal")) as HTMLElement[];
-
-    // set initial hidden state
     els.forEach((el) => {
       el.style.opacity = "0";
       el.style.transform = getTransform(el, true);
       el.style.transition = "opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1)";
     });
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const directionDown = window.scrollY >= lastScrollY;
-        lastScrollY = window.scrollY;
-
-        entries.forEach((entry) => {
-          const el = entry.target as HTMLElement;
-          const delay = Number(el.dataset.delay ?? 0);
-
-          if (entry.isIntersecting) {
-            // entering viewport — animate in
-            setTimeout(() => {
-              el.style.opacity = "1";
-              el.style.transform = "translateY(0) translateX(0) scale(1)";
-            }, delay);
-            el.dataset.visible = "true";
-          } else {
-            // leaving viewport — reset so it can re-animate
-            const wasVisible = el.dataset.visible === "true";
-            if (wasVisible) {
-              el.style.transition = "none";
-              el.style.opacity = "0";
-              el.style.transform = getTransform(el, directionDown);
-              // re-enable transition after reset
-              requestAnimationFrame(() => {
-                el.style.transition = "opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1)";
-              });
-              el.dataset.visible = "false";
-            }
+    const observer = new IntersectionObserver((entries) => {
+      const directionDown = window.scrollY >= lastScrollY;
+      lastScrollY = window.scrollY;
+      entries.forEach((entry) => {
+        const el = entry.target as HTMLElement;
+        const delay = Number(el.dataset.delay ?? 0);
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0) translateX(0) scale(1)";
+          }, delay);
+          el.dataset.visible = "true";
+        } else {
+          if (el.dataset.visible === "true") {
+            el.style.transition = "none";
+            el.style.opacity = "0";
+            el.style.transform = getTransform(el, directionDown);
+            requestAnimationFrame(() => {
+              el.style.transition = "opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1)";
+            });
+            el.dataset.visible = "false";
           }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [ready]);
 }
 
+// ── SpotlightCard Component ───────────────────────────────────────────────────
+interface SpotlightCardProps {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+
+function SpotlightCard({ children, className = "", onClick }: SpotlightCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [spotlight, setSpotlight] = useState({ x: 0, y: 0, opacity: 0 });
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    setSpotlight({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      opacity: 1,
+    });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setSpotlight(prev => ({ ...prev, opacity: 0 }));
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      className={`spotlight-card ${className}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+    >
+      <div
+        className="spotlight-glow"
+        style={{
+          left: spotlight.x,
+          top: spotlight.y,
+          opacity: spotlight.opacity,
+        }}
+      />
+      {children}
+    </div>
+  );
+}
+
+// ── Projects data ─────────────────────────────────────────────────────────────
 const projects = [
-  { title: "Burger Ordering App", desc: "Website restoran burger dengan sistem pemesanan online", image: "/profile/Mboy.jpeg", stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "React", icon: "/Icon/React.jpg" }] },
-  { title: "Beyblade Leaderboard", desc: "Leaderboard turnamen dengan statistik otomatis", image: "/profile/Mboy.jpeg", stacks: [{ label: "JavaScript", icon: "/Icon/JavaScript.jpg" }] },
-  { title: "CV Generator Tool", desc: "Generate CV massal dari Excel ke PDF", image: "/profile/Mboy.jpeg", stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }] },
-  { title: "Dashboard Analytics", desc: "Dashboard visualisasi data real-time untuk monitoring bisnis", image: "/profile/Mboy.jpeg", stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }] },
-  { title: "Inventory System", desc: "Sistem manajemen stok dan inventaris gudang berbasis web", image: "/profile/Mboy.jpeg", stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "JavaScript", icon: "/Icon/JavaScript.jpg" }] },
-  { title: "E-Learning Platform", desc: "Platform belajar online dengan fitur kuis dan sertifikasi", image: "/profile/Mboy.jpeg", stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "Laravel", icon: "/Icon/Laravel.jpg" }] },
+  {
+    id: "burger-ordering-app",
+    title: "Burger Ordering App",
+    desc: "Website restoran burger dengan sistem pemesanan online",
+    image: "/profile/Mboy.jpeg",
+    stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "React", icon: "/Icon/React.jpg" }],
+  },
+  {
+    id: "beyblade-leaderboard",
+    title: "Beyblade Leaderboard",
+    desc: "Leaderboard turnamen dengan statistik otomatis",
+    image: "/profile/Mboy.jpeg",
+    stacks: [{ label: "JavaScript", icon: "/Icon/JavaScript.jpg" }],
+  },
+  {
+    id: "cv-generator-tool",
+    title: "CV Generator Tool",
+    desc: "Generate CV massal dari Excel ke PDF",
+    image: "/profile/Mboy.jpeg",
+    stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }],
+  },
+  {
+    id: "dashboard-analytics",
+    title: "Dashboard Analytics",
+    desc: "Dashboard visualisasi data real-time untuk monitoring bisnis",
+    image: "/profile/Mboy.jpeg",
+    stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }],
+  },
+  {
+    id: "inventory-system",
+    title: "Inventory System",
+    desc: "Sistem manajemen stok dan inventaris gudang berbasis web",
+    image: "/profile/Mboy.jpeg",
+    stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "JavaScript", icon: "/Icon/JavaScript.jpg" }],
+  },
+  {
+    id: "e-learning-platform",
+    title: "E-Learning Platform",
+    desc: "Platform belajar online dengan fitur kuis dan sertifikasi",
+    image: "/profile/Mboy.jpeg",
+    stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "Laravel", icon: "/Icon/Laravel.jpg" }],
+  },
 ];
 
-// ── Compute stats dynamically from projects ───────────────────────────────
+// ── Stats ─────────────────────────────────────────────────────────────────────
 const totalProjects = projects.length;
 const stackCounts: Record<string, number> = {};
 projects.forEach(p => p.stacks.forEach(s => {
@@ -90,13 +158,38 @@ const PROJECT_STATS = [
   { value: stackCounts["Laravel"] ?? 0, label: "Laravel Projects", note: "Backend solid" },
 ];
 
+// ── Tech Stack tabs ───────────────────────────────────────────────────────────
 const TABS = [
-  { key: "frontend", label: "Frontend", techs: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }, { label: "JavaScript", icon: "/Icon/JavaScript.jpg" }, { label: "Tailwind", icon: "/Icon/TypeScript.jpg" }, { label: "Vite", icon: "/Icon/JavaScript.jpg" }] },
-  { key: "backend",  label: "Backend",  techs: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "JavaScript", icon: "/Icon/JavaScript.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }, { label: "MySQL", icon: "/Icon/Laravel.jpg" }] },
-  { key: "tools",    label: "Tools",    techs: [{ label: "Git", icon: "/Icon/JavaScript.jpg" }, { label: "GitHub", icon: "/Icon/TypeScript.jpg" }, { label: "VS Code", icon: "/Icon/React.jpg" }, { label: "Postman", icon: "/Icon/Laravel.jpg" }, { label: "Figma", icon: "/Icon/JavaScript.jpg" }, { label: "Docker", icon: "/Icon/TypeScript.jpg" }] },
-  { key: "ai",       label: "AI Tools", techs: [{ label: "Claude", icon: "/Icon/TypeScript.jpg" }, { label: "ChatGPT", icon: "/Icon/JavaScript.jpg" }, { label: "Copilot", icon: "/Icon/React.jpg" }, { label: "Gemini", icon: "/Icon/Laravel.jpg" }] },
+  { key: "frontend", label: "Frontend", techs: [
+    { label: "React",      icon: "/Icon/React.jpg" },
+    { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
+    { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
+    { label: "Tailwind",   icon: "/Icon/TypeScript.jpg" },
+    { label: "Vite",       icon: "/Icon/JavaScript.jpg" },
+  ]},
+  { key: "backend", label: "Backend", techs: [
+    { label: "Laravel",    icon: "/Icon/Laravel.jpg" },
+    { label: "JavaScript", icon: "/Icon/JavaScript.jpg" },
+    { label: "TypeScript", icon: "/Icon/TypeScript.jpg" },
+    { label: "MySQL",      icon: "/Icon/Laravel.jpg" },
+  ]},
+  { key: "tools", label: "Tools", techs: [
+    { label: "Git",     icon: "/Icon/JavaScript.jpg" },
+    { label: "GitHub",  icon: "/Icon/TypeScript.jpg" },
+    { label: "VS Code", icon: "/Icon/React.jpg" },
+    { label: "Postman", icon: "/Icon/Laravel.jpg" },
+    { label: "Figma",   icon: "/Icon/JavaScript.jpg" },
+    { label: "Docker",  icon: "/Icon/TypeScript.jpg" },
+  ]},
+  { key: "ai", label: "AI Tools", techs: [
+    { label: "Claude",  icon: "/Icon/TypeScript.jpg" },
+    { label: "ChatGPT", icon: "/Icon/JavaScript.jpg" },
+    { label: "Copilot", icon: "/Icon/React.jpg" },
+    { label: "Gemini",  icon: "/Icon/Laravel.jpg" },
+  ]},
 ];
 
+// ── TechStack Component ───────────────────────────────────────────────────────
 function TechStack() {
   const [activeTab, setActiveTab] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -120,7 +213,7 @@ function TechStack() {
             </button>
           ))}
         </div>
-        <div className="p-6 sm:p-10 min-h-[160px] flex flex-wrap gap-3 sm:gap-5 items-start content-start"
+        <div className="p-6 sm:p-10 min-h-[180px] flex flex-wrap gap-3 sm:gap-5 items-start content-start"
           style={{ opacity: animating ? 0 : 1, transform: animating ? "translateY(8px)" : "translateY(0)", transition: "opacity 0.18s ease, transform 0.18s ease" }}>
           {TABS[activeTab].techs.map((tech, i) => (
             <div key={i} className="tech-chip">
@@ -135,89 +228,63 @@ function TechStack() {
   );
 }
 
-// ── PROJECT COUNT ─────────────────────────────────────────────────────────
+// ── ProjectCount Component ────────────────────────────────────────────────────
 function ProjectCount() {
   const [counts, setCounts] = useState(PROJECT_STATS.map(() => 0));
   const sectionRef = useRef<HTMLElement>(null);
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          PROJECT_STATS.forEach((stat, i) => {
-            const duration = 800;
-            const steps = 40;
-            let step = 0;
-            const timer = setInterval(() => {
-              step++;
-              const eased = 1 - Math.pow(1 - step / steps, 3);
-              const current = Math.round(eased * stat.value);
-              setCounts(prev => {
-                const next = [...prev];
-                next[i] = current;
-                return next;
-              });
-              if (step >= steps) clearInterval(timer);
-            }, duration / steps);
-          });
-        }
-      },
-      { threshold: 0.25 }
-    );
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !hasAnimated.current) {
+        hasAnimated.current = true;
+        PROJECT_STATS.forEach((stat, i) => {
+          const duration = 800, steps = 40;
+          let step = 0;
+          const timer = setInterval(() => {
+            step++;
+            const eased = 1 - Math.pow(1 - step / steps, 3);
+            const current = Math.round(eased * stat.value);
+            setCounts(prev => { const next = [...prev]; next[i] = current; return next; });
+            if (step >= steps) clearInterval(timer);
+          }, duration / steps);
+        });
+      }
+    }, { threshold: 0.25 });
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section ref={sectionRef} id="project-stats" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
+    <section ref={sectionRef} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
       <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Project Stats</h2>
-
       <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-        {/* Grid of stat cards */}
         <div className="grid grid-cols-2 md:grid-cols-4">
           {PROJECT_STATS.map((stat, i) => (
-            <div
-              key={i}
+            <div key={i}
               className="relative flex flex-col items-center justify-center py-10 px-4 text-center overflow-hidden group
                 border-b-4 border-[#0B1957]
                 [&:nth-child(odd)]:border-r-4 [&:nth-child(odd)]:border-r-[#0B1957]
                 md:[&:nth-child(n)]:border-r-4 md:[&:nth-child(n)]:border-r-[#0B1957]
                 md:[&:last-child]:border-r-0
                 [&:nth-child(3)]:border-b-0 [&:nth-child(4)]:border-b-0
-                md:[&:nth-child(3)]:border-b-4 md:[&:nth-child(4)]:border-b-4
-              "
-            >
-              {/* Hover fill sweeps up */}
+                md:[&:nth-child(3)]:border-b-4 md:[&:nth-child(4)]:border-b-4">
               <div className="absolute inset-0 bg-[#0B1957] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-
-              {/* Corner accent */}
               <div className="absolute top-0 left-0 border-t-[18px] border-l-[18px] border-t-[#9ECCFA] border-l-transparent" />
-
-              {/* Count */}
-              <span
-                className="relative z-10 font-black tabular-nums leading-none text-[#0B1957] group-hover:text-[#9ECCFA] transition-colors duration-300"
-                style={{ fontSize: "clamp(2.8rem, 7vw, 4.5rem)" }}
-              >
+              <span className="relative z-10 font-black tabular-nums leading-none text-[#0B1957] group-hover:text-[#9ECCFA] transition-colors duration-300"
+                style={{ fontSize: "clamp(2.8rem, 7vw, 4.5rem)" }}>
                 {counts[i]}
                 <sup className="text-[#9ECCFA] group-hover:text-[#D1E8FF] text-xl align-super ml-0.5 transition-colors duration-300">+</sup>
               </span>
-
-              {/* Label */}
               <p className="relative z-10 font-black uppercase text-xs tracking-[0.12em] text-[#0B1957] group-hover:text-[#F8F3EA] transition-colors duration-300 mt-3 leading-snug">
                 {stat.label}
               </p>
-
-              {/* Sub-note */}
               <p className="relative z-10 font-semibold text-[10px] uppercase tracking-wide text-[#0B1957] opacity-40 group-hover:text-[#9ECCFA] group-hover:opacity-100 transition-all duration-300 mt-1">
                 {stat.note}
               </p>
             </div>
           ))}
         </div>
-
-        {/* Bottom summary bar */}
         <div className="bg-[#0B1957] border-t-4 border-[#0B1957] px-6 sm:px-8 py-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-0 justify-between">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-[#9ECCFA] flex-shrink-0" />
@@ -237,14 +304,17 @@ function ProjectCount() {
   );
 }
 
+// ── Main Home Component ───────────────────────────────────────────────────────
 export default function Home() {
-  const [loading, setLoading]                   = useState(true);
-  const [progress, setProgress]                 = useState(0);
-  const [visible, setVisible]                   = useState(false);
-  const [currentSlide, setCurrentSlide]         = useState(0);
+  const hasLoaded = typeof window !== "undefined" && sessionStorage.getItem("hasLoaded") === "true";
+
+  const [loading, setLoading]                       = useState(!hasLoaded);
+  const [progress, setProgress]                     = useState(hasLoaded ? 100 : 0);
+  const [visible, setVisible]                       = useState(hasLoaded);
+  const [currentSlide, setCurrentSlide]             = useState(0);
   const [isHoveringCarousel, setIsHoveringCarousel] = useState(false);
-  const [showTop, setShowTop]                   = useState(false);
-  const [isMobile, setIsMobile]                 = useState(false);
+  const [showTop, setShowTop]                       = useState(false);
+  const [isMobile, setIsMobile]                     = useState(false);
   const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -272,6 +342,7 @@ export default function Home() {
   }, [visible, isHoveringCarousel, totalSlides]);
 
   useEffect(() => {
+    if (hasLoaded) return;
     const duration = 1800, interval = 16, steps = duration / interval;
     let current = 0;
     const timer = setInterval(() => {
@@ -282,7 +353,11 @@ export default function Home() {
       setProgress(Math.min(Math.round(eased), 100));
       if (current >= steps) {
         clearInterval(timer);
-        setTimeout(() => { setLoading(false); setTimeout(() => setVisible(true), 50); }, 200);
+        setTimeout(() => {
+          sessionStorage.setItem("hasLoaded", "true");
+          setLoading(false);
+          setTimeout(() => setVisible(true), 50);
+        }, 200);
       }
     }, interval);
     return () => clearInterval(timer);
@@ -300,7 +375,11 @@ export default function Home() {
     setCurrentSlide(idx);
   };
 
-  // ── LOADING SCREEN ────────────────────────────────────────────────────────
+  const goToProject = (id: string) => {
+    router.visit(`/projects/${id}`);
+  };
+
+  // ── LOADING SCREEN ──────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0B1957] flex flex-col items-center justify-center px-6">
@@ -332,7 +411,7 @@ export default function Home() {
     );
   }
 
-  // ── MAIN PAGE ─────────────────────────────────────────────────────────────
+  // ── MAIN PAGE ───────────────────────────────────────────────────────────────
   return (
     <>
       <style>{`
@@ -344,19 +423,56 @@ export default function Home() {
         .anim-navbar    { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-hero-img  { animation: slideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
         .anim-hero-text { animation: slideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
-        /* reveal classes handled via inline styles by useScrollReveal hook */
 
         .btn-brutal { transition: transform 0.08s ease, box-shadow 0.08s ease; }
         .btn-brutal:hover  { transform: translate(2px, 2px);  box-shadow: 2px 2px 0 #0B1957 !important; }
         .btn-brutal:active { transform: translate(4px, 4px);  box-shadow: 0   0   0 #0B1957 !important; }
 
-        .card-brutal { transition: transform 0.15s ease, box-shadow 0.15s ease; cursor: pointer; }
-        .card-brutal:hover  { transform: translate(-5px,-5px); box-shadow: 10px 10px 0 #9ECCFA, 12px 12px 0 #0B1957; }
-        .card-brutal:active { transform: translate(0,0); box-shadow: 3px 3px 0 #0B1957; }
-        .card-brutal:hover .card-img { transform: scale(1.08); }
-        .card-img { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
-        .card-overlay { opacity: 0; transition: opacity 0.2s ease; }
-        .card-brutal:hover .card-overlay { opacity: 1; }
+        /* ── SPOTLIGHT CARD ── */
+        .spotlight-card {
+          position: relative;
+          overflow: hidden;
+          cursor: pointer;
+          background: #F8F3EA;
+          border: 4px solid #0B1957;
+          box-shadow: 5px 5px 0 #0B1957;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .spotlight-card:hover {
+          transform: translate(-3px,-3px);
+          box-shadow: 8px 8px 0 #9ECCFA, 10px 10px 0 #0B1957;
+        }
+        .spotlight-card:hover .card-img {
+          transform: scale(1.05);
+        }
+        .card-img {
+          transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        .card-overlay {
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+        .spotlight-card:hover .card-overlay {
+          opacity: 1;
+        }
+
+        .spotlight-glow {
+          position: absolute;
+          width: 300px;
+          height: 300px;
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+          background: radial-gradient(
+            circle at center,
+            rgba(158, 204, 250, 0.25) 0%,
+            rgba(158, 204, 250, 0.1) 40%,
+            transparent 70%
+          );
+          pointer-events: none;
+          z-index: 10;
+          transition: opacity 0.3s ease;
+          mix-blend-mode: screen;
+        }
 
         .photo-wrap {
           position: relative; overflow: hidden;
@@ -386,13 +502,11 @@ export default function Home() {
 
         .stack-icon {
           display: inline-flex; align-items: center; justify-content: center;
-          border: 3px solid #0B1957; padding: 8px;
-          background-color: #D1E8FF; box-shadow: 3px 3px 0 #0B1957;
-          transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
-          cursor: default;
+          border: 2px solid #0B1957; padding: 3px; background: #D1E8FF;
+          transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease; cursor: default;
         }
-        .stack-icon:hover { background-color: #9ECCFA; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
-        .stack-icon img { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; display: block; }
+        .stack-icon:hover { background: #9ECCFA; transform: translate(-2px,-2px); box-shadow: 3px 3px 0 #0B1957; }
+        .stack-icon img { width: 28px; height: 28px; object-fit: cover; display: block; }
 
         .dot { width: 12px; height: 12px; border: 2px solid #0B1957; background: transparent; transition: all 0.2s ease; cursor: pointer; flex-shrink: 0; }
         .dot.active { background: #0B1957; width: 32px; }
@@ -433,11 +547,13 @@ export default function Home() {
                 Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.
               </p>
               <div className="flex gap-3 sm:gap-4 flex-wrap">
-                <button
-                  onClick={() => scrollTo("about")}
-                  className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] text-sm sm:text-base"
-                >
+                <button onClick={() => scrollTo("about")}
+                  className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] text-sm sm:text-base">
                   About
+                </button>
+                <button onClick={() => scrollTo("contact")}
+                  className="btn-brutal border-4 border-[#0B1957] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] text-sm sm:text-base">
+                  Contact
                 </button>
               </div>
             </div>
@@ -490,20 +606,29 @@ export default function Home() {
             <h2 className="text-2xl font-black uppercase text-[#0B1957]">Projects</h2>
             <div className="text-sm font-bold text-[#0B1957] uppercase tracking-widest">{currentSlide + 1} / {totalSlides}</div>
           </div>
-          <div className="overflow-hidden" onMouseEnter={() => setIsHoveringCarousel(true)} onMouseLeave={() => setIsHoveringCarousel(false)}>
+          <div
+            className="overflow-hidden"
+            onMouseEnter={() => setIsHoveringCarousel(true)}
+            onMouseLeave={() => setIsHoveringCarousel(false)}
+          >
             <div className="carousel-track flex" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
               {Array.from({ length: totalSlides }).map((_, page) => (
                 <div key={page} className={`min-w-full grid gap-4 sm:gap-6 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}>
                   {projects.slice(page * perPage, page * perPage + perPage).map((p, i) => (
-                    <div key={i} className="card-brutal bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] overflow-hidden">
+                    <SpotlightCard
+                      key={i}
+                      onClick={() => goToProject(p.id)}
+                    >
+                      {/* Image */}
                       <div className="w-full h-40 sm:h-44 overflow-hidden border-b-4 border-[#0B1957] relative">
                         <img src={p.image} alt={p.title} className="card-img w-full h-full object-cover object-top" />
                         <div className="card-overlay absolute inset-0 bg-[#0B1957] bg-opacity-60 flex items-center justify-center">
-                          <span className="text-[#9ECCFA] font-black uppercase text-sm border-2 border-[#9ECCFA] px-4 py-2">View Project →</span>
+                          <span className="text-[#9ECCFA] font-black uppercase text-sm border-2 border-[#9ECCFA] px-4 py-2">Lihat Detail →</span>
                         </div>
-                        <div className="absolute top-3 right-3 bg-[#0B1957] text-[#9ECCFA] text-xs font-black uppercase px-2 py-1">Project</div>
+                        <div className="absolute top-3 right-3 bg-[#0B1957] text-[#9ECCFA] text-xs font-black uppercase px-2 py-1 z-20">Project</div>
                       </div>
-                      <div className="p-4 sm:p-5">
+                      {/* Content */}
+                      <div className="p-4 sm:p-5 relative z-20">
                         <h3 className="font-black uppercase mb-2 text-[#0B1957] text-sm sm:text-base">{p.title}</h3>
                         <p className="font-semibold text-xs sm:text-sm mb-4 text-[#0B1957]">{p.desc}</p>
                         <div className="flex flex-wrap gap-2">
@@ -514,7 +639,7 @@ export default function Home() {
                           ))}
                         </div>
                       </div>
-                    </div>
+                    </SpotlightCard>
                   ))}
                 </div>
               ))}
@@ -526,7 +651,9 @@ export default function Home() {
                 <div key={i} className={`dot ${currentSlide === i ? "active" : ""}`} onClick={() => goToSlide(i)} />
               ))}
             </div>
-            <button className="btn-brutal border-4 border-[#0B1957] px-4 sm:px-5 py-2 font-black uppercase text-xs sm:text-sm shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2">
+            <button
+              onClick={() => router.visit("/projects")}
+              className="btn-brutal border-4 border-[#0B1957] px-4 sm:px-5 py-2 font-black uppercase text-xs sm:text-sm shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2">
               Lihat Selengkapnya <span>→</span>
             </button>
           </div>
@@ -588,11 +715,15 @@ export default function Home() {
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Quick Links</p>
                 <div className="flex flex-wrap gap-x-6 gap-y-1">
-                  {["Hero", "Projects", "About", "Contact"].map(l => (
-                    <a key={l}
-                      onClick={() => scrollTo(l.toLowerCase())}
+                  {[
+                    { label: "Home",     id: "hero" },
+                    { label: "Projects", id: "projects" },
+                    { label: "About",    id: "about" },
+                    { label: "Contact",  id: "contact" },
+                  ].map(l => (
+                    <a key={l.id} onClick={() => scrollTo(l.id)}
                       className="font-bold text-sm text-[#0B1957] uppercase cursor-pointer hover:underline">
-                      {l === "Hero" ? "Home" : l}
+                      {l.label}
                     </a>
                   ))}
                 </div>

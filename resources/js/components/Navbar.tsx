@@ -12,13 +12,43 @@ export default function Navbar() {
   const { auth } = usePage<{ auth: { user: { name: string } | null } }>().props;
   const isLoggedIn = !!auth?.user;
 
+  const currentUrl = typeof window !== "undefined" ? window.location.pathname : "";
+  const isHome = currentUrl === "/" || currentUrl === "";
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
 
-  const scrollTo = (id: string) => {
+  const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleNavLink = (href: string) => {
     setMenuOpen(false);
+
+    // "Projects" selalu ke halaman /projects
+    if (href === "projects") {
+      router.visit("/projects");
+      return;
+    }
+
+    // "Home" selalu ke /
+    if (href === "hero") {
+      if (isHome) {
+        scrollToSection("hero");
+      } else {
+        router.visit("/");
+      }
+      return;
+    }
+
+    // About / Contact
+    if (isHome) {
+      scrollToSection(href);
+    } else {
+      sessionStorage.setItem("scrollTo", href);
+      router.visit("/");
+    }
   };
 
   const handlePrimaryBtn = () => {
@@ -31,15 +61,32 @@ export default function Navbar() {
   };
 
   const handleContactBtn = () => {
-    scrollTo("contact");
+    setMenuOpen(false);
+    if (isHome) {
+      scrollToSection("contact");
+    } else {
+      sessionStorage.setItem("scrollTo", "contact");
+      router.visit("/");
+    }
   };
 
+  // Scroll ke section setelah balik ke home dari halaman lain
   useEffect(() => {
+    if (!isHome) return;
+    const target = sessionStorage.getItem("scrollTo");
+    if (target) {
+      sessionStorage.removeItem("scrollTo");
+      setTimeout(() => scrollToSection(target), 300);
+    }
+  }, [isHome]);
+
+  // Active section detection (hanya di home)
+  useEffect(() => {
+    if (!isHome) return;
     const handler = () => {
-      const sections = navLinks.map(l => document.getElementById(l.href));
       const scrollY = window.scrollY + 100;
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = sections[i];
+      for (let i = navLinks.length - 1; i >= 0; i--) {
+        const el = document.getElementById(navLinks[i].href);
         if (el && el.offsetTop <= scrollY) {
           setActiveSection(navLinks[i].href);
           break;
@@ -47,8 +94,17 @@ export default function Navbar() {
       }
     };
     window.addEventListener("scroll", handler, { passive: true });
+    handler();
     return () => window.removeEventListener("scroll", handler);
-  }, []);
+  }, [isHome]);
+
+  const getActiveLink = (href: string) => {
+    // Di halaman /projects atau /projects/xxx → highlight Projects
+    if (href === "projects") return currentUrl.startsWith("/projects");
+    // Di home → highlight berdasarkan scroll
+    if (isHome) return activeSection === href;
+    return false;
+  };
 
   return (
     <>
@@ -94,38 +150,30 @@ export default function Navbar() {
       <div className="w-full border-4 border-[#0B1957] bg-[#F8F3EA] shadow-[6px_6px_0_#0B1957] sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
-          {/* LOGO */}
-          <div className="logo-hover font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => scrollTo("hero")}>
+          <div className="logo-hover font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => router.visit("/")}>
             Y
           </div>
 
-          {/* MENU — desktop */}
           <div className="hidden md:flex gap-8 font-semibold text-[#0B1957]">
             {navLinks.map(link => (
-              <a key={link.href} onClick={() => scrollTo(link.href)}
-                className={`nav-link ${activeSection === link.href ? "active" : ""}`}>
+              <a key={link.href} onClick={() => handleNavLink(link.href)}
+                className={`nav-link ${getActiveLink(link.href) ? "active" : ""}`}>
                 {link.label}
               </a>
             ))}
           </div>
 
-          {/* BUTTONS — desktop */}
           <div className="hidden md:flex gap-3">
-            <button
-              onClick={handlePrimaryBtn}
-              className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957]"
-            >
+            <button onClick={handlePrimaryBtn}
+              className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957]">
               {isLoggedIn ? "Dashboard" : "Login"}
             </button>
-            <button
-              onClick={handleContactBtn}
-              className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]"
-            >
+            <button onClick={handleContactBtn}
+              className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]">
               Contact Me
             </button>
           </div>
 
-          {/* HAMBURGER — mobile */}
           <button
             className={`md:hidden flex flex-col gap-[6px] p-2 border-4 border-[#0B1957] shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] btn-nav ${menuOpen ? "ham-open" : ""}`}
             onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
@@ -135,25 +183,20 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* MOBILE MENU */}
         <div className={`mobile-menu border-t-4 border-[#0B1957] bg-[#F8F3EA] md:hidden ${menuOpen ? "open" : ""}`}>
           {navLinks.map(link => (
-            <a key={link.href} onClick={() => scrollTo(link.href)}
-              className={`mobile-nav-link ${activeSection === link.href ? "active" : ""}`}>
+            <a key={link.href} onClick={() => handleNavLink(link.href)}
+              className={`mobile-nav-link ${getActiveLink(link.href) ? "active" : ""}`}>
               {link.label}
             </a>
           ))}
           <div className="flex gap-3 p-4">
-            <button
-              onClick={handlePrimaryBtn}
-              className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] uppercase text-sm"
-            >
+            <button onClick={handlePrimaryBtn}
+              className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] uppercase text-sm">
               {isLoggedIn ? "Dashboard" : "Login"}
             </button>
-            <button
-              onClick={handleContactBtn}
-              className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] uppercase text-sm"
-            >
+            <button onClick={handleContactBtn}
+              className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] uppercase text-sm">
               Contact Me
             </button>
           </div>

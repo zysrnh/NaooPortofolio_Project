@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
+import TechStackCRUD from "@/components/TechStackCRUD";
 
 // ── SVG Icons ────────────────────────────────────────────────────────────────
-const IconFolder   = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
-const IconRocket   = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>;
-const IconGear     = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>;
-const IconLayers   = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>;
-const IconGrid     = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>;
-const IconUser     = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
-const IconLogOut   = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
-const IconHome     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
-const IconClose    = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
-const IconMenu     = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
-const IconArrow    = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
-const IconClock    = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+const IconFolder    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
+const IconRocket    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>;
+const IconGear      = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>;
+const IconLayers    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>;
+const IconGrid      = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>;
+const IconUser      = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+const IconLogOut    = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
+const IconHome      = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
+const IconClose     = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+const IconMenu      = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
+const IconArrow     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
+const IconClock     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
 const IconBriefcase = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>;
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -42,12 +43,15 @@ const STATUS_STYLE: Record<string, string> = {
   "Planning":    "bg-[#F8F3EA] border-[#0B1957] text-[#0B1957]",
 };
 
+// ── Nav — tambah "stacks" ─────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { key: "overview", label: "Overview", icon: <IconGrid /> },
-  { key: "projects", label: "Projects", icon: <IconFolder size={18} /> },
-  { key: "profile",  label: "Profile",  icon: <IconUser /> },
+  { key: "overview", label: "Overview",   icon: <IconGrid /> },
+  { key: "projects", label: "Projects",   icon: <IconFolder size={18} /> },
+  { key: "stacks",   label: "Tech Stack", icon: <IconLayers size={18} /> },
+  { key: "profile",  label: "Profile",    icon: <IconUser /> },
 ];
 
+// ── Dashboard ─────────────────────────────────────────────────────────────────
 export default function Dashboard() {
   const { auth } = usePage<{ auth: { user: { name: string; email: string } } }>().props;
   const user = auth?.user;
@@ -63,8 +67,8 @@ export default function Dashboard() {
     return () => clearInterval(t);
   }, []);
 
-  const handleLogout  = () => router.post("/logout");
-  const handleHome    = () => router.visit("/");
+  const handleLogout = () => router.post("/logout");
+  const handleHome   = () => router.visit("/");
 
   const greeting = () => {
     const h = time.getHours();
@@ -72,6 +76,37 @@ export default function Dashboard() {
     if (h < 17) return "Good Afternoon";
     return "Good Evening";
   };
+
+  // ── Shared Nav Items ──────────────────────────────────────────────────────
+  const NavItems = ({ onClose }: { onClose?: () => void }) => (
+    <>
+      {NAV_ITEMS.map(item => (
+        <div
+          key={item.key}
+          className={`nav-item ${activeNav === item.key ? "active" : ""}`}
+          onClick={() => { setActiveNav(item.key); onClose?.(); }}
+        >
+          {item.icon}
+          {item.label}
+          {activeNav === item.key && (
+            <span className="ml-auto w-2 h-2 rounded-full bg-[#9ECCFA] flex-shrink-0" />
+          )}
+        </div>
+      ))}
+    </>
+  );
+
+  // ── Shared Bottom Actions ─────────────────────────────────────────────────
+  const SidebarBottom = () => (
+    <div className="border-t-4 border-[#9ECCFA] p-5 relative z-10">
+      <div className="mb-3">
+        <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">{user?.name ?? "Yusron"}</p>
+        <p className="font-semibold text-xs text-[#D1E8FF] opacity-60 truncate">{user?.email ?? "yusron@dev.com"}</p>
+      </div>
+      <button className="home-btn-sidebar" onClick={handleHome}><IconHome size={13} /> Homepage</button>
+      <button className="logout-btn w-full" onClick={handleLogout}><IconLogOut /> Logout</button>
+    </div>
+  );
 
   return (
     <>
@@ -104,8 +139,8 @@ export default function Dashboard() {
           background:transparent; font-weight:900; font-size:12px;
           text-transform:uppercase; color:#9ECCFA; letter-spacing:0.08em;
           cursor:pointer; font-family:inherit; margin-bottom:8px;
-          transition:background 0.1s ease, border-color 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
           box-shadow:2px 2px 0 rgba(158,204,250,0.3);
+          transition:background 0.1s ease, border-color 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
         }
         .home-btn-sidebar:hover  { background:rgba(158,204,250,0.1); border-color:#9ECCFA; transform:translate(-1px,-1px); box-shadow:3px 3px 0 rgba(158,204,250,0.4); }
         .home-btn-sidebar:active { transform:translate(1px,1px); box-shadow:0 0 0; }
@@ -152,8 +187,8 @@ export default function Dashboard() {
           border:3px solid #9ECCFA; padding:8px 16px; background:transparent;
           font-weight:900; font-size:12px; text-transform:uppercase; color:#9ECCFA;
           letter-spacing:0.08em; cursor:pointer; font-family:inherit;
-          transition:background 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
           box-shadow:3px 3px 0 #9ECCFA;
+          transition:background 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
         }
         .logout-btn:hover  { background:rgba(158,204,250,0.15); transform:translate(1px,1px); box-shadow:2px 2px 0 #9ECCFA; }
         .logout-btn:active { transform:translate(3px,3px); box-shadow:0 0 0 #9ECCFA; }
@@ -170,52 +205,33 @@ export default function Dashboard() {
 
       <div className="min-h-screen bg-[#D1E8FF] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
 
-        {/* ── SIDEBAR desktop ── */}
+        {/* ── SIDEBAR Desktop ── */}
         <aside className="anim-sidebar hidden md:flex flex-col w-64 bg-[#0B1957] border-r-4 border-[#0B1957] relative min-h-screen flex-shrink-0">
           <div className="grid-bg-dark" />
-
-          {/* Brand */}
           <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative">
             <div className="font-black text-xl text-[#9ECCFA] uppercase tracking-widest">Yusron.dev</div>
             <div className="font-semibold text-xs text-[#D1E8FF] opacity-60 uppercase tracking-wider mt-1">Dashboard</div>
           </div>
-
-          {/* Nav */}
           <nav className="flex-1 py-4 relative">
-            {NAV_ITEMS.map(item => (
-              <div key={item.key} className={`nav-item ${activeNav === item.key ? "active" : ""}`} onClick={() => setActiveNav(item.key)}>
-                {item.icon}{item.label}
-              </div>
-            ))}
+            <NavItems />
           </nav>
-
-          {/* Bottom actions */}
-          <div className="border-t-4 border-[#9ECCFA] p-5 relative">
-            <div className="mb-3">
-              <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">{user?.name ?? "Yusron"}</p>
-              <p className="font-semibold text-xs text-[#D1E8FF] opacity-60 truncate">{user?.email ?? "yusron@dev.com"}</p>
-            </div>
-            {/* Back to Homepage */}
-            <button className="home-btn-sidebar" onClick={handleHome}>
-              <IconHome size={13} /> Homepage
-            </button>
-            {/* Logout */}
-            <button className="logout-btn w-full" onClick={handleLogout}>
-              <IconLogOut /> Logout
-            </button>
-          </div>
+          <SidebarBottom />
         </aside>
 
-        {/* ── SIDEBAR mobile overlay ── */}
+        {/* ── SIDEBAR Mobile Overlay ── */}
         {sidebarOpen && (
-          <div className="fixed inset-0 bg-[#0B1957] bg-opacity-50 z-30 md:hidden" style={{ backdropFilter: "blur(2px)" }} onClick={() => setSidebarOpen(false)} />
+          <div
+            className="fixed inset-0 bg-[#0B1957] bg-opacity-50 z-30 md:hidden"
+            style={{ backdropFilter: "blur(2px)" }}
+            onClick={() => setSidebarOpen(false)}
+          />
         )}
         <aside
           className="fixed top-0 left-0 bottom-0 w-64 z-40 md:hidden bg-[#0B1957] border-r-4 border-[#0B1957] flex flex-col"
           style={{ transform: sidebarOpen ? "translateX(0)" : "translateX(-100%)", transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1)" }}
         >
           <div className="grid-bg-dark" />
-          <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative flex items-center justify-between">
+          <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative z-10 flex items-center justify-between">
             <div>
               <div className="font-black text-lg text-[#9ECCFA] uppercase tracking-widest">Yusron.dev</div>
               <div className="font-semibold text-xs text-[#D1E8FF] opacity-60 uppercase">Dashboard</div>
@@ -224,26 +240,10 @@ export default function Dashboard() {
               <IconClose />
             </button>
           </div>
-          <nav className="flex-1 py-4 relative">
-            {NAV_ITEMS.map(item => (
-              <div key={item.key} className={`nav-item ${activeNav === item.key ? "active" : ""}`}
-                onClick={() => { setActiveNav(item.key); setSidebarOpen(false); }}>
-                {item.icon}{item.label}
-              </div>
-            ))}
+          <nav className="flex-1 py-4 relative z-10">
+            <NavItems onClose={() => setSidebarOpen(false)} />
           </nav>
-          <div className="border-t-4 border-[#9ECCFA] p-5 relative">
-            <div className="mb-3">
-              <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">{user?.name ?? "Yusron"}</p>
-              <p className="font-semibold text-xs text-[#D1E8FF] opacity-60 truncate">{user?.email ?? ""}</p>
-            </div>
-            <button className="home-btn-sidebar" onClick={handleHome}>
-              <IconHome size={13} /> Homepage
-            </button>
-            <button className="logout-btn w-full" onClick={handleLogout}>
-              <IconLogOut /> Logout
-            </button>
-          </div>
+          <SidebarBottom />
         </aside>
 
         {/* ── MAIN ── */}
@@ -263,15 +263,10 @@ export default function Dashboard() {
                 <h2 className="font-black text-lg sm:text-xl text-[#0B1957] uppercase">{user?.name ?? "Yusron"}</h2>
               </div>
             </div>
-
-            {/* Right side topbar: Home button + Clock */}
             <div className="flex items-center gap-4">
-              {/* Back to Homepage — visible di topbar */}
               <button className="home-btn-topbar" onClick={handleHome}>
                 <IconHome size={13} /> Home
               </button>
-
-              {/* Live clock — desktop only */}
               <div className="text-right hidden sm:flex items-center gap-2">
                 <IconClock size={16} />
                 <div>
@@ -290,6 +285,8 @@ export default function Dashboard() {
             {/* ── OVERVIEW ── */}
             {activeNav === "overview" && (
               <div className="content-fade space-y-8">
+
+                {/* Stats */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                   {STATS.map((stat, i) => (
                     <div key={i} className={`stat-card anim-stat-${i} p-5 sm:p-6`}>
@@ -301,6 +298,7 @@ export default function Dashboard() {
                   ))}
                 </div>
 
+                {/* Recent Projects */}
                 <div className="anim-content">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="font-black text-xl uppercase text-[#0B1957]">Recent Projects</h2>
@@ -316,6 +314,36 @@ export default function Dashboard() {
                   </div>
                 </div>
 
+                {/* Tech Stack Quick Access */}
+                <div className="anim-content">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="font-black text-xl uppercase text-[#0B1957]">Tech Stack</h2>
+                    <button
+                      className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2"
+                      onClick={() => setActiveNav("stacks")}
+                    >
+                      Kelola Stack <IconArrow />
+                    </button>
+                  </div>
+                  <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-5">
+                    <p className="font-semibold text-sm text-[#0B1957] opacity-60 mb-4">
+                      Tambah, edit, dan hapus tech stack yang tampil di portfolio — icon + nama framework/bahasa.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {["React", "Laravel", "TypeScript", "JavaScript"].map((s, i) => (
+                        <span key={i} className="stack-tag">{s}</span>
+                      ))}
+                      <button
+                        className="border-2 border-dashed border-[#0B1957] px-3 py-1 font-black text-xs uppercase text-[#0B1957] opacity-50 hover:opacity-100 transition-opacity"
+                        onClick={() => setActiveNav("stacks")}
+                      >
+                        + Kelola
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Open to Work Banner */}
                 <div className="anim-content bg-[#0B1957] border-4 border-[#0B1957] shadow-[8px_8px_0_#9ECCFA] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
@@ -330,6 +358,7 @@ export default function Dashboard() {
                     <p className="font-black text-[#F8F3EA]">React + Laravel</p>
                   </div>
                 </div>
+
               </div>
             )}
 
@@ -345,6 +374,13 @@ export default function Dashboard() {
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {PROJECTS.map((p, i) => <ProjectCard key={i} project={p} />)}
                 </div>
+              </div>
+            )}
+
+            {/* ── TECH STACK CRUD ── */}
+            {activeNav === "stacks" && (
+              <div className="content-fade">
+                <TechStackCRUD />
               </div>
             )}
 
@@ -394,6 +430,7 @@ export default function Dashboard() {
                 </div>
               </div>
             )}
+
           </main>
         </div>
       </div>
@@ -401,6 +438,7 @@ export default function Dashboard() {
   );
 }
 
+// ── ProjectCard ───────────────────────────────────────────────────────────────
 function ProjectCard({ project }: { project: Project }) {
   return (
     <div className="project-card p-5">
