@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import GitHubContributions from "@/components/GitHubContributions";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { router } from "@inertiajs/react";
 
@@ -108,7 +109,7 @@ const DEFAULT_HERO:HeroProfile = {
 };
 
 const DEFAULT_ABOUT: AboutProfile = {
-  tagline:    "Who am I",
+  tagline:    "Who am i",
   extra_bio:  "",
   info_cards: [
     { label:"Role",   value:"IT Programmer"   },
@@ -671,6 +672,8 @@ export default function Home() {
         {/* ── PROJECT STATS ── */}
         <ProjectCount projects={projects}/>
 
+
+
         {/* ── FOOTER ── */}
         <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA] reveal">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
@@ -726,4 +729,4 @@ export default function Home() {
       </div>
     </>
   );
-}    
+}
