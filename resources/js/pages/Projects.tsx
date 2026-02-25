@@ -3,76 +3,28 @@ import { router } from "@inertiajs/react";
 import Navbar from "@/components/Navbar";
 
 interface Stack {
+  id: number;
   label: string;
   icon: string;
 }
 
 interface Project {
-  id: string;
+  id: number;
+  slug: string;
   title: string;
+  subtitle: string;
   desc: string;
-  image: string;
+  images: string[];
   status: "Hosted" | "In Progress" | "Planning";
   date: string;
+  duration: string;
   stacks: Stack[];
+  features: { title: string; desc: string }[];
+  demoUrl: string | null;
+  githubUrl: string | null;
+  order: number;
+  visible: boolean;
 }
-
-const PROJECTS: Project[] = [
-  {
-    id: "burger-ordering-app",
-    title: "Burger Ordering App",
-    desc: "Website restoran burger dengan sistem pemesanan online",
-    image: "/profile/Mboy.jpeg",
-    status: "Hosted",
-    date: "Jan 2025",
-    stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "React", icon: "/Icon/React.jpg" }],
-  },
-  {
-    id: "beyblade-leaderboard",
-    title: "Beyblade Leaderboard",
-    desc: "Leaderboard turnamen dengan statistik otomatis",
-    image: "/profile/Mboy.jpeg",
-    status: "Hosted",
-    date: "Mar 2025",
-    stacks: [{ label: "JavaScript", icon: "/Icon/JavaScript.jpg" }],
-  },
-  {
-    id: "cv-generator-tool",
-    title: "CV Generator Tool",
-    desc: "Generate CV massal dari Excel ke PDF",
-    image: "/profile/Mboy.jpeg",
-    status: "In Progress",
-    date: "May 2025",
-    stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }],
-  },
-  {
-    id: "dashboard-analytics",
-    title: "Dashboard Analytics",
-    desc: "Dashboard visualisasi data real-time untuk monitoring bisnis",
-    image: "/profile/Mboy.jpeg",
-    status: "Planning",
-    date: "Jun 2025",
-    stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "TypeScript", icon: "/Icon/TypeScript.jpg" }],
-  },
-  {
-    id: "inventory-system",
-    title: "Inventory System",
-    desc: "Sistem manajemen stok dan inventaris gudang berbasis web",
-    image: "/profile/Mboy.jpeg",
-    status: "Hosted",
-    date: "Feb 2025",
-    stacks: [{ label: "Laravel", icon: "/Icon/Laravel.jpg" }, { label: "JavaScript", icon: "/Icon/JavaScript.jpg" }],
-  },
-  {
-    id: "e-learning-platform",
-    title: "E-Learning Platform",
-    desc: "Platform belajar online dengan fitur kuis dan sertifikasi",
-    image: "/profile/Mboy.jpeg",
-    status: "In Progress",
-    date: "Apr 2025",
-    stacks: [{ label: "React", icon: "/Icon/React.jpg" }, { label: "Laravel", icon: "/Icon/Laravel.jpg" }],
-  },
-];
 
 const STATUS_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
   "Hosted":      { bg: "bg-[#9ECCFA]",  text: "text-[#0B1957]", dot: "bg-[#0B1957]" },
@@ -162,7 +114,6 @@ function AnimBlock({ children, delay = 0, from = "bottom", className = "" }: {
   className?: string;
 }) {
   const { ref, inView } = useInView();
-
   const translateMap = { bottom: "translateY(32px)", left: "translateX(-32px)", right: "translateX(32px)" };
 
   return (
@@ -180,12 +131,41 @@ function AnimBlock({ children, delay = 0, from = "bottom", className = "" }: {
   );
 }
 
+// ── Skeleton Card ──────────────────────────────────────────────────────────────
+function SkeletonCard({ delay = 0 }: { delay?: number }) {
+  return (
+    <div
+      style={{
+        border: "4px solid #0B1957",
+        background: "#F8F3EA",
+        boxShadow: "5px 5px 0 #0B1957",
+        opacity: 0,
+        animation: `skeletonFadeIn 0.4s ease ${delay}ms forwards`,
+      }}
+    >
+      <div className="skeleton-shimmer" style={{ width: "100%", height: 176, borderBottom: "4px solid #0B1957" }} />
+      <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+        <div className="skeleton-shimmer" style={{ height: 14, width: "70%", borderRadius: 0 }} />
+        <div className="skeleton-shimmer" style={{ height: 11, width: "90%", borderRadius: 0 }} />
+        <div className="skeleton-shimmer" style={{ height: 11, width: "60%", borderRadius: 0 }} />
+        <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+          <div className="skeleton-shimmer" style={{ width: 36, height: 36, border: "2px solid #0B1957" }} />
+          <div className="skeleton-shimmer" style={{ width: 36, height: 36, border: "2px solid #0B1957" }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Projects() {
-  const [filter, setFilter]     = useState("All");
-  const [page, setPage]         = useState(1);
-  const [gridKey, setGridKey]   = useState(0);
+  const [projects, setProjects]   = useState<Project[]>([]);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(false);
+  const [filter, setFilter]       = useState("All");
+  const [page, setPage]           = useState(1);
+  const [gridKey, setGridKey]     = useState(0);
   const [gridVisible, setGridVisible] = useState(true);
-  const [mounted, setMounted]   = useState(false);
+  const [mounted, setMounted]     = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const [heroOffset, setHeroOffset] = useState(0);
 
@@ -194,16 +174,35 @@ export default function Projects() {
     return () => clearTimeout(t);
   }, []);
 
-  // subtle parallax on hero
+  // Fetch projects dari API
+  useEffect(() => {
+    setLoading(true);
+    setError(false);
+    fetch("/api/projects")
+      .then(r => {
+        if (!r.ok) throw new Error("Gagal fetch");
+        return r.json();
+      })
+      .then(data => {
+        setProjects(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
+  }, []);
+
+  // Subtle parallax on hero
   useEffect(() => {
     const handle = () => setHeroOffset(window.scrollY * 0.18);
     window.addEventListener("scroll", handle, { passive: true });
     return () => window.removeEventListener("scroll", handle);
   }, []);
 
-  const filtered = filter === "All" ? PROJECTS : PROJECTS.filter(p => p.status === filter);
-  const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const filtered    = filter === "All" ? projects : projects.filter(p => p.status === filter);
+  const totalPages  = Math.ceil(filtered.length / PER_PAGE);
+  const paginated   = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   const handleFilter = (f: string) => {
     setGridVisible(false);
@@ -228,7 +227,6 @@ export default function Projects() {
   return (
     <>
       <style>{`
-        /* ── Page entrance ── */
         @keyframes pageIn {
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -252,6 +250,17 @@ export default function Projects() {
         @keyframes pulseGlow {
           0%, 100% { box-shadow: 0 0 0 0 rgba(158, 204, 250, 0); }
           50%       { box-shadow: 0 0 0 4px rgba(158, 204, 250, 0.25); }
+        }
+        @keyframes skeletonFadeIn {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes skeletonPulse {
+          0%,100% { opacity: 0.5; }
+          50%     { opacity: 1; }
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
 
         .page-wrapper {
@@ -278,7 +287,6 @@ export default function Projects() {
           animation: slideDownFade 0.5s cubic-bezier(0.16,1,0.3,1) 0.28s forwards;
         }
 
-        /* ── Grid transition ── */
         .grid-wrapper {
           transition: opacity 0.22s ease, transform 0.22s ease;
         }
@@ -288,7 +296,6 @@ export default function Projects() {
           pointer-events: none;
         }
 
-        /* ── Spotlight Card ── */
         .spotlight-card {
           position: relative;
           overflow: visible !important;
@@ -307,13 +314,6 @@ export default function Projects() {
           transform: translate(1px,1px);
           box-shadow: 3px 3px 0 #0B1957;
         }
-        .spotlight-card-inner {
-          overflow: hidden;
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          z-index: 5;
-        }
         .spotlight-card:hover .card-img { transform: scale(1.07); }
         .card-img { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); }
         .card-overlay { opacity: 0; transition: opacity 0.25s ease; }
@@ -331,7 +331,6 @@ export default function Projects() {
           mix-blend-mode: screen;
         }
 
-        /* ── Filter btn ── */
         .filter-btn {
           border: 3px solid #0B1957; padding: 8px 18px;
           font-weight: 900; font-size: 12px; text-transform: uppercase;
@@ -353,7 +352,6 @@ export default function Projects() {
         .filter-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 #0B1957; }
         .filter-btn.active { background: #0B1957; color: #9ECCFA; animation: pulseGlow 2s ease 0.3s; }
 
-        /* ── Back btn ── */
         .back-btn {
           display: inline-flex; align-items: center; gap: 8px;
           border: 4px solid #0B1957; padding: 10px 20px;
@@ -367,7 +365,6 @@ export default function Projects() {
         .back-btn svg { transition: transform 0.2s ease; }
         .back-btn:hover svg { transform: translateX(-3px); }
 
-        /* ── Pagination ── */
         .page-btn {
           border: 3px solid #0B1957; width: 40px; height: 40px;
           font-weight: 900; font-size: 13px;
@@ -388,7 +385,6 @@ export default function Projects() {
         .dot.active { background: #0B1957; width: 32px; }
         .dot:hover:not(.active) { background: #9ECCFA; }
 
-        /* ── Stack chip hover ── */
         .stack-chip {
           transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
@@ -397,12 +393,33 @@ export default function Projects() {
           box-shadow: 3px 3px 0 #0B1957;
         }
 
-        /* ── Hero grid pattern ── */
         .hero-grid {
           background-image:
             repeating-linear-gradient(0deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px),
             repeating-linear-gradient(90deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px);
         }
+
+        .skeleton-shimmer {
+          background: linear-gradient(90deg, #D1E8FF 25%, #b8daff 50%, #D1E8FF 75%);
+          background-size: 200% 100%;
+          animation: shimmer 1.4s ease infinite, skeletonPulse 1.4s ease infinite;
+        }
+
+        .error-box {
+          border: 4px solid #0B1957; background: #FFD1D1;
+          box-shadow: 6px 6px 0 #0B1957;
+          padding: 40px 24px; text-align: center;
+        }
+
+        .retry-btn {
+          border: 3px solid #0B1957; padding: 10px 24px;
+          font-weight: 900; font-size: 12px; text-transform: uppercase;
+          background: #0B1957; color: #9ECCFA; cursor: pointer;
+          box-shadow: 3px 3px 0 #9ECCFA;
+          transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .retry-btn:hover  { transform: translate(2px,2px); box-shadow: 1px 1px 0 #9ECCFA; }
+        .retry-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 #9ECCFA; }
       `}</style>
 
       <div className="min-h-screen bg-[#D1E8FF] page-wrapper">
@@ -429,7 +446,6 @@ export default function Projects() {
               className="absolute inset-0 opacity-10 hero-grid"
               style={{ transform: `translateY(${heroOffset}px)`, transition: "transform 0.1s linear" }}
             />
-            {/* Decorative corner */}
             <div className="absolute top-0 right-0 w-32 h-32 opacity-5" style={{
               background: "radial-gradient(circle at top right, #9ECCFA, transparent 70%)"
             }} />
@@ -442,22 +458,33 @@ export default function Projects() {
               <p className="font-semibold text-[#D1E8FF] text-base sm:text-lg max-w-2xl">
                 Semua project yang pernah dibangun — dari web app, dashboard, hingga tools internal.
               </p>
-              <div className="mt-6 flex gap-4 flex-wrap">
-                {[
-                  { count: PROJECTS.length, label: "Total Projects" },
-                  { count: PROJECTS.filter(p => p.status === "Hosted").length, label: "Hosted" },
-                  { count: PROJECTS.filter(p => p.status === "In Progress").length, label: "In Progress" },
-                ].map((stat, i) => (
-                  <div
-                    key={i}
-                    className="hero-stat border-2 border-[#9ECCFA] px-4 py-2 inline-flex items-center gap-2"
-                    style={{ animationDelay: `${0.35 + i * 0.1}s` }}
-                  >
-                    <span className="font-black text-[#9ECCFA] text-xl">{stat.count}</span>
-                    <span className="font-black text-[#D1E8FF] text-xs uppercase tracking-widest">{stat.label}</span>
-                  </div>
-                ))}
-              </div>
+
+              {!loading && (
+                <div className="mt-6 flex gap-4 flex-wrap">
+                  {[
+                    { count: projects.length, label: "Total Projects" },
+                    { count: projects.filter(p => p.status === "Hosted").length, label: "Hosted" },
+                    { count: projects.filter(p => p.status === "In Progress").length, label: "In Progress" },
+                  ].map((stat, i) => (
+                    <div
+                      key={i}
+                      className="hero-stat border-2 border-[#9ECCFA] px-4 py-2 inline-flex items-center gap-2"
+                      style={{ animationDelay: `${0.35 + i * 0.1}s` }}
+                    >
+                      <span className="font-black text-[#9ECCFA] text-xl">{stat.count}</span>
+                      <span className="font-black text-[#D1E8FF] text-xs uppercase tracking-widest">{stat.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {loading && (
+                <div className="mt-6 flex gap-4 flex-wrap">
+                  {[0, 1, 2].map(i => (
+                    <div key={i} className="skeleton-shimmer border-2 border-[#9ECCFA] px-4 py-2 inline-flex items-center gap-2" style={{ width: 130, height: 42 }} />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -469,74 +496,117 @@ export default function Projects() {
                 className={`filter-btn ${filter === f ? "active" : "bg-[#F8F3EA] text-[#0B1957]"}`}
                 style={{ transitionDelay: `${i * 40}ms` }}
                 onClick={() => handleFilter(f)}
+                disabled={loading}
               >
                 {f}
-                <span className="ml-2 opacity-60 text-xs">
-                  ({f === "All" ? PROJECTS.length : PROJECTS.filter(p => p.status === f).length})
-                </span>
+                {!loading && (
+                  <span className="ml-2 opacity-60 text-xs">
+                    ({f === "All" ? projects.length : projects.filter(p => p.status === f).length})
+                  </span>
+                )}
               </button>
             ))}
           </div>
 
-          {/* GRID */}
-          <div
-            key={gridKey}
-            className={`grid-wrapper grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10 ${!gridVisible ? "hidden" : ""}`}
-            style={{ padding: "12px", margin: "-12px", marginBottom: "calc(2.5rem - 12px)" }}
-          >
-            {paginated.map((p, idx) => {
-              const st = STATUS_STYLE[p.status];
-              return (
-                <SpotlightCard
-                  key={p.id}
-                  delay={idx * 70}
-                  visible={gridVisible}
-                  onClick={() => router.visit(`/projects/${p.id}`)}
+          {/* ERROR STATE */}
+          {error && (
+            <AnimBlock>
+              <div className="error-box mb-8">
+                <p className="font-black uppercase text-lg text-[#0B1957] mb-2">Gagal Memuat Data</p>
+                <p className="font-semibold text-[#0B1957] opacity-60 mb-6">Koneksi ke server gagal. Coba lagi.</p>
+                <button
+                  className="retry-btn"
+                  onClick={() => {
+                    setError(false);
+                    setLoading(true);
+                    fetch("/api/projects")
+                      .then(r => r.json())
+                      .then(data => { setProjects(Array.isArray(data) ? data : []); setLoading(false); })
+                      .catch(() => { setError(true); setLoading(false); });
+                  }}
                 >
-                  {/* Image */}
-                  <div className="w-full h-44 overflow-hidden border-b-4 border-[#0B1957] relative">
-                    <img
-                      src={p.image}
-                      alt={p.title}
-                      className="card-img w-full h-full object-cover object-top"
-                    />
-                    <div className="card-overlay absolute inset-0 bg-[#0B1957] bg-opacity-65 flex items-center justify-center">
-                      <span className="text-[#9ECCFA] font-black uppercase text-sm border-2 border-[#9ECCFA] px-4 py-2">
-                        Lihat Detail →
-                      </span>
-                    </div>
-                    <div className={`absolute top-3 left-3 inline-flex items-center gap-1.5 border-2 border-[#0B1957] px-3 py-1 ${st.bg} z-20`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
-                      <span className={`font-black uppercase text-xs tracking-wide ${st.text}`}>{p.status}</span>
-                    </div>
-                  </div>
+                  ↻ Coba Lagi
+                </button>
+              </div>
+            </AnimBlock>
+          )}
 
-                  {/* Content */}
-                  <div className="p-5 relative z-20">
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-black uppercase text-sm text-[#0B1957] leading-tight">{p.title}</h3>
-                      <span className="text-xs font-bold text-[#0B1957] opacity-50 flex-shrink-0">{p.date}</span>
-                    </div>
-                    <p className="font-semibold text-xs text-[#0B1957] opacity-70 mb-4 leading-relaxed">{p.desc}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {p.stacks.map((s, j) => (
-                        <div
-                          key={j}
-                          title={s.label}
-                          className="stack-chip border-2 border-[#0B1957] bg-[#D1E8FF] p-1.5"
-                        >
-                          <img src={s.icon} alt={s.label} className="w-6 h-6 object-contain" />
+          {/* LOADING SKELETON GRID */}
+          {loading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+              {[0, 1, 2, 3, 4, 5].map(i => (
+                <SkeletonCard key={i} delay={i * 60} />
+              ))}
+            </div>
+          )}
+
+          {/* GRID */}
+          {!loading && !error && (
+            <div
+              key={gridKey}
+              className={`grid-wrapper grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10 ${!gridVisible ? "hidden" : ""}`}
+              style={{ padding: "12px", margin: "-12px", marginBottom: "calc(2.5rem - 12px)" }}
+            >
+              {paginated.map((p, idx) => {
+                const st = STATUS_STYLE[p.status] ?? STATUS_STYLE["Planning"];
+                return (
+                  <SpotlightCard
+                    key={p.id}
+                    delay={idx * 70}
+                    visible={gridVisible}
+                    onClick={() => router.visit(`/projects/${p.slug}`)}
+                  >
+                    {/* Image */}
+                    <div className="w-full h-44 overflow-hidden border-b-4 border-[#0B1957] relative">
+                      {p.images?.[0] ? (
+                        <img
+                          src={p.images[0]}
+                          alt={p.title}
+                          className="card-img w-full h-full object-cover object-top"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-[#D1E8FF] flex items-center justify-center">
+                          <span className="font-black uppercase text-xs text-[#0B1957] opacity-30">No Image</span>
                         </div>
-                      ))}
+                      )}
+                      <div className="card-overlay absolute inset-0 bg-[#0B1957] bg-opacity-65 flex items-center justify-center">
+                        <span className="text-[#9ECCFA] font-black uppercase text-sm border-2 border-[#9ECCFA] px-4 py-2">
+                          Lihat Detail →
+                        </span>
+                      </div>
+                      <div className={`absolute top-3 left-3 inline-flex items-center gap-1.5 border-2 border-[#0B1957] px-3 py-1 ${st.bg} z-20`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
+                        <span className={`font-black uppercase text-xs tracking-wide ${st.text}`}>{p.status}</span>
+                      </div>
                     </div>
-                  </div>
-                </SpotlightCard>
-              );
-            })}
-          </div>
+
+                    {/* Content */}
+                    <div className="p-5 relative z-20">
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <h3 className="font-black uppercase text-sm text-[#0B1957] leading-tight">{p.title}</h3>
+                        <span className="text-xs font-bold text-[#0B1957] opacity-50 flex-shrink-0">{p.date}</span>
+                      </div>
+                      <p className="font-semibold text-xs text-[#0B1957] opacity-70 mb-4 leading-relaxed">{p.desc}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {p.stacks?.map((s, j) => (
+                          <div
+                            key={j}
+                            title={s.label}
+                            className="stack-chip border-2 border-[#0B1957] bg-[#D1E8FF] p-1.5"
+                          >
+                            <img src={s.icon} alt={s.label} className="w-6 h-6 object-contain" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </SpotlightCard>
+                );
+              })}
+            </div>
+          )}
 
           {/* EMPTY */}
-          {filtered.length === 0 && (
+          {!loading && !error && filtered.length === 0 && (
             <AnimBlock>
               <div className="text-center py-20 border-4 border-[#0B1957] bg-[#F8F3EA] shadow-[6px_6px_0_#0B1957]">
                 <p className="font-black uppercase text-2xl text-[#0B1957] mb-2">Tidak Ada Project</p>
@@ -546,7 +616,7 @@ export default function Projects() {
           )}
 
           {/* PAGINATION */}
-          {totalPages > 1 && (
+          {!loading && !error && totalPages > 1 && (
             <AnimBlock delay={100}>
               <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center gap-3">

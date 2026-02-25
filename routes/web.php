@@ -1,5 +1,5 @@
 <?php
-// routes/web.php
+// routes/web.php — UPDATED (tambah contact routes)
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\TechStackController;
 use App\Http\Controllers\HeroProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ContactController; // ← TAMBAH INI
 
 // ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -43,17 +44,22 @@ Route::post('/logout', function () {
 // ── API ───────────────────────────────────────────────────────────────────────
 Route::prefix('api')->group(function () {
 
-    // ── Public ──
+    // ── Public ──────────────────────────────────────────────────────────────
     Route::get('/tech-stacks/visible', [TechStackController::class, 'indexVisible']);
     Route::get('/tech-stacks',         [TechStackController::class, 'index']);
     Route::get('/hero',                [HeroProfileController::class, 'show']);
+
+    // Contact publik (semua, biarkan frontend filter visible)
+    Route::get('/contact',         [ContactController::class, 'index']);
+    Route::get('/contact/visible', [ContactController::class, 'indexVisible']);
 
     // Projects publik
     Route::get('/projects',        [ProjectController::class, 'index']);
     Route::get('/projects/{slug}', [ProjectController::class, 'show']);
 
-    // ── Protected ──
+    // ── Protected ───────────────────────────────────────────────────────────
     Route::middleware(['auth'])->group(function () {
+
         // Tech Stack
         Route::post  ('/tech-stacks',                    [TechStackController::class, 'store']);
         Route::put   ('/tech-stacks/{techStack}',        [TechStackController::class, 'update']);
@@ -62,6 +68,9 @@ Route::prefix('api')->group(function () {
 
         // Hero
         Route::put('/hero', [HeroProfileController::class, 'update']);
+
+        // Contact (bulk save dari HomepageManager)
+        Route::put('/contact', [ContactController::class, 'bulkUpdate']);
 
         // Projects (admin CRUD)
         Route::get   ('/admin/projects',                  [ProjectController::class, 'adminIndex']);
