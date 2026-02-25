@@ -1318,13 +1318,268 @@ function ProjectsSection() {
   );
 }
 
+// ── AboutSection — About content manager ─────────────────────────────────────
+interface AboutData {
+  tagline:    string;
+  extra_bio:  string;
+  info_cards: { label: string; value: string }[];
+  highlights: string[];
+}
+
+const DEFAULT_ABOUT: AboutData = {
+  tagline:    "Who am I",
+  extra_bio:  "",
+  info_cards: [
+    { label: "Role",   value: "IT Programmer" },
+    { label: "Focus",  value: "Fullstack Web" },
+    { label: "Stack",  value: "React + Laravel" },
+    { label: "Status", value: "Open to Work" },
+  ],
+  highlights: [],
+};
+
+function AboutSection() {
+  const [form,    setForm]    = useState<AboutData>(DEFAULT_ABOUT);
+  const [loading, setLoading] = useState(true);
+  const [saving,  setSaving]  = useState(false);
+  const [dirty,   setDirty]   = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [toast,   setToast]   = useState<{ msg: string; ok: boolean } | null>(null);
+  const showToast = (msg: string, ok = true) => { setToast({ msg, ok }); setTimeout(() => setToast(null), 2500); };
+
+  useEffect(() => {
+    fetch("/api/about").then(r => r.json())
+      .then(d => {
+        setForm({
+          tagline:    d.tagline    ?? DEFAULT_ABOUT.tagline,
+          extra_bio:  d.extra_bio  ?? "",
+          info_cards: Array.isArray(d.info_cards) && d.info_cards.length > 0 ? d.info_cards : DEFAULT_ABOUT.info_cards,
+          highlights: Array.isArray(d.highlights) ? d.highlights : [],
+        });
+        setLoading(false);
+        setTimeout(() => setMounted(true), 80);
+      })
+      .catch(() => { setLoading(false); setTimeout(() => setMounted(true), 80); });
+  }, []);
+
+  const setCard = (i: number, k: "label" | "value", v: string) => {
+    const cards = [...form.info_cards]; cards[i] = { ...cards[i], [k]: v };
+    setForm(f => ({ ...f, info_cards: cards })); setDirty(true);
+  };
+  const addCard = () => {
+    if (form.info_cards.length >= 8) return;
+    setForm(f => ({ ...f, info_cards: [...f.info_cards, { label: "", value: "" }] })); setDirty(true);
+  };
+  const removeCard = (i: number) => { setForm(f => ({ ...f, info_cards: f.info_cards.filter((_, j) => j !== i) })); setDirty(true); };
+  const addHighlight = () => {
+    if (form.highlights.length >= 10) return;
+    setForm(f => ({ ...f, highlights: [...f.highlights, ""] })); setDirty(true);
+  };
+  const setHighlight = (i: number, v: string) => { const hl = [...form.highlights]; hl[i] = v; setForm(f => ({ ...f, highlights: hl })); setDirty(true); };
+  const removeHighlight = (i: number) => { setForm(f => ({ ...f, highlights: f.highlights.filter((_, j) => j !== i) })); setDirty(true); };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/about", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrfToken() },
+        body: JSON.stringify(form),
+      });
+      const updated = await res.json();
+      if (updated?.id || updated?.tagline) { setDirty(false); showToast("About section berhasil disimpan!"); }
+      else showToast("Gagal menyimpan!", false);
+    } catch { showToast("Terjadi kesalahan!", false); }
+    finally { setSaving(false); }
+  };
+
+  if (loading) return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ background: "#0B1957", border: "4px solid #0B1957", boxShadow: "6px 6px 0 #9ECCFA", padding: 20, animation: "hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) both" }}>
+        <div className="hm-skeleton" style={{ height: 12, width: "20%", marginBottom: 14 }}/>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          {[1,2,3,4].map(i => <div key={i} className="hm-skeleton" style={{ height: 48, animation: `hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.07}s both` }}/>)}
+        </div>
+      </div>
+      <div style={{ background: "#F8F3EA", border: "4px solid #0B1957", boxShadow: "8px 8px 0 #0B1957", padding: 28, display: "flex", flexDirection: "column", gap: 16 }}>
+        {[1,2,3].map(i => <div key={i} className="hm-skeleton" style={{ height: 48, width: `${100-i*5}%`, animation: `hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.08}s both` }}/>)}
+      </div>
+    </div>
+  );
+
+  return (
+    <div>
+      {/* ── Live Preview ── */}
+      <div style={{ marginBottom: 16, background: "#0B1957", border: "4px solid #0B1957", boxShadow: "6px 6px 0 #9ECCFA", padding: 20, animation: "hmSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.05s both" }}>
+        <p style={{ fontWeight: 900, fontSize: 10, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 12 }}>Preview About</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div>
+            <p style={{ fontWeight: 900, fontSize: 10, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.3em", marginBottom: 2, opacity: 0.7 }}>{form.tagline || "Who am I"}</p>
+            <p style={{ fontWeight: 900, fontSize: 18, color: "#F8F3EA", textTransform: "uppercase" }}>Nama dari Hero Section</p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {form.info_cards.slice(0, 4).map((card, i) => (
+              <div key={i} style={{ border: "2px solid #9ECCFA", padding: "8px 10px", animation: mounted ? `hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i * 0.06}s both` : "none" }}>
+                <p style={{ fontWeight: 900, fontSize: 9, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 2 }}>{card.label || "Label"}</p>
+                <p style={{ fontWeight: 700, fontSize: 12, color: "#F8F3EA" }}>{card.value || "—"}</p>
+              </div>
+            ))}
+          </div>
+          {form.highlights.filter(Boolean).length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+              {form.highlights.filter(Boolean).map((h, i) => (
+                <span key={i} style={{ border: "2px solid #9ECCFA", background: "rgba(158,204,250,0.12)", color: "#9ECCFA", padding: "3px 10px", fontWeight: 800, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>{h}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Form ── */}
+      <div style={{ background: "#F8F3EA", border: "4px solid #0B1957", boxShadow: "8px 8px 0 #0B1957", overflow: "hidden", animation: "hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.12s both" }}>
+        <div style={{ padding: "24px 28px", display: "flex", flexDirection: "column", gap: 22 }}>
+
+          {/* Tagline */}
+          <div style={{ animation: "hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.18s both" }}>
+            <label style={{ display: "block", fontWeight: 900, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", color: "#0B1957", marginBottom: 6 }}>
+              Tagline <span style={{ fontWeight: 600, fontSize: 10, opacity: 0.4, textTransform: "none", letterSpacing: 0 }}>— tampil di atas nama (contoh: "Who am I")</span>
+            </label>
+            <input value={form.tagline} onChange={e => { setForm(f => ({ ...f, tagline: e.target.value })); setDirty(true); }} placeholder="Who am I" maxLength={80}
+              style={{ width: "100%", border: "4px solid #0B1957", background: "white", padding: "10px 14px", fontWeight: 700, fontSize: 13, color: "#0B1957", outline: "none", boxSizing: "border-box", transition: "box-shadow 0.15s ease, transform 0.12s ease" }}
+              onFocus={e => { (e.target as HTMLInputElement).style.boxShadow = "4px 4px 0 #9ECCFA"; (e.target as HTMLInputElement).style.transform = "translate(-1px,-1px)"; }}
+              onBlur={e  => { (e.target as HTMLInputElement).style.boxShadow = "none"; (e.target as HTMLInputElement).style.transform = "translate(0,0)"; }}/>
+          </div>
+
+          {/* Extra Bio */}
+          <div style={{ animation: "hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.24s both" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+              <label style={{ fontWeight: 900, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", color: "#0B1957" }}>
+                Bio Tambahan <span style={{ fontWeight: 600, fontSize: 10, opacity: 0.4, textTransform: "none", letterSpacing: 0 }}>— opsional</span>
+              </label>
+              <span style={{ fontWeight: 700, fontSize: 11, color: "#0B1957", opacity: 0.4 }}>{form.extra_bio.length}/500</span>
+            </div>
+            <textarea value={form.extra_bio} onChange={e => { setForm(f => ({ ...f, extra_bio: e.target.value })); setDirty(true); }} rows={3} maxLength={500} placeholder="Deskripsi tambahan tentang diri kamu di About section..."
+              style={{ width: "100%", border: "4px solid #0B1957", background: "white", padding: "10px 14px", fontWeight: 600, fontSize: 13, color: "#0B1957", outline: "none", boxSizing: "border-box", resize: "vertical", fontFamily: "inherit", transition: "box-shadow 0.15s ease, transform 0.12s ease" }}
+              onFocus={e => { (e.target as HTMLTextAreaElement).style.boxShadow = "4px 4px 0 #9ECCFA"; (e.target as HTMLTextAreaElement).style.transform = "translate(-1px,-1px)"; }}
+              onBlur={e  => { (e.target as HTMLTextAreaElement).style.boxShadow = "none"; (e.target as HTMLTextAreaElement).style.transform = "translate(0,0)"; }}/>
+          </div>
+
+          {/* Info Cards */}
+          <div style={{ animation: "hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.30s both" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <label style={{ fontWeight: 900, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", color: "#0B1957" }}>
+                Info Cards <span style={{ fontWeight: 600, fontSize: 10, opacity: 0.4, textTransform: "none", letterSpacing: 0 }}>— maks 8 cards</span>
+              </label>
+              <button onClick={addCard} disabled={form.info_cards.length >= 8}
+                style={{ display: "flex", alignItems: "center", gap: 6, border: "3px solid #0B1957", background: form.info_cards.length >= 8 ? "#D1E8FF" : "#0B1957", color: form.info_cards.length >= 8 ? "#0B1957" : "#9ECCFA", padding: "5px 12px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: form.info_cards.length >= 8 ? "not-allowed" : "pointer", boxShadow: "2px 2px 0 #9ECCFA", fontFamily: "inherit", opacity: form.info_cards.length >= 8 ? 0.5 : 1, transition: "transform 0.1s ease, box-shadow 0.1s ease" }}
+                onMouseEnter={e => { if (form.info_cards.length < 8) { (e.currentTarget as HTMLElement).style.transform = "translate(-1px,-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "3px 3px 0 #9ECCFA"; } }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translate(0,0)"; (e.currentTarget as HTMLElement).style.boxShadow = "2px 2px 0 #9ECCFA"; }}>
+                <IconPlus/> Tambah Card
+              </button>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {form.info_cards.map((card, i) => (
+                <div key={i}
+                  style={{ border: "3px solid #0B1957", background: "#F8F3EA", boxShadow: "3px 3px 0 #0B1957", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 8, position: "relative", transition: "transform 0.15s ease, box-shadow 0.15s ease", animation: mounted ? `hmSlideUp 0.35s cubic-bezier(0.16,1,0.3,1) ${i * 0.05}s both` : "none" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-1px,-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "4px 4px 0 #0B1957"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translate(0,0)"; (e.currentTarget as HTMLElement).style.boxShadow = "3px 3px 0 #0B1957"; }}>
+                  <div style={{ position: "absolute", top: -2, left: -2, background: "#0B1957", color: "#9ECCFA", fontWeight: 900, fontSize: 9, padding: "2px 6px", letterSpacing: "0.08em" }}>#{i + 1}</div>
+                  <div style={{ paddingTop: 8 }}>
+                    <label style={{ display: "block", fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957", opacity: 0.5, marginBottom: 4 }}>Label</label>
+                    <input value={card.label} onChange={e => setCard(i, "label", e.target.value)} placeholder="Contoh: Role" maxLength={40}
+                      style={{ width: "100%", border: "3px solid #0B1957", background: "white", padding: "7px 10px", fontWeight: 800, fontSize: 12, color: "#0B1957", outline: "none", boxSizing: "border-box", transition: "box-shadow 0.12s ease" }}
+                      onFocus={e => { (e.target as HTMLInputElement).style.boxShadow = "3px 3px 0 #9ECCFA"; }} onBlur={e => { (e.target as HTMLInputElement).style.boxShadow = "none"; }}/>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957", opacity: 0.5, marginBottom: 4 }}>Value</label>
+                    <input value={card.value} onChange={e => setCard(i, "value", e.target.value)} placeholder="Contoh: IT Programmer" maxLength={80}
+                      style={{ width: "100%", border: "3px solid #0B1957", background: "white", padding: "7px 10px", fontWeight: 700, fontSize: 12, color: "#0B1957", outline: "none", boxSizing: "border-box", transition: "box-shadow 0.12s ease" }}
+                      onFocus={e => { (e.target as HTMLInputElement).style.boxShadow = "3px 3px 0 #9ECCFA"; }} onBlur={e => { (e.target as HTMLInputElement).style.boxShadow = "none"; }}/>
+                  </div>
+                  <button onClick={() => removeCard(i)}
+                    style={{ alignSelf: "flex-end", display: "flex", alignItems: "center", gap: 5, border: "2px solid #0B1957", background: "#F8F3EA", color: "#0B1957", padding: "4px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit", transition: "all 0.1s ease" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#ef4444"; (e.currentTarget as HTMLElement).style.color = "white"; (e.currentTarget as HTMLElement).style.borderColor = "#ef4444"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#F8F3EA"; (e.currentTarget as HTMLElement).style.color = "#0B1957"; (e.currentTarget as HTMLElement).style.borderColor = "#0B1957"; }}>
+                    <IconTrash/> Hapus
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Highlights */}
+          <div style={{ animation: "hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.36s both" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <label style={{ fontWeight: 900, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", color: "#0B1957" }}>
+                Highlight Tags <span style={{ fontWeight: 600, fontSize: 10, opacity: 0.4, textTransform: "none", letterSpacing: 0 }}>— skill / keunggulan singkat, maks 10</span>
+              </label>
+              <button onClick={addHighlight} disabled={form.highlights.length >= 10}
+                style={{ display: "flex", alignItems: "center", gap: 6, border: "3px solid #0B1957", background: form.highlights.length >= 10 ? "#D1E8FF" : "#0B1957", color: form.highlights.length >= 10 ? "#0B1957" : "#9ECCFA", padding: "5px 12px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: form.highlights.length >= 10 ? "not-allowed" : "pointer", boxShadow: "2px 2px 0 #9ECCFA", fontFamily: "inherit", opacity: form.highlights.length >= 10 ? 0.5 : 1, transition: "transform 0.1s ease" }}
+                onMouseEnter={e => { if (form.highlights.length < 10) (e.currentTarget as HTMLElement).style.transform = "translate(-1px,-1px)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translate(0,0)"; }}>
+                <IconPlus/> Tambah Tag
+              </button>
+            </div>
+            {form.highlights.length === 0 ? (
+              <div style={{ border: "3px dashed #0B1957", padding: "20px 16px", textAlign: "center", opacity: 0.4, animation: "hmFadeIn 0.3s ease" }}>
+                <p style={{ fontWeight: 700, fontSize: 12, textTransform: "uppercase", color: "#0B1957", letterSpacing: "0.1em" }}>Belum ada tag — klik "Tambah Tag"</p>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {form.highlights.map((hl, i) => (
+                  <div key={i}
+                    style={{ display: "flex", alignItems: "center", gap: 8, border: "3px solid #0B1957", background: "#F8F3EA", boxShadow: "2px 2px 0 #0B1957", padding: "8px 12px", animation: mounted ? `hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i * 0.05}s both` : "none", transition: "transform 0.12s ease, box-shadow 0.12s ease" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-1px,-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "3px 3px 0 #0B1957"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translate(0,0)"; (e.currentTarget as HTMLElement).style.boxShadow = "2px 2px 0 #0B1957"; }}>
+                    <span style={{ fontWeight: 900, fontSize: 10, color: "#0B1957", opacity: 0.35, flexShrink: 0, minWidth: 20 }}>#{i + 1}</span>
+                    <input value={hl} onChange={e => setHighlight(i, e.target.value)} placeholder="Contoh: Problem Solver, Team Player, Fast Learner..." maxLength={100}
+                      style={{ flex: 1, border: "2px solid #0B1957", background: "white", padding: "6px 10px", fontWeight: 700, fontSize: 12, color: "#0B1957", outline: "none", transition: "box-shadow 0.12s ease" }}
+                      onFocus={e => { (e.target as HTMLInputElement).style.boxShadow = "2px 2px 0 #9ECCFA"; }} onBlur={e => { (e.target as HTMLInputElement).style.boxShadow = "none"; }}/>
+                    <button onClick={() => removeHighlight(i)}
+                      style={{ flexShrink: 0, width: 30, height: 30, border: "2px solid #0B1957", background: "#F8F3EA", color: "#0B1957", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontFamily: "inherit", transition: "all 0.1s ease" }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#ef4444"; (e.currentTarget as HTMLElement).style.color = "white"; (e.currentTarget as HTMLElement).style.borderColor = "#ef4444"; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#F8F3EA"; (e.currentTarget as HTMLElement).style.color = "#0B1957"; (e.currentTarget as HTMLElement).style.borderColor = "#0B1957"; }}>
+                      <IconTrash/>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Note */}
+          <div style={{ background: "#D1E8FF", border: "3px solid #0B1957", padding: "12px 16px", display: "flex", gap: 10, alignItems: "flex-start", animation: "hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.42s both" }}>
+            <span style={{ fontWeight: 900, fontSize: 14, flexShrink: 0, color: "#0B1957" }}>ℹ</span>
+            <p style={{ fontWeight: 600, fontSize: 12, color: "#0B1957", opacity: 0.7, lineHeight: 1.5 }}>
+              Nama, foto, dan bio utama diambil dari <strong>Hero Section</strong>. About section menggunakan data tersebut + info cards + highlights yang diatur di sini.
+            </p>
+          </div>
+        </div>
+
+        <div style={{ borderTop: "4px solid #0B1957", background: "#0B1957", padding: "16px 28px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span style={{ fontWeight: 700, fontSize: 10, color: "#D1E8FF", opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+            {dirty ? "⚠ Ada perubahan yang belum disimpan" : "✓ Semua perubahan tersimpan"}
+          </span>
+          <button onClick={handleSave} disabled={saving || !dirty}
+            style={{ display: "flex", alignItems: "center", gap: 8, border: "4px solid #9ECCFA", background: dirty ? "#9ECCFA" : "transparent", color: dirty ? "#0B1957" : "#9ECCFA", padding: "10px 24px", fontWeight: 900, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.07em", cursor: (saving || !dirty) ? "not-allowed" : "pointer", boxShadow: dirty ? "4px 4px 0 rgba(158,204,250,0.4)" : "none", opacity: !dirty ? 0.5 : 1, fontFamily: "inherit", transition: "all 0.1s ease" }}
+            onMouseEnter={e => { if (dirty && !saving) { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 rgba(158,204,250,0.4)"; } }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translate(0,0)"; (e.currentTarget as HTMLElement).style.boxShadow = dirty ? "4px 4px 0 rgba(158,204,250,0.4)" : "none"; }}>
+            {saving ? <IconSpin/> : <IconSave/>}{saving ? "Menyimpan..." : "Simpan About"}
+          </button>
+        </div>
+      </div>
+      {toast && <Toast msg={toast.msg} ok={toast.ok}/>}
+    </div>
+  );
+}
+
 // ── Section config ─────────────────────────────────────────────────────────────
 const SECTIONS = [
   { key: "techstack", label: "Tech Stack",   icon: <IconLayers/>,  description: "Kelola tech stack yang tampil di homepage", status: "active" },
   { key: "hero",      label: "Hero Section", icon: <IconHero/>,    description: "Edit nama, bio, dan foto di hero section",  status: "active" },
   { key: "contact",   label: "Contact",      icon: <IconContact/>, description: "Kelola kontak yang tampil di homepage",     status: "active" },
   { key: "projects",  label: "Projects",     icon: <IconFolder/>,  description: "Toggle visibility project di homepage",     status: "active" },
-  { key: "about",     label: "About",        icon: <IconUser/>,    description: "Edit konten section About",                 status: "soon"   },
+  { key: "about",     label: "About",        icon: <IconUser/>,    description: "Edit konten section About",                 status: "active" },
 ];
 
 // ── HomepageManager ───────────────────────────────────────────────────────────
@@ -1439,13 +1694,8 @@ export default function HomepageManager() {
             {activeSection === "hero"      && <HeroSection/>}
             {activeSection === "contact"   && <ContactSection/>}
             {activeSection === "projects"  && <ProjectsSection/>}
-            {activeSection === "about"     && (
-              <div style={{ border: "4px dashed #0B1957", background: "#F8F3EA", padding: "64px 24px", textAlign: "center", animation: "hmFadeIn 0.3s ease" }}>
-                <div style={{ color: "#0B1957", opacity: 0.15, display: "flex", justifyContent: "center", marginBottom: 16, fontSize: 40 }}>🔒</div>
-                <p style={{ fontWeight: 900, fontSize: 16, textTransform: "uppercase", color: "#0B1957", marginBottom: 8 }}>Coming Soon</p>
-                <p style={{ fontWeight: 600, fontSize: 13, color: "#0B1957", opacity: 0.5 }}>Section <strong style={{ opacity: 0.8 }}>"{current.label}"</strong> belum tersedia</p>
-              </div>
-            )}
+            {activeSection === "about" && <AboutSection />}
+
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 <?php
-// routes/web.php — UPDATED (tambah contact routes)
+// routes/web.php — UPDATED (tambah about routes)
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -7,7 +7,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\TechStackController;
 use App\Http\Controllers\HeroProfileController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\ContactController; // ← TAMBAH INI
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\AboutProfileController; // ← TAMBAH INI
 
 // ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -48,8 +49,9 @@ Route::prefix('api')->group(function () {
     Route::get('/tech-stacks/visible', [TechStackController::class, 'indexVisible']);
     Route::get('/tech-stacks',         [TechStackController::class, 'index']);
     Route::get('/hero',                [HeroProfileController::class, 'show']);
+    Route::get('/about',               [AboutProfileController::class, 'show']); // ← TAMBAH
 
-    // Contact publik (semua, biarkan frontend filter visible)
+    // Contact publik
     Route::get('/contact',         [ContactController::class, 'index']);
     Route::get('/contact/visible', [ContactController::class, 'indexVisible']);
 
@@ -68,6 +70,9 @@ Route::prefix('api')->group(function () {
 
         // Hero
         Route::put('/hero', [HeroProfileController::class, 'update']);
+
+        // About ← TAMBAH
+        Route::put('/about', [AboutProfileController::class, 'update']);
 
         // Contact (bulk save dari HomepageManager)
         Route::put('/contact', [ContactController::class, 'bulkUpdate']);

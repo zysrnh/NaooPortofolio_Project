@@ -94,11 +94,29 @@ interface Project      { id:number; slug:string; title:string; desc:string; imag
 interface TechStackItem{ id:number; name:string; icon:string; category:string; }
 interface HeroProfile  { name:string; title:string; bio:string; photo:string|null; }
 interface ContactItem  { id:number; platform:string; label:string; value:string; url:string; is_visible:boolean; sort_order:number; icon_color:string; }
+interface AboutProfile {
+  tagline:    string;
+  extra_bio:  string;
+  info_cards: { label:string; value:string }[];
+  highlights: string[];
+}
 
 const DEFAULT_HERO:HeroProfile = {
   name:"Yusron", title:"IT Programmer",
   bio:"Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.",
   photo:"/profile/Mboy.jpeg",
+};
+
+const DEFAULT_ABOUT: AboutProfile = {
+  tagline:    "Who am I",
+  extra_bio:  "",
+  info_cards: [
+    { label:"Role",   value:"IT Programmer"   },
+    { label:"Focus",  value:"Fullstack Web"   },
+    { label:"Stack",  value:"React + Laravel" },
+    { label:"Status", value:"Open to Work"    },
+  ],
+  highlights: [],
 };
 
 const FALLBACK_ICON="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3C/svg%3E";
@@ -116,7 +134,6 @@ const CONTACT_ICONS:Record<string,JSX.Element> = {
   custom:   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>,
 };
 
-// Fallback contacts kalau API belum ada data / database kosong
 const FALLBACK_CONTACTS: ContactItem[] = [
   { id:-1, platform:"whatsapp", label:"WhatsApp",        value:"083861669565",        url:"https://wa.me/6283861669565",   is_visible:true, sort_order:0, icon_color:"#25D366" },
   { id:-2, platform:"email",    label:"Email",           value:"naooolaf@gmail.com",  url:"mailto:naooolaf@gmail.com",     is_visible:true, sort_order:1, icon_color:"#EA4335" },
@@ -276,7 +293,9 @@ export default function Home() {
   const [hero,setHero]=useState<HeroProfile>(DEFAULT_HERO);
   const [heroLoading,setHeroLoading]=useState(true);
 
-  // ── Contact state ──────────────────────────────────────────────────────────
+  const [about,setAbout]=useState<AboutProfile>(DEFAULT_ABOUT);
+  const [aboutLoading,setAboutLoading]=useState(true);
+
   const [contacts,setContacts]=useState<ContactItem[]>([]);
   const [contactsLoading,setContactsLoading]=useState(true);
 
@@ -285,6 +304,17 @@ export default function Home() {
     fetch("/api/hero").then(r=>r.json())
       .then((d:HeroProfile)=>setHero({name:d.name||DEFAULT_HERO.name,title:d.title||DEFAULT_HERO.title,bio:d.bio||DEFAULT_HERO.bio,photo:d.photo||DEFAULT_HERO.photo}))
       .catch(()=>{}).finally(()=>setHeroLoading(false));
+  },[]);
+
+  useEffect(()=>{
+    fetch("/api/about").then(r=>r.json())
+      .then((d:AboutProfile)=>setAbout({
+        tagline:    d.tagline    || DEFAULT_ABOUT.tagline,
+        extra_bio:  d.extra_bio  || "",
+        info_cards: Array.isArray(d.info_cards) && d.info_cards.length > 0 ? d.info_cards : DEFAULT_ABOUT.info_cards,
+        highlights: Array.isArray(d.highlights) ? d.highlights : [],
+      }))
+      .catch(()=>{}).finally(()=>setAboutLoading(false));
   },[]);
 
   useEffect(()=>{
@@ -364,6 +394,7 @@ export default function Home() {
         @keyframes slideLeft{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
         @keyframes slideRight{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
         @keyframes shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
+        @keyframes aboutTagIn{from{opacity:0;transform:translateY(8px) scale(0.9)}to{opacity:1;transform:translateY(0) scale(1)}}
         body{background-color:#D1E8FF;}
         .anim-navbar{animation:slideDown 0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both;}
         .anim-hero-img{animation:slideLeft 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both;}
@@ -382,6 +413,7 @@ export default function Home() {
         .photo-wrap:hover{transform:translate(-3px,-3px);box-shadow:13px 13px 0 #0B1957;}
         .photo-wrap img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center center;}
         .hero-skeleton{background:linear-gradient(90deg,#9ECCFA 25%,#D1E8FF 50%,#9ECCFA 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite;}
+        .about-skeleton{background:linear-gradient(90deg,rgba(158,204,250,0.3) 25%,rgba(158,204,250,0.5) 50%,rgba(158,204,250,0.3) 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite;}
         .contact-card{transition:background 0.15s ease;text-decoration:none;}
         .contact-card:hover{background:#D1E8FF;}
         .contact-card:hover .contact-icon{transform:translate(-2px,-2px);box-shadow:5px 5px 0 #0B1957;}
@@ -399,6 +431,10 @@ export default function Home() {
         .dot:hover:not(.active){background:#9ECCFA;}
         .carousel-track{transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);}
         .skeleton-shimmer{background:linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite;}
+        .about-info-card{border:2px solid #9ECCFA;padding:12px;transition:background 0.15s ease,transform 0.12s ease,box-shadow 0.12s ease;}
+        .about-info-card:hover{background:rgba(158,204,250,0.15);transform:translate(-2px,-2px);box-shadow:3px 3px 0 #9ECCFA;}
+        .about-highlight-tag{border:2px solid #9ECCFA;background:rgba(158,204,250,0.1);color:#9ECCFA;padding:5px 14px;font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;transition:background 0.12s ease,transform 0.12s ease,box-shadow 0.12s ease;}
+        .about-highlight-tag:hover{background:rgba(158,204,250,0.25);transform:translate(-1px,-1px);box-shadow:2px 2px 0 #9ECCFA;}
         .back-to-top{position:fixed;bottom:28px;right:28px;z-index:99;width:48px;height:48px;border:4px solid #0B1957;background:#0B1957;box-shadow:4px 4px 0 #9ECCFA;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.1s ease,box-shadow 0.1s ease,opacity 0.3s ease,visibility 0.3s ease;}
         .back-to-top:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #9ECCFA;}
         .back-to-top:active{transform:translate(0,0);box-shadow:2px 2px 0 #9ECCFA;}
@@ -444,7 +480,6 @@ export default function Home() {
           <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Contact</h2>
           <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] flex flex-col md:flex-row">
             {contactsLoading ? (
-              // Skeleton loading
               <>
                 {[1,2,3].map(i=>(
                   <div key={i} className={`flex-1 p-6 sm:p-8 flex flex-row md:flex-col gap-4 items-center md:items-start ${i<3?"border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957]":""}`}>
@@ -461,7 +496,6 @@ export default function Home() {
               contacts.map((c, i) => {
                 const isLast = i === contacts.length - 1;
                 const icon   = CONTACT_ICONS[c.platform] ?? CONTACT_ICONS.custom;
-                // GitHub special: icon fill color is #9ECCFA — needs dark bg
                 const shadowColor = c.platform === "github" ? "#9ECCFA" : "#0B1957";
                 return (
                   <a key={c.id} href={c.url}
@@ -563,29 +597,68 @@ export default function Home() {
         <section id="about" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-scale">
           <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">About</h2>
           <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] flex flex-col md:flex-row overflow-hidden">
+
+            {/* ── Left: text content ── */}
             <div className="flex-1 p-8 sm:p-10 flex flex-col justify-center">
-              <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-[0.3em] mb-3">Who am I</p>
-              {heroLoading?(
+
+              {/* Tagline */}
+              {aboutLoading
+                ? <div className="about-skeleton h-3 w-24 mb-3"/>
+                : <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-[0.3em] mb-3">{about.tagline}</p>
+              }
+
+              {/* Name + divider + bio */}
+              {heroLoading ? (
                 <div className="space-y-3 mb-6">
-                  <div className="bg-[#9ECCFA] opacity-30 h-10 w-64 rounded"/><div className="w-12 h-1 bg-[#9ECCFA]"/>
-                  <div className="bg-[#9ECCFA] opacity-20 h-4 w-full rounded"/><div className="bg-[#9ECCFA] opacity-20 h-4 w-4/5 rounded"/>
+                  <div className="about-skeleton h-10 w-64"/><div className="w-12 h-1 bg-[#9ECCFA]"/>
+                  <div className="about-skeleton h-4 w-full"/><div className="about-skeleton h-4 w-4/5"/>
                 </div>
-              ):(
+              ) : (
                 <>
                   <h3 className="text-3xl sm:text-4xl font-black uppercase text-[#F8F3EA] mb-4 leading-tight">{hero.name}</h3>
                   <div className="w-12 h-1 bg-[#9ECCFA] mb-5"/>
-                  <p className="font-semibold text-[#D1E8FF] leading-relaxed mb-6">{hero.bio}</p>
+                  <p className="font-semibold text-[#D1E8FF] leading-relaxed mb-2">{hero.bio}</p>
+                  {/* Extra bio (dari about API) */}
+                  {!aboutLoading && about.extra_bio && (
+                    <p className="font-semibold text-[#9ECCFA] leading-relaxed mb-6 text-sm opacity-80">{about.extra_bio}</p>
+                  )}
+                  {!about.extra_bio && <div className="mb-6"/>}
                 </>
               )}
-              <div className="grid grid-cols-2 gap-3">
-                {[{label:"Role",value:heroLoading?"…":hero.title},{label:"Focus",value:"Fullstack Web"},{label:"Stack",value:"React + Laravel"},{label:"Status",value:"Open to Work"}].map((item,i)=>(
-                  <div key={i} className="border-2 border-[#9ECCFA] p-3">
-                    <p className="text-[#9ECCFA] font-black uppercase text-xs tracking-widest mb-1">{item.label}</p>
-                    <p className="text-[#F8F3EA] font-bold text-sm">{item.value}</p>
-                  </div>
-                ))}
-              </div>
+
+              {/* Info cards — dinamis dari API */}
+              {aboutLoading ? (
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  {[1,2,3,4].map(i=>(
+                    <div key={i} className="about-skeleton h-16"/>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  {about.info_cards.map((card, i) => (
+                    <div key={i} className="about-info-card"
+                      style={{animationDelay:`${i*0.08}s`}}>
+                      <p className="text-[#9ECCFA] font-black uppercase text-xs tracking-widest mb-1">{card.label}</p>
+                      <p className="text-[#F8F3EA] font-bold text-sm">{card.value}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Highlight tags — hanya tampil kalau ada */}
+              {!aboutLoading && about.highlights.filter(Boolean).length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {about.highlights.filter(Boolean).map((tag, i) => (
+                    <span key={i} className="about-highlight-tag"
+                      style={{animation:`aboutTagIn 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.06}s both`}}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
+
+            {/* ── Right: photo ── */}
             <div className="md:w-2/5 relative bg-[#9ECCFA] border-t-4 md:border-t-0 md:border-l-4 border-[#9ECCFA] flex items-center justify-center py-10 px-8 min-h-[280px]">
               <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)"}}/>
               <div className="photo-wrap" style={{width:"min(260px,70vw)",height:"min(320px,85vw)"}}>
@@ -614,7 +687,6 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              {/* Footer social icons — dinamis dari contacts */}
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Connect</p>
                 <div className="flex gap-3 flex-wrap">
@@ -628,7 +700,6 @@ export default function Home() {
                         title={c.label}
                         className="border-4 border-[#0B1957] w-10 h-10 flex items-center justify-center btn-brutal"
                         style={{ backgroundColor: c.icon_color, boxShadow: `3px 3px 0 ${shadowColor}` }}>
-                        {/* Resize icon to 18px by cloning with smaller viewBox wrapper */}
                         <span style={{width:18,height:18,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                           {icon18}
                         </span>
