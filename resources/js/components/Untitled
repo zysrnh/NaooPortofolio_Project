@@ -45,16 +45,31 @@ function generateMockContributions(): ContributionData[] {
   const [totalContributions, setTotalContributions] = useState(0);
 
   useEffect(() => {
-    // Simulasi fetch dari GitHub API atau gunakan mock data
-    const data = generateMockContributions();
-    setContributions(data);
-
-    // Hitung total
-    const total = data.reduce((sum, day) => sum + day.count, 0);
-    setTotalContributions(total);
-
-    setLoading(false);
-  }, []);
+    // Fetch dari backend API (real GitHub data)
+    fetch(`/api/github/contributions/${username}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          setContributions(data.data);
+          const total = data.data.reduce((sum: number, day: ContributionData) => sum + day.count, 0);
+          setTotalContributions(total);
+        } else {
+          // Fallback ke mock data jika API gagal
+          const mockData = generateMockContributions();
+          setContributions(mockData);
+          const total = mockData.reduce((sum, day) => sum + day.count, 0);
+          setTotalContributions(total);
+        }
+      })
+      .catch(() => {
+        // Gunakan mock data jika ada error
+        const mockData = generateMockContributions();
+        setContributions(mockData);
+        const total = mockData.reduce((sum, day) => sum + day.count, 0);
+        setTotalContributions(total);
+      })
+      .finally(() => setLoading(false));
+  }, [username]);
 
   const getWeeks = () => {
     const weeks: ContributionData[][] = [];
