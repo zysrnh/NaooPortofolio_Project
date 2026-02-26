@@ -8,6 +8,65 @@ interface TechStackItem { id: number; name: string; icon: string; category: stri
 interface ContactItem   { id: number; platform: string; label: string; value: string; url: string; is_visible: boolean; sort_order: number; icon_color: string; }
 interface AboutProfile  { tagline: string; extra_bio: string; info_cards: { label: string; value: string }[]; highlights: string[]; }
 
+// ── Hardcoded New Section Data ─────────────────────────────────────────────────
+const EXPERIENCE_DATA = [
+  {
+    id: 1, title: "IT Programmer", type: "internship",
+    company: "PT. Solusi Digital Nusantara",
+    description: "Membangun dan maintain sistem internal perusahaan berbasis web menggunakan Laravel dan React. Terlibat dalam pengembangan dashboard monitoring dan tools HR internal.",
+    start_date: "2023-07", end_date: "2023-12",
+    highlights: ["Dashboard Analytics", "REST API", "Laravel + React"],
+  },
+  {
+    id: 2, title: "Fullstack Developer", type: "freelance",
+    company: "Freelance",
+    description: "Mengerjakan berbagai proyek web klien dari landing page, sistem manajemen, hingga tools khusus. Fokus pada delivery yang cepat, rapi, dan mudah di-maintain.",
+    start_date: "2024-01", end_date: null,
+    highlights: ["15+ Projects", "React", "Laravel", "Tailwind"],
+  },
+  {
+    id: 3, title: "Portfolio & Personal Projects", type: "learning",
+    company: "Self-Initiated",
+    description: "Membangun ekosistem portfolio pribadi, eksplorasi AI tools integration, dan proyek side seperti template builder dan internal CMS.",
+    start_date: "2022-06", end_date: null,
+    highlights: ["AI Tools", "Next.js", "Self-learning"],
+  },
+];
+
+const CAPABILITIES_DATA = {
+  bio: "Saya bukan cuma nulis kode — saya bangun sistem. Dari UI yang bikin user betah, sampai backend yang bisa scale. Kalau ada masalah teknis, saya cari solusinya sampai ketemu.",
+  info_cards: [
+    { label: "Frontend", value: "React, Tailwind, Inertia" },
+    { label: "Backend", value: "Laravel, REST API" },
+    { label: "Database", value: "MySQL, Redis" },
+    { label: "Tools", value: "Git, Figma, AI Tools" },
+  ],
+  highlights: ["Clean Code", "Fast Delivery", "UI/UX Aware", "Problem Solver", "Self-Taught", "Always Learning"],
+};
+
+const CASE_STUDIES = [
+  { id: 1, title: "Best Project", short_story: "Sistem manajemen internal yang handle 500+ data karyawan real-time. Dibuild dari scratch dengan role-based access, dashboard analytics, dan export PDF otomatis. Deploy ke production dalam 3 minggu." },
+  { id: 2, title: "Favorite Build", short_story: "Portfolio generator SaaS. User bisa setup portfolio mereka sendiri lewat CMS tanpa coding. Stack: Laravel + Inertia + React. Ini proyek yang paling fun dikerjain." },
+  { id: 3, title: "Biggest Challenge", short_story: "Integrasi API payment gateway yang dokumentasinya... kurang baik. Butuh 2 hari debugging webhooks, tapi akhirnya berhasil dan jadi pengalaman yang paling banyak ngajarin tentang async flow." },
+  { id: 4, title: "Most Complex System", short_story: "Multi-tenant app untuk manajemen distributor. Satu database, banyak tenant dengan isolasi data penuh. Implementasi row-level security dan dynamic subdomain routing." },
+];
+
+const STATS_DATA = [
+  { label: "Years Coding",    value: "3+",   icon: "⌨️" },
+  { label: "Projects Built",  value: "20+",  icon: "🚀" },
+  { label: "Tech Explored",   value: "15+",  icon: "🛠️" },
+  { label: "GitHub Repos",    value: "30+",  icon: "📦" },
+  { label: "Cups of Coffee",  value: "∞",    icon: "☕" },
+];
+
+const AVAILABILITY_DATA = {
+  status: "Open to Work",
+  freelance: true,
+  remote: true,
+  collaboration: true,
+  timezone: "WIB (UTC+7)",
+};
+
 const DEFAULT_HERO: HeroProfile = {
   name: "Yusron", title: "IT Programmer",
   bio: "Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.",
@@ -41,6 +100,19 @@ const CONTACT_ICONS: Record<string, JSX.Element> = {
   custom:   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>,
 };
 
+// ── Helpers ────────────────────────────────────────────────────────────────────
+const TYPE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  internship: { bg: "#0B1957", text: "#9ECCFA", border: "#9ECCFA" },
+  freelance:  { bg: "#9ECCFA", text: "#0B1957", border: "#0B1957" },
+  learning:   { bg: "#F8F3EA", text: "#0B1957", border: "#0B1957" },
+  project:    { bg: "#D1E8FF", text: "#0B1957", border: "#0B1957" },
+};
+const fmtDate = (d: string | null) => {
+  if (!d) return "Present";
+  const [y, m] = d.split("-");
+  return `${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][Number(m)-1]} ${y}`;
+};
+
 // ── Scroll Reveal ─────────────────────────────────────────────────────────────
 function useScrollReveal() {
   useEffect(() => {
@@ -66,7 +138,7 @@ function useScrollReveal() {
   }, []);
 }
 
-// ── FloatingBlocks (same as Home) ─────────────────────────────────────────────
+// ── FloatingBlocks ────────────────────────────────────────────────────────────
 const BLOCK_CONFIGS = [
   { top:"10%", left:"2%",   size:56, color:"#9ECCFA", type:"filled",  animDelay:"0s"   },
   { top:"50%", left:"1.5%", size:18, color:"#0B1957", type:"outline", animDelay:"1.4s" },
@@ -158,14 +230,10 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal" data-delay="0">
       <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">GitHub Activity</h2>
       <div className="border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-
-        {/* Header */}
         <div className="bg-[#0B1957] px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div style={{border:"3px solid #9ECCFA",boxShadow:"3px 3px 0 #9ECCFA",padding:8}}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="#9ECCFA">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#9ECCFA"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
             </div>
             <div>
               <p className="font-black text-[#9ECCFA] uppercase tracking-[0.25em] mb-0.5" style={{fontSize:10}}>Contribution Graph</p>
@@ -186,8 +254,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
             ))}
           </div>
         </div>
-
-        {/* Graph */}
         <div className="bg-[#F8F3EA]">
           <div ref={containerRef} className="px-5 sm:px-8 pt-6 pb-4 overflow-x-auto relative">
             {loading ? (
@@ -202,7 +268,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
               </div>
             ) : (
               <>
-                {/* Month labels */}
                 <div style={{display:"flex",gap:GAP,marginBottom:6,marginLeft:30}}>
                   {weeks.map((_, wi) => {
                     const lbl = monthLabels.find(m => m.col === wi);
@@ -213,7 +278,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                     );
                   })}
                 </div>
-                {/* Grid */}
                 <div style={{display:"flex",gap:GAP}}>
                   <div style={{display:"flex",flexDirection:"column",gap:GAP,marginRight:4,flexShrink:0,width:26}}>
                     {DAY_LABELS.map((d, i) => (
@@ -245,7 +309,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                     </div>
                   ))}
                 </div>
-                {/* Tooltip */}
                 {hoveredDay && (
                   <div style={{position:"absolute",left:tooltipPos.x+14,top:tooltipPos.y-56,pointerEvents:"none",zIndex:50,background:"#0B1957",border:"3px solid #9ECCFA",boxShadow:"4px 4px 0 #9ECCFA",padding:"8px 12px",minWidth:170}}>
                     <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
@@ -258,7 +321,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
               </>
             )}
           </div>
-          {/* Legend */}
           <div className="border-t-4 border-[#0B1957] px-5 sm:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
             <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer"
               className="btn-brutal font-black text-xs uppercase tracking-widest flex items-center gap-2"
@@ -335,6 +397,200 @@ function TechStack() {
   );
 }
 
+// ── Experience / Timeline ─────────────────────────────────────────────────────
+function ExperienceTimeline() {
+  return (
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal" data-delay="0">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Experience</h2>
+      <div className="relative">
+        {/* vertical line */}
+        <div className="absolute left-[19px] sm:left-[23px] top-0 bottom-0 w-[3px] bg-[#0B1957]" style={{zIndex:0}}/>
+        <div className="flex flex-col gap-6">
+          {EXPERIENCE_DATA.map((exp, i) => {
+            const tc = TYPE_COLORS[exp.type] ?? TYPE_COLORS.project;
+            const isCurrent = !exp.end_date;
+            return (
+              <div key={exp.id} className="relative flex gap-5 sm:gap-7 items-start group" style={{zIndex:1}}>
+                {/* dot */}
+                <div className="flex-shrink-0 mt-1" style={{width:40,display:"flex",justifyContent:"center"}}>
+                  <div style={{width:16,height:16,background:isCurrent?"#9ECCFA":"#0B1957",border:"3px solid #0B1957",boxShadow:`3px 3px 0 ${isCurrent?"#0B1957":"#9ECCFA"}`,position:"relative",zIndex:2,transition:"transform 0.12s ease"}}
+                    className="group-hover:scale-125"/>
+                </div>
+                {/* card */}
+                <div className="flex-1 bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-5 sm:p-6 group-hover:shadow-[8px_8px_0_#0B1957] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition-all duration-150">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                    <div>
+                      <h3 className="font-black text-lg uppercase text-[#0B1957] leading-tight">{exp.title}</h3>
+                      <p className="font-bold text-xs uppercase tracking-widest text-[#0B1957] opacity-60 mt-0.5">{exp.company}</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-black text-xs uppercase tracking-widest px-3 py-1"
+                        style={{border:`3px solid ${tc.border}`,background:tc.bg,color:tc.text,boxShadow:`2px 2px 0 ${tc.border}`}}>
+                        {exp.type}
+                      </span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-[#0B1957] opacity-50 whitespace-nowrap">
+                        {fmtDate(exp.start_date)} — {fmtDate(exp.end_date)}
+                      </span>
+                      {isCurrent && (
+                        <span className="font-black text-xs uppercase tracking-widest px-2 py-0.5"
+                          style={{border:"2px solid #9ECCFA",background:"rgba(158,204,250,0.15)",color:"#0B1957",boxShadow:"1px 1px 0 #9ECCFA"}}>
+                          ● Active
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <p className="font-semibold text-sm text-[#0B1957] leading-relaxed mb-3 opacity-80">{exp.description}</p>
+                  {exp.highlights.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {exp.highlights.map((h, hi) => (
+                        <span key={hi} className="font-black text-xs uppercase px-2 py-1"
+                          style={{border:"2px solid #9ECCFA",color:"#0B1957",background:"rgba(158,204,250,0.1)"}}>
+                          {h}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Capabilities ──────────────────────────────────────────────────────────────
+function Capabilities() {
+  return (
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right" data-delay="0">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">What I Do Best</h2>
+      <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] overflow-hidden">
+        <div className="p-7 sm:p-10">
+          <p className="font-bold text-[#D1E8FF] text-base sm:text-lg leading-relaxed mb-8 max-w-2xl border-l-4 border-[#9ECCFA] pl-4">
+            {CAPABILITIES_DATA.bio}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+            {CAPABILITIES_DATA.info_cards.map((card, i) => (
+              <div key={i} className="cap-info-card" style={{border:"2px solid #9ECCFA",padding:"14px",transition:"background 0.15s ease,transform 0.12s ease,box-shadow 0.12s ease",cursor:"default"}}>
+                <p className="text-[#9ECCFA] font-black uppercase text-xs tracking-widest mb-1">{card.label}</p>
+                <p className="text-[#F8F3EA] font-bold text-sm">{card.value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {CAPABILITIES_DATA.highlights.map((tag, i) => (
+              <span key={i} className="font-black text-xs uppercase px-4 py-2 tracking-widest"
+                style={{border:"2px solid #9ECCFA",color:"#9ECCFA",background:"rgba(158,204,250,0.1)",
+                  animation:`tagIn 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.06}s both`,
+                  transition:"background 0.12s ease,transform 0.12s ease,box-shadow 0.12s ease"}}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Case Studies ──────────────────────────────────────────────────────────────
+function CaseStudies() {
+  return (
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal" data-delay="0">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Case Studies</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {CASE_STUDIES.map((cs, i) => (
+          <div key={cs.id} className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-6 group hover:shadow-[8px_8px_0_#0B1957] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-150">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center font-black text-sm"
+                style={{background:"#0B1957",color:"#9ECCFA",border:"2px solid #9ECCFA",boxShadow:"2px 2px 0 #9ECCFA"}}>
+                {String(i+1).padStart(2,"0")}
+              </div>
+              <h3 className="font-black uppercase text-sm tracking-widest text-[#0B1957]">{cs.title}</h3>
+            </div>
+            <p className="font-semibold text-sm text-[#0B1957] leading-relaxed opacity-75">{cs.short_story}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function Stats() {
+  const [counted, setCounted] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setCounted(true); obs.disconnect(); } }, { threshold: 0.3 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <section ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left" data-delay="0">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">By the Numbers</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        {STATS_DATA.map((stat, i) => (
+          <div key={i} className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-5 flex flex-col items-center text-center group hover:bg-[#0B1957] hover:shadow-[8px_8px_0_#9ECCFA] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200">
+            <span className="text-3xl mb-2" style={{animation:counted?`tagIn 0.5s cubic-bezier(0.16,1,0.3,1) ${i*0.1}s both`:"none"}}>{stat.icon}</span>
+            <span className="font-black text-3xl text-[#0B1957] group-hover:text-[#9ECCFA] transition-colors duration-200 tabular-nums leading-none mb-1"
+              style={{animation:counted?`tagIn 0.5s cubic-bezier(0.16,1,0.3,1) ${i*0.1+0.05}s both`:"none"}}>
+              {stat.value}
+            </span>
+            <span className="font-black text-xs uppercase tracking-widest text-[#0B1957] group-hover:text-[#D1E8FF] transition-colors duration-200 opacity-60 group-hover:opacity-100">{stat.label}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Availability ──────────────────────────────────────────────────────────────
+function Availability() {
+  const avail = AVAILABILITY_DATA;
+  const badges = [
+    { label: "Freelance", active: avail.freelance },
+    { label: "Remote",    active: avail.remote    },
+    { label: "Collab",    active: avail.collaboration },
+  ];
+  return (
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right" data-delay="0">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Availability</h2>
+      <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] p-7 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <div style={{width:16,height:16,background:"#4ade80",border:"3px solid #0B1957",boxShadow:"0 0 0 4px rgba(74,222,128,0.3)"}}/>
+            <div className="absolute inset-0" style={{background:"#4ade80",animation:"ping 1.4s ease-in-out infinite",opacity:0.4}}/>
+          </div>
+          <div>
+            <p className="font-black text-[#9ECCFA] uppercase tracking-[0.25em] text-xs mb-1">Current Status</p>
+            <p className="font-black text-[#F8F3EA] text-2xl uppercase">{avail.status}</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {badges.map((b, i) => (
+            <div key={i} style={{
+              border:`3px solid ${b.active?"#9ECCFA":"rgba(158,204,250,0.2)"}`,
+              background: b.active?"rgba(158,204,250,0.15)":"transparent",
+              padding:"8px 18px",
+              boxShadow: b.active?"3px 3px 0 #9ECCFA":"none",
+            }}>
+              <p className="font-black text-xs uppercase tracking-widest" style={{color:b.active?"#9ECCFA":"rgba(158,204,250,0.35)"}}>
+                {b.active ? "✓" : "✗"} {b.label}
+              </p>
+            </div>
+          ))}
+          {avail.timezone && (
+            <div style={{border:"3px solid rgba(158,204,250,0.4)",padding:"8px 18px"}}>
+              <p className="font-black text-xs uppercase tracking-widest text-[#9ECCFA] opacity-70">🕐 {avail.timezone}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Main About ────────────────────────────────────────────────────────────────
 export default function About() {
   const [visible,          setVisible]          = useState(false);
@@ -388,6 +644,7 @@ export default function About() {
         @keyframes slideRight { from{opacity:0;transform:translateX(40px)}  to{opacity:1;transform:translateX(0)} }
         @keyframes shimmer    { from{background-position:-200% 0} to{background-position:200% 0} }
         @keyframes tagIn      { from{opacity:0;transform:translateY(8px) scale(0.9)} to{opacity:1;transform:translateY(0) scale(1)} }
+        @keyframes ping       { 0%{transform:scale(1);opacity:0.4} 70%,100%{transform:scale(2.2);opacity:0} }
         body { background-color: #D1E8FF; }
 
         .anim-navbar  { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
@@ -408,6 +665,7 @@ export default function About() {
 
         .about-info-card { border:2px solid #9ECCFA;padding:14px;transition:background 0.15s ease,transform 0.12s ease,box-shadow 0.12s ease;cursor:default; }
         .about-info-card:hover { background:rgba(158,204,250,0.15);transform:translate(-2px,-2px);box-shadow:3px 3px 0 #9ECCFA; }
+        .cap-info-card:hover { background:rgba(158,204,250,0.12)!important;transform:translate(-2px,-2px);box-shadow:3px 3px 0 #9ECCFA; }
 
         .about-highlight-tag { border:2px solid #9ECCFA;background:rgba(158,204,250,0.1);color:#9ECCFA;padding:6px 16px;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;transition:background 0.12s ease,transform 0.12s ease,box-shadow 0.12s ease; }
         .about-highlight-tag:hover { background:rgba(158,204,250,0.25);transform:translate(-1px,-1px);box-shadow:2px 2px 0 #9ECCFA; }
@@ -448,23 +706,12 @@ export default function About() {
           </div>
         </div>
 
-        {/* ── BIO HERO ── */}
+        {/* ── BIO HERO — Photo RIGHT, Text LEFT ── */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-16">
           <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] flex flex-col md:flex-row overflow-hidden">
 
-            {/* Photo */}
-            <div className="anim-photo md:w-2/5 relative bg-[#9ECCFA] border-b-4 md:border-b-0 md:border-r-4 border-[#0B1957] flex items-center justify-center py-10 px-8 min-h-[280px] sm:min-h-[340px]">
-              <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)"}}/>
-              <div className="photo-wrap relative z-10" style={{width:"min(200px,60vw)",height:"min(250px,75vw)"}}>
-                {heroLoading
-                  ? <div className="hero-skeleton absolute inset-0"/>
-                  : <img src={heroPhoto!} alt={hero.name} onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
-                }
-              </div>
-            </div>
-
-            {/* Text */}
-            <div className="anim-hero flex-1 p-8 sm:p-12 flex flex-col justify-center relative">
+            {/* Text — LEFT */}
+            <div className="anim-hero flex-1 p-8 sm:p-12 flex flex-col justify-center relative order-2 md:order-1">
               <div className="absolute top-5 right-8 text-8xl font-black text-[#9ECCFA] select-none leading-none opacity-20" aria-hidden>"</div>
 
               {aboutLoading
@@ -520,8 +767,32 @@ export default function About() {
                 </div>
               )}
             </div>
+
+            {/* Photo — RIGHT */}
+            <div className="anim-photo md:w-2/5 relative bg-[#9ECCFA] border-b-4 md:border-b-0 md:border-l-4 border-[#0B1957] flex items-center justify-center py-10 px-8 min-h-[280px] sm:min-h-[340px] order-1 md:order-2">
+              <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)"}}/>
+              <div className="photo-wrap relative z-10" style={{width:"min(200px,60vw)",height:"min(250px,75vw)"}}>
+                {heroLoading
+                  ? <div className="hero-skeleton absolute inset-0"/>
+                  : <img src={heroPhoto!} alt={hero.name} onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
+                }
+              </div>
+            </div>
+
           </div>
         </section>
+
+        {/* ── CAPABILITIES ── */}
+        <Capabilities/>
+
+        {/* ── STATS ── */}
+        <Stats/>
+
+        {/* ── EXPERIENCE TIMELINE ── */}
+        <ExperienceTimeline/>
+
+        {/* ── CASE STUDIES ── */}
+        <CaseStudies/>
 
         {/* ── TECH STACK ── */}
         <TechStack/>
@@ -529,7 +800,8 @@ export default function About() {
         {/* ── GITHUB CONTRIBUTIONS ── */}
         <GitHubContributions username="zysrnh"/>
 
-       
+        {/* ── AVAILABILITY ── */}
+        <Availability/>
 
         {/* ── FOOTER ── */}
         <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA]">
