@@ -1,5 +1,5 @@
 <?php
-// routes/web.php — UPDATED (tambah about routes)
+// routes/web.php
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -8,7 +8,7 @@ use App\Http\Controllers\TechStackController;
 use App\Http\Controllers\HeroProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\AboutProfileController; // ← TAMBAH INI
+use App\Http\Controllers\AboutProfileController;
 
 // ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -26,6 +26,10 @@ Route::get('/projects', function () {
 Route::get('/projects/{projectId}', function ($projectId) {
     return Inertia::render('ProjectDetail', ['projectId' => $projectId]);
 })->name('projects.show');
+
+Route::get('/about', function () {
+    return Inertia::render('About');
+})->name('about');
 
 // ── Protected Pages ───────────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -49,15 +53,13 @@ Route::prefix('api')->group(function () {
     Route::get('/tech-stacks/visible', [TechStackController::class, 'indexVisible']);
     Route::get('/tech-stacks',         [TechStackController::class, 'index']);
     Route::get('/hero',                [HeroProfileController::class, 'show']);
-    Route::get('/about',               [AboutProfileController::class, 'show']); // ← TAMBAH
+    Route::get('/about',               [AboutProfileController::class, 'show']);
 
-    // Contact publik
-    Route::get('/contact',         [ContactController::class, 'index']);
-    Route::get('/contact/visible', [ContactController::class, 'indexVisible']);
+    Route::get('/contact',             [ContactController::class, 'index']);
+    Route::get('/contact/visible',     [ContactController::class, 'indexVisible']);
 
-    // Projects publik
-    Route::get('/projects',        [ProjectController::class, 'index']);
-    Route::get('/projects/{slug}', [ProjectController::class, 'show']);
+    Route::get('/projects',            [ProjectController::class, 'index']);
+    Route::get('/projects/{slug}',     [ProjectController::class, 'show']);
 
     // ── Protected ───────────────────────────────────────────────────────────
     Route::middleware(['auth'])->group(function () {
@@ -71,10 +73,10 @@ Route::prefix('api')->group(function () {
         // Hero
         Route::put('/hero', [HeroProfileController::class, 'update']);
 
-        // About ← TAMBAH
+        // About
         Route::put('/about', [AboutProfileController::class, 'update']);
 
-        // Contact (bulk save dari HomepageManager)
+        // Contact
         Route::put('/contact', [ContactController::class, 'bulkUpdate']);
 
         // Projects (admin CRUD)

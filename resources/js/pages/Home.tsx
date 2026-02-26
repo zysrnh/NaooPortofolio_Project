@@ -157,235 +157,6 @@ function TechStack() {
 }
 
 
-// ── GitHubContributions ────────────────────────────────────────────────────────
-function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
-  interface ContribDay { date: string; count: number; level: 0|1|2|3|4; }
-  const [weeks, setWeeks]           = useState<ContribDay[][]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [totalContribs, setTotal]   = useState(0);
-  const [streak, setStreak]         = useState(0);
-  const [maxDay, setMaxDay]         = useState(0);
-  const [hoveredDay, setHoveredDay] = useState<ContribDay|null>(null);
-  const [tooltipPos, setTooltipPos] = useState({ x:0, y:0 });
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`)
-      .then(r => r.json())
-      .then(data => {
-        const contributions: ContribDay[] = data.contributions ?? [];
-        const grouped: ContribDay[][] = [];
-        for (let i = 0; i < contributions.length; i += 7) grouped.push(contributions.slice(i, i + 7));
-        setWeeks(grouped);
-        setTotal(contributions.reduce((s, d) => s + d.count, 0));
-        setMaxDay(Math.max(...contributions.map(d => d.count), 0));
-        let s = 0;
-        for (let i = contributions.length - 1; i >= 0; i--) {
-          if (contributions[i].count > 0) s++; else break;
-        }
-        setStreak(s);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [username]);
-
-  // Neobrutalist cell colors — empty=off-white, 4 filled levels
-  const CELL_STYLES: Record<number, { bg: string; border: string; shadow: string }> = {
-    0: { bg:"#E8E0D4",    border:"#C8B8A0", shadow:"none" },
-    1: { bg:"#9ECCFA",    border:"#0B1957", shadow:"2px 2px 0 #0B1957" },
-    2: { bg:"#5aa8f0",    border:"#0B1957", shadow:"2px 2px 0 #0B1957" },
-    3: { bg:"#2563eb",    border:"#0B1957", shadow:"2px 2px 0 #0B1957" },
-    4: { bg:"#0B1957",    border:"#9ECCFA", shadow:"2px 2px 0 #9ECCFA" },
-  };
-  const LEGEND_COLORS = ["#E8E0D4","#9ECCFA","#5aa8f0","#2563eb","#0B1957"];
-  const DAY_LABELS    = ["","Mon","","Wed","","Fri",""];
-  const MONTHS        = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-  const monthLabels = (() => {
-    if (!weeks.length) return [];
-    const labels: { label:string; col:number }[] = [];
-    let lastM = -1;
-    weeks.forEach((week, wi) => {
-      if (!week[0]) return;
-      const m = new Date(week[0].date).getMonth();
-      if (m !== lastM) { labels.push({ label: MONTHS[m], col: wi }); lastM = m; }
-    });
-    return labels;
-  })();
-
-  const handleMouseMove = (day: ContribDay, e: React.MouseEvent) => {
-    setHoveredDay(day);
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (rect) setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-
-  const fmt = (d: string) => new Date(d).toLocaleDateString("id-ID", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
-
-  const CELL = 14, GAP = 3;
-
-  return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">GitHub Activity</h2>
-
-      <div className="border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-
-        {/* ── TOP HEADER BAR ── */}
-        <div className="bg-[#0B1957] px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          {/* Left: username + badge */}
-          <div className="flex items-center gap-3">
-            <div className="border-3 border-[#9ECCFA] p-2" style={{border:"3px solid #9ECCFA",boxShadow:"3px 3px 0 #9ECCFA"}}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="#9ECCFA">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-            </div>
-            <div>
-              <p className="font-black text-[#9ECCFA] uppercase text-xs tracking-[0.25em] mb-0.5">Contribution Graph</p>
-              <p className="font-black text-[#F8F3EA] text-xl uppercase tracking-widest">@{username}</p>
-            </div>
-          </div>
-
-          {/* Right: stat blocks */}
-          <div className="flex gap-3 flex-wrap">
-            {[
-              { val: loading?"…":totalContribs.toString(), label:"Total Commits", accent:"#9ECCFA" },
-              { val: loading?"…":streak.toString(),         label:"Day Streak",    accent:"#9ECCFA" },
-              { val: loading?"…":maxDay.toString(),         label:"Best Day",      accent:"#9ECCFA" },
-            ].map((s, i) => (
-              <div key={i} className="flex flex-col items-center px-4 py-3 min-w-[80px]"
-                style={{border:"3px solid #9ECCFA", boxShadow:"3px 3px 0 #9ECCFA", background:"rgba(158,204,250,0.08)"}}>
-                <span className="font-black tabular-nums text-[#9ECCFA]" style={{fontSize:"clamp(1.4rem,3vw,1.8rem)"}}>{s.val}</span>
-                <span className="font-black text-[#D1E8FF] uppercase tracking-widest mt-0.5" style={{fontSize:9}}>{s.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── GRAPH AREA ── */}
-        <div className="bg-[#F8F3EA]">
-          <div ref={containerRef} className="px-5 sm:px-8 pt-6 pb-4 overflow-x-auto relative">
-            {loading ? (
-              /* Skeleton */
-              <div style={{display:"flex",gap:GAP}}>
-                {Array.from({length:52}).map((_,wi)=>(
-                  <div key={wi} style={{display:"flex",flexDirection:"column",gap:GAP}}>
-                    {Array.from({length:7}).map((_,di)=>(
-                      <div key={di} className="skeleton-shimmer" style={{width:CELL,height:CELL}}/>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <>
-                {/* Month labels row */}
-                <div style={{display:"flex",gap:GAP,marginBottom:6,marginLeft:30}}>
-                  {weeks.map((_, wi) => {
-                    const lbl = monthLabels.find(m => m.col === wi);
-                    return (
-                      <div key={wi} style={{width:CELL,flexShrink:0,overflow:"visible"}}>
-                        {lbl && (
-                          <span style={{
-                            fontWeight:900, fontSize:9, textTransform:"uppercase", letterSpacing:"0.1em",
-                            color:"#0B1957", whiteSpace:"nowrap", display:"block",
-                          }}>{lbl.label}</span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Main grid */}
-                <div style={{display:"flex",gap:GAP}}>
-                  {/* Day labels */}
-                  <div style={{display:"flex",flexDirection:"column",gap:GAP,marginRight:4,flexShrink:0,width:26}}>
-                    {DAY_LABELS.map((d, i) => (
-                      <div key={i} style={{height:CELL,display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                        {d && <span style={{fontWeight:900,fontSize:8,textTransform:"uppercase",letterSpacing:"0.08em",color:"#0B1957",opacity:0.5}}>{d}</span>}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Cells */}
-                  {weeks.map((week, wi) => (
-                    <div key={wi} style={{display:"flex",flexDirection:"column",gap:GAP,flexShrink:0}}>
-                      {week.map((day, di) => {
-                        const cs = CELL_STYLES[day.level];
-                        const isHov = hoveredDay?.date === day.date;
-                        return (
-                          <div
-                            key={di}
-                            style={{
-                              width: CELL, height: CELL, flexShrink: 0,
-                              background: cs.bg,
-                              border: `2px solid ${cs.border}`,
-                              boxShadow: isHov ? `0 0 0 2px #0B1957, 3px 3px 0 #0B1957` : cs.shadow,
-                              cursor: "pointer",
-                              transform: isHov ? "scale(1.35) translate(-1px,-1px)" : "scale(1)",
-                              transition: "transform 0.08s ease, box-shadow 0.08s ease",
-                              zIndex: isHov ? 10 : 1,
-                              position: "relative",
-                            }}
-                            onMouseEnter={e => handleMouseMove(day, e)}
-                            onMouseLeave={() => setHoveredDay(null)}
-                          />
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Tooltip */}
-                {hoveredDay && (
-                  <div style={{
-                    position:"absolute", left:tooltipPos.x+14, top:tooltipPos.y-56,
-                    pointerEvents:"none", zIndex:50,
-                    background:"#0B1957", border:"3px solid #9ECCFA", boxShadow:"4px 4px 0 #9ECCFA",
-                    padding:"8px 12px", minWidth:170,
-                  }}>
-                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
-                      <div style={{
-                        width:10,height:10,flexShrink:0,
-                        background:CELL_STYLES[hoveredDay.level].bg,
-                        border:`2px solid ${hoveredDay.level===4?"#9ECCFA":"#0B1957"}`,
-                        boxShadow: hoveredDay.level > 0 ? "1px 1px 0 #9ECCFA" : "none",
-                      }}/>
-                      <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",color:"#9ECCFA"}}>
-                        {hoveredDay.count} commit{hoveredDay.count!==1?"s":""}
-                      </p>
-                    </div>
-                    <p style={{fontWeight:600,fontSize:10,color:"#D1E8FF",textTransform:"capitalize"}}>{fmt(hoveredDay.date)}</p>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* ── FOOTER BAR ── */}
-          <div className="border-t-4 border-[#0B1957] px-5 sm:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
-            <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer"
-              className="btn-brutal font-black text-xs uppercase text-[#0B1957] tracking-widest flex items-center gap-2"
-              style={{border:"3px solid #0B1957",padding:"6px 14px",background:"#0B1957",color:"#9ECCFA",boxShadow:"3px 3px 0 #9ECCFA",transition:"transform 0.08s ease,box-shadow 0.08s ease"}}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="#9ECCFA"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              View Profile →
-            </a>
-            {/* Legend */}
-            <div style={{display:"flex",alignItems:"center",gap:6}}>
-              <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957",opacity:0.45}}>Less</span>
-              {LEGEND_COLORS.map((c, i) => (
-                <div key={i} style={{
-                  width:12,height:12,flexShrink:0,
-                  background:c,
-                  border:`2px solid ${i===4?"#9ECCFA":"#0B1957"}`,
-                  boxShadow: i > 0 ? `1px 1px 0 ${i===4?"#9ECCFA":"#0B1957"}` : "none",
-                }}/>
-              ))}
-              <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957",opacity:0.45}}>More</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 
 // ── ProjectCount ───────────────────────────────────────────────────────────────
@@ -597,7 +368,6 @@ export default function Home() {
         .back-to-top{position:fixed;bottom:28px;right:28px;z-index:99;width:48px;height:48px;border:4px solid #0B1957;background:#0B1957;box-shadow:4px 4px 0 #9ECCFA;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.1s ease,box-shadow 0.1s ease,opacity 0.3s ease,visibility 0.3s ease;}
         .back-to-top:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #9ECCFA;}
         .back-to-top:active{transform:translate(0,0);box-shadow:2px 2px 0 #9ECCFA;}
-        .github-cell:hover{transform:scale(1.4);box-shadow:0 0 0 2px #0B1957;}
       `}</style>
 
       <div className="min-h-screen relative" style={{opacity:visible?1:0,transition:"opacity 0.3s ease"}}>
@@ -773,9 +543,6 @@ export default function Home() {
         {/* PROJECT STATS */}
         <ProjectCount projects={projects}/>
 
-        {/* GITHUB */}
-        <GitHubContributions username="zysrnh"/>
-
         {/* FOOTER */}
         <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA] reveal">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
@@ -824,4 +591,4 @@ export default function Home() {
       </div>
     </>
   );
-} 
+}
