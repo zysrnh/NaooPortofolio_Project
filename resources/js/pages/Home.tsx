@@ -384,7 +384,7 @@ export default function Home() {
   if(loading) return (
     <div className="min-h-screen bg-[#0B1957] flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-md">
-        <div className="mb-8"><p className="text-[#9ECCFA] font-bold uppercase text-sm tracking-[0.3em] mb-2">Initializing</p><h1 className="text-4xl font-black uppercase text-[#F8F3EA]">Yusron.dev</h1></div>
+        <div className="mb-8"><p className="text-[#9ECCFA] font-bold uppercase text-sm tracking-[0.3em] mb-2">Initializing</p><h1 className="text-4xl font-black uppercase text-[#F8F3EA]">Naoo.id</h1></div>
         <div className="border-4 border-[#9ECCFA] shadow-[6px_6px_0_#9ECCFA] p-1 mb-4 bg-[#0B1957]">
           <div className="h-8 bg-[#9ECCFA] relative overflow-hidden" style={{width:`${progress}%`,transition:"width 0.016s linear"}}>
             <div className="absolute inset-0 opacity-40" style={{background:"repeating-linear-gradient(90deg,transparent,transparent 8px,#D1E8FF 8px,#D1E8FF 16px)",animation:"shimmer 0.4s linear infinite"}}/>
@@ -672,7 +672,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
               <div>
-                <div className="font-black text-2xl text-[#0B1957] mb-1">Yusron.dev</div>
+                <div className="font-black text-2xl text-[#0B1957] mb-1"> Naoo.id</div>
                 <p className="font-semibold text-sm text-[#0B1957] opacity-70">Made with ☕ by Zaki Yusron Hasyimmi</p>
               </div>
               <div className="flex flex-col gap-2">

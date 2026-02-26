@@ -7,6 +7,7 @@ use App\Mail\NewMessageMail;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\ReplyMail;
 
 class MessageController extends Controller
 {

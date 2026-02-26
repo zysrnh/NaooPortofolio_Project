@@ -723,7 +723,7 @@ export default function Dashboard() {
         <aside className="anim-sidebar hidden md:flex flex-col w-64 bg-[#0B1957] border-r-4 border-[#0B1957] relative min-h-screen flex-shrink-0">
           <div className="grid-bg-dark" />
           <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative">
-            <div className="font-black text-xl text-[#9ECCFA] uppercase tracking-widest">Yusron.dev</div>
+            <div className="font-black text-xl text-[#9ECCFA] uppercase tracking-widest">Naoo.id</div>
             <div className="font-semibold text-xs text-[#D1E8FF] opacity-60 uppercase tracking-wider mt-1">Dashboard</div>
           </div>
           <nav className="flex-1 py-4 relative"><NavItems /></nav>
@@ -739,7 +739,7 @@ export default function Dashboard() {
           <div className="grid-bg-dark" />
           <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative z-10 flex items-center justify-between">
             <div>
-              <div className="font-black text-lg text-[#9ECCFA] uppercase tracking-widest">Yusron.dev</div>
+              <div className="font-black text-lg text-[#9ECCFA] uppercase tracking-widest">Naoo.id</div>
               <div className="font-semibold text-xs text-[#D1E8FF] opacity-60 uppercase">Dashboard</div>
             </div>
             <button className="border-2 border-[#9ECCFA] p-2 text-[#9ECCFA]" onClick={() => setSidebarOpen(false)}><IconClose /></button>

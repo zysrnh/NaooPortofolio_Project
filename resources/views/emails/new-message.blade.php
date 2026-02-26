@@ -59,7 +59,7 @@
         </div>
       </div>
       <div class="footer">
-        <div class="footer-brand">Yusron.dev</div>
+        <div class="footer-brand">Naoo.id</div>
         <div class="footer-time">Dikirim otomatis via portfolio</div>
       </div>
     </div>
