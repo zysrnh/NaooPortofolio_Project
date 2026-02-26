@@ -9,6 +9,7 @@ use App\Http\Controllers\HeroProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AboutProfileController;
+use App\Http\Controllers\MessageController;
 
 // ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -30,6 +31,11 @@ Route::get('/projects/{projectId}', function ($projectId) {
 Route::get('/about', function () {
     return Inertia::render('About');
 })->name('about');
+
+// ── NEW: Contact Page ─────────────────────────────────────────────────────────
+Route::get('/contact', function () {
+    return Inertia::render('Contact');
+})->name('contact.page');
 
 // ── Protected Pages ───────────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -68,6 +74,9 @@ Route::prefix('api')->group(function () {
     Route::get('/projects',            [ProjectController::class,       'index']);
     Route::get('/projects/{slug}',     [ProjectController::class,       'show']);
 
+    // ── NEW: Messages (public — kirim pesan) ──────────────────────────────────
+    Route::post('/messages', [MessageController::class, 'store']);
+
     // ── Protected ─────────────────────────────────────────────────────────────
     Route::middleware(['auth'])->group(function () {
 
@@ -102,6 +111,13 @@ Route::prefix('api')->group(function () {
 
         // Contact
         Route::put('/contact', [ContactController::class, 'bulkUpdate']);
+
+        // Messages (admin)
+        Route::get   ('/messages',              [MessageController::class, 'index']);
+        Route::get   ('/messages/stats',        [MessageController::class, 'stats']);
+        Route::patch ('/messages/read-all',     [MessageController::class, 'markAllRead']);
+        Route::patch ('/messages/{message}/read', [MessageController::class, 'markRead']);
+        Route::delete('/messages/{message}',    [MessageController::class, 'destroy']);
 
         // Projects (admin CRUD)
         Route::get   ('/admin/projects',                  [ProjectController::class, 'adminIndex']);

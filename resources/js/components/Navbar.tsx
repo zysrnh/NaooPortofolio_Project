@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
 
 const navLinks = [
-  { label: "Home",     href: "hero"     },
+  { label: "Home",     href: "hero" },
   { label: "Projects", href: "projects" },
-  { label: "About",    href: "about"    },
-  { label: "Contact",  href: "contact"  },
+  { label: "About",    href: "about" },
+  { label: "Contact",  href: "contact" },
 ];
 
 export default function Navbar() {
@@ -13,11 +13,10 @@ export default function Navbar() {
   const isLoggedIn = !!auth?.user;
 
   const currentUrl = typeof window !== "undefined" ? window.location.pathname : "";
-  const isHome     = currentUrl === "/" || currentUrl === "";
-  const isAbout    = currentUrl === "/about";
-  const isProjects = currentUrl.startsWith("/projects");
+  const isHome = currentUrl === "/" || currentUrl === "";
+  const isContactPage = currentUrl === "/contact";
 
-  const [menuOpen,      setMenuOpen]      = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
 
   const scrollToSection = (id: string) => {
@@ -27,40 +26,73 @@ export default function Navbar() {
 
   const handleNavLink = (href: string) => {
     setMenuOpen(false);
-    if (href === "projects") { router.visit("/projects"); return; }
-    if (href === "about")    { router.visit("/about");    return; }
-    if (href === "hero") {
-      if (isHome) scrollToSection("hero"); else router.visit("/"); return;
+
+    // "Projects" selalu ke halaman /projects
+    if (href === "projects") {
+      router.visit("/projects");
+      return;
     }
-    // contact
-    if (isHome) scrollToSection("contact");
-    else { sessionStorage.setItem("scrollTo", "contact"); router.visit("/"); }
+
+    // "Contact" selalu ke halaman /contact
+    if (href === "contact") {
+      router.visit("/contact");
+      return;
+    }
+
+    // "Home" selalu ke /
+    if (href === "hero") {
+      if (isHome) {
+        scrollToSection("hero");
+      } else {
+        router.visit("/");
+      }
+      return;
+    }
+
+    // About
+    if (isHome) {
+      scrollToSection(href);
+    } else {
+      sessionStorage.setItem("scrollTo", href);
+      router.visit("/");
+    }
   };
 
   const handlePrimaryBtn = () => {
     setMenuOpen(false);
-    if (isLoggedIn) router.visit("/dashboard"); else router.visit("/login");
+    if (isLoggedIn) {
+      router.visit("/dashboard");
+    } else {
+      router.visit("/login");
+    }
   };
 
   const handleContactBtn = () => {
     setMenuOpen(false);
-    if (isHome) scrollToSection("contact");
-    else { sessionStorage.setItem("scrollTo", "contact"); router.visit("/"); }
+    router.visit("/contact");
   };
 
+  // Scroll ke section setelah balik ke home dari halaman lain
   useEffect(() => {
     if (!isHome) return;
     const target = sessionStorage.getItem("scrollTo");
-    if (target) { sessionStorage.removeItem("scrollTo"); setTimeout(() => scrollToSection(target), 300); }
+    if (target) {
+      sessionStorage.removeItem("scrollTo");
+      setTimeout(() => scrollToSection(target), 300);
+    }
   }, [isHome]);
 
+  // Active section detection (hanya di home)
   useEffect(() => {
     if (!isHome) return;
     const handler = () => {
       const scrollY = window.scrollY + 100;
       for (let i = navLinks.length - 1; i >= 0; i--) {
         const el = document.getElementById(navLinks[i].href);
-        if (el && el.offsetTop <= scrollY) { setActiveSection(navLinks[i].href); break; }
+        if (el && el.offsetTop <= scrollY) {
+          setActiveSection(navLinks[i].href);
+          break;
+        }
       }
     };
     window.addEventListener("scroll", handler, { passive: true });
@@ -68,44 +100,65 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, [isHome]);
 
-  const isActive = (href: string) => {
-    if (href === "projects") return isProjects;
-    if (href === "about")    return isAbout;
-    if (isHome)              return activeSection === href;
+  const getActiveLink = (href: string) => {
+    if (href === "projects") return currentUrl.startsWith("/projects");
+    if (href === "contact")  return isContactPage;
+    if (isHome) return activeSection === href;
     return false;
   };
 
   return (
     <>
       <style>{`
-        .nav-link { position:relative; cursor:pointer; padding-bottom:2px; transition:color 0.15s ease; }
-        .nav-link::after { content:''; position:absolute; bottom:0; left:0; width:0%; height:2px; background-color:#0B1957; transition:width 0.2s cubic-bezier(0.16,1,0.3,1); }
-        .nav-link:hover::after, .nav-link.active::after { width:100%; }
-        .nav-link.active { color:#0B1957; font-weight:900; }
-        .logo-hover { transition:transform 0.15s ease; display:inline-block; }
-        .logo-hover:hover { transform:translate(-2px,-2px); }
-        .btn-nav { transition:transform 0.08s ease,box-shadow 0.08s ease; }
-        .btn-nav:hover  { transform:translate(2px,2px);  box-shadow:1px 1px 0 #0B1957 !important; }
-        .btn-nav:active { transform:translate(3px,3px);  box-shadow:0   0   0 #0B1957 !important; }
-        .ham-line { display:block; width:22px; height:2px; background:#0B1957; transition:all 0.25s ease; transform-origin:center; }
-        .ham-open .ham-line:nth-child(1) { transform:translateY(8px) rotate(45deg); }
-        .ham-open .ham-line:nth-child(2) { opacity:0; transform:scaleX(0); }
-        .ham-open .ham-line:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
-        .mobile-menu { max-height:0; overflow:hidden; transition:max-height 0.35s cubic-bezier(0.16,1,0.3,1); }
-        .mobile-menu.open { max-height:400px; }
-        .mobile-nav-link { display:block; padding:14px 24px; font-weight:800; text-transform:uppercase; font-size:15px; color:#0B1957; border-bottom:2px solid #0B1957; transition:background 0.1s ease,padding-left 0.15s ease; letter-spacing:0.05em; cursor:pointer; }
-        .mobile-nav-link:hover, .mobile-nav-link.active { background:#D1E8FF; padding-left:32px; }
-        .mobile-nav-link.active { border-left:4px solid #0B1957; }
+        .nav-link {
+          position: relative; cursor: pointer; padding-bottom: 2px;
+          transition: color 0.15s ease;
+        }
+        .nav-link::after {
+          content: ''; position: absolute; bottom: 0; left: 0;
+          width: 0%; height: 2px; background-color: #0B1957;
+          transition: width 0.2s cubic-bezier(0.16,1,0.3,1);
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .nav-link.active { color: #0B1957; font-weight: 900; }
+
+        .logo-hover { transition: transform 0.15s ease; display: inline-block; }
+        .logo-hover:hover { transform: translate(-2px, -2px); }
+
+        .btn-nav { transition: transform 0.08s ease, box-shadow 0.08s ease; }
+        .btn-nav:hover  { transform: translate(2px, 2px);  box-shadow: 1px 1px 0 #0B1957 !important; }
+        .btn-nav:active { transform: translate(3px, 3px);  box-shadow: 0   0   0 #0B1957 !important; }
+
+        .ham-line { display: block; width: 22px; height: 2px; background: #0B1957; transition: all 0.25s ease; transform-origin: center; }
+        .ham-open .ham-line:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .ham-open .ham-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .ham-open .ham-line:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.16,1,0.3,1); }
+        .mobile-menu.open { max-height: 400px; }
+
+        .mobile-nav-link {
+          display: block; padding: 14px 24px;
+          font-weight: 800; text-transform: uppercase; font-size: 15px;
+          color: #0B1957; border-bottom: 2px solid #0B1957;
+          transition: background 0.1s ease, padding-left 0.15s ease;
+          letter-spacing: 0.05em; cursor: pointer;
+        }
+        .mobile-nav-link:hover, .mobile-nav-link.active { background: #D1E8FF; padding-left: 32px; }
+        .mobile-nav-link.active { border-left: 4px solid #0B1957; }
       `}</style>
 
       <div className="w-full border-4 border-[#0B1957] bg-[#F8F3EA] shadow-[6px_6px_0_#0B1957] sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-          <div className="logo-hover font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => router.visit("/")}>Y</div>
+
+          <div className="logo-hover font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => router.visit("/")}>
+            Y
+          </div>
 
           <div className="hidden md:flex gap-8 font-semibold text-[#0B1957]">
             {navLinks.map(link => (
               <a key={link.href} onClick={() => handleNavLink(link.href)}
-                className={`nav-link ${isActive(link.href) ? "active" : ""}`}>
+                className={`nav-link ${getActiveLink(link.href) ? "active" : ""}`}>
                 {link.label}
               </a>
             ))}
@@ -125,14 +178,16 @@ export default function Navbar() {
           <button
             className={`md:hidden flex flex-col gap-[6px] p-2 border-4 border-[#0B1957] shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] btn-nav ${menuOpen ? "ham-open" : ""}`}
             onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
-            <span className="ham-line"/><span className="ham-line"/><span className="ham-line"/>
+            <span className="ham-line" />
+            <span className="ham-line" />
+            <span className="ham-line" />
           </button>
         </div>
 
         <div className={`mobile-menu border-t-4 border-[#0B1957] bg-[#F8F3EA] md:hidden ${menuOpen ? "open" : ""}`}>
           {navLinks.map(link => (
             <a key={link.href} onClick={() => handleNavLink(link.href)}
-              className={`mobile-nav-link ${isActive(link.href) ? "active" : ""}`}>
+              className={`mobile-nav-link ${getActiveLink(link.href) ? "active" : ""}`}>
               {link.label}
             </a>
           ))}
