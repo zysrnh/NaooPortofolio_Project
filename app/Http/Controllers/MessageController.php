@@ -107,4 +107,32 @@ class MessageController extends Controller
             'today'  => Message::whereDate('created_at', today())->count(),
         ]);
     }
+    public function reply(Request $request, Message $message)
+{
+    $request->validate([
+        'body' => 'required|string|min:1|max:5000',
+    ]);
+
+    try {
+        Mail::to($message->email, $message->name)
+            ->send(new ReplyMail($message, $request->body));
+
+        if (!$message->is_read) {
+            $message->update(['is_read' => true, 'read_at' => now()]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Balasan berhasil dikirim']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Gagal mengirim: ' . $e->getMessage()], 500);
+    }
+}
+
+
+
+
+
+
+
+
+
 }

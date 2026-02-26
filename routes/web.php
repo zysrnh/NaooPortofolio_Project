@@ -112,12 +112,13 @@ Route::prefix('api')->group(function () {
         // Contact
         Route::put('/contact', [ContactController::class, 'bulkUpdate']);
 
-        // Messages (admin)
-        Route::get   ('/messages',              [MessageController::class, 'index']);
-        Route::get   ('/messages/stats',        [MessageController::class, 'stats']);
-        Route::patch ('/messages/read-all',     [MessageController::class, 'markAllRead']);
-        Route::patch ('/messages/{message}/read', [MessageController::class, 'markRead']);
-        Route::delete('/messages/{message}',    [MessageController::class, 'destroy']);
+        // Messages (admin) — urutan penting: static routes dulu sebelum {message}
+        Route::get   ('/messages/stats',              [MessageController::class, 'stats']);
+        Route::patch ('/messages/read-all',           [MessageController::class, 'markAllRead']);
+        Route::get   ('/messages',                    [MessageController::class, 'index']);
+        Route::patch ('/messages/{message}/read',     [MessageController::class, 'markRead']);
+        Route::post  ('/messages/{message}/reply',    [MessageController::class, 'reply']);
+        Route::delete('/messages/{message}',          [MessageController::class, 'destroy']);
 
         // Projects (admin CRUD)
         Route::get   ('/admin/projects',                  [ProjectController::class, 'adminIndex']);

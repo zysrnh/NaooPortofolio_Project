@@ -21,10 +21,32 @@ const IconClock     = ({ size = 14 }: { size?: number }) => <svg width={size} he
 const IconBriefcase = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>;
 const IconGlobe     = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>;
 const IconInfo      = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>;
+const IconMail      = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>;
+const IconTrash     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>;
+const IconCheck     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
+const IconRefresh   = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Project { title: string; desc: string; status: string; stacks: string[]; date: string; }
 interface Stat    { label: string; value: string; icon: JSX.Element; color: string; }
+
+interface Message {
+  id: number;
+  name: string;
+  email: string;
+  subject: string | null;
+  message: string;
+  is_read: boolean;
+  read_at: string | null;
+  ip_address: string | null;
+  created_at: string;
+}
+
+interface MessageStats {
+  total: number;
+  unread: number;
+  today: number;
+}
 
 const PROJECTS: Project[] = [
   { title: "Burger Ordering App",  desc: "Website restoran burger dengan sistem pemesanan online", status: "Live",        stacks: ["Laravel", "React"],      date: "Jan 2025" },
@@ -48,6 +70,13 @@ const STATUS_STYLE: Record<string, string> = {
   "Planning":    "bg-[#F8F3EA] border-[#0B1957] text-[#0B1957]",
 };
 
+const HOMEPAGE_SECTIONS_OVERVIEW = [
+  { label: "Tech Stack",   status: "active" },
+  { label: "Hero Section", status: "soon"   },
+  { label: "Projects",     status: "soon"   },
+  { label: "About",        status: "soon"   },
+];
+
 // ── Nav Items ─────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
   { key: "overview",  label: "Overview",   icon: <IconGrid /> },
@@ -55,15 +84,476 @@ const NAV_ITEMS = [
   { key: "stacks",    label: "Tech Stack", icon: <IconLayers size={18} /> },
   { key: "homepage",  label: "Homepage",   icon: <IconGlobe size={18} /> },
   { key: "about",     label: "About Page", icon: <IconInfo size={18} /> },
+  { key: "messages",  label: "Messages",   icon: <IconMail size={18} /> },
   { key: "profile",   label: "Profile",    icon: <IconUser /> },
 ];
 
-const HOMEPAGE_SECTIONS_OVERVIEW = [
-  { label: "Tech Stack", status: "active" },
-  { label: "Hero Section", status: "soon" },
-  { label: "Projects", status: "soon" },
-  { label: "About", status: "soon" },
-];
+// ── getCsrfToken ──────────────────────────────────────────────────────────────
+function getCsrfToken(): string {
+  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
+  if (meta?.content) return meta.content;
+  const m = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : "";
+}
+
+// ── MessagesManager ───────────────────────────────────────────────────────────
+function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => void }) {
+  const [messages,   setMessages]   = useState<Message[]>([]);
+  const [stats,      setStats]      = useState<MessageStats>({ total: 0, unread: 0, today: 0 });
+  const [loading,    setLoading]    = useState(true);
+  const [filterTab,  setFilterTab]  = useState<"all" | "unread" | "read">("all");
+  const [selected,   setSelected]   = useState<Message | null>(null);
+  const [deleting,   setDeleting]   = useState<number | null>(null);
+  const [markingAll, setMarkingAll] = useState(false);
+  const [mounted,    setMounted]    = useState(false);
+  const [toast,      setToast]      = useState<{ msg: string; ok: boolean } | null>(null);
+  const [replyOpen,  setReplyOpen]  = useState(false);
+  const [replyBody,  setReplyBody]  = useState("");
+  const [sending,    setSending]    = useState(false);
+
+  const showToast = (msg: string, ok = true) => {
+    setToast({ msg, ok });
+    setTimeout(() => setToast(null), 2500);
+  };
+
+  const fetchAll = async () => {
+    setLoading(true);
+    try {
+      const [msgRes, statsRes] = await Promise.all([
+        fetch("/api/messages",       { headers: { "X-CSRF-TOKEN": getCsrfToken() } }),
+        fetch("/api/messages/stats", { headers: { "X-CSRF-TOKEN": getCsrfToken() } }),
+      ]);
+      const msgData   = await msgRes.json();
+      const statsData = await statsRes.json();
+      const list = Array.isArray(msgData.data) ? msgData.data : Array.isArray(msgData) ? msgData : [];
+      setMessages(list);
+      setStats(statsData);
+      onUnreadChange?.(statsData.unread ?? 0);
+    } catch {
+      showToast("Gagal memuat pesan", false);
+    } finally {
+      setLoading(false);
+      setTimeout(() => setMounted(true), 80);
+    }
+  };
+
+  useEffect(() => { fetchAll(); }, []);
+
+  const handleMarkRead = async (msg: Message) => {
+    if (msg.is_read) return;
+    try {
+      const res     = await fetch(`/api/messages/${msg.id}/read`, { method: "PATCH", headers: { "X-CSRF-TOKEN": getCsrfToken() } });
+      const updated = await res.json();
+      setMessages(p => p.map(m => m.id === msg.id ? updated : m));
+      setStats(s => {
+        const next = { ...s, unread: Math.max(0, s.unread - 1) };
+        onUnreadChange?.(next.unread);
+        return next;
+      });
+      if (selected?.id === msg.id) setSelected(updated);
+    } catch { /* silent */ }
+  };
+
+  const handleDelete = async (id: number) => {
+    setDeleting(id);
+    try {
+      await fetch(`/api/messages/${id}`, { method: "DELETE", headers: { "X-CSRF-TOKEN": getCsrfToken() } });
+      setMessages(p => p.filter(m => m.id !== id));
+      setStats(s => ({ ...s, total: Math.max(0, s.total - 1) }));
+      if (selected?.id === id) setSelected(null);
+      showToast("Pesan dihapus");
+    } catch { showToast("Gagal menghapus", false); }
+    finally  { setDeleting(null); }
+  };
+
+  const handleMarkAllRead = async () => {
+    setMarkingAll(true);
+    try {
+      await fetch("/api/messages/read-all", { method: "PATCH", headers: { "X-CSRF-TOKEN": getCsrfToken() } });
+      setMessages(p => p.map(m => ({ ...m, is_read: true })));
+      setStats(s => { onUnreadChange?.(0); return { ...s, unread: 0 }; });
+      showToast("Semua pesan ditandai terbaca");
+    } catch { showToast("Gagal", false); }
+    finally  { setMarkingAll(false); }
+  };
+
+  const handleOpen = (msg: Message) => {
+    setSelected(msg);
+    setReplyOpen(false);
+    setReplyBody("");
+    handleMarkRead(msg);
+  };
+
+  // Kirim balasan via Laravel SMTP
+  const handleSendReply = async () => {
+    if (!selected || !replyBody.trim()) return;
+    setSending(true);
+    try {
+      const res = await fetch(`/api/messages/${selected.id}/reply`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCsrfToken(),
+        },
+        body: JSON.stringify({ body: replyBody }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("Balasan berhasil dikirim!");
+        setReplyOpen(false);
+        setReplyBody("");
+        // Update state frontend: tandai terbaca + kurangi unread count
+        const updated = { ...selected, is_read: true, read_at: new Date().toISOString() };
+        setSelected(updated);
+        setMessages(p => p.map(m => m.id === selected.id ? updated : m));
+        if (!selected.is_read) {
+          setStats(s => {
+            const next = { ...s, unread: Math.max(0, s.unread - 1) };
+            onUnreadChange?.(next.unread);
+            return next;
+          });
+        }
+      } else {
+        showToast(data.message || "Gagal mengirim", false);
+      }
+    } catch {
+      showToast("Gagal mengirim balasan", false);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const filtered = messages.filter(m =>
+    filterTab === "unread" ? !m.is_read :
+    filterTab === "read"   ?  m.is_read : true
+  );
+
+  const fmt = (d: string) => {
+    try { return new Date(d).toLocaleString("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }); }
+    catch { return d; }
+  };
+
+  // Skeleton
+  if (loading) return (
+    <div>
+      <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+        {[1,2,3].map(i => (
+          <div key={i} style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "4px 4px 0 #0B1957", padding: "16px 24px", minWidth: 100 }}>
+            <div style={{ height: 11, width: 80, background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite", marginBottom: 8 }}/>
+            <div style={{ height: 28, width: 48, background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }}/>
+          </div>
+        ))}
+      </div>
+      {[0,1,2,3].map(i => (
+        <div key={i} style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "4px 4px 0 #0B1957", padding: "18px 22px", marginBottom: 10 }}>
+          <div style={{ display: "flex", gap: 14 }}>
+            <div style={{ width: 42, height: 42, background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite", border: "3px solid #0B1957", flexShrink: 0 }}/>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+              <div style={{ height: 12, width: "30%", background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }}/>
+              <div style={{ height: 10, width: "60%", background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }}/>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
+        <div>
+          <p style={{ fontWeight: 900, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.3em", color: "#9ECCFA", margin: "0 0 4px" }}>Kotak Masuk</p>
+          <h2 style={{ fontWeight: 900, fontSize: 24, textTransform: "uppercase", color: "#0B1957", margin: 0 }}>Messages</h2>
+        </div>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <button onClick={fetchAll}
+            style={{ display: "flex", alignItems: "center", gap: 6, border: "4px solid #0B1957", background: "#F8F3EA", color: "#0B1957", padding: "8px 16px", fontWeight: 900, fontSize: 12, textTransform: "uppercase", cursor: "pointer", boxShadow: "4px 4px 0 #0B1957", fontFamily: "inherit", transition: "transform 0.08s ease, box-shadow 0.08s ease" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #0B1957"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "4px 4px 0 #0B1957"; }}>
+            <IconRefresh size={14} /> Refresh
+          </button>
+          {stats.unread > 0 && (
+            <button onClick={handleMarkAllRead} disabled={markingAll}
+              style={{ display: "flex", alignItems: "center", gap: 6, border: "4px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "8px 16px", fontWeight: 900, fontSize: 12, textTransform: "uppercase", cursor: markingAll ? "wait" : "pointer", boxShadow: "4px 4px 0 #9ECCFA", fontFamily: "inherit", opacity: markingAll ? 0.6 : 1, transition: "transform 0.08s ease" }}
+              onMouseEnter={e => { if (!markingAll) (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; }}>
+              <IconCheck size={14} /> Tandai Semua Terbaca
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Stats strip */}
+      <div style={{ display: "flex", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
+        {[
+          { label: "Total",    value: stats.total,  bg: "#0B1957", fg: "#9ECCFA" },
+          { label: "Unread",   value: stats.unread, bg: stats.unread > 0 ? "#FFE8A0" : "#F8F3EA", fg: "#0B1957" },
+          { label: "Hari Ini", value: stats.today,  bg: "#9ECCFA", fg: "#0B1957" },
+        ].map((s, i) => (
+          <div key={i} style={{ border: "4px solid #0B1957", background: s.bg, color: s.fg, padding: "12px 20px", boxShadow: "4px 4px 0 #0B1957", minWidth: 90 }}>
+            <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.7, marginBottom: 4 }}>{s.label}</p>
+            <p style={{ fontWeight: 900, fontSize: 28, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter tabs */}
+      <div style={{ display: "flex", border: "4px solid #0B1957", marginBottom: 16, overflow: "hidden", boxShadow: "4px 4px 0 #0B1957" }}>
+        {([
+          ["all",    "Semua",        messages.length],
+          ["unread", "Belum Dibaca", messages.filter(m => !m.is_read).length],
+          ["read",   "Sudah Dibaca", messages.filter(m =>  m.is_read).length],
+        ] as const).map(([key, label, count]) => (
+          <button key={key} onClick={() => setFilterTab(key)}
+            style={{
+              flex: 1, padding: "11px 8px", fontWeight: 900, fontSize: 11,
+              textTransform: "uppercase", letterSpacing: "0.08em",
+              borderRight: key !== "read" ? "4px solid #0B1957" : "none",
+              borderLeft: "none", borderTop: "none", borderBottom: "none",
+              background: filterTab === key ? "#0B1957" : "#F8F3EA",
+              color:      filterTab === key ? "#9ECCFA"  : "#0B1957",
+              cursor: "pointer", fontFamily: "inherit",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              transition: "background 0.15s ease, color 0.15s ease",
+            }}>
+            {label}
+            <span style={{
+              background:   filterTab === key ? "rgba(158,204,250,0.2)" : "#D1E8FF",
+              color:        filterTab === key ? "#9ECCFA" : "#0B1957",
+              border:       `2px solid ${filterTab === key ? "#9ECCFA" : "#0B1957"}`,
+              fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 22, textAlign: "center",
+            }}>{count}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* List + Detail grid */}
+      <div style={{ display: "grid", gridTemplateColumns: selected ? "1fr 1fr" : "1fr", gap: 16, alignItems: "flex-start" }}>
+
+        {/* Message list */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {filtered.length === 0 && (
+            <div style={{ border: "4px dashed #0B1957", background: "#F8F3EA", padding: "60px 24px", textAlign: "center" }}>
+              <div style={{ marginBottom: 12, opacity: 0.15 }}><IconMail size={40} /></div>
+              <p style={{ fontWeight: 900, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.4 }}>
+                {filterTab === "unread" ? "Tidak ada pesan belum dibaca" : filterTab === "read" ? "Tidak ada pesan sudah dibaca" : "Belum ada pesan masuk"}
+              </p>
+            </div>
+          )}
+
+          {filtered.map((msg, idx) => (
+            <div key={msg.id} onClick={() => handleOpen(msg)}
+              style={{
+                border: "4px solid #0B1957",
+                background: selected?.id === msg.id ? "#0B1957" : msg.is_read ? "#F8F3EA" : "#EAF4FF",
+                boxShadow:  selected?.id === msg.id ? "5px 5px 0 #9ECCFA" : "5px 5px 0 #0B1957",
+                padding: "16px 20px", cursor: "pointer", position: "relative", overflow: "hidden",
+                transition: "transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease",
+                animation: mounted ? `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${idx * 0.05}s both` : "none",
+              }}
+              onMouseEnter={e => { if (selected?.id !== msg.id) { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "7px 7px 0 #0B1957"; } }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = selected?.id === msg.id ? "5px 5px 0 #9ECCFA" : "5px 5px 0 #0B1957"; }}>
+
+              {!msg.is_read && (
+                <div style={{ position: "absolute", top: 14, right: 14, width: 10, height: 10, borderRadius: "50%", background: "#9ECCFA", border: "2px solid #0B1957" }}/>
+              )}
+
+              <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                <div style={{
+                  width: 42, height: 42, flexShrink: 0,
+                  border:     "3px solid " + (selected?.id === msg.id ? "#9ECCFA" : "#0B1957"),
+                  background: selected?.id === msg.id ? "#9ECCFA" : "#0B1957",
+                  color:      selected?.id === msg.id ? "#0B1957" : "#9ECCFA",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontWeight: 900, fontSize: 16, textTransform: "uppercase",
+                  transition: "all 0.15s ease",
+                }}>
+                  {msg.name[0]}
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3, flexWrap: "wrap" }}>
+                    <span style={{ fontWeight: msg.is_read ? 700 : 900, fontSize: 13, textTransform: "uppercase", color: selected?.id === msg.id ? "#F8F3EA" : "#0B1957", letterSpacing: "0.04em" }}>
+                      {msg.name}
+                    </span>
+                    {!msg.is_read && (
+                      <span style={{ border: "2px solid #0B1957", background: "#9ECCFA", color: "#0B1957", fontSize: 9, fontWeight: 900, padding: "2px 6px", textTransform: "uppercase" }}>Baru</span>
+                    )}
+                  </div>
+                  <p style={{ fontWeight: 700, fontSize: 12, color: selected?.id === msg.id ? "#9ECCFA" : "#0B1957", opacity: 0.7, marginBottom: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {msg.subject || "(Tanpa Subjek)"}
+                  </p>
+                  <p style={{ fontWeight: 600, fontSize: 11, color: selected?.id === msg.id ? "#D1E8FF" : "#0B1957", opacity: 0.5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {msg.message}
+                  </p>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
+                    <span style={{ fontWeight: 700, fontSize: 10, color: selected?.id === msg.id ? "#9ECCFA" : "#0B1957", opacity: 0.45, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                      {fmt(msg.created_at)}
+                    </span>
+                    <button onClick={e => { e.stopPropagation(); handleDelete(msg.id); }} disabled={deleting === msg.id}
+                      style={{ border: "2px solid " + (selected?.id === msg.id ? "#9ECCFA" : "#0B1957"), background: "transparent", color: selected?.id === msg.id ? "#9ECCFA" : "#0B1957", width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", cursor: deleting === msg.id ? "wait" : "pointer", fontFamily: "inherit", opacity: deleting === msg.id ? 0.5 : 0.6, transition: "all 0.1s ease" }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#ef4444"; (e.currentTarget as HTMLElement).style.color = "white"; (e.currentTarget as HTMLElement).style.borderColor = "#ef4444"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = selected?.id === msg.id ? "#9ECCFA" : "#0B1957"; (e.currentTarget as HTMLElement).style.borderColor = selected?.id === msg.id ? "#9ECCFA" : "#0B1957"; (e.currentTarget as HTMLElement).style.opacity = "0.6"; }}>
+                      <IconTrash size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Detail panel */}
+        {selected && (
+          <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "8px 8px 0 #0B1957", overflow: "hidden", position: "sticky", top: 16, animation: "slideRight 0.35s cubic-bezier(0.16,1,0.3,1) both" }}>
+
+            {/* Detail header */}
+            <div style={{ background: "#0B1957", borderBottom: "4px solid #0B1957", padding: "16px 22px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 42, height: 42, background: "#9ECCFA", border: "3px solid #9ECCFA", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 18, color: "#0B1957", textTransform: "uppercase" }}>
+                  {selected.name[0]}
+                </div>
+                <div>
+                  <p style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#F8F3EA", letterSpacing: "0.06em" }}>{selected.name}</p>
+                  <p style={{ fontWeight: 700, fontSize: 11, color: "#9ECCFA", opacity: 0.8 }}>{selected.email}</p>
+                </div>
+              </div>
+              <button onClick={() => setSelected(null)}
+                style={{ border: "2px solid #9ECCFA", background: "transparent", color: "#9ECCFA", width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontFamily: "inherit", transition: "background 0.1s ease" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(158,204,250,0.15)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+                <IconClose />
+              </button>
+            </div>
+
+            {/* Meta strip — FIX: tanpa emoticon, pakai SVG icon */}
+            <div style={{ borderBottom: "4px solid #0B1957", padding: "14px 22px", background: "#EAF4FF", display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {selected.subject && (
+                <div style={{ border: "2px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "4px 12px", fontWeight: 900, fontSize: 11, textTransform: "uppercase" }}>
+                  {selected.subject}
+                </div>
+              )}
+              <div style={{ border: "2px solid #0B1957", background: "#F8F3EA", color: "#0B1957", padding: "4px 12px", fontWeight: 700, fontSize: 11, display: "flex", alignItems: "center", gap: 5 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                {fmt(selected.created_at)}
+              </div>
+              {selected.ip_address && (
+                <div style={{ border: "2px solid #0B1957", background: "#F8F3EA", color: "#0B1957", padding: "4px 12px", fontWeight: 700, fontSize: 11, opacity: 0.6, display: "flex", alignItems: "center", gap: 5 }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                  {selected.ip_address}
+                </div>
+              )}
+              <div style={{ border: "2px solid #0B1957", background: selected.is_read ? "#9ECCFA" : "#FFE8A0", color: "#0B1957", padding: "4px 12px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 5 }}>
+                {selected.is_read ? (
+                  <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Sudah Dibaca</>
+                ) : (
+                  <><span style={{ width: 8, height: 8, borderRadius: "50%", background: "#0B1957", display: "inline-block", flexShrink: 0 }} /> Belum Dibaca</>
+                )}
+              </div>
+            </div>
+
+            {/* Message body */}
+            <div style={{ padding: "22px 22px 28px" }}>
+              <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.4, marginBottom: 10 }}>Pesan</p>
+              <div style={{ border: "3px solid #0B1957", background: "white", padding: "16px 18px", fontWeight: 600, fontSize: 13, color: "#0B1957", lineHeight: 1.75, whiteSpace: "pre-wrap", boxShadow: "3px 3px 0 #D1E8FF" }}>
+                {selected.message}
+              </div>
+            </div>
+
+            {/* Actions + Reply form */}
+            <div style={{ borderTop: "4px solid #0B1957" }}>
+
+              {/* Reply form — muncul saat replyOpen */}
+              {replyOpen && (
+                <div style={{ borderBottom: "4px solid #0B1957", padding: "16px 22px", background: "#F0F7FF", animation: "slideUp 0.25s cubic-bezier(0.16,1,0.3,1) both" }}>
+                  <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.5, marginBottom: 8 }}>
+                    Balas ke: <span style={{ opacity: 1, color: "#0B1957" }}>{selected.email}</span>
+                  </p>
+                  <textarea
+                    value={replyBody}
+                    onChange={e => setReplyBody(e.target.value)}
+                    placeholder="Tulis balasan..."
+                    rows={5}
+                    style={{
+                      width: "100%", border: "3px solid #0B1957", background: "white",
+                      padding: "12px 14px", fontWeight: 600, fontSize: 13, color: "#0B1957",
+                      lineHeight: 1.6, resize: "vertical", fontFamily: "inherit",
+                      boxShadow: "3px 3px 0 #D1E8FF", outline: "none", boxSizing: "border-box",
+                    }}
+                  />
+                  <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                    <button
+                      onClick={handleSendReply}
+                      disabled={sending || !replyBody.trim()}
+                      style={{
+                        flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                        border: "3px solid #0B1957", background: sending || !replyBody.trim() ? "#D1E8FF" : "#0B1957",
+                        color: sending || !replyBody.trim() ? "#0B1957" : "#9ECCFA",
+                        padding: "10px 16px", fontWeight: 900, fontSize: 12, textTransform: "uppercase",
+                        cursor: sending || !replyBody.trim() ? "not-allowed" : "pointer",
+                        fontFamily: "inherit", boxShadow: "3px 3px 0 #9ECCFA",
+                        transition: "all 0.08s ease", opacity: sending ? 0.7 : 1,
+                      }}>
+                      {sending ? (
+                        <><IconRefresh size={13} /> Mengirim...</>
+                      ) : (
+                        <><IconMail size={13} /> Kirim Balasan</>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => { setReplyOpen(false); setReplyBody(""); }}
+                      style={{
+                        border: "3px solid #0B1957", background: "#F8F3EA", color: "#0B1957",
+                        padding: "10px 14px", cursor: "pointer", fontFamily: "inherit",
+                        boxShadow: "3px 3px 0 #0B1957", display: "flex", alignItems: "center",
+                        fontWeight: 900, fontSize: 12, textTransform: "uppercase",
+                      }}>
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Bottom buttons */}
+              <div style={{ padding: "16px 22px", display: "flex", gap: 10 }}>
+                <button
+                  onClick={() => { setReplyOpen(r => !r); setReplyBody(""); }}
+                  style={{
+                    flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                    border: "4px solid #0B1957",
+                    background: replyOpen ? "#F8F3EA" : "#0B1957",
+                    color: replyOpen ? "#0B1957" : "#9ECCFA",
+                    padding: "10px 16px", fontWeight: 900, fontSize: 12, textTransform: "uppercase",
+                    cursor: "pointer", fontFamily: "inherit",
+                    boxShadow: replyOpen ? "4px 4px 0 #0B1957" : "4px 4px 0 #9ECCFA",
+                    transition: "transform 0.08s ease",
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; }}>
+                  <IconMail size={14} /> {replyOpen ? "Tutup Reply" : "Balas Pesan"}
+                </button>
+                <button onClick={() => handleDelete(selected.id)} disabled={deleting === selected.id}
+                  style={{ border: "4px solid #0B1957", background: "#F8F3EA", color: "#0B1957", padding: "10px 14px", cursor: deleting === selected.id ? "wait" : "pointer", fontFamily: "inherit", boxShadow: "4px 4px 0 #0B1957", transition: "all 0.08s ease", display: "flex", alignItems: "center" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#ef4444"; (e.currentTarget as HTMLElement).style.color = "white"; (e.currentTarget as HTMLElement).style.borderColor = "#ef4444"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#F8F3EA"; (e.currentTarget as HTMLElement).style.color = "#0B1957"; (e.currentTarget as HTMLElement).style.borderColor = "#0B1957"; }}>
+                  <IconTrash size={14} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Toast */}
+      {toast && (
+        <div style={{ position: "fixed", bottom: 28, left: "50%", transform: "translateX(-50%)", zIndex: 999, display: "flex", alignItems: "center", gap: 10, border: "4px solid #0B1957", background: toast.ok ? "#9ECCFA" : "#ef4444", color: toast.ok ? "#0B1957" : "white", padding: "12px 22px", fontWeight: 900, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.07em", boxShadow: "6px 6px 0 #0B1957", whiteSpace: "nowrap", animation: "slideUp 0.35s cubic-bezier(0.16,1,0.3,1) both" }}>
+          {toast.ok ? <IconCheck size={14} /> : null} {toast.msg}
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 export default function Dashboard() {
@@ -74,11 +564,19 @@ export default function Dashboard() {
   const [activeNav,   setActiveNav]   = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [time,        setTime]        = useState(new Date());
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
   useEffect(() => {
     const t = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/messages/stats", { headers: { "X-CSRF-TOKEN": getCsrfToken() } })
+      .then(r => r.json())
+      .then(d => setUnreadCount(d.unread ?? 0))
+      .catch(() => {});
   }, []);
 
   const handleLogout = () => router.post("/logout");
@@ -94,16 +592,18 @@ export default function Dashboard() {
   const NavItems = ({ onClose }: { onClose?: () => void }) => (
     <>
       {NAV_ITEMS.map(item => (
-        <div
-          key={item.key}
+        <div key={item.key}
           className={`nav-item ${activeNav === item.key ? "active" : ""}`}
-          onClick={() => { setActiveNav(item.key); onClose?.(); }}
-        >
+          onClick={() => { setActiveNav(item.key); onClose?.(); }}>
           {item.icon}
           {item.label}
-          {activeNav === item.key && (
+          {item.key === "messages" && unreadCount > 0 ? (
+            <span style={{ marginLeft: "auto", background: "#9ECCFA", color: "#0B1957", border: "2px solid #9ECCFA", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>
+              {unreadCount}
+            </span>
+          ) : activeNav === item.key ? (
             <span className="ml-auto w-2 h-2 rounded-full bg-[#9ECCFA] flex-shrink-0" />
-          )}
+          ) : null}
         </div>
       ))}
     </>
@@ -123,17 +623,19 @@ export default function Dashboard() {
   return (
     <>
       <style>{`
-        @keyframes slideUp   { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes slideLeft { from{opacity:0;transform:translateX(-30px)} to{opacity:1;transform:translateX(0)} }
-        @keyframes fadeIn    { from{opacity:0} to{opacity:1} }
+        @keyframes slideUp    { from{opacity:0;transform:translateY(30px)}  to{opacity:1;transform:translateY(0)} }
+        @keyframes slideLeft  { from{opacity:0;transform:translateX(-30px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes slideRight { from{opacity:0;transform:translateX(30px)}  to{opacity:1;transform:translateX(0)} }
+        @keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+        @keyframes shimmer    { from{background-position:-200% 0} to{background-position:200% 0} }
 
-        .anim-sidebar { animation:slideLeft 0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
-        .anim-topbar  { animation:slideUp   0.4s cubic-bezier(0.16,1,0.3,1) 0.1s  both; }
-        .anim-content { animation:slideUp   0.6s cubic-bezier(0.16,1,0.3,1) 0.2s  both; }
-        .anim-stat-0  { animation:slideUp   0.5s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
-        .anim-stat-1  { animation:slideUp   0.5s cubic-bezier(0.16,1,0.3,1) 0.32s both; }
-        .anim-stat-2  { animation:slideUp   0.5s cubic-bezier(0.16,1,0.3,1) 0.39s both; }
-        .anim-stat-3  { animation:slideUp   0.5s cubic-bezier(0.16,1,0.3,1) 0.46s both; }
+        .anim-sidebar { animation:slideLeft  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+        .anim-topbar  { animation:slideUp    0.4s cubic-bezier(0.16,1,0.3,1) 0.1s  both; }
+        .anim-content { animation:slideUp    0.6s cubic-bezier(0.16,1,0.3,1) 0.2s  both; }
+        .anim-stat-0  { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
+        .anim-stat-1  { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.32s both; }
+        .anim-stat-2  { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.39s both; }
+        .anim-stat-3  { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.46s both; }
 
         .nav-item {
           display:flex; align-items:center; gap:10px;
@@ -217,57 +719,42 @@ export default function Dashboard() {
 
       <div className="min-h-screen bg-[#D1E8FF] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
 
-        {/* ── SIDEBAR Desktop ── */}
+        {/* SIDEBAR Desktop */}
         <aside className="anim-sidebar hidden md:flex flex-col w-64 bg-[#0B1957] border-r-4 border-[#0B1957] relative min-h-screen flex-shrink-0">
           <div className="grid-bg-dark" />
           <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative">
             <div className="font-black text-xl text-[#9ECCFA] uppercase tracking-widest">Yusron.dev</div>
             <div className="font-semibold text-xs text-[#D1E8FF] opacity-60 uppercase tracking-wider mt-1">Dashboard</div>
           </div>
-          <nav className="flex-1 py-4 relative">
-            <NavItems />
-          </nav>
+          <nav className="flex-1 py-4 relative"><NavItems /></nav>
           <SidebarBottom />
         </aside>
 
-        {/* ── SIDEBAR Mobile Overlay ── */}
+        {/* SIDEBAR Mobile Overlay */}
         {sidebarOpen && (
-          <div
-            className="fixed inset-0 bg-[#0B1957] bg-opacity-50 z-30 md:hidden"
-            style={{ backdropFilter: "blur(2px)" }}
-            onClick={() => setSidebarOpen(false)}
-          />
+          <div className="fixed inset-0 bg-[#0B1957] bg-opacity-50 z-30 md:hidden" style={{ backdropFilter: "blur(2px)" }} onClick={() => setSidebarOpen(false)} />
         )}
-        <aside
-          className="fixed top-0 left-0 bottom-0 w-64 z-40 md:hidden bg-[#0B1957] border-r-4 border-[#0B1957] flex flex-col"
-          style={{ transform: sidebarOpen ? "translateX(0)" : "translateX(-100%)", transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1)" }}
-        >
+        <aside className="fixed top-0 left-0 bottom-0 w-64 z-40 md:hidden bg-[#0B1957] border-r-4 border-[#0B1957] flex flex-col"
+          style={{ transform: sidebarOpen ? "translateX(0)" : "translateX(-100%)", transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1)" }}>
           <div className="grid-bg-dark" />
           <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative z-10 flex items-center justify-between">
             <div>
               <div className="font-black text-lg text-[#9ECCFA] uppercase tracking-widest">Yusron.dev</div>
               <div className="font-semibold text-xs text-[#D1E8FF] opacity-60 uppercase">Dashboard</div>
             </div>
-            <button className="border-2 border-[#9ECCFA] p-2 text-[#9ECCFA]" onClick={() => setSidebarOpen(false)}>
-              <IconClose />
-            </button>
+            <button className="border-2 border-[#9ECCFA] p-2 text-[#9ECCFA]" onClick={() => setSidebarOpen(false)}><IconClose /></button>
           </div>
-          <nav className="flex-1 py-4 relative z-10">
-            <NavItems onClose={() => setSidebarOpen(false)} />
-          </nav>
+          <nav className="flex-1 py-4 relative z-10"><NavItems onClose={() => setSidebarOpen(false)} /></nav>
           <SidebarBottom />
         </aside>
 
-        {/* ── MAIN ── */}
+        {/* MAIN */}
         <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
 
           {/* TOPBAR */}
           <header className="anim-topbar bg-[#F8F3EA] border-b-4 border-[#0B1957] shadow-[0_4px_0_#0B1957] px-4 sm:px-8 py-4 flex items-center justify-between gap-4 flex-shrink-0">
             <div className="flex items-center gap-4">
-              <button
-                className="md:hidden p-2 border-4 border-[#0B1957] shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] btn-brutal"
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-              >
+              <button className="md:hidden p-2 border-4 border-[#0B1957] shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] btn-brutal" onClick={() => setSidebarOpen(!sidebarOpen)}>
                 <IconMenu />
               </button>
               <div>
@@ -275,7 +762,15 @@ export default function Dashboard() {
                 <h2 className="font-black text-lg sm:text-xl text-[#0B1957] uppercase">{user?.name ?? "Yusron"}</h2>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              {unreadCount > 0 && (
+                <button onClick={() => setActiveNav("messages")}
+                  style={{ display: "flex", alignItems: "center", gap: 6, border: "3px solid #0B1957", background: "#FFE8A0", color: "#0B1957", padding: "6px 12px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0 #0B1957", fontFamily: "inherit", transition: "transform 0.08s ease" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-1px,-1px)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; }}>
+                  <IconMail size={13} /> {unreadCount} Pesan Baru
+                </button>
+              )}
               <button className="home-btn-topbar" onClick={handleHome}>
                 <IconHome size={13} /> Home
               </button>
@@ -294,7 +789,7 @@ export default function Dashboard() {
           {/* PAGE CONTENT */}
           <main className="flex-1 overflow-y-auto p-4 sm:p-8">
 
-            {/* ── OVERVIEW ── */}
+            {/* OVERVIEW */}
             {activeNav === "overview" && (
               <div className="content-fade space-y-8">
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -308,13 +803,28 @@ export default function Dashboard() {
                   ))}
                 </div>
 
+                {unreadCount > 0 && (
+                  <div className="anim-content" style={{ border: "4px solid #0B1957", background: "#FFE8A0", boxShadow: "6px 6px 0 #0B1957", padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                      <div style={{ width: 44, height: 44, background: "#0B1957", border: "3px solid #0B1957", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <IconMail size={20} />
+                      </div>
+                      <div>
+                        <p style={{ fontWeight: 900, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.5, marginBottom: 2 }}>Notifikasi</p>
+                        <p style={{ fontWeight: 900, fontSize: 16, color: "#0B1957" }}>Ada <span style={{ fontSize: 22 }}>{unreadCount}</span> pesan baru yang belum dibaca</p>
+                      </div>
+                    </div>
+                    <button onClick={() => setActiveNav("messages")}
+                      className="btn-brutal border-4 border-[#0B1957] px-5 py-2 font-black text-xs uppercase shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2">
+                      Buka Messages <IconArrow />
+                    </button>
+                  </div>
+                )}
+
                 <div className="anim-content">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="font-black text-xl uppercase text-[#0B1957]">Recent Projects</h2>
-                    <button
-                      className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2"
-                      onClick={() => setActiveNav("projects")}
-                    >
+                    <button className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2" onClick={() => setActiveNav("projects")}>
                       All Projects <IconArrow />
                     </button>
                   </div>
@@ -326,79 +836,50 @@ export default function Dashboard() {
                 <div className="anim-content">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="font-black text-xl uppercase text-[#0B1957]">Tech Stack</h2>
-                    <button
-                      className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2"
-                      onClick={() => setActiveNav("stacks")}
-                    >
+                    <button className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2" onClick={() => setActiveNav("stacks")}>
                       Kelola Stack <IconArrow />
                     </button>
                   </div>
                   <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-5">
-                    <p className="font-semibold text-sm text-[#0B1957] opacity-60 mb-4">
-                      Tambah, edit, dan hapus tech stack yang tampil di portfolio — icon + nama framework/bahasa.
-                    </p>
+                    <p className="font-semibold text-sm text-[#0B1957] opacity-60 mb-4">Tambah, edit, dan hapus tech stack yang tampil di portfolio — icon + nama framework/bahasa.</p>
                     <div className="flex flex-wrap gap-2">
-                      {["React", "Laravel", "TypeScript", "JavaScript"].map((s, i) => (
-                        <span key={i} className="stack-tag">{s}</span>
-                      ))}
-                      <button
-                        className="border-2 border-dashed border-[#0B1957] px-3 py-1 font-black text-xs uppercase text-[#0B1957] opacity-50 hover:opacity-100 transition-opacity"
-                        onClick={() => setActiveNav("stacks")}
-                      >
-                        + Kelola
-                      </button>
+                      {["React", "Laravel", "TypeScript", "JavaScript"].map((s, i) => <span key={i} className="stack-tag">{s}</span>)}
+                      <button className="border-2 border-dashed border-[#0B1957] px-3 py-1 font-black text-xs uppercase text-[#0B1957] opacity-50 hover:opacity-100 transition-opacity" onClick={() => setActiveNav("stacks")}>+ Kelola</button>
                     </div>
                   </div>
                 </div>
 
-                {/* Homepage quick access */}
                 <div className="anim-content">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="font-black text-xl uppercase text-[#0B1957]">Homepage</h2>
-                    <button
-                      className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2"
-                      onClick={() => setActiveNav("homepage")}
-                    >
+                    <button className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2" onClick={() => setActiveNav("homepage")}>
                       Kelola <IconArrow />
                     </button>
                   </div>
                   <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-5">
-                    <p className="font-semibold text-sm text-[#0B1957] opacity-60 mb-4">
-                      Kelola konten homepage portfolio — tech stack, hero, projects, dan about section.
-                    </p>
+                    <p className="font-semibold text-sm text-[#0B1957] opacity-60 mb-4">Kelola konten homepage portfolio — tech stack, hero, projects, dan about section.</p>
                     <div className="flex flex-wrap gap-2">
                       {HOMEPAGE_SECTIONS_OVERVIEW.map((s, i) => (
-                        <span
-                          key={i}
-                          className={`border-2 border-[#0B1957] px-3 py-1 font-black text-xs uppercase ${s.status === "active" ? "bg-[#9ECCFA] text-[#0B1957]" : "bg-[#F8F3EA] text-[#0B1957] opacity-40"}`}
-                        >
-                          {s.label} {s.status === "soon" ? "(soon)" : ""}
+                        <span key={i} className={`border-2 border-[#0B1957] px-3 py-1 font-black text-xs uppercase ${s.status === "active" ? "bg-[#9ECCFA] text-[#0B1957]" : "bg-[#F8F3EA] text-[#0B1957] opacity-40"}`}>
+                          {s.label}{s.status === "soon" ? " (soon)" : ""}
                         </span>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                {/* About Page quick access */}
                 <div className="anim-content">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="font-black text-xl uppercase text-[#0B1957]">About Page</h2>
-                    <button
-                      className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2"
-                      onClick={() => setActiveNav("about")}
-                    >
+                    <button className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2" onClick={() => setActiveNav("about")}>
                       Kelola <IconArrow />
                     </button>
                   </div>
                   <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-5">
-                    <p className="font-semibold text-sm text-[#0B1957] opacity-60 mb-4">
-                      Kelola About page — hero (dual foto), capabilities + icon tech, experience, case studies, availability.
-                    </p>
+                    <p className="font-semibold text-sm text-[#0B1957] opacity-60 mb-4">Kelola About page — hero (dual foto), capabilities + icon tech, experience, case studies, availability.</p>
                     <div className="flex flex-wrap gap-2">
                       {["Hero / Bio", "Capabilities", "Experience", "Case Studies", "Availability"].map((s, i) => (
-                        <span key={i} className="border-2 border-[#0B1957] px-3 py-1 font-black text-xs uppercase bg-[#9ECCFA] text-[#0B1957]">
-                          {s}
-                        </span>
+                        <span key={i} className="border-2 border-[#0B1957] px-3 py-1 font-black text-xs uppercase bg-[#9ECCFA] text-[#0B1957]">{s}</span>
                       ))}
                     </div>
                   </div>
@@ -406,10 +887,7 @@ export default function Dashboard() {
 
                 <div className="anim-content bg-[#0B1957] border-4 border-[#0B1957] shadow-[8px_8px_0_#9ECCFA] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <IconBriefcase size={16} />
-                      <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">Status</p>
-                    </div>
+                    <div className="flex items-center gap-2 mb-2"><IconBriefcase size={16} /><p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">Status</p></div>
                     <p className="font-black text-2xl text-[#F8F3EA] uppercase">Open to Work</p>
                     <p className="font-semibold text-sm text-[#D1E8FF] mt-1">Available for freelance & full-time roles</p>
                   </div>
@@ -421,35 +899,17 @@ export default function Dashboard() {
               </div>
             )}
 
-            {/* ── PROJECTS ── */}
-            {activeNav === "projects" && (
+            {activeNav === "projects" && <div className="content-fade"><ProjectCRUD /></div>}
+            {activeNav === "stacks"   && <div className="content-fade"><TechStackCRUD /></div>}
+            {activeNav === "homepage" && <div className="content-fade"><HomepageManager /></div>}
+            {activeNav === "about"    && <div className="content-fade"><AboutManager /></div>}
+
+            {activeNav === "messages" && (
               <div className="content-fade">
-                <ProjectCRUD />
+                <MessagesManager onUnreadChange={setUnreadCount} />
               </div>
             )}
 
-            {/* ── TECH STACK CRUD ── */}
-            {activeNav === "stacks" && (
-              <div className="content-fade">
-                <TechStackCRUD />
-              </div>
-            )}
-
-            {/* ── HOMEPAGE MANAGER ── */}
-            {activeNav === "homepage" && (
-              <div className="content-fade">
-                <HomepageManager />
-              </div>
-            )}
-
-            {/* ── ABOUT PAGE MANAGER ── */}
-            {activeNav === "about" && (
-              <div className="content-fade">
-                <AboutManager />
-              </div>
-            )}
-
-            {/* ── PROFILE ── */}
             {activeNav === "profile" && (
               <div className="content-fade space-y-6 max-w-2xl">
                 <h2 className="font-black text-2xl uppercase text-[#0B1957]">Profile</h2>
@@ -464,12 +924,7 @@ export default function Dashboard() {
                     <h3 className="font-black text-2xl uppercase text-[#F8F3EA] mb-1">{user?.name ?? "Zaki Yusron"}</h3>
                     <p className="font-semibold text-sm text-[#9ECCFA] mb-6">{user?.email ?? "yusron@dev.com"}</p>
                     <div className="grid grid-cols-2 gap-3">
-                      {[
-                        { label: "Role",   value: "IT Programmer" },
-                        { label: "Focus",  value: "Fullstack Web" },
-                        { label: "Stack",  value: "React + Laravel" },
-                        { label: "Status", value: "Open to Work" },
-                      ].map((item, i) => (
+                      {[{ label: "Role", value: "IT Programmer" }, { label: "Focus", value: "Fullstack Web" }, { label: "Stack", value: "React + Laravel" }, { label: "Status", value: "Open to Work" }].map((item, i) => (
                         <div key={i} className="border-2 border-[#9ECCFA] p-3">
                           <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest mb-1">{item.label}</p>
                           <p className="font-bold text-sm text-[#F8F3EA]">{item.value}</p>
@@ -479,16 +934,10 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <button
-                    onClick={handleHome}
-                    className="btn-brutal flex-1 border-4 border-[#0B1957] py-4 font-black text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] flex items-center justify-center gap-3"
-                  >
+                  <button onClick={handleHome} className="btn-brutal flex-1 border-4 border-[#0B1957] py-4 font-black text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] flex items-center justify-center gap-3">
                     <IconHome size={16} /> Homepage
                   </button>
-                  <button
-                    onClick={handleLogout}
-                    className="btn-brutal flex-1 border-4 border-[#0B1957] py-4 font-black text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] flex items-center justify-center gap-3"
-                  >
+                  <button onClick={handleLogout} className="btn-brutal flex-1 border-4 border-[#0B1957] py-4 font-black text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] flex items-center justify-center gap-3">
                     <IconLogOut size={16} /> Logout
                   </button>
                 </div>
@@ -516,9 +965,7 @@ function ProjectCard({ project }: { project: Project }) {
       </div>
       <div className="flex items-center justify-between border-t-2 border-[#0B1957] pt-3 mt-3">
         <span className="font-black text-xs text-[#0B1957] uppercase opacity-50">{project.date}</span>
-        <span className="font-black text-xs text-[#9ECCFA] uppercase cursor-pointer hover:underline flex items-center gap-1">
-          View <IconArrow size={12} />
-        </span>
+        <span className="font-black text-xs text-[#9ECCFA] uppercase cursor-pointer hover:underline flex items-center gap-1">View <IconArrow size={12} /></span>
       </div>
     </div>
   );
