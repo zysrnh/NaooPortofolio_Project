@@ -1,5 +1,5 @@
 <?php
-// routes/web.php
+// routes/web.php  — FULL (replace file lama)
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -49,19 +49,26 @@ Route::post('/logout', function () {
 // ── API ───────────────────────────────────────────────────────────────────────
 Route::prefix('api')->group(function () {
 
-    // ── Public ──────────────────────────────────────────────────────────────
-    Route::get('/tech-stacks/visible', [TechStackController::class, 'indexVisible']);
-    Route::get('/tech-stacks',         [TechStackController::class, 'index']);
-    Route::get('/hero',                [HeroProfileController::class, 'show']);
-    Route::get('/about',               [AboutProfileController::class, 'show']);
+    // ── Public ────────────────────────────────────────────────────────────────
+    Route::get('/tech-stacks/visible', [TechStackController::class,     'indexVisible']);
+    Route::get('/tech-stacks',         [TechStackController::class,     'index']);
+    Route::get('/hero',                [HeroProfileController::class,   'show']);
+    Route::get('/about',               [AboutProfileController::class,  'show']);
 
-    Route::get('/contact',             [ContactController::class, 'index']);
-    Route::get('/contact/visible',     [ContactController::class, 'indexVisible']);
+    // About public sub-routes
+    Route::get('/about/featured-stacks',      [AboutProfileController::class, 'featuredStacks']);
+    Route::get('/about/experiences',          [AboutProfileController::class, 'indexExperiences']);
+    Route::get('/about/case-studies',         [AboutProfileController::class, 'indexCaseStudies']);
+    Route::get('/about/availability',         [AboutProfileController::class, 'getAvailability']);
+    Route::get('/about/stats',                [AboutProfileController::class, 'getStats']);
 
-    Route::get('/projects',            [ProjectController::class, 'index']);
-    Route::get('/projects/{slug}',     [ProjectController::class, 'show']);
+    Route::get('/contact',             [ContactController::class,       'index']);
+    Route::get('/contact/visible',     [ContactController::class,       'indexVisible']);
 
-    // ── Protected ───────────────────────────────────────────────────────────
+    Route::get('/projects',            [ProjectController::class,       'index']);
+    Route::get('/projects/{slug}',     [ProjectController::class,       'show']);
+
+    // ── Protected ─────────────────────────────────────────────────────────────
     Route::middleware(['auth'])->group(function () {
 
         // Tech Stack
@@ -70,11 +77,28 @@ Route::prefix('api')->group(function () {
         Route::delete('/tech-stacks/{techStack}',        [TechStackController::class, 'destroy']);
         Route::patch ('/tech-stacks/{techStack}/toggle', [TechStackController::class, 'toggleVisibility']);
 
-        // Hero
-        Route::put('/hero', [HeroProfileController::class, 'update']);
+        // Hero (text = PUT, photo upload = POST /hero/photo)
+        Route::put  ('/hero',        [HeroProfileController::class, 'update']);
+        Route::post ('/hero/photo',  [HeroProfileController::class, 'uploadPhoto']);
 
-        // About
+        // About — capabilities + featured stacks
         Route::put('/about', [AboutProfileController::class, 'update']);
+
+        // About — experiences CRUD
+        Route::post  ('/about/experiences',        [AboutProfileController::class, 'storeExperience']);
+        Route::put   ('/about/experiences/{id}',   [AboutProfileController::class, 'updateExperience']);
+        Route::delete('/about/experiences/{id}',   [AboutProfileController::class, 'destroyExperience']);
+
+        // About — case studies CRUD
+        Route::post  ('/about/case-studies',       [AboutProfileController::class, 'storeCaseStudy']);
+        Route::put   ('/about/case-studies/{id}',  [AboutProfileController::class, 'updateCaseStudy']);
+        Route::delete('/about/case-studies/{id}',  [AboutProfileController::class, 'destroyCaseStudy']);
+
+        // About — availability
+        Route::put('/about/availability', [AboutProfileController::class, 'updateAvailability']);
+
+        // About — stats (By the Numbers)
+        Route::put('/about/stats',        [AboutProfileController::class, 'updateStats']);
 
         // Contact
         Route::put('/contact', [ContactController::class, 'bulkUpdate']);
