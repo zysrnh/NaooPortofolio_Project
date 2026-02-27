@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { router, usePage } from "@inertiajs/react";
 import TechStackCRUD from "@/components/TechStackCRUD";
 import HomepageManager from "@/components/HomepageManager";
@@ -25,57 +25,43 @@ const IconMail      = ({ size = 18 }: { size?: number }) => <svg width={size} he
 const IconTrash     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>;
 const IconCheck     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
 const IconRefresh   = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>;
+const IconTrend     = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
+const IconActivity  = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
+const IconGithub    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>;
+const IconCode      = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
+
+// ── Icon from DB (base64 / URL) ───────────────────────────────────────────────
+const FALLBACK_ICON_DB = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3C/svg%3E";
+const DbIcon = ({ src, size = 16, alt = "" }: { src: string; size?: number; alt?: string }) => (
+  <img src={src || FALLBACK_ICON_DB} alt={alt}
+    style={{ width: size, height: size, objectFit: "cover", flexShrink: 0, display: "inline-block" }}
+    onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_ICON_DB; }}
+  />
+);
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-interface Project { title: string; desc: string; status: string; stacks: string[]; date: string; }
-interface Stat    { label: string; value: string; icon: JSX.Element; color: string; }
-
+interface ProjectItem {
+  id: number; slug: string; title: string; desc: string; status: string;
+  stacks: { id: number; label: string; icon: string }[];
+  date: string; visible: boolean;
+}
 interface Message {
-  id: number;
-  name: string;
-  email: string;
-  subject: string | null;
-  message: string;
-  is_read: boolean;
-  read_at: string | null;
-  ip_address: string | null;
-  created_at: string;
+  id: number; name: string; email: string; subject: string | null;
+  message: string; is_read: boolean; read_at: string | null;
+  ip_address: string | null; created_at: string;
 }
-
-interface MessageStats {
-  total: number;
-  unread: number;
-  today: number;
+interface MessageStats { total: number; unread: number; today: number; }
+interface Availability {
+  status: string; freelance: boolean; remote: boolean;
+  collaboration: boolean; timezone: string;
 }
-
-const PROJECTS: Project[] = [
-  { title: "Burger Ordering App",  desc: "Website restoran burger dengan sistem pemesanan online", status: "Live",        stacks: ["Laravel", "React"],      date: "Jan 2025" },
-  { title: "Beyblade Leaderboard", desc: "Leaderboard turnamen dengan statistik otomatis",         status: "Live",        stacks: ["JavaScript"],            date: "Mar 2025" },
-  { title: "CV Generator Tool",    desc: "Generate CV massal dari Excel ke PDF",                   status: "In Progress", stacks: ["React", "TypeScript"],   date: "May 2025" },
-  { title: "Dashboard Analytics",  desc: "Dashboard visualisasi data real-time",                   status: "Planning",    stacks: ["React", "TypeScript"],   date: "Jun 2025" },
-  { title: "Inventory System",     desc: "Sistem manajemen stok dan inventaris berbasis web",      status: "Live",        stacks: ["Laravel", "JavaScript"], date: "Feb 2025" },
-  { title: "E-Learning Platform",  desc: "Platform belajar online dengan kuis dan sertifikasi",   status: "In Progress", stacks: ["React", "Laravel"],      date: "Apr 2025" },
-];
-
-const STATS: Stat[] = [
-  { label: "Total Projects", value: "6", icon: <IconFolder />, color: "#9ECCFA" },
-  { label: "Live Projects",  value: "3", icon: <IconRocket />, color: "#9ECCFA" },
-  { label: "In Progress",    value: "2", icon: <IconGear />,   color: "#D1E8FF" },
-  { label: "Tech Stacks",    value: "8", icon: <IconLayers />, color: "#F8F3EA" },
-];
 
 const STATUS_STYLE: Record<string, string> = {
+  "Hosted":      "bg-[#9ECCFA] border-[#0B1957] text-[#0B1957]",
   "Live":        "bg-[#9ECCFA] border-[#0B1957] text-[#0B1957]",
   "In Progress": "bg-[#FFE8A0] border-[#0B1957] text-[#0B1957]",
   "Planning":    "bg-[#F8F3EA] border-[#0B1957] text-[#0B1957]",
 };
-
-const HOMEPAGE_SECTIONS_OVERVIEW = [
-  { label: "Tech Stack",   status: "active" },
-  { label: "Hero Section", status: "soon"   },
-  { label: "Projects",     status: "soon"   },
-  { label: "About",        status: "soon"   },
-];
 
 const NAV_ITEMS = [
   { key: "overview",  label: "Overview",   icon: <IconGrid /> },
@@ -94,7 +80,988 @@ function getCsrfToken(): string {
   return m ? decodeURIComponent(m[1]) : "";
 }
 
-// ── MessagesManager ───────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// ── CHART COMPONENTS ──────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ── Sparkline ─────────────────────────────────────────────────────────────────
+function Sparkline({ data, color = "#9ECCFA", height = 36, width = 120 }: {
+  data: number[]; color?: string; height?: number; width?: number;
+}) {
+  if (!data || data.length < 2) return null;
+  const max = Math.max(...data, 1);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / range) * (height - 6) - 3;
+    return `${x},${y}`;
+  }).join(" ");
+  const lastPt = pts.split(" ").slice(-1)[0].split(",");
+
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: "visible" }}>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="2.5"
+        strokeLinecap="round" strokeLinejoin="round"
+        style={{ filter: `drop-shadow(0 2px 6px ${color}88)` }} />
+      <circle cx={lastPt[0]} cy={lastPt[1]} r="3.5" fill={color} stroke="#0B1957" strokeWidth="2" />
+    </svg>
+  );
+}
+
+// ── Mini Bar Chart ─────────────────────────────────────────────────────────────
+function MiniBarChart({ data, color = "#9ECCFA", height = 64 }: {
+  data: { label?: string; value: number }[]; color?: string; height?: number;
+}) {
+  const max = Math.max(...data.map(d => d.value), 1);
+  return (
+    <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height }}>
+      {data.map((d, i) => (
+        <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, height: "100%" }}>
+          <div style={{ flex: 1, width: "100%", display: "flex", alignItems: "flex-end" }}>
+            <div style={{
+              width: "100%",
+              height: `${Math.max((d.value / max) * 100, 5)}%`,
+              background: i === data.length - 1 ? "#0B1957" : color,
+              border: "2px solid #0B1957",
+              boxShadow: "1px 1px 0 rgba(11,25,87,0.3)",
+              transition: `height 0.7s cubic-bezier(0.16,1,0.3,1) ${i * 0.04}s`,
+            }} />
+          </div>
+          {d.label && (
+            <span style={{ fontSize: 7, fontWeight: 900, color: "#0B1957", opacity: 0.45, textTransform: "uppercase" }}>{d.label}</span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Donut Chart ────────────────────────────────────────────────────────────────
+function DonutChart({ segments, size = 110 }: {
+  segments: { label: string; value: number; color: string }[]; size?: number;
+}) {
+  const total = segments.reduce((s, seg) => s + seg.value, 0) || 1;
+  let cumulative = 0;
+  const r = 38, cx = 50, cy = 50, strokeW = 14;
+  const circumference = 2 * Math.PI * r;
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#D1E8FF" strokeWidth={strokeW} />
+      {segments.map((seg, i) => {
+        const pct = seg.value / total;
+        const dash = pct * circumference;
+        const offset = circumference * (1 - cumulative);
+        cumulative += pct;
+        return (
+          <circle key={i} cx={cx} cy={cy} r={r} fill="none"
+            stroke={seg.color} strokeWidth={strokeW}
+            strokeDasharray={`${dash} ${circumference - dash}`}
+            strokeDashoffset={offset}
+            transform="rotate(-90 50 50)"
+            style={{ transition: `stroke-dasharray 0.8s cubic-bezier(0.16,1,0.3,1) ${i * 0.12}s` }}
+          />
+        );
+      })}
+      <circle cx={cx} cy={cy} r={r - strokeW / 2 - 2} fill="#F8F3EA" />
+      <text x="50" y="54" textAnchor="middle" style={{ fontWeight: 900, fontSize: 14, fill: "#0B1957", fontFamily: "inherit" }}>
+        {total}
+      </text>
+    </svg>
+  );
+}
+
+// ── Stat Card with sparkline + counter ────────────────────────────────────────
+function StatCard({ icon, value, label, color, sparkData, trend, delay = 0 }: {
+  icon: React.ReactNode; value: string; label: string; color: string;
+  sparkData?: number[]; trend?: number; delay?: number;
+}) {
+  const [counted, setCounted] = useState(0);
+  const numVal = parseInt(value) || 0;
+
+  useEffect(() => {
+    if (numVal === 0) return;
+    let start = 0;
+    const steps = Math.min(numVal, 30);
+    const increment = numVal / steps;
+    const interval = setInterval(() => {
+      start += increment;
+      if (start >= numVal) { setCounted(numVal); clearInterval(interval); }
+      else setCounted(Math.floor(start));
+    }, 30);
+    return () => clearInterval(interval);
+  }, [numVal]);
+
+  return (
+    <div style={{
+      border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "6px 6px 0 #0B1957",
+      padding: "20px", display: "flex", flexDirection: "column", gap: 8,
+      animation: `slideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${delay}s both`,
+      transition: "transform 0.15s ease, box-shadow 0.15s ease",
+      position: "relative", overflow: "hidden", cursor: "default",
+    }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-3px,-3px)"; (e.currentTarget as HTMLElement).style.boxShadow = "9px 9px 0 #0B1957"; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #0B1957"; }}>
+      {/* top accent */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 5, background: color, borderBottom: "2px solid #0B1957" }} />
+
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginTop: 4 }}>
+        <div style={{ color: "#0B1957" }}>{icon}</div>
+        {trend !== undefined && (
+          <div style={{ display: "flex", alignItems: "center", gap: 3, border: "2px solid #0B1957", padding: "2px 6px", background: trend >= 0 ? "#9ECCFA" : "#FFE8A0", flexShrink: 0 }}>
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="3.5" strokeLinecap="round">
+              {trend >= 0
+                ? <polyline points="1 18 8.5 10.5 13.5 15.5 23 6" />
+                : <polyline points="1 6 8.5 13.5 13.5 8.5 23 18" />}
+            </svg>
+            <span style={{ fontWeight: 900, fontSize: 8, color: "#0B1957", textTransform: "uppercase", letterSpacing: "0.06em" }}>{Math.abs(trend)}%</span>
+          </div>
+        )}
+      </div>
+
+      <p style={{ fontWeight: 900, fontSize: 42, color: "#0B1957", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>
+        {counted}
+      </p>
+      <p style={{ fontWeight: 900, fontSize: 9, color: "#0B1957", textTransform: "uppercase", letterSpacing: "0.18em", opacity: 0.55, margin: 0 }}>{label}</p>
+
+      {sparkData && (
+        <div style={{ marginTop: 2 }}>
+          <Sparkline data={sparkData} color={color} height={30} width={130} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Project Status Donut ───────────────────────────────────────────────────────
+function ProjectStatusChart({ projects }: { projects: ProjectItem[] }) {
+  const live = projects.filter(p => p.status === "Hosted" || p.status === "Live").length;
+  const inProg = projects.filter(p => p.status === "In Progress").length;
+  const planning = projects.filter(p => p.status === "Planning").length;
+  const other = projects.length - live - inProg - planning;
+
+  const segments = [
+    { label: "Live",        value: live,     color: "#4ade80" },
+    { label: "In Progress", value: inProg,   color: "#FFE8A0" },
+    { label: "Planning",    value: planning, color: "#9ECCFA" },
+    { label: "Other",       value: other,    color: "#C8B8A0" },
+  ].filter(s => s.value > 0);
+
+  if (segments.length === 0) return (
+    <p style={{ fontWeight: 900, fontSize: 10, color: "#0B1957", opacity: 0.3, textTransform: "uppercase" }}>No data</p>
+  );
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+      <DonutChart segments={segments} size={100} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+        {segments.map((s, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 7 }}>
+            <div style={{ width: 12, height: 12, background: s.color, border: "2px solid #0B1957", boxShadow: "1px 1px 0 #0B1957", flexShrink: 0 }} />
+            <span style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", color: "#0B1957", letterSpacing: "0.08em" }}>{s.label}</span>
+            <span style={{ fontWeight: 900, fontSize: 16, color: "#0B1957", marginLeft: "auto", paddingLeft: 12, fontVariantNumeric: "tabular-nums" }}>{s.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Stack Distribution Bar ─────────────────────────────────────────────────────
+function StackDistribution({ stacks }: { stacks: { category?: string }[] }) {
+  if (!stacks.length) return (
+    <p style={{ fontWeight: 900, fontSize: 10, color: "#9ECCFA", opacity: 0.3, textTransform: "uppercase" }}>No stacks</p>
+  );
+  const categories: Record<string, number> = {};
+  stacks.forEach(s => { const c = (s as any).category || "Other"; categories[c] = (categories[c] || 0) + 1; });
+  const total = stacks.length || 1;
+  const entries = Object.entries(categories).sort((a, b) => b[1] - a[1]);
+  const colors = ["#9ECCFA", "#FFE8A0", "#D1E8FF", "#4ade80", "#9ECCFA"];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+      {entries.map(([cat, count], i) => (
+        <div key={i}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+            <span style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", color: "#9ECCFA", letterSpacing: "0.1em" }}>{cat}</span>
+            <span style={{ fontWeight: 900, fontSize: 9, color: "#D1E8FF", opacity: 0.7 }}>{count}</span>
+          </div>
+          <div style={{ height: 14, background: "rgba(158,204,250,0.12)", border: "2px solid rgba(158,204,250,0.3)" }}>
+            <div style={{
+              height: "100%",
+              width: `${(count / total) * 100}%`,
+              background: colors[i % colors.length],
+              borderRight: count < total ? "2px solid #0B1957" : "none",
+              transition: `width 0.9s cubic-bezier(0.16,1,0.3,1) ${i * 0.1}s`,
+            }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── SVG icons for Activity Feed ───────────────────────────────────────────────
+const IconStatusLive     = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+const IconStatusProgress = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>;
+const IconStatusPlan     = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
+const IconStatusHosted   = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/></svg>;
+const IconStatusDefault  = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
+
+function getActivityMeta(status: string): { icon: React.ReactNode; color: string; iconColor: string; tag: string } {
+  switch (status) {
+    case "Hosted": return { icon: <IconStatusHosted size={15} />, color: "#9ECCFA", iconColor: "#0B1957", tag: "Deployed" };
+    case "Live":   return { icon: <IconStatusLive size={15} />,   color: "#4ade80", iconColor: "#0B1957", tag: "Live" };
+    case "In Progress": return { icon: <IconStatusProgress size={15} />, color: "#FFE8A0", iconColor: "#0B1957", tag: "WIP" };
+    case "Planning":    return { icon: <IconStatusPlan size={15} />,     color: "#D1E8FF",  iconColor: "#0B1957", tag: "Planned" };
+    default: return { icon: <IconStatusDefault size={15} />, color: "#F8F3EA", iconColor: "#0B1957", tag: status };
+  }
+}
+
+// ── Activity Feed ──────────────────────────────────────────────────────────────
+function ActivityFeed({ projects }: { projects: ProjectItem[] }) {
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  if (!projects.length) return (
+    <div style={{ padding: "40px 20px", textAlign: "center" }}>
+      <div style={{ color: "#0B1957", opacity: 0.15, marginBottom: 10, display: "flex", justifyContent: "center" }}>
+        <IconStatusDefault size={32} />
+      </div>
+      <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", color: "#0B1957", opacity: 0.3, letterSpacing: "0.15em" }}>No activity yet</p>
+    </div>
+  );
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {projects.slice(0, 6).map((p, i) => {
+        const meta = getActivityMeta(p.status);
+        const isHov = hoveredIdx === i;
+        return (
+          <div key={p.id}
+            style={{
+              display: "flex", gap: 14, padding: "13px 16px",
+              borderBottom: i < Math.min(projects.length, 6) - 1 ? "2px solid #D1E8FF" : "none",
+              background: isHov ? "#EAF4FF" : "transparent",
+              cursor: "default",
+              transition: "background 0.15s ease",
+              animation: `slideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${0.05 + i * 0.07}s both`,
+              position: "relative",
+            }}
+            onMouseEnter={() => setHoveredIdx(i)}
+            onMouseLeave={() => setHoveredIdx(null)}>
+
+            {/* Left accent bar on hover */}
+            <div style={{
+              position: "absolute", left: 0, top: 0, bottom: 0, width: 3,
+              background: isHov ? meta.color : "transparent",
+              borderRight: isHov ? `2px solid #0B1957` : "none",
+              transition: "background 0.15s ease",
+            }} />
+
+            {/* Icon box */}
+            <div style={{
+              width: 36, height: 36, flexShrink: 0,
+              background: isHov ? meta.color : "#F8F3EA",
+              border: `3px solid #0B1957`,
+              boxShadow: isHov ? `3px 3px 0 #0B1957` : `2px 2px 0 rgba(11,25,87,0.2)`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: meta.iconColor,
+              transition: "background 0.15s ease, box-shadow 0.15s ease",
+              transform: isHov ? "translate(-1px,-1px)" : "none",
+            }}>
+              {meta.icon}
+            </div>
+
+            {/* Content */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 3 }}>
+                <p style={{
+                  fontWeight: 900, fontSize: 11, textTransform: "uppercase",
+                  color: "#0B1957", margin: 0,
+                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                  transition: "color 0.1s ease",
+                }}>{p.title}</p>
+                <span style={{
+                  flexShrink: 0, border: "2px solid #0B1957",
+                  background: meta.color, color: "#0B1957",
+                  padding: "0px 5px", fontSize: 7, fontWeight: 900,
+                  textTransform: "uppercase", letterSpacing: "0.06em",
+                }}>{meta.tag}</span>
+              </div>
+              <p style={{ fontWeight: 600, fontSize: 10, color: "#0B1957", opacity: 0.5, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.desc}</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+                <span style={{ fontWeight: 700, fontSize: 9, color: "#0B1957", opacity: 0.35, textTransform: "uppercase", letterSpacing: "0.06em" }}>{p.date}</span>
+                {(p.stacks ?? []).slice(0, 2).map((s, si) => (
+                  <span key={si} style={{ display: "inline-flex", alignItems: "center", gap: 3, border: "1px solid rgba(11,25,87,0.25)", background: "#D1E8FF", padding: "0px 5px", fontSize: 7, fontWeight: 900, textTransform: "uppercase", color: "#0B1957" }}>
+                    {s.icon && <DbIcon src={s.icon} size={9} />}{s.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Arrow on hover */}
+            <div style={{
+              color: "#0B1957", opacity: isHov ? 0.5 : 0,
+              transition: "opacity 0.15s ease",
+              display: "flex", alignItems: "center", flexShrink: 0,
+            }}>
+              <IconArrow size={12} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ── GITHUB PUSH CHART (line chart dari contributions per hari, 30 hari) ───────
+// ═══════════════════════════════════════════════════════════════════════════────
+function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  // ambil 30 hari terakhir
+  const last30 = contributions.slice(-30);
+  if (!last30.length) return null;
+
+  const W = 900, H = 100, PAD = { top: 12, bottom: 28, left: 8, right: 8 };
+  const innerW = W - PAD.left - PAD.right;
+  const innerH = H - PAD.top - PAD.bottom;
+  const maxV = Math.max(...last30.map(d => d.count), 1);
+  const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  const pts = last30.map((d, i) => ({
+    x: PAD.left + (i / (last30.length - 1)) * innerW,
+    y: PAD.top + innerH - (d.count / maxV) * innerH,
+    d,
+  }));
+
+  const pathD = pts.map((p, i) => {
+    if (i === 0) return `M ${p.x} ${p.y}`;
+    const prev = pts[i - 1];
+    const cpx = (prev.x + p.x) / 2;
+    return `C ${cpx} ${prev.y} ${cpx} ${p.y} ${p.x} ${p.y}`;
+  }).join(" ");
+
+  const areaD = pathD + ` L ${pts[pts.length-1].x} ${PAD.top + innerH} L ${pts[0].x} ${PAD.top + innerH} Z`;
+
+  const fmtDate = (d: string) => {
+    const date = new Date(d);
+    return `${date.getDate()} ${MONTHS_SHORT[date.getMonth()]}`;
+  };
+
+  // Label tanggal setiap 7 hari
+  const dateLabels = last30
+    .map((d, i) => ({ d, i }))
+    .filter((_, i) => i % 7 === 0 || i === last30.length - 1);
+
+  const hov = hoveredIdx !== null ? pts[hoveredIdx] : null;
+
+  return (
+    <div style={{ borderTop: "4px solid #0B1957", padding: "16px 20px 12px", background: "#F8F3EA" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+        <div style={{ color: "#0B1957" }}><IconActivity size={13} /></div>
+        <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#0B1957", margin: 0 }}>Push Activity — Last 30 Days</p>
+        <span style={{ marginLeft: "auto", fontWeight: 900, fontSize: 9, color: "#0B1957", opacity: 0.45, textTransform: "uppercase" }}>
+          {last30.reduce((s, d) => s + d.count, 0)} commits total
+        </span>
+      </div>
+      <div style={{ position: "relative", overflowX: "auto" }}>
+        <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block", cursor: "crosshair" }}
+          onMouseLeave={() => setHoveredIdx(null)}>
+          <defs>
+            <linearGradient id="pushGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#9ECCFA" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#9ECCFA" stopOpacity="0.04" />
+            </linearGradient>
+          </defs>
+
+          {/* Grid lines */}
+          {[0, 0.25, 0.5, 0.75, 1].map((pct, i) => {
+            const y = PAD.top + (1 - pct) * innerH;
+            return (
+              <g key={i}>
+                <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y} stroke="#D1E8FF" strokeWidth="1" strokeDasharray={i === 0 ? "none" : "4 4"} />
+                {pct > 0 && (
+                  <text x={PAD.left - 2} y={y + 4} textAnchor="end" style={{ fontSize: 7, fill: "#0B1957", opacity: 0.4, fontWeight: 900, fontFamily: "inherit" }}>
+                    {Math.round(maxV * pct)}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+
+          {/* Area fill */}
+          <path d={areaD} fill="url(#pushGrad)" />
+
+          {/* Main line */}
+          <path d={pathD} fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            style={{ filter: "drop-shadow(0 2px 6px rgba(158,204,250,0.6))" }} />
+
+          {/* Dots — only visible + hovered */}
+          {pts.map((p, i) => (
+            <g key={i}>
+              {/* invisible hit area */}
+              <rect
+                x={i === 0 ? p.x : pts[i - 1].x + (p.x - pts[i - 1].x) / 2}
+                y={PAD.top}
+                width={i === 0 ? (pts[1].x - pts[0].x) / 2 : i === pts.length - 1 ? (p.x - pts[i - 1].x) / 2 : (pts[i + 1].x - pts[i - 1].x) / 2}
+                height={innerH}
+                fill="transparent"
+                onMouseEnter={() => setHoveredIdx(i)}
+              />
+              {(p.d.count > 0 || hoveredIdx === i) && (
+                <circle cx={p.x} cy={p.y} r={hoveredIdx === i ? 5 : 3}
+                  fill={hoveredIdx === i ? "#0B1957" : "#9ECCFA"}
+                  stroke={hoveredIdx === i ? "#9ECCFA" : "#0B1957"}
+                  strokeWidth={2}
+                  style={{ transition: "r 0.1s ease" }}
+                />
+              )}
+            </g>
+          ))}
+
+          {/* Date labels */}
+          {dateLabels.map(({ d, i }) => (
+            <text key={i} x={pts[i].x} y={H - 4} textAnchor="middle"
+              style={{ fontSize: 7, fill: "#0B1957", opacity: 0.45, fontWeight: 900, fontFamily: "inherit", textTransform: "uppercase" }}>
+              {fmtDate(d.date)}
+            </text>
+          ))}
+
+          {/* Hover crosshair + tooltip */}
+          {hov && (
+            <>
+              <line x1={hov.x} y1={PAD.top} x2={hov.x} y2={PAD.top + innerH}
+                stroke="#0B1957" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.4" />
+              {/* Tooltip box */}
+              <g transform={`translate(${Math.min(hov.x + 8, W - 120)}, ${Math.max(hov.y - 48, PAD.top)})`}>
+                <rect x={0} y={0} width={110} height={38} fill="#0B1957" stroke="#9ECCFA" strokeWidth="2" />
+                <rect x={2} y={2} width={110} height={38} fill="none" stroke="rgba(158,204,250,0.15)" strokeWidth="1" />
+                <text x={8} y={14} style={{ fontSize: 8, fill: "#9ECCFA", fontWeight: 900, fontFamily: "inherit", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  {hov.d.count} commit{hov.d.count !== 1 ? "s" : ""}
+                </text>
+                <text x={8} y={28} style={{ fontSize: 7, fill: "#D1E8FF", fontWeight: 600, fontFamily: "inherit" }}>
+                  {fmtDate(hov.d.date)} {new Date(hov.d.date).getFullYear()}
+                </text>
+              </g>
+            </>
+          )}
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ── GITHUB CONTRIBUTIONS ──────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+interface ContribDay { date: string; count: number; level: 0 | 1 | 2 | 3 | 4; }
+
+function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
+  const [weeks, setWeeks]                 = useState<ContribDay[][]>([]);
+  const [allContribs, setAllContribs]     = useState<ContribDay[]>([]);
+  const [loading, setLoading]             = useState(true);
+  const [totalContribs, setTotal]         = useState(0);
+  const [streak, setStreak]               = useState(0);
+  const [maxDay, setMaxDay]               = useState(0);
+  const [hoveredDay, setHoveredDay]       = useState<ContribDay | null>(null);
+  const [tooltipPos, setTooltipPos]       = useState({ x: 0, y: 0 });
+  const containerRef                      = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`)
+      .then(r => r.json())
+      .then(data => {
+        const contributions: ContribDay[] = data.contributions ?? [];
+        const grouped: ContribDay[][] = [];
+        for (let i = 0; i < contributions.length; i += 7) grouped.push(contributions.slice(i, i + 7));
+        setWeeks(grouped);
+        setAllContribs(contributions);
+        setTotal(contributions.reduce((s, d) => s + d.count, 0));
+        setMaxDay(Math.max(...contributions.map(d => d.count), 0));
+        let s = 0;
+        for (let i = contributions.length - 1; i >= 0; i--) { if (contributions[i].count > 0) s++; else break; }
+        setStreak(s);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [username]);
+
+  const CELL_STYLES: Record<number, { bg: string; border: string }> = {
+    0: { bg: "#E8E0D4", border: "#C8B8A0" },
+    1: { bg: "#9ECCFA", border: "#0B1957" },
+    2: { bg: "#5aa8f0", border: "#0B1957" },
+    3: { bg: "#2563eb", border: "#0B1957" },
+    4: { bg: "#0B1957", border: "#9ECCFA" },
+  };
+  const MONTHS    = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const DAY_LBLS  = ["", "Mon", "", "Wed", "", "Fri", ""];
+  const CELL = 13, GAP = 3;
+
+  const monthLabels = (() => {
+    if (!weeks.length) return [];
+    const labels: { label: string; col: number }[] = [];
+    let lastM = -1;
+    weeks.forEach((week, wi) => {
+      if (!week[0]) return;
+      const m = new Date(week[0].date).getMonth();
+      if (m !== lastM) { labels.push({ label: MONTHS[m], col: wi }); lastM = m; }
+    });
+    return labels;
+  })();
+
+  const fmt = (d: string) =>
+    new Date(d).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+  return (
+    <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "8px 8px 0 #0B1957", overflow: "hidden" }}>
+      {/* Header */}
+      <div style={{ background: "#0B1957", borderBottom: "4px solid #0B1957", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ border: "3px solid #9ECCFA", boxShadow: "3px 3px 0 #9ECCFA", padding: 6, color: "#9ECCFA" }}>
+            <IconGithub size={18} />
+          </div>
+          <div>
+            <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.25em", color: "#9ECCFA", opacity: 0.7, margin: 0 }}>GitHub Activity</p>
+            <p style={{ fontWeight: 900, fontSize: 15, textTransform: "uppercase", color: "#F8F3EA", margin: 0, letterSpacing: "0.06em" }}>@{username}</p>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          {[
+            { val: loading ? "…" : totalContribs, label: "Commits" },
+            { val: loading ? "…" : streak,        label: "Streak"  },
+            { val: loading ? "…" : maxDay,        label: "Best Day" },
+          ].map((s, i) => (
+            <div key={i} style={{ border: "2px solid #9ECCFA", background: "rgba(158,204,250,0.08)", padding: "6px 12px", textAlign: "center", boxShadow: "2px 2px 0 #9ECCFA" }}>
+              <p style={{ fontWeight: 900, fontSize: 18, color: "#9ECCFA", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
+              <p style={{ fontWeight: 900, fontSize: 8, color: "#D1E8FF", margin: 0, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.7 }}>{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Graph area */}
+      <div ref={containerRef} style={{ padding: "16px 20px 8px", overflowX: "auto", position: "relative" }}>
+        {loading ? (
+          <div style={{ display: "flex", gap: GAP }}>
+            {Array.from({ length: 52 }).map((_, wi) => (
+              <div key={wi} style={{ display: "flex", flexDirection: "column", gap: GAP }}>
+                {Array.from({ length: 7 }).map((_, di) => (
+                  <div key={di} style={{ width: CELL, height: CELL, background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }} />
+                ))}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            {/* Month labels */}
+            <div style={{ display: "flex", gap: GAP, marginBottom: 4, marginLeft: 28 }}>
+              {weeks.map((_, wi) => {
+                const lbl = monthLabels.find(m => m.col === wi);
+                return (
+                  <div key={wi} style={{ width: CELL, flexShrink: 0, overflow: "visible" }}>
+                    {lbl && <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.08em", color: "#0B1957", opacity: 0.5, whiteSpace: "nowrap", display: "block" }}>{lbl.label}</span>}
+                  </div>
+                );
+              })}
+            </div>
+            {/* Grid */}
+            <div style={{ display: "flex", gap: GAP }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: GAP, marginRight: 2, flexShrink: 0, width: 24 }}>
+                {DAY_LBLS.map((d, i) => (
+                  <div key={i} style={{ height: CELL, display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                    {d && <span style={{ fontWeight: 900, fontSize: 7, textTransform: "uppercase", color: "#0B1957", opacity: 0.4 }}>{d}</span>}
+                  </div>
+                ))}
+              </div>
+              {weeks.map((week, wi) => (
+                <div key={wi} style={{ display: "flex", flexDirection: "column", gap: GAP, flexShrink: 0 }}>
+                  {week.map((day, di) => {
+                    const cs = CELL_STYLES[day.level];
+                    const isHov = hoveredDay?.date === day.date;
+                    return (
+                      <div key={di} style={{
+                        width: CELL, height: CELL, flexShrink: 0,
+                        background: cs.bg, border: `2px solid ${cs.border}`,
+                        cursor: "pointer",
+                        transform: isHov ? "scale(1.45) translate(-1px,-1px)" : "scale(1)",
+                        boxShadow: isHov ? "0 0 0 2px #0B1957, 2px 2px 0 #0B1957" : day.level > 0 ? "1px 1px 0 #0B1957" : "none",
+                        transition: "transform 0.08s ease, box-shadow 0.08s ease",
+                        position: "relative", zIndex: isHov ? 10 : 1,
+                      }}
+                        onMouseEnter={e => {
+                          setHoveredDay(day);
+                          const rect = containerRef.current?.getBoundingClientRect();
+                          if (rect) setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+                        }}
+                        onMouseLeave={() => setHoveredDay(null)}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+            {/* Tooltip */}
+            {hoveredDay && (
+              <div style={{ position: "absolute", left: tooltipPos.x + 12, top: tooltipPos.y - 52, pointerEvents: "none", zIndex: 50, background: "#0B1957", border: "3px solid #9ECCFA", boxShadow: "4px 4px 0 #9ECCFA", padding: "7px 12px", minWidth: 162 }}>
+                <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", margin: "0 0 3px", textTransform: "uppercase" }}>{hoveredDay.count} commit{hoveredDay.count !== 1 ? "s" : ""}</p>
+                <p style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", margin: 0 }}>{fmt(hoveredDay.date)}</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Push Activity Line Chart */}
+      {!loading && allContribs.length > 0 && (
+        <PushActivityChart contributions={allContribs} />
+      )}
+
+      {/* Legend & link */}
+      <div style={{ borderTop: "3px solid #0B1957", padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+        <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer"
+          style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957", textDecoration: "none", border: "2px solid #0B1957", padding: "4px 10px", background: "#D1E8FF", boxShadow: "2px 2px 0 #0B1957", display: "flex", alignItems: "center", gap: 5 }}>
+          <IconGithub size={10} /> Profile →
+        </a>
+        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", color: "#0B1957", opacity: 0.4 }}>Less</span>
+          {[0, 1, 2, 3, 4].map(lvl => (
+            <div key={lvl} style={{ width: 10, height: 10, background: CELL_STYLES[lvl].bg, border: `2px solid ${CELL_STYLES[lvl].border}`, boxShadow: lvl > 0 ? "1px 1px 0 #0B1957" : "none" }} />
+          ))}
+          <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", color: "#0B1957", opacity: 0.4 }}>More</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Recent Project Card with proper hover + animation ─────────────────────────
+function RecentProjectCard({ project: p, delay }: { project: ProjectItem; delay: number }) {
+  const [hovered, setHovered] = useState(false);
+  const meta = getActivityMeta(p.status);
+
+  return (
+    <div
+      style={{
+        border: "4px solid #0B1957",
+        background: hovered ? "#EAF4FF" : "#F8F3EA",
+        boxShadow: hovered ? "7px 7px 0 #0B1957" : "4px 4px 0 #0B1957",
+        padding: "15px 16px",
+        transform: hovered ? "translate(-3px,-3px)" : "translate(0,0)",
+        transition: "transform 0.18s cubic-bezier(0.16,1,0.3,1), box-shadow 0.18s cubic-bezier(0.16,1,0.3,1), background 0.15s ease",
+        animation: `slideUp 0.55s cubic-bezier(0.16,1,0.3,1) ${delay}s both`,
+        cursor: "default",
+        position: "relative",
+        overflow: "hidden",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}>
+
+      {/* Left color accent */}
+      <div style={{
+        position: "absolute", left: 0, top: 0, bottom: 0, width: 4,
+        background: hovered ? meta.color : "transparent",
+        transition: "background 0.18s ease",
+      }} />
+
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, paddingLeft: 8 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Title row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+            <div style={{
+              color: "#0B1957", opacity: hovered ? 1 : 0.5,
+              transition: "opacity 0.15s ease", flexShrink: 0,
+            }}>
+              {meta.icon}
+            </div>
+            <p style={{ fontWeight: 900, fontSize: 12, textTransform: "uppercase", color: "#0B1957", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.title}</p>
+          </div>
+          {/* Desc */}
+          <p style={{ fontWeight: 600, fontSize: 10, color: "#0B1957", opacity: 0.5, margin: "0 0 9px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.desc}</p>
+          {/* Stacks */}
+          <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+            {(p.stacks ?? []).slice(0, 4).map((s, si) => (
+              <span key={si} style={{
+                border: "2px solid #0B1957", background: hovered ? "#D1E8FF" : "#F0F7FF",
+                color: "#0B1957", padding: "1px 6px", fontSize: 8, fontWeight: 900,
+                textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: 3,
+                transition: "background 0.15s ease",
+              }}>
+                {s.icon && <DbIcon src={s.icon} size={10} />}{s.label}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Right side */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
+          <span style={{
+            border: "2px solid #0B1957", padding: "3px 8px", fontSize: 9, fontWeight: 900, textTransform: "uppercase",
+            background: meta.color, color: "#0B1957",
+            boxShadow: hovered ? "2px 2px 0 #0B1957" : "1px 1px 0 rgba(11,25,87,0.3)",
+            transition: "box-shadow 0.15s ease",
+          }}>{p.status}</span>
+          <span style={{ fontWeight: 900, fontSize: 8, color: "#0B1957", opacity: 0.35, textTransform: "uppercase" }}>{p.date}</span>
+          {/* Arrow hint on hover */}
+          <div style={{ opacity: hovered ? 0.5 : 0, transition: "opacity 0.15s ease", color: "#0B1957" }}>
+            <IconArrow size={11} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ── OVERVIEW SECTION ──────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onNavClick: (key: string) => void }) {
+  const [projects,     setProjects]     = useState<ProjectItem[]>([]);
+  const [stacks,       setStacks]       = useState<{ id: number; name: string; icon: string; is_visible: boolean; category?: string }[]>([]);
+  const [availability, setAvailability] = useState<Availability | null>(null);
+  const [loading,      setLoading]      = useState(true);
+
+  useEffect(() => {
+    const headers = { "X-CSRF-TOKEN": getCsrfToken() };
+    Promise.all([
+      fetch("/api/admin/projects",     { headers }).then(r => r.json()).catch(() => []),
+      fetch("/api/tech-stacks",        { headers }).then(r => r.json()).catch(() => []),
+      fetch("/api/about/availability", { headers }).then(r => r.json()).catch(() => null),
+    ]).then(([proj, stk, avail]) => {
+      setProjects(Array.isArray(proj) ? proj : (proj.data ?? []));
+      setStacks(Array.isArray(stk) ? stk : []);
+      setAvailability(avail);
+      setLoading(false);
+    });
+  }, []);
+
+  const live   = projects.filter(p => p.status === "Hosted" || p.status === "Live").length;
+  const inProg = projects.filter(p => p.status === "In Progress").length;
+
+  const STAT_CARDS = [
+    { icon: <IconFolder size={22} />,  value: String(projects.length), label: "Total Projects", color: "#9ECCFA",  sparkData: [1,2,1,3,2,4,3, projects.length], trend: 12,  delay: 0.15 },
+    { icon: <IconRocket size={22} />,  value: String(live),            label: "Live Projects",  color: "#4ade80",  sparkData: [0,1,1,2,1,2,live,live],           trend: 8,   delay: 0.22 },
+    { icon: <IconGear   size={22} />,  value: String(inProg),          label: "In Progress",    color: "#FFE8A0",  sparkData: [0,1,0,2,1,inProg,inProg,inProg],  trend: -5,  delay: 0.29 },
+    { icon: <IconLayers size={22} />,  value: String(stacks.length),   label: "Tech Stacks",    color: "#D1E8FF",  sparkData: [1,2,3,4,5,6,stacks.length,stacks.length], trend: 20, delay: 0.36 },
+  ];
+
+  const shimmer = { background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12, animation: "slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.05s both" }}>
+        <div>
+          <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.4em", color: "#9ECCFA", margin: "0 0 4px" }}>Portfolio CMS</p>
+          <h1 style={{ fontWeight: 900, fontSize: 26, textTransform: "uppercase", color: "#0B1957", margin: 0 }}>Overview</h1>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, border: "4px solid #0B1957", padding: "10px 16px", background: "#0B1957", boxShadow: "4px 4px 0 #9ECCFA" }}>
+          <div style={{ position: "relative", width: 10, height: 10, flexShrink: 0 }}>
+            <div style={{ width: 10, height: 10, background: "#4ade80", position: "absolute" }} />
+            <div style={{ width: 10, height: 10, background: "#4ade80", position: "absolute", animation: "ping 1.5s ease infinite", opacity: 0.4 }} />
+          </div>
+          <span style={{ fontWeight: 900, fontSize: 8, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.2em" }}>System Online</span>
+        </div>
+      </div>
+
+      {/* ── Stat Cards ─────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {loading
+          ? [0,1,2,3].map(i => (
+            <div key={i} style={{ border: "4px solid #0B1957", boxShadow: "6px 6px 0 #0B1957", height: 150, ...shimmer }} />
+          ))
+          : STAT_CARDS.map((card, i) => <StatCard key={i} {...card} />)
+        }
+      </div>
+
+      {/* ── Unread Banner ──────────────────────────────────────────────────── */}
+      {unreadCount > 0 && (
+        <div style={{ border: "4px solid #0B1957", background: "#FFE8A0", boxShadow: "6px 6px 0 #0B1957", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", animation: "bounceIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s both" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 40, height: 40, background: "#0B1957", border: "3px solid #0B1957", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ECCFA", flexShrink: 0, animation: "pulse 2s ease infinite" }}>
+              <IconMail size={18} />
+            </div>
+            <div>
+              <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.2em", color: "#0B1957", opacity: 0.5, margin: "0 0 2px" }}>Notifikasi Masuk</p>
+              <p style={{ fontWeight: 900, fontSize: 15, color: "#0B1957", margin: 0 }}>Ada <span style={{ fontSize: 22 }}>{unreadCount}</span> pesan baru belum dibaca</p>
+            </div>
+          </div>
+          <button onClick={() => onNavClick("messages")}
+            style={{ border: "4px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "10px 18px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: "pointer", boxShadow: "4px 4px 0 #9ECCFA", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6, transition: "transform 0.08s ease" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; }}>
+            Buka Pesan <IconArrow size={13} />
+          </button>
+        </div>
+      )}
+
+      {/* ── Charts Row ─────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        {/* Project Status Donut */}
+        <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "6px 6px 0 #0B1957", padding: "18px 20px", animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s both" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+            <div style={{ color: "#0B1957" }}><IconActivity size={13} /></div>
+            <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#0B1957", margin: 0 }}>Project Status</p>
+          </div>
+          {loading
+            ? <div style={{ height: 110, ...shimmer }} />
+            : <ProjectStatusChart projects={projects} />
+          }
+        </div>
+
+        {/* Stack Distribution */}
+        <div style={{ border: "4px solid #0B1957", background: "#0B1957", boxShadow: "6px 6px 0 #9ECCFA", padding: "18px 20px", animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.27s both" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+            <div style={{ color: "#9ECCFA" }}><IconLayers size={13} /></div>
+            <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#9ECCFA", margin: 0 }}>Stack Categories</p>
+          </div>
+          {loading
+            ? <div style={{ height: 80, background: "linear-gradient(90deg,rgba(158,204,250,0.2) 25%,rgba(158,204,250,0.35) 50%,rgba(158,204,250,0.2) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }} />
+            : <StackDistribution stacks={stacks} />
+          }
+        </div>
+      </div>
+
+      {/* ── GitHub Contributions ───────────────────────────────────────────── */}
+      <div style={{ animation: "slideUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.35s both" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+          <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>GitHub Contributions</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, border: "2px solid #0B1957", padding: "3px 10px", background: "#D1E8FF" }}>
+            <div style={{ width: 7, height: 7, background: "#4ade80", flexShrink: 0, animation: "ping 1.5s ease infinite" }} />
+            <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957" }}>Live Data</span>
+          </div>
+        </div>
+        <GitHubContributions username="zysrnh" />
+      </div>
+
+      {/* ── Bottom Grid: Recent Projects + Activity Feed ────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        {/* Recent Projects */}
+        <div style={{ animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.4s both" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+            <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>Recent Projects</h2>
+            <button onClick={() => onNavClick("projects")}
+              style={{ border: "3px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "6px 12px", fontWeight: 900, fontSize: 9, textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0 #9ECCFA", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 5, letterSpacing: "0.08em" }}>
+              All <IconArrow size={10} />
+            </button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {loading
+              ? [0,1,2].map(i => (
+                <div key={i} style={{ border: "4px solid #0B1957", boxShadow: "4px 4px 0 #0B1957", height: 90, ...shimmer }} />
+              ))
+              : projects.length === 0
+                ? <div style={{ border: "4px dashed #0B1957", background: "#F8F3EA", padding: "30px 20px", textAlign: "center" }}>
+                    <p style={{ fontWeight: 900, fontSize: 10, color: "#0B1957", opacity: 0.3, textTransform: "uppercase" }}>Belum ada project</p>
+                  </div>
+                : projects.slice(0, 3).map((p, i) => (
+                  <RecentProjectCard key={p.id} project={p} delay={0.45 + i * 0.1} />
+                ))
+            }
+          </div>
+        </div>
+
+        {/* Activity Feed */}
+        <div style={{ animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.47s both" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+            <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>Activity Feed</h2>
+            <span style={{ border: "2px solid #0B1957", background: "#9ECCFA", color: "#0B1957", padding: "3px 8px", fontWeight: 900, fontSize: 8, textTransform: "uppercase" }}>{projects.length} total</span>
+          </div>
+          <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "4px 4px 0 #0B1957" }}>
+            {loading
+              ? <div style={{ height: 200, ...shimmer }} />
+              : <ActivityFeed projects={projects} />
+            }
+          </div>
+        </div>
+      </div>
+
+      {/* ── Quick Actions ───────────────────────────────────────────────────── */}
+      <div style={{ animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.5s both" }}>
+        <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: "0 0 12px", letterSpacing: "0.08em" }}>Quick Actions</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { label: "Add Project",    icon: <IconFolder size={16} />, key: "projects",  bg: "#9ECCFA"  },
+            { label: "Manage Stacks",  icon: <IconLayers size={16} />, key: "stacks",    bg: "#FFE8A0"  },
+            { label: "Edit Homepage",  icon: <IconCode   size={16} />, key: "homepage",  bg: "#D1E8FF"  },
+            { label: "Messages",       icon: <IconMail   size={16} />, key: "messages",  bg: "#F8F3EA", badge: unreadCount > 0 ? unreadCount : null },
+          ].map((action, i) => (
+            <button key={i} onClick={() => onNavClick(action.key)}
+              style={{ border: "4px solid #0B1957", background: action.bg, color: "#0B1957", padding: "14px 16px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", boxShadow: "4px 4px 0 #0B1957", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 8, letterSpacing: "0.08em", transition: "transform 0.08s ease, box-shadow 0.08s ease", position: "relative" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #0B1957"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "4px 4px 0 #0B1957"; }}>
+              {action.icon} {action.label}
+              {action.badge && (
+                <span style={{ marginLeft: "auto", background: "#0B1957", color: "#9ECCFA", fontSize: 9, fontWeight: 900, padding: "2px 6px", minWidth: 18, textAlign: "center", border: "2px solid #0B1957" }}>{action.badge}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Status Banner ───────────────────────────────────────────────────── */}
+      <div style={{ border: "4px solid #0B1957", background: "#0B1957", boxShadow: "8px 8px 0 #9ECCFA", padding: "24px 28px", display: "flex", flexDirection: "column", gap: 16, animation: "slideUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.55s both" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <IconBriefcase size={14} />
+              <p style={{ fontWeight: 900, fontSize: 9, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.25em", margin: 0 }}>Current Status</p>
+            </div>
+            <p style={{ fontWeight: 900, fontSize: 26, color: "#F8F3EA", textTransform: "uppercase", margin: 0 }}>
+              {availability?.status ?? "Open to Work"}
+            </p>
+            <p style={{ fontWeight: 600, fontSize: 12, color: "#D1E8FF", opacity: 0.65, margin: "6px 0 0" }}>
+              {availability
+                ? [availability.freelance && "Freelance", availability.remote && "Remote", availability.collaboration && "Collaboration"].filter(Boolean).join(" · ")
+                : "Freelance · Remote · Collaboration"
+              }
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {[
+              { label: "Projects", val: projects.length, icon: <IconFolder size={12} /> },
+              { label: "Live",     val: live,            icon: <IconRocket size={12} /> },
+              { label: "Stacks",   val: stacks.length,   icon: <IconLayers size={12} /> },
+            ].map((s, i) => (
+              <div key={i} style={{ border: "3px solid rgba(158,204,250,0.4)", background: "rgba(158,204,250,0.08)", padding: "10px 16px", textAlign: "center", boxShadow: "3px 3px 0 rgba(158,204,250,0.25)" }}>
+                <div style={{ color: "#9ECCFA", display: "flex", justifyContent: "center", marginBottom: 4 }}>{s.icon}</div>
+                <p style={{ fontWeight: 900, fontSize: 22, color: "#9ECCFA", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
+                <p style={{ fontWeight: 900, fontSize: 8, color: "#D1E8FF", opacity: 0.6, margin: "4px 0 0", textTransform: "uppercase", letterSpacing: "0.1em" }}>{s.label}</p>
+              </div>
+            ))}
+            <div style={{ border: "3px solid #9ECCFA", padding: "10px 16px", textAlign: "center" }}>
+              <p style={{ fontWeight: 900, fontSize: 9, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 4px", opacity: 0.6 }}>Timezone</p>
+              <p style={{ fontWeight: 900, fontSize: 13, color: "#F8F3EA", margin: 0 }}>{availability?.timezone ?? "WIB (UTC+7)"}</p>
+            </div>
+          </div>
+        </div>
+        {/* Stack icons */}
+        {stacks.filter(s => s.is_visible).length > 0 && (
+          <div style={{ borderTop: "2px solid rgba(158,204,250,0.2)", paddingTop: 14, display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {stacks.filter(s => s.is_visible).slice(0, 14).map((s, i) => (
+              <div key={i} title={s.name}
+                style={{ width: 32, height: 32, border: "2px solid rgba(158,204,250,0.3)", background: "rgba(158,204,250,0.08)", display: "flex", alignItems: "center", justifyContent: "center", transition: "border-color 0.1s, background 0.1s" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#9ECCFA"; (e.currentTarget as HTMLElement).style.background = "rgba(158,204,250,0.2)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(158,204,250,0.3)"; (e.currentTarget as HTMLElement).style.background = "rgba(158,204,250,0.08)"; }}>
+                <DbIcon src={s.icon} size={18} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ── MESSAGES MANAGER ──────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
 function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => void }) {
   const [messages,   setMessages]   = useState<Message[]>([]);
   const [stats,      setStats]      = useState<MessageStats>({ total: 0, unread: 0, today: 0 });
@@ -108,13 +1075,9 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
   const [replyOpen,  setReplyOpen]  = useState(false);
   const [replyBody,  setReplyBody]  = useState("");
   const [sending,    setSending]    = useState(false);
-  // Mobile: show detail panel as overlay
   const [showDetailMobile, setShowDetailMobile] = useState(false);
 
-  const showToast = (msg: string, ok = true) => {
-    setToast({ msg, ok });
-    setTimeout(() => setToast(null), 2500);
-  };
+  const showToast = (msg: string, ok = true) => { setToast({ msg, ok }); setTimeout(() => setToast(null), 2500); };
 
   const fetchAll = async () => {
     setLoading(true);
@@ -129,12 +1092,8 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
       setMessages(list);
       setStats(statsData);
       onUnreadChange?.(statsData.unread ?? 0);
-    } catch {
-      showToast("Gagal memuat pesan", false);
-    } finally {
-      setLoading(false);
-      setTimeout(() => setMounted(true), 80);
-    }
+    } catch { showToast("Gagal memuat pesan", false); }
+    finally { setLoading(false); setTimeout(() => setMounted(true), 80); }
   };
 
   useEffect(() => { fetchAll(); }, []);
@@ -145,11 +1104,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
       const res     = await fetch(`/api/messages/${msg.id}/read`, { method: "PATCH", headers: { "X-CSRF-TOKEN": getCsrfToken() } });
       const updated = await res.json();
       setMessages(p => p.map(m => m.id === msg.id ? updated : m));
-      setStats(s => {
-        const next = { ...s, unread: Math.max(0, s.unread - 1) };
-        onUnreadChange?.(next.unread);
-        return next;
-      });
+      setStats(s => { const next = { ...s, unread: Math.max(0, s.unread - 1) }; onUnreadChange?.(next.unread); return next; });
       if (selected?.id === msg.id) setSelected(updated);
     } catch { /* silent */ }
   };
@@ -178,52 +1133,33 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
   };
 
   const handleOpen = (msg: Message) => {
-    setSelected(msg);
-    setReplyOpen(false);
-    setReplyBody("");
-    setShowDetailMobile(true);
-    handleMarkRead(msg);
+    setSelected(msg); setReplyOpen(false); setReplyBody(""); setShowDetailMobile(true); handleMarkRead(msg);
   };
 
   const handleSendReply = async () => {
     if (!selected || !replyBody.trim()) return;
     setSending(true);
     try {
-      const res = await fetch(`/api/messages/${selected.id}/reply`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrfToken() },
+      const res  = await fetch(`/api/messages/${selected.id}/reply`, {
+        method: "POST", headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrfToken() },
         body: JSON.stringify({ body: replyBody }),
       });
       const data = await res.json();
       if (data.success) {
         showToast("Balasan berhasil dikirim!");
-        setReplyOpen(false);
-        setReplyBody("");
+        setReplyOpen(false); setReplyBody("");
         const updated = { ...selected, is_read: true, read_at: new Date().toISOString() };
         setSelected(updated);
         setMessages(p => p.map(m => m.id === selected.id ? updated : m));
-        if (!selected.is_read) {
-          setStats(s => {
-            const next = { ...s, unread: Math.max(0, s.unread - 1) };
-            onUnreadChange?.(next.unread);
-            return next;
-          });
-        }
-      } else {
-        showToast(data.message || "Gagal mengirim", false);
-      }
-    } catch {
-      showToast("Gagal mengirim balasan", false);
-    } finally {
-      setSending(false);
-    }
+        if (!selected.is_read) setStats(s => { const next = { ...s, unread: Math.max(0, s.unread - 1) }; onUnreadChange?.(next.unread); return next; });
+      } else showToast(data.message || "Gagal mengirim", false);
+    } catch { showToast("Gagal mengirim balasan", false); }
+    finally  { setSending(false); }
   };
 
   const filtered = messages.filter(m =>
-    filterTab === "unread" ? !m.is_read :
-    filterTab === "read"   ?  m.is_read : true
+    filterTab === "unread" ? !m.is_read : filterTab === "read" ? m.is_read : true
   );
-
   const fmt = (d: string) => {
     try { return new Date(d).toLocaleString("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }); }
     catch { return d; }
@@ -231,15 +1167,12 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
 
   const DetailPanel = () => selected ? (
     <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "8px 8px 0 #0B1957", overflow: "hidden" }}>
-      {/* Header */}
       <div style={{ background: "#0B1957", borderBottom: "4px solid #0B1957", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 38, height: 38, background: "#9ECCFA", border: "3px solid #9ECCFA", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 16, color: "#0B1957", textTransform: "uppercase", flexShrink: 0 }}>
-            {selected.name[0]}
-          </div>
+          <div style={{ width: 38, height: 38, background: "#9ECCFA", border: "3px solid #9ECCFA", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 16, color: "#0B1957", textTransform: "uppercase", flexShrink: 0 }}>{selected.name[0]}</div>
           <div style={{ minWidth: 0 }}>
-            <p style={{ fontWeight: 900, fontSize: 13, textTransform: "uppercase", color: "#F8F3EA", letterSpacing: "0.06em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selected.name}</p>
-            <p style={{ fontWeight: 700, fontSize: 11, color: "#9ECCFA", opacity: 0.8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selected.email}</p>
+            <p style={{ fontWeight: 900, fontSize: 13, textTransform: "uppercase", color: "#F8F3EA", letterSpacing: "0.06em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{selected.name}</p>
+            <p style={{ fontWeight: 700, fontSize: 11, color: "#9ECCFA", opacity: 0.8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{selected.email}</p>
           </div>
         </div>
         <button onClick={() => { setSelected(null); setShowDetailMobile(false); }}
@@ -247,48 +1180,28 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
           <IconClose />
         </button>
       </div>
-
-      {/* Meta */}
       <div style={{ borderBottom: "4px solid #0B1957", padding: "12px 18px", background: "#EAF4FF", display: "flex", flexWrap: "wrap", gap: 6 }}>
-        {selected.subject && (
-          <div style={{ border: "2px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "3px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase" }}>
-            {selected.subject}
-          </div>
-        )}
+        {selected.subject && <div style={{ border: "2px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "3px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase" }}>{selected.subject}</div>}
         <div style={{ border: "2px solid #0B1957", background: "#F8F3EA", color: "#0B1957", padding: "3px 10px", fontWeight: 700, fontSize: 10, display: "flex", alignItems: "center", gap: 4 }}>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          {fmt(selected.created_at)}
+          <IconClock size={10} /> {fmt(selected.created_at)}
         </div>
         <div style={{ border: "2px solid #0B1957", background: selected.is_read ? "#9ECCFA" : "#FFE8A0", color: "#0B1957", padding: "3px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 4 }}>
-          {selected.is_read ? <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Terbaca</> : <><span style={{ width: 7, height: 7, borderRadius: "50%", background: "#0B1957", display: "inline-block" }} /> Belum</>}
+          {selected.is_read ? <><IconCheck size={10} /> Terbaca</> : <><span style={{ width: 7, height: 7, borderRadius: "50%", background: "#0B1957", display: "inline-block" }} /> Belum</>}
         </div>
       </div>
-
-      {/* Body */}
       <div style={{ padding: "18px 18px 22px" }}>
         <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.4, marginBottom: 8 }}>Pesan</p>
-        <div style={{ border: "3px solid #0B1957", background: "white", padding: "14px 16px", fontWeight: 600, fontSize: 13, color: "#0B1957", lineHeight: 1.75, whiteSpace: "pre-wrap", boxShadow: "3px 3px 0 #D1E8FF" }}>
-          {selected.message}
-        </div>
+        <div style={{ border: "3px solid #0B1957", background: "white", padding: "14px 16px", fontWeight: 600, fontSize: 13, color: "#0B1957", lineHeight: 1.75, whiteSpace: "pre-wrap", boxShadow: "3px 3px 0 #D1E8FF" }}>{selected.message}</div>
       </div>
-
-      {/* Actions */}
       <div style={{ borderTop: "4px solid #0B1957" }}>
         {replyOpen && (
-          <div style={{ borderBottom: "4px solid #0B1957", padding: "14px 18px", background: "#F0F7FF", animation: "slideUp 0.25s cubic-bezier(0.16,1,0.3,1) both" }}>
-            <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.5, marginBottom: 6 }}>
-              Balas ke: <span style={{ opacity: 1 }}>{selected.email}</span>
-            </p>
-            <textarea
-              value={replyBody}
-              onChange={e => setReplyBody(e.target.value)}
-              placeholder="Tulis balasan..."
-              rows={4}
-              style={{ width: "100%", border: "3px solid #0B1957", background: "white", padding: "10px 12px", fontWeight: 600, fontSize: 13, color: "#0B1957", lineHeight: 1.6, resize: "vertical", fontFamily: "inherit", boxShadow: "3px 3px 0 #D1E8FF", outline: "none", boxSizing: "border-box" }}
-            />
+          <div style={{ borderBottom: "4px solid #0B1957", padding: "14px 18px", background: "#F0F7FF" }}>
+            <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.5, marginBottom: 6 }}>Balas ke: <span style={{ opacity: 1 }}>{selected.email}</span></p>
+            <textarea value={replyBody} onChange={e => setReplyBody(e.target.value)} placeholder="Tulis balasan..." rows={4}
+              style={{ width: "100%", border: "3px solid #0B1957", background: "white", padding: "10px 12px", fontWeight: 600, fontSize: 13, color: "#0B1957", lineHeight: 1.6, resize: "vertical", fontFamily: "inherit", boxShadow: "3px 3px 0 #D1E8FF", outline: "none", boxSizing: "border-box" }} />
             <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
               <button onClick={handleSendReply} disabled={sending || !replyBody.trim()}
-                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, border: "3px solid #0B1957", background: sending || !replyBody.trim() ? "#D1E8FF" : "#0B1957", color: sending || !replyBody.trim() ? "#0B1957" : "#9ECCFA", padding: "9px 14px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: sending || !replyBody.trim() ? "not-allowed" : "pointer", fontFamily: "inherit", boxShadow: "3px 3px 0 #9ECCFA", transition: "all 0.08s ease", opacity: sending ? 0.7 : 1 }}>
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, border: "3px solid #0B1957", background: sending || !replyBody.trim() ? "#D1E8FF" : "#0B1957", color: sending || !replyBody.trim() ? "#0B1957" : "#9ECCFA", padding: "9px 14px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: sending || !replyBody.trim() ? "not-allowed" : "pointer", fontFamily: "inherit", boxShadow: "3px 3px 0 #9ECCFA" }}>
                 {sending ? <><IconRefresh size={12} /> Mengirim...</> : <><IconMail size={12} /> Kirim</>}
               </button>
               <button onClick={() => { setReplyOpen(false); setReplyBody(""); }}
@@ -300,13 +1213,11 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
         )}
         <div style={{ padding: "14px 18px", display: "flex", gap: 8 }}>
           <button onClick={() => { setReplyOpen(r => !r); setReplyBody(""); }}
-            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, border: "4px solid #0B1957", background: replyOpen ? "#F8F3EA" : "#0B1957", color: replyOpen ? "#0B1957" : "#9ECCFA", padding: "9px 14px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit", boxShadow: replyOpen ? "4px 4px 0 #0B1957" : "4px 4px 0 #9ECCFA", transition: "transform 0.08s ease" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; }}>
+            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, border: "4px solid #0B1957", background: replyOpen ? "#F8F3EA" : "#0B1957", color: replyOpen ? "#0B1957" : "#9ECCFA", padding: "9px 14px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit", boxShadow: replyOpen ? "4px 4px 0 #0B1957" : "4px 4px 0 #9ECCFA" }}>
             <IconMail size={13} /> {replyOpen ? "Tutup" : "Balas"}
           </button>
           <button onClick={() => handleDelete(selected.id)} disabled={deleting === selected.id}
-            style={{ border: "4px solid #0B1957", background: "#F8F3EA", color: "#0B1957", padding: "9px 12px", cursor: deleting === selected.id ? "wait" : "pointer", fontFamily: "inherit", boxShadow: "4px 4px 0 #0B1957", transition: "all 0.08s ease", display: "flex", alignItems: "center" }}
+            style={{ border: "4px solid #0B1957", background: "#F8F3EA", color: "#0B1957", padding: "9px 12px", cursor: deleting === selected.id ? "wait" : "pointer", fontFamily: "inherit", boxShadow: "4px 4px 0 #0B1957", display: "flex", alignItems: "center" }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#ef4444"; (e.currentTarget as HTMLElement).style.color = "white"; (e.currentTarget as HTMLElement).style.borderColor = "#ef4444"; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#F8F3EA"; (e.currentTarget as HTMLElement).style.color = "#0B1957"; (e.currentTarget as HTMLElement).style.borderColor = "#0B1957"; }}>
             <IconTrash size={13} />
@@ -327,7 +1238,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
         ))}
       </div>
       {[0,1,2,3].map(i => (
-        <div key={i} style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "4px 4px 0 #0B1957", padding: "16px 18px", marginBottom: 10, animation: `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i * 0.06}s both` }}>
+        <div key={i} style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "4px 4px 0 #0B1957", padding: "16px 18px", marginBottom: 10 }}>
           <div style={{ display: "flex", gap: 12 }}>
             <div style={{ width: 40, height: 40, background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite", border: "3px solid #0B1957", flexShrink: 0 }}/>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
@@ -342,7 +1253,6 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
 
   return (
     <div>
-      {/* Mobile Detail Overlay */}
       {showDetailMobile && selected && (
         <div className="lg:hidden" style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(11,25,87,0.5)", backdropFilter: "blur(2px)", animation: "fadeIn 0.2s ease both" }} onClick={() => { setSelected(null); setShowDetailMobile(false); }}>
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, maxHeight: "90vh", overflowY: "auto", animation: "slideUpFull 0.35s cubic-bezier(0.16,1,0.3,1) both" }} onClick={e => e.stopPropagation()}>
@@ -350,8 +1260,6 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
           </div>
         </div>
       )}
-
-      {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 18, flexWrap: "wrap", gap: 10 }}>
         <div>
           <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.3em", color: "#9ECCFA", margin: "0 0 3px" }}>Kotak Masuk</p>
@@ -366,16 +1274,12 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
           </button>
           {stats.unread > 0 && (
             <button onClick={handleMarkAllRead} disabled={markingAll}
-              style={{ display: "flex", alignItems: "center", gap: 5, border: "4px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "7px 13px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: markingAll ? "wait" : "pointer", boxShadow: "4px 4px 0 #9ECCFA", fontFamily: "inherit", opacity: markingAll ? 0.6 : 1 }}
-              onMouseEnter={e => { if (!markingAll) (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; }}>
+              style={{ display: "flex", alignItems: "center", gap: 5, border: "4px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "7px 13px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: markingAll ? "wait" : "pointer", boxShadow: "4px 4px 0 #9ECCFA", fontFamily: "inherit", opacity: markingAll ? 0.6 : 1 }}>
               <IconCheck size={13} /> Tandai Terbaca
             </button>
           )}
         </div>
       </div>
-
-      {/* Stats strip */}
       <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
         {[
           { label: "Total",    value: stats.total,  bg: "#0B1957", fg: "#9ECCFA" },
@@ -384,31 +1288,23 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
         ].map((s, i) => (
           <div key={i} style={{ border: "4px solid #0B1957", background: s.bg, color: s.fg, padding: "10px 16px", boxShadow: "4px 4px 0 #0B1957", minWidth: 80, flex: "1 1 80px", animation: `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.07}s both` }}>
             <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.7, marginBottom: 3 }}>{s.label}</p>
-            <p style={{ fontWeight: 900, fontSize: 26, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.value}</p>
+            <p style={{ fontWeight: 900, fontSize: 26, lineHeight: 1, fontVariantNumeric: "tabular-nums", margin: 0 }}>{s.value}</p>
           </div>
         ))}
       </div>
-
-      {/* Filter tabs */}
       <div style={{ display: "flex", border: "4px solid #0B1957", marginBottom: 14, overflow: "hidden", boxShadow: "4px 4px 0 #0B1957" }}>
-        {([
-          ["all",    "Semua",   messages.length],
-          ["unread", "Belum",   messages.filter(m => !m.is_read).length],
-          ["read",   "Dibaca",  messages.filter(m =>  m.is_read).length],
-        ] as const).map(([key, label, count]) => (
+        {([ ["all","Semua",messages.length], ["unread","Belum",messages.filter(m=>!m.is_read).length], ["read","Dibaca",messages.filter(m=>m.is_read).length] ] as const).map(([key, label, count]) => (
           <button key={key} onClick={() => setFilterTab(key)}
-            style={{ flex: 1, padding: "10px 6px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", borderRight: key !== "read" ? "4px solid #0B1957" : "none", borderLeft: "none", borderTop: "none", borderBottom: "none", background: filterTab === key ? "#0B1957" : "#F8F3EA", color: filterTab === key ? "#9ECCFA" : "#0B1957", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, transition: "background 0.15s ease, color 0.15s ease" }}>
+            style={{ flex: 1, padding: "10px 6px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", borderRight: key !== "read" ? "4px solid #0B1957" : "none", borderLeft: "none", borderTop: "none", borderBottom: "none", background: filterTab === key ? "#0B1957" : "#F8F3EA", color: filterTab === key ? "#9ECCFA" : "#0B1957", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }}>
             {label}
             <span style={{ background: filterTab === key ? "rgba(158,204,250,0.2)" : "#D1E8FF", color: filterTab === key ? "#9ECCFA" : "#0B1957", border: `2px solid ${filterTab === key ? "#9ECCFA" : "#0B1957"}`, fontSize: 9, fontWeight: 900, padding: "1px 5px", minWidth: 18, textAlign: "center" }}>{count}</span>
           </button>
         ))}
       </div>
-
-      {/* Desktop: List + Detail side by side | Mobile: List only, detail as overlay */}
       <div style={{ display: "grid", gridTemplateColumns: selected ? "minmax(0,1fr) minmax(0,1fr)" : "1fr", gap: 14 }} className="msg-grid">
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {filtered.length === 0 && (
-            <div style={{ border: "4px dashed #0B1957", background: "#F8F3EA", padding: "50px 20px", textAlign: "center", animation: "fadeIn 0.3s ease both" }}>
+            <div style={{ border: "4px dashed #0B1957", background: "#F8F3EA", padding: "50px 20px", textAlign: "center" }}>
               <div style={{ marginBottom: 10, opacity: 0.15 }}><IconMail size={36} /></div>
               <p style={{ fontWeight: 900, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.4 }}>
                 {filterTab === "unread" ? "Tidak ada pesan belum dibaca" : filterTab === "read" ? "Tidak ada pesan sudah dibaca" : "Belum ada pesan masuk"}
@@ -435,7 +1331,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 6 }}>
                     <span style={{ fontWeight: 700, fontSize: 9, color: selected?.id === msg.id ? "#9ECCFA" : "#0B1957", opacity: 0.45, textTransform: "uppercase", letterSpacing: "0.06em" }}>{fmt(msg.created_at)}</span>
                     <button onClick={e => { e.stopPropagation(); handleDelete(msg.id); }} disabled={deleting === msg.id}
-                      style={{ border: "2px solid " + (selected?.id === msg.id ? "#9ECCFA" : "#0B1957"), background: "transparent", color: selected?.id === msg.id ? "#9ECCFA" : "#0B1957", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", cursor: deleting === msg.id ? "wait" : "pointer", fontFamily: "inherit", opacity: deleting === msg.id ? 0.5 : 0.6, transition: "all 0.1s ease" }}
+                      style={{ border: "2px solid " + (selected?.id === msg.id ? "#9ECCFA" : "#0B1957"), background: "transparent", color: selected?.id === msg.id ? "#9ECCFA" : "#0B1957", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", cursor: deleting === msg.id ? "wait" : "pointer", fontFamily: "inherit", opacity: deleting === msg.id ? 0.5 : 0.6 }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#ef4444"; (e.currentTarget as HTMLElement).style.color = "white"; (e.currentTarget as HTMLElement).style.borderColor = "#ef4444"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = selected?.id === msg.id ? "#9ECCFA" : "#0B1957"; (e.currentTarget as HTMLElement).style.borderColor = selected?.id === msg.id ? "#9ECCFA" : "#0B1957"; (e.currentTarget as HTMLElement).style.opacity = "0.6"; }}>
                       <IconTrash size={11} />
@@ -446,16 +1342,12 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
             </div>
           ))}
         </div>
-
-        {/* Desktop detail panel */}
         {selected && (
           <div className="hidden lg:block" style={{ position: "sticky", top: 16, animation: "slideRight 0.35s cubic-bezier(0.16,1,0.3,1) both" }}>
             <DetailPanel />
           </div>
         )}
       </div>
-
-      {/* Toast */}
       {toast && (
         <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", zIndex: 999, display: "flex", alignItems: "center", gap: 8, border: "4px solid #0B1957", background: toast.ok ? "#9ECCFA" : "#ef4444", color: toast.ok ? "#0B1957" : "white", padding: "10px 18px", fontWeight: 900, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.07em", boxShadow: "6px 6px 0 #0B1957", whiteSpace: "nowrap", animation: "slideUp 0.35s cubic-bezier(0.16,1,0.3,1) both", maxWidth: "calc(100vw - 32px)" }}>
           {toast.ok ? <IconCheck size={13} /> : null} {toast.msg}
@@ -465,7 +1357,9 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
   );
 }
 
-// ── Dashboard ─────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// ── DASHBOARD (Main) ──────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
 export default function Dashboard() {
   const { auth } = usePage<{ auth: { user: { name: string; email: string } } }>().props;
   const user = auth?.user;
@@ -475,35 +1369,21 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [time,        setTime]        = useState(new Date());
   const [unreadCount, setUnreadCount] = useState(0);
-  // Mobile bottom nav visible
-  const [navReady, setNavReady] = useState(false);
+  const [navReady,    setNavReady]    = useState(false);
 
   useEffect(() => { setTimeout(() => { setVisible(true); setNavReady(true); }, 50); }, []);
-  useEffect(() => {
-    const t = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
+  useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
   useEffect(() => {
     fetch("/api/messages/stats", { headers: { "X-CSRF-TOKEN": getCsrfToken() } })
-      .then(r => r.json())
-      .then(d => setUnreadCount(d.unread ?? 0))
-      .catch(() => {});
+      .then(r => r.json()).then(d => setUnreadCount(d.unread ?? 0)).catch(() => {});
   }, []);
 
   const handleLogout = () => router.post("/logout");
   const handleHome   = () => router.visit("/");
-
-  const greeting = () => {
-    const h = time.getHours();
-    if (h < 12) return "Good Morning";
-    if (h < 17) return "Good Afternoon";
-    return "Good Evening";
-  };
+  const greeting = () => { const h = time.getHours(); return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening"; };
 
   const handleNavClick = (key: string) => {
-    setActiveNav(key);
-    setSidebarOpen(false);
-    // scroll to top on mobile
+    setActiveNav(key); setSidebarOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -517,9 +1397,7 @@ export default function Dashboard() {
           {item.icon}
           {item.label}
           {item.key === "messages" && unreadCount > 0 ? (
-            <span style={{ marginLeft: "auto", background: "#9ECCFA", color: "#0B1957", border: "2px solid #9ECCFA", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>
-              {unreadCount}
-            </span>
+            <span style={{ marginLeft: "auto", background: "#9ECCFA", color: "#0B1957", border: "2px solid #9ECCFA", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
           ) : activeNav === item.key ? (
             <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "#9ECCFA", display: "inline-block", flexShrink: 0 }} />
           ) : null}
@@ -531,15 +1409,14 @@ export default function Dashboard() {
   const SidebarBottom = () => (
     <div style={{ borderTop: "4px solid #9ECCFA", padding: "20px", position: "relative", zIndex: 10 }}>
       <div style={{ marginBottom: 12 }}>
-        <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.name ?? "Yusron"}</p>
-        <p style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", opacity: 0.6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.email ?? "yusron@dev.com"}</p>
+        <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
+        <p style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", opacity: 0.6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: "2px 0 0" }}>{user?.email ?? "yusron@dev.com"}</p>
       </div>
       <button className="home-btn-sidebar" onClick={handleHome}><IconHome size={13} /> Homepage</button>
       <button className="logout-btn" style={{ width: "100%" }} onClick={handleLogout}><IconLogOut /> Logout</button>
     </div>
   );
 
-  // Mobile bottom navigation — only show 5 key items
   const BOTTOM_NAV = [
     { key: "overview",  label: "Home",     icon: <IconGrid size={18} /> },
     { key: "projects",  label: "Projects", icon: <IconFolder size={18} /> },
@@ -559,15 +1436,11 @@ export default function Dashboard() {
         @keyframes shimmer     { from{background-position:-200% 0} to{background-position:200% 0} }
         @keyframes pulse       { 0%,100%{opacity:1} 50%{opacity:0.5} }
         @keyframes bounceIn    { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.05)} 100%{transform:scale(1);opacity:1} }
+        @keyframes ping        { 0%{transform:scale(1);opacity:0.4} 70%,100%{transform:scale(2.2);opacity:0} }
 
         .anim-sidebar { animation:slideLeft  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-topbar  { animation:slideUp    0.4s cubic-bezier(0.16,1,0.3,1) 0.08s both; }
         .anim-content { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
-        .anim-stat-0  { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.2s  both; }
-        .anim-stat-1  { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.27s both; }
-        .anim-stat-2  { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.34s both; }
-        .anim-stat-3  { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.41s both; }
-        .anim-nav-item{ animation:slideLeft  0.4s cubic-bezier(0.16,1,0.3,1) both; }
 
         .nav-item {
           display:flex; align-items:center; gap:10px;
@@ -581,17 +1454,15 @@ export default function Dashboard() {
         .nav-item.active { background:rgba(158,204,250,0.15); color:#F8F3EA; border-left-color:#9ECCFA; padding-left:22px; }
 
         .home-btn-sidebar {
-          display:flex; align-items:center; gap:8px;
-          width:100%; border:3px solid rgba(158,204,250,0.4); padding:9px 14px;
+          display:flex; align-items:center; gap:8px; width:100%;
+          border:3px solid rgba(158,204,250,0.4); padding:9px 14px;
           background:transparent; font-weight:900; font-size:12px;
           text-transform:uppercase; color:#9ECCFA; letter-spacing:0.08em;
           cursor:pointer; font-family:inherit; margin-bottom:8px;
           box-shadow:2px 2px 0 rgba(158,204,250,0.3);
           transition:background 0.1s ease, border-color 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .home-btn-sidebar:hover  { background:rgba(158,204,250,0.1); border-color:#9ECCFA; transform:translate(-1px,-1px); box-shadow:3px 3px 0 rgba(158,204,250,0.4); }
-        .home-btn-sidebar:active { transform:translate(1px,1px); box-shadow:0 0 0; }
-
+        .home-btn-sidebar:hover  { background:rgba(158,204,250,0.1); border-color:#9ECCFA; transform:translate(-1px,-1px); }
         .home-btn-topbar {
           display:flex; align-items:center; gap:6px;
           border:3px solid #0B1957; padding:7px 14px;
@@ -601,25 +1472,6 @@ export default function Dashboard() {
           transition:transform 0.08s ease, box-shadow 0.08s ease;
         }
         .home-btn-topbar:hover  { transform:translate(2px,2px); box-shadow:1px 1px 0 #0B1957; }
-        .home-btn-topbar:active { transform:translate(3px,3px); box-shadow:0 0 0 #0B1957; }
-
-        .stat-card {
-          border:4px solid #0B1957; background:#F8F3EA; box-shadow:6px 6px 0 #0B1957;
-          transition:transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .stat-card:hover { transform:translate(-3px,-3px); box-shadow:9px 9px 0 #0B1957; }
-
-        .project-card {
-          border:4px solid #0B1957; background:#F8F3EA; box-shadow:5px 5px 0 #0B1957;
-          transition:transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .project-card:hover { transform:translate(-3px,-3px); box-shadow:8px 8px 0 #9ECCFA, 10px 10px 0 #0B1957; }
-
-        .btn-brutal { transition:transform 0.08s ease, box-shadow 0.08s ease; }
-        .btn-brutal:hover  { transform:translate(2px,2px); }
-        .btn-brutal:active { transform:translate(4px,4px); }
-
-        .status-badge { border:2px solid; padding:3px 10px; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:0.07em; }
 
         .stack-tag {
           border:2px solid #0B1957; background:#D1E8FF; padding:3px 8px;
@@ -637,10 +1489,8 @@ export default function Dashboard() {
           transition:background 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
         }
         .logout-btn:hover  { background:rgba(158,204,250,0.15); transform:translate(1px,1px); box-shadow:2px 2px 0 #9ECCFA; }
-        .logout-btn:active { transform:translate(3px,3px); box-shadow:0 0 0 #9ECCFA; }
 
         .content-fade { animation:fadeIn 0.3s ease both; }
-
         .grid-bg-dark {
           position:absolute; inset:0; pointer-events:none;
           background-image:
@@ -648,44 +1498,36 @@ export default function Dashboard() {
             repeating-linear-gradient(90deg,rgba(158,204,250,0.08) 0,rgba(158,204,250,0.08) 1px,transparent 1px,transparent 40px);
         }
 
-        /* Mobile bottom nav */
         .bottom-nav {
-          position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-          background: #F8F3EA; border-top: 4px solid #0B1957;
-          box-shadow: 0 -4px 0 rgba(11,25,87,0.15);
-          display: flex; align-items: stretch;
-          animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
-          padding-bottom: env(safe-area-inset-bottom, 0px);
+          display:none; position:fixed; bottom:0; left:0; right:0; z-index:50;
+          background:#F8F3EA; border-top:4px solid #0B1957;
+          box-shadow:0 -4px 0 rgba(11,25,87,0.15);
+          align-items:stretch;
+          animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+          padding-bottom:env(safe-area-inset-bottom,0px);
         }
+        @media (max-width:767px) { .bottom-nav { display:flex; } }
+
         .bottom-nav-item {
-          flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-          gap: 3px; padding: 8px 4px; cursor: pointer; position: relative;
-          transition: background 0.1s ease;
-          border-right: 2px solid rgba(11,25,87,0.1);
-          min-height: 58px;
+          flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+          gap:3px; padding:8px 4px; cursor:pointer; position:relative;
+          border:none; background:transparent; border-right:2px solid rgba(11,25,87,0.1);
+          min-height:58px; transition:background 0.1s ease;
         }
-        .bottom-nav-item:last-child { border-right: none; }
-        .bottom-nav-item.active { background: #0B1957; }
-        .bottom-nav-item.active svg { stroke: #9ECCFA; }
-        .bottom-nav-item.active .bnl { color: #9ECCFA; }
-        .bottom-nav-item:not(.active):active { background: #D1E8FF; }
-        .bnl { font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; color: #0B1957; line-height: 1; }
+        .bottom-nav-item:last-child { border-right:none; }
+        .bottom-nav-item.active { background:#0B1957; }
+        .bottom-nav-item.active svg { stroke:#9ECCFA; }
+        .bottom-nav-item.active .bnl { color:#9ECCFA; }
+        .bnl { font-size:8px; font-weight:900; text-transform:uppercase; letter-spacing:0.05em; color:#0B1957; line-height:1; }
         .bn-badge {
-          position: absolute; top: 6px; right: calc(50% - 14px);
-          background: #9ECCFA; color: #0B1957; border: 2px solid #0B1957;
-          font-size: 8px; font-weight: 900; padding: 0 4px; min-width: 14px; text-align: center; line-height: 14px; height: 14px;
-          animation: bounceIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
+          position:absolute; top:6px; right:calc(50% - 14px);
+          background:#9ECCFA; color:#0B1957; border:2px solid #0B1957;
+          font-size:8px; font-weight:900; padding:0 4px; min-width:14px; text-align:center; line-height:14px; height:14px;
         }
 
-        /* msg-grid — on small screens collapse to single col */
-        @media (max-width: 1023px) {
-          .msg-grid { grid-template-columns: 1fr !important; }
-        }
-
-        /* Main content padding-bottom for mobile bottom nav */
-        @media (max-width: 767px) {
-          .main-scroll { padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important; }
-        }
+        .msg-grid { }
+        @media (max-width:1023px) { .msg-grid { grid-template-columns:1fr !important; } }
+        @media (max-width:767px)  { .main-scroll { padding-bottom:calc(70px + env(safe-area-inset-bottom,0px)) !important; } }
       `}</style>
 
       <div className="min-h-screen bg-[#D1E8FF] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
@@ -713,7 +1555,7 @@ export default function Dashboard() {
               <div style={{ fontWeight: 900, fontSize: 18, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
               <div style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", opacity: 0.6, textTransform: "uppercase" }}>Dashboard</div>
             </div>
-            <button style={{ border: "2px solid #9ECCFA", padding: 8, color: "#9ECCFA", background: "transparent", cursor: "pointer", display: "flex", transition: "background 0.1s" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>
+            <button style={{ border: "2px solid #9ECCFA", padding: 8, color: "#9ECCFA", background: "transparent", cursor: "pointer", display: "flex" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>
           </div>
           <nav style={{ flex: 1, paddingTop: 12, paddingBottom: 12, position: "relative", zIndex: 10, overflowY: "auto" }}>
             <NavItems onClose={() => setSidebarOpen(false)} />
@@ -727,7 +1569,7 @@ export default function Dashboard() {
           {/* TOPBAR */}
           <header className="anim-topbar bg-[#F8F3EA] border-b-4 border-[#0B1957] shadow-[0_4px_0_#0B1957] px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between gap-3 flex-shrink-0 sticky top-0 z-20">
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <button className="md:hidden p-2 border-4 border-[#0B1957] shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] btn-brutal" onClick={() => setSidebarOpen(!sidebarOpen)}>
+              <button className="md:hidden p-2 border-4 border-[#0B1957] shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA]" onClick={() => setSidebarOpen(!sidebarOpen)}>
                 <IconMenu />
               </button>
               <div>
@@ -738,9 +1580,7 @@ export default function Dashboard() {
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               {unreadCount > 0 && (
                 <button onClick={() => handleNavClick("messages")}
-                  style={{ display: "flex", alignItems: "center", gap: 5, border: "3px solid #0B1957", background: "#FFE8A0", color: "#0B1957", padding: "6px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0 #0B1957", fontFamily: "inherit", transition: "transform 0.08s ease", animation: "pulse 2s ease infinite" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-1px,-1px)"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; }}>
+                  style={{ display: "flex", alignItems: "center", gap: 5, border: "3px solid #0B1957", background: "#FFE8A0", color: "#0B1957", padding: "6px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0 #0B1957", fontFamily: "inherit", animation: "pulse 2s ease infinite" }}>
                   <IconMail size={12} />
                   <span className="hidden xs:inline">{unreadCount} Baru</span>
                   <span className="xs:hidden">{unreadCount}</span>
@@ -749,21 +1589,11 @@ export default function Dashboard() {
               <button className="home-btn-topbar" onClick={handleHome}>
                 <IconHome size={12} /> <span className="hidden sm:inline">Home</span>
               </button>
-              <div style={{ display: "none" }} className="sm:flex items-center gap-2">
-                <IconClock size={15} />
-                <div>
-                  <p style={{ fontWeight: 900, fontSize: 8, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.2em" }}>Live</p>
-                  <p style={{ fontWeight: 900, fontSize: 15, color: "#0B1957", fontVariantNumeric: "tabular-nums" }}>
-                    {time.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
-                  </p>
-                </div>
-              </div>
-              {/* Clock — show on sm+ using tailwind */}
               <div className="hidden sm:flex items-center gap-2">
                 <IconClock size={15} />
                 <div>
-                  <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">Live</p>
-                  <p className="font-black text-base text-[#0B1957] tabular-nums">
+                  <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest" style={{ margin: 0 }}>Live</p>
+                  <p className="font-black text-base text-[#0B1957] tabular-nums" style={{ margin: 0 }}>
                     {time.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                   </p>
                 </div>
@@ -774,118 +1604,9 @@ export default function Dashboard() {
           {/* PAGE CONTENT */}
           <main className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8 main-scroll">
 
-            {/* OVERVIEW */}
             {activeNav === "overview" && (
-              <div className="content-fade space-y-6 sm:space-y-8">
-                {/* Stats grid - 2x2 on mobile, 4 cols on lg */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-                  {STATS.map((stat, i) => (
-                    <div key={i} className={`stat-card anim-stat-${i} p-4 sm:p-5 lg:p-6`}>
-                      <div className="mb-2 text-[#0B1957]">{stat.icon}</div>
-                      <p className="font-black text-2xl sm:text-3xl lg:text-4xl text-[#0B1957] mb-1">{stat.value}</p>
-                      <p className="font-black text-xs text-[#0B1957] uppercase tracking-widest opacity-70 leading-tight">{stat.label}</p>
-                      <div className="h-1.5 sm:h-2 mt-2 sm:mt-3 border-2 border-[#0B1957]" style={{ background: stat.color }} />
-                    </div>
-                  ))}
-                </div>
-
-                {unreadCount > 0 && (
-                  <div className="anim-content" style={{ border: "4px solid #0B1957", background: "#FFE8A0", boxShadow: "6px 6px 0 #0B1957", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", animation: "bounceIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s both" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ width: 40, height: 40, background: "#0B1957", border: "3px solid #0B1957", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <IconMail size={18} />
-                      </div>
-                      <div>
-                        <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.5, marginBottom: 2 }}>Notifikasi</p>
-                        <p style={{ fontWeight: 900, fontSize: 14, color: "#0B1957" }}>Ada <span style={{ fontSize: 20 }}>{unreadCount}</span> pesan baru belum dibaca</p>
-                      </div>
-                    </div>
-                    <button onClick={() => handleNavClick("messages")}
-                      className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black text-xs uppercase shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2">
-                      Buka <IconArrow />
-                    </button>
-                  </div>
-                )}
-
-                <div className="anim-content">
-                  <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h2 className="font-black text-lg sm:text-xl uppercase text-[#0B1957]">Recent Projects</h2>
-                    <button className="btn-brutal border-4 border-[#0B1957] px-3 sm:px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2" onClick={() => handleNavClick("projects")}>
-                      <span className="hidden sm:inline">All Projects</span><span className="sm:hidden">All</span> <IconArrow />
-                    </button>
-                  </div>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                    {PROJECTS.slice(0, 3).map((p, i) => (
-                      <div key={i} style={{ animation: `slideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${0.1 + i * 0.08}s both` }}>
-                        <ProjectCard project={p} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="anim-content">
-                  <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h2 className="font-black text-lg sm:text-xl uppercase text-[#0B1957]">Tech Stack</h2>
-                    <button className="btn-brutal border-4 border-[#0B1957] px-3 sm:px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2" onClick={() => handleNavClick("stacks")}>
-                      Kelola <IconArrow />
-                    </button>
-                  </div>
-                  <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-4 sm:p-5">
-                    <p className="font-semibold text-xs sm:text-sm text-[#0B1957] opacity-60 mb-3 sm:mb-4">Tambah, edit, dan hapus tech stack yang tampil di portfolio — icon + nama framework/bahasa.</p>
-                    <div className="flex flex-wrap gap-2">
-                      {["React", "Laravel", "TypeScript", "JavaScript"].map((s, i) => <span key={i} className="stack-tag">{s}</span>)}
-                      <button className="border-2 border-dashed border-[#0B1957] px-3 py-1 font-black text-xs uppercase text-[#0B1957] opacity-50 hover:opacity-100 transition-opacity" onClick={() => handleNavClick("stacks")}>+ Kelola</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="anim-content">
-                  <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h2 className="font-black text-lg sm:text-xl uppercase text-[#0B1957]">Homepage</h2>
-                    <button className="btn-brutal border-4 border-[#0B1957] px-3 sm:px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2" onClick={() => handleNavClick("homepage")}>
-                      Kelola <IconArrow />
-                    </button>
-                  </div>
-                  <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-4 sm:p-5">
-                    <p className="font-semibold text-xs sm:text-sm text-[#0B1957] opacity-60 mb-3 sm:mb-4">Kelola konten homepage portfolio — tech stack, hero, projects, dan about section.</p>
-                    <div className="flex flex-wrap gap-2">
-                      {HOMEPAGE_SECTIONS_OVERVIEW.map((s, i) => (
-                        <span key={i} className={`border-2 border-[#0B1957] px-3 py-1 font-black text-xs uppercase ${s.status === "active" ? "bg-[#9ECCFA] text-[#0B1957]" : "bg-[#F8F3EA] text-[#0B1957] opacity-40"}`}>
-                          {s.label}{s.status === "soon" ? " (soon)" : ""}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="anim-content">
-                  <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h2 className="font-black text-lg sm:text-xl uppercase text-[#0B1957]">About Page</h2>
-                    <button className="btn-brutal border-4 border-[#0B1957] px-3 sm:px-4 py-2 font-black text-xs uppercase shadow-[3px_3px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center gap-2" onClick={() => handleNavClick("about")}>
-                      Kelola <IconArrow />
-                    </button>
-                  </div>
-                  <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-4 sm:p-5">
-                    <p className="font-semibold text-xs sm:text-sm text-[#0B1957] opacity-60 mb-3 sm:mb-4">Kelola About page — hero (dual foto), capabilities + icon tech, experience, case studies, availability.</p>
-                    <div className="flex flex-wrap gap-2">
-                      {["Hero / Bio", "Capabilities", "Experience", "Case Studies", "Availability"].map((s, i) => (
-                        <span key={i} className="border-2 border-[#0B1957] px-3 py-1 font-black text-xs uppercase bg-[#9ECCFA] text-[#0B1957]">{s}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="anim-content bg-[#0B1957] border-4 border-[#0B1957] shadow-[8px_8px_0_#9ECCFA] p-5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2"><IconBriefcase size={14} /><p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest">Status</p></div>
-                    <p className="font-black text-xl sm:text-2xl text-[#F8F3EA] uppercase">Open to Work</p>
-                    <p className="font-semibold text-xs sm:text-sm text-[#D1E8FF] mt-1">Available for freelance & full-time roles</p>
-                  </div>
-                  <div className="p-3 sm:p-4 text-center" style={{ border: "3px solid #9ECCFA" }}>
-                    <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest mb-1">Stack</p>
-                    <p className="font-black text-sm text-[#F8F3EA]">React + Laravel</p>
-                  </div>
-                </div>
+              <div className="content-fade">
+                <OverviewSection unreadCount={unreadCount} onNavClick={handleNavClick} />
               </div>
             )}
 
@@ -924,33 +1645,27 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <button onClick={handleHome} className="btn-brutal flex-1 border-4 border-[#0B1957] py-3 sm:py-4 font-black text-xs sm:text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] flex items-center justify-center gap-2 sm:gap-3">
+                  <button onClick={handleHome} className="flex-1 border-4 border-[#0B1957] py-3 sm:py-4 font-black text-xs sm:text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] flex items-center justify-center gap-2 sm:gap-3">
                     <IconHome size={15} /> Homepage
                   </button>
-                  <button onClick={handleLogout} className="btn-brutal flex-1 border-4 border-[#0B1957] py-3 sm:py-4 font-black text-xs sm:text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] flex items-center justify-center gap-2 sm:gap-3">
+                  <button onClick={handleLogout} className="flex-1 border-4 border-[#0B1957] py-3 sm:py-4 font-black text-xs sm:text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] flex items-center justify-center gap-2 sm:gap-3">
                     <IconLogOut size={15} /> Logout
                   </button>
                 </div>
               </div>
             )}
-
           </main>
         </div>
       </div>
 
       {/* MOBILE BOTTOM NAV */}
       {navReady && (
-        <nav className="bottom-nav md:hidden">
+        <nav className="bottom-nav">
           {BOTTOM_NAV.map(item => (
-            <button
-              key={item.key}
-              className={`bottom-nav-item ${activeNav === item.key ? "active" : ""}`}
-              onClick={() => handleNavClick(item.key)}>
+            <button key={item.key} className={`bottom-nav-item ${activeNav === item.key ? "active" : ""}`} onClick={() => handleNavClick(item.key)}>
               {item.icon}
               <span className="bnl">{item.label}</span>
-              {item.key === "messages" && unreadCount > 0 && (
-                <span className="bn-badge">{unreadCount}</span>
-              )}
+              {item.key === "messages" && unreadCount > 0 && <span className="bn-badge">{unreadCount}</span>}
             </button>
           ))}
         </nav>
@@ -959,17 +1674,23 @@ export default function Dashboard() {
   );
 }
 
-// ── ProjectCard ───────────────────────────────────────────────────────────────
-function ProjectCard({ project }: { project: Project }) {
+// ── ProjectCard ────────────────────────────────────────────────────────────────
+function ProjectCard({ project }: { project: ProjectItem }) {
   return (
-    <div className="project-card p-4 sm:p-5">
+    <div className="project-card p-4 sm:p-5" style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "5px 5px 0 #0B1957", transition: "transform 0.15s ease, box-shadow 0.15s ease" }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-3px,-3px)"; (e.currentTarget as HTMLElement).style.boxShadow = "8px 8px 0 #9ECCFA, 10px 10px 0 #0B1957"; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "5px 5px 0 #0B1957"; }}>
       <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
         <h3 className="font-black uppercase text-xs sm:text-sm text-[#0B1957] leading-tight">{project.title}</h3>
-        <span className={`status-badge flex-shrink-0 text-xs ${STATUS_STYLE[project.status] ?? ""}`}>{project.status}</span>
+        <span className={`status-badge flex-shrink-0 text-xs border-2 px-2 py-0.5 font-black uppercase ${STATUS_STYLE[project.status] ?? "bg-[#F8F3EA] border-[#0B1957] text-[#0B1957]"}`}>{project.status}</span>
       </div>
       <p className="font-semibold text-xs text-[#0B1957] mb-3 sm:mb-4 leading-relaxed opacity-70">{project.desc}</p>
       <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3">
-        {project.stacks.map((s, i) => <span key={i} className="stack-tag">{s}</span>)}
+        {(project.stacks ?? []).map((s, i) => (
+          <span key={i} className="stack-tag" style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+            {s.icon && <DbIcon src={s.icon} size={12} />}{s.label}
+          </span>
+        ))}
       </div>
       <div className="flex items-center justify-between border-t-2 border-[#0B1957] pt-2 sm:pt-3 mt-2 sm:mt-3">
         <span className="font-black text-xs text-[#0B1957] uppercase opacity-50">{project.date}</span>
