@@ -881,7 +881,7 @@ export default function About() {
         <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA] reveal">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => router.visit("/")}>Naoo.Id</div>
+              <div className="font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => router.visit("/")}>Naoo.id</div>
               <p className="font-bold uppercase text-xs text-[#0B1957] opacity-50 tracking-widest">© {new Date().getFullYear()} Zaki Yusron Hasyimmi</p>
             </div>
           </div>

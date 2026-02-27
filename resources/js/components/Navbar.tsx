@@ -15,6 +15,7 @@ export default function Navbar() {
   const currentUrl = typeof window !== "undefined" ? window.location.pathname : "";
   const isHome = currentUrl === "/" || currentUrl === "";
   const isContactPage = currentUrl === "/contact";
+  const isAboutPage = currentUrl === "/about";
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
@@ -39,6 +40,12 @@ export default function Navbar() {
       return;
     }
 
+    // "About" selalu ke halaman /about
+    if (href === "about") {
+      router.visit("/about");
+      return;
+    }
+
     // "Home" selalu ke /
     if (href === "hero") {
       if (isHome) {
@@ -49,7 +56,7 @@ export default function Navbar() {
       return;
     }
 
-    // About
+    // Fallback
     if (isHome) {
       scrollToSection(href);
     } else {
@@ -103,6 +110,7 @@ export default function Navbar() {
   const getActiveLink = (href: string) => {
     if (href === "projects") return currentUrl.startsWith("/projects");
     if (href === "contact")  return isContactPage;
+    if (href === "about")    return isAboutPage;
     if (isHome) return activeSection === href;
     return false;
   };
@@ -152,7 +160,7 @@ export default function Navbar() {
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
           <div className="logo-hover font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => router.visit("/")}>
-            Y
+            Zyrsnh
           </div>
 
           <div className="hidden md:flex gap-8 font-semibold text-[#0B1957]">

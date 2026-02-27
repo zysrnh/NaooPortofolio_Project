@@ -94,7 +94,6 @@ interface Project { id:number; slug:string; title:string; desc:string; images:st
 interface TechStackItem { id:number; name:string; icon:string; category:string; }
 interface HeroProfile { name:string; title:string; bio:string; photo:string|null; }
 
-// ── NEW: Contact type ──────────────────────────────────────────────────────────
 type ContactPlatform = "whatsapp"|"email"|"github"|"linkedin"|"twitter"|"instagram"|"telegram"|"custom";
 interface ContactItem {
   id: number;
@@ -119,54 +118,21 @@ const STATUS_DOT:Record<string,string> = {"Hosted":"#22c55e","In Progress":"#F59
 function PlatformIcon({ platform }: { platform: ContactPlatform }) {
   switch (platform) {
     case "whatsapp":
-      return (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
-      );
+      return <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>;
     case "email":
-      return (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-        </svg>
-      );
+      return <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>;
     case "github":
-      return (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="#9ECCFA">
-          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-        </svg>
-      );
+      return <svg width="22" height="22" viewBox="0 0 24 24" fill="#9ECCFA"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>;
     case "linkedin":
-      return (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-        </svg>
-      );
+      return <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>;
     case "twitter":
-      return (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.638L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-        </svg>
-      );
+      return <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.638L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>;
     case "instagram":
-      return (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-        </svg>
-      );
+      return <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>;
     case "telegram":
-      return (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-        </svg>
-      );
+      return <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>;
     default:
-      return (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-          <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
-          <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
-        </svg>
-      );
+      return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>;
   }
 }
 
@@ -306,6 +272,256 @@ function SkeletonCard() {
   );
 }
 
+// ── LoadingScreen ──────────────────────────────────────────────────────────────
+function LoadingScreen({ progress }: { progress: number }) {
+  const [glitchActive, setGlitchActive] = useState(false);
+  const [scanLine, setScanLine] = useState(0);
+  const [dots, setDots] = useState("");
+
+  // Glitch effect at certain progress points
+  useEffect(() => {
+    if (progress === 30 || progress === 60 || progress === 90) {
+      setGlitchActive(true);
+      setTimeout(() => setGlitchActive(false), 300);
+    }
+  }, [Math.floor(progress / 30)]);
+
+  // Animated dots
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots(d => d.length >= 3 ? "" : d + ".");
+    }, 400);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Scan line animation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setScanLine(p => (p + 2) % 100);
+    }, 16);
+    return () => clearInterval(interval);
+  }, []);
+
+  const phase =
+    progress < 25 ? { label: "LOADING ASSETS", code: "01" } :
+    progress < 50 ? { label: "BUILDING UI", code: "02" } :
+    progress < 75 ? { label: "COMPILING STYLES", code: "03" } :
+    progress < 95 ? { label: "ALMOST READY", code: "04" } :
+                   { label: "LAUNCHING", code: "05" };
+
+  const blocks = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+
+  return (
+    <div className="min-h-screen bg-[#0B1957] flex items-center justify-center px-6 overflow-hidden relative">
+      {/* Background grid */}
+      <div className="absolute inset-0 opacity-[0.04]" style={{
+        backgroundImage: "repeating-linear-gradient(0deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 48px),repeating-linear-gradient(90deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 48px)"
+      }}/>
+
+      {/* Scan line effect */}
+      <div className="absolute inset-x-0 pointer-events-none" style={{
+        top: `${scanLine}%`, height: "2px",
+        background: "linear-gradient(90deg, transparent, rgba(158,204,250,0.15), transparent)",
+        transition: "top 0.016s linear"
+      }}/>
+
+      {/* Floating corner decorations */}
+      <div className="absolute top-6 left-6 w-12 h-12 border-t-4 border-l-4 border-[#9ECCFA] opacity-40"/>
+      <div className="absolute top-6 right-6 w-12 h-12 border-t-4 border-r-4 border-[#9ECCFA] opacity-40"/>
+      <div className="absolute bottom-6 left-6 w-12 h-12 border-b-4 border-l-4 border-[#9ECCFA] opacity-40"/>
+      <div className="absolute bottom-6 right-6 w-12 h-12 border-b-4 border-r-4 border-[#9ECCFA] opacity-40"/>
+
+      {/* Phase code — top left */}
+      <div className="absolute top-8 left-8 hidden sm:flex items-center gap-2">
+        <div className="w-2 h-2 bg-[#9ECCFA] animate-pulse"/>
+        <span className="font-black text-[10px] uppercase tracking-[0.4em] text-[#9ECCFA] opacity-50">SYS/{phase.code}</span>
+      </div>
+
+      {/* Version — top right */}
+      <div className="absolute top-8 right-8 hidden sm:block">
+        <span className="font-black text-[10px] uppercase tracking-[0.3em] text-[#9ECCFA] opacity-30">v2.0.0</span>
+      </div>
+
+      {/* Main content */}
+      <div className="w-full max-w-lg relative z-10">
+
+        {/* Logo / Title */}
+        <div className="mb-10">
+          <div className="flex items-end gap-4 mb-1">
+            <h1
+              className="text-6xl sm:text-7xl font-black uppercase text-[#F8F3EA] leading-none select-none"
+              style={{
+                textShadow: glitchActive
+                  ? "3px 0 #9ECCFA, -3px 0 #F59E0B"
+                  : "4px 4px 0 rgba(158,204,250,0.3)",
+                transition: "text-shadow 0.05s ease",
+                letterSpacing: "-0.02em"
+              }}
+            >
+              Naoo
+            </h1>
+            <span className="text-3xl sm:text-4xl font-black text-[#9ECCFA] mb-1 leading-none">.id</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="h-[3px] w-8 bg-[#9ECCFA]"/>
+            <p className="font-black uppercase text-[10px] tracking-[0.4em] text-[#9ECCFA] opacity-60">Portfolio System</p>
+          </div>
+        </div>
+
+        {/* Block progress bar */}
+        <div className="mb-4">
+          <div className="flex gap-1">
+            {blocks.map(i => {
+              const filled = progress >= (i + 1) * 5;
+              const active = !filled && progress >= i * 5;
+              return (
+                <div
+                  key={i}
+                  className="flex-1 h-7 border-2 border-[#9ECCFA] relative overflow-hidden"
+                  style={{ borderColor: filled ? "#9ECCFA" : "rgba(158,204,250,0.2)" }}
+                >
+                  {filled && (
+                    <div className="absolute inset-0 bg-[#9ECCFA]"/>
+                  )}
+                  {active && (
+                    <div
+                      className="absolute inset-0 bg-[#9ECCFA]"
+                      style={{
+                        animation: "blockPulse 0.6s ease infinite",
+                        opacity: 0.6
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Progress info row */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <span
+              className="font-black text-4xl tabular-nums leading-none"
+              style={{
+                color: "#9ECCFA",
+                textShadow: glitchActive ? "2px 0 #F59E0B" : "none",
+                transition: "text-shadow 0.05s ease"
+              }}
+            >
+              {String(progress).padStart(3, "0")}
+            </span>
+            <span className="font-black text-xl text-[#9ECCFA] opacity-50">%</span>
+          </div>
+          <div className="text-right">
+            <p className="font-black uppercase text-xs tracking-widest text-[#9ECCFA]">{phase.label}{dots}</p>
+            <p className="font-bold text-[10px] text-[#D1E8FF] opacity-30 uppercase tracking-wider mt-0.5">Please wait</p>
+          </div>
+        </div>
+
+        {/* Terminal-style log lines */}
+        <div className="border-2 border-[#9ECCFA] border-opacity-20 bg-black bg-opacity-30 px-4 py-3 font-mono">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 rounded-full bg-red-400 opacity-70"/>
+            <div className="w-2 h-2 rounded-full bg-yellow-400 opacity-70"/>
+            <div className="w-2 h-2 rounded-full bg-green-400 opacity-70"/>
+            <span className="text-[10px] text-[#9ECCFA] opacity-30 ml-2 uppercase tracking-widest">terminal</span>
+          </div>
+          <div className="space-y-1">
+            {[
+              { threshold: 0,  text: "→ Initializing portfolio engine...", done: progress > 10 },
+              { threshold: 20, text: "→ Fetching project data...",          done: progress > 35 },
+              { threshold: 40, text: "→ Compiling components...",           done: progress > 60 },
+              { threshold: 65, text: "→ Applying styles...",                done: progress > 80 },
+              { threshold: 85, text: "→ Ready to launch!",                  done: progress >= 100 },
+            ].map((line, i) => (
+              progress >= line.threshold && (
+                <p key={i} className="text-[11px] font-bold" style={{
+                  color: line.done ? "#9ECCFA" : "#D1E8FF",
+                  opacity: line.done ? 1 : 0.5
+                }}>
+                  {line.text}
+                  {!line.done && progress >= line.threshold && <span className="animate-pulse"> _</span>}
+                </p>
+              )
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom hint */}
+        <p className="text-center font-bold text-[10px] uppercase tracking-[0.3em] text-[#9ECCFA] opacity-20 mt-6">
+          Best viewed on desktop
+        </p>
+      </div>
+
+      <style>{`
+        @keyframes blockPulse { 0%,100%{opacity:0.3} 50%{opacity:0.8} }
+        @keyframes shimmer{from{transform:translateX(-200%)}to{transform:translateX(200%)}}
+      `}</style>
+    </div>
+  );
+}
+
+// ── MobileBanner ───────────────────────────────────────────────────────────────
+function MobileBanner() {
+  const [dismissed, setDismissed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  if (!isMobile || dismissed) return null;
+
+  return (
+    <div
+      style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 9999,
+        background: "#0B1957",
+        borderBottom: "4px solid #9ECCFA",
+        boxShadow: "0 4px 0 #9ECCFA",
+        animation: "slideDownBanner 0.4s cubic-bezier(0.16,1,0.3,1) both"
+      }}
+    >
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+        {/* Icon */}
+        <div className="flex-shrink-0 w-8 h-8 border-2 border-[#9ECCFA] flex items-center justify-center bg-[#9ECCFA] bg-opacity-10">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+          </svg>
+        </div>
+
+        {/* Text */}
+        <div className="flex-1 min-w-0">
+          <p className="font-black uppercase text-[10px] tracking-[0.25em] text-[#9ECCFA] leading-tight">
+            Gunakan Desktop
+          </p>
+          <p className="font-semibold text-[11px] text-[#D1E8FF] opacity-70 leading-tight truncate">
+            Untuk pengalaman terbaik, buka di desktop atau laptop
+          </p>
+        </div>
+
+        {/* Dismiss */}
+        <button
+          onClick={() => setDismissed(true)}
+          className="flex-shrink-0 w-7 h-7 border-2 border-[#9ECCFA] border-opacity-40 flex items-center justify-center text-[#9ECCFA] hover:bg-[#9ECCFA] hover:bg-opacity-20 transition-colors"
+          aria-label="Tutup"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <style>{`@keyframes slideDownBanner{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:translateY(0)}}`}</style>
+    </div>
+  );
+}
+
 // ── Main Home ──────────────────────────────────────────────────────────────────
 export default function Home() {
   const hasLoaded=typeof window!=="undefined"&&sessionStorage.getItem("hasLoaded")==="true";
@@ -324,7 +540,6 @@ export default function Home() {
   const [hero,setHero]=useState<HeroProfile>(DEFAULT_HERO);
   const [heroLoading,setHeroLoading]=useState(true);
 
-  // ── NEW: Dynamic contacts ──────────────────────────────────────────────────
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [contactsLoading, setContactsLoading] = useState(true);
 
@@ -340,7 +555,6 @@ export default function Home() {
       .catch(()=>{}).finally(()=>setProjectsLoading(false));
   },[]);
 
-  // ── NEW: Fetch contacts from API ───────────────────────────────────────────
   useEffect(()=>{
     fetch("/api/contact/visible").then(r=>r.json())
       .then(d=>setContacts(Array.isArray(d)?d:[]))
@@ -381,24 +595,7 @@ export default function Home() {
   const goToSlide=(idx:number)=>{if(autoplayRef.current)clearInterval(autoplayRef.current);setCurrentSlide(idx);};
   const heroPhoto=hero.photo||DEFAULT_HERO.photo;
 
-  if(loading) return (
-    <div className="min-h-screen bg-[#0B1957] flex flex-col items-center justify-center px-6">
-      <div className="w-full max-w-md">
-        <div className="mb-8"><p className="text-[#9ECCFA] font-bold uppercase text-sm tracking-[0.3em] mb-2">Initializing</p><h1 className="text-4xl font-black uppercase text-[#F8F3EA]">Naoo.id</h1></div>
-        <div className="border-4 border-[#9ECCFA] shadow-[6px_6px_0_#9ECCFA] p-1 mb-4 bg-[#0B1957]">
-          <div className="h-8 bg-[#9ECCFA] relative overflow-hidden" style={{width:`${progress}%`,transition:"width 0.016s linear"}}>
-            <div className="absolute inset-0 opacity-40" style={{background:"repeating-linear-gradient(90deg,transparent,transparent 8px,#D1E8FF 8px,#D1E8FF 16px)",animation:"shimmer 0.4s linear infinite"}}/>
-          </div>
-        </div>
-        <div className="flex justify-between items-center mb-6">
-          <p className="text-[#D1E8FF] font-black text-2xl tabular-nums">{progress}%</p>
-          <p className="text-[#9ECCFA] font-bold uppercase text-xs tracking-widest">{progress<30?"Loading assets...":progress<60?"Building UI...":progress<90?"Almost there...":"Ready!"}</p>
-        </div>
-        <div className="flex gap-2">{[0,1,2,3,4].map(i=><div key={i} className="h-2 flex-1 border-2 border-[#9ECCFA]" style={{backgroundColor:progress>=(i+1)*20?"#9ECCFA":"transparent",transition:"background-color 0.15s ease"}}/>)}</div>
-      </div>
-      <style>{`@keyframes shimmer{from{transform:translateX(-200%)}to{transform:translateX(200%)}}`}</style>
-    </div>
-  );
+  if(loading) return <LoadingScreen progress={progress} />;
 
   return (
     <>
@@ -447,6 +644,9 @@ export default function Home() {
         .contact-skeleton{background:linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite;border:4px solid #0B1957;}
       `}</style>
 
+      {/* Mobile banner */}
+      <MobileBanner />
+
       <div className="min-h-screen relative" style={{opacity:visible?1:0,transition:"opacity 0.3s ease"}}>
         <FloatingBlocks/>
         <div className="anim-navbar"><Navbar/></div>
@@ -482,11 +682,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── CONTACT — Dynamic dari API ────────────────────────────────────── */}
+        {/* CONTACT */}
         <section id="contact" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left" data-delay="0">
           <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Contact</h2>
 
-          {/* Loading skeleton */}
           {contactsLoading && (
             <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] flex flex-col md:flex-row overflow-hidden">
               {[0,1,2].map(i => (
@@ -502,7 +701,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Empty state */}
           {!contactsLoading && contacts.length === 0 && (
             <div className="border-4 border-[#0B1957] bg-[#F8F3EA] shadow-[6px_6px_0_#0B1957] p-12 text-center">
               <p className="font-black uppercase text-lg text-[#0B1957] mb-1">Belum Ada Kontak</p>
@@ -510,13 +708,10 @@ export default function Home() {
             </div>
           )}
 
-          {/* Dynamic contact cards */}
           {!contactsLoading && contacts.length > 0 && (
             <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] flex flex-col md:flex-row overflow-hidden">
               {contacts.map((c, i) => {
-                // Tentukan apakah link buka tab baru atau tidak
                 const isExternal = c.platform !== "email";
-                // Teks CTA berdasarkan platform
                 const ctaText =
                   c.platform === "whatsapp" ? "Klik untuk chat →" :
                   c.platform === "email"    ? "Klik untuk email →" :
@@ -683,7 +878,6 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              {/* Footer social icons — dynamic dari contacts */}
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Connect</p>
                 <div className="flex gap-3 flex-wrap">

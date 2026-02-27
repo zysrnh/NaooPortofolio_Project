@@ -46,7 +46,7 @@ function PlatformIcon({ platform, size = 20 }: { platform: ContactPlatform; size
   }
 }
 
-// ── FloatingBlocks (sama dengan Home) ─────────────────────────────────────────
+// ── FloatingBlocks ─────────────────────────────────────────────────────────────
 const BLOCK_CONFIGS = [
   { top:"6%",  left:"2%",   size:56, color:"#9ECCFA", type:"filled",  animDelay:"0s"   },
   { top:"50%", left:"1.5%", size:18, color:"#0B1957", type:"outline", animDelay:"1.2s" },
@@ -92,13 +92,11 @@ export default function Contact() {
   const successRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Fetch social contacts
     fetch("/api/contact/visible")
       .then(r => r.json())
       .then(d => setContacts(Array.isArray(d) ? d : []))
       .catch(() => {});
 
-    // Page entrance animation
     setTimeout(() => setVisible(true), 50);
   }, []);
 
@@ -136,10 +134,8 @@ export default function Contact() {
       if (res.ok && data.success) {
         setStatus("success");
         setForm({ name: "", email: "", subject: "", message: "" });
-        // Scroll to success message
         setTimeout(() => successRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
       } else {
-        // Handle validation errors from Laravel
         if (data.errors) {
           const mapped: Partial<FormState> = {};
           Object.keys(data.errors).forEach(k => {
@@ -166,10 +162,10 @@ export default function Contact() {
         @keyframes slideUp    { from{opacity:0;transform:translateY(32px)}  to{opacity:1;transform:translateY(0)} }
         @keyframes slideLeft  { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
         @keyframes slideRight { from{opacity:0;transform:translateX(40px)}  to{opacity:1;transform:translateX(0)} }
-        @keyframes shimmer    { from{background-position:-200% 0} to{background-position:200% 0} }
         @keyframes scaleIn    { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
         @keyframes checkBounce{ 0%{transform:scale(0) rotate(-15deg)} 60%{transform:scale(1.2) rotate(5deg)} 100%{transform:scale(1) rotate(0deg)} }
         @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        @keyframes spin       { to{transform:rotate(360deg)} }
 
         body { background-color: #D1E8FF; }
 
@@ -258,12 +254,9 @@ export default function Contact() {
         <FloatingBlocks />
         <div className="anim-navbar"><Navbar /></div>
 
-        {/* ── HERO HEADER ─────────────────────────────────────────────────── */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-8 sm:pb-12 anim-hero">
           <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] px-8 sm:px-12 py-10 sm:py-14 relative overflow-hidden">
-            {/* Grid bg */}
             <div className="absolute inset-0 opacity-10" style={{backgroundImage:"repeating-linear-gradient(0deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px)"}}/>
-            {/* Decorative corner */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#9ECCFA] opacity-10" style={{clipPath:"polygon(100% 0,0 0,100% 100%)"}}/>
 
             <div className="relative z-10 max-w-2xl">
@@ -277,19 +270,19 @@ export default function Contact() {
               </p>
             </div>
 
-            {/* Big decorative quote */}
-            <div className="absolute bottom-4 right-8 text-[120px] sm:text-[200px] font-black text-[#9ECCFA] opacity-5 leading-none select-none pointer-events-none">✉</div>
+            <div className="absolute bottom-4 right-8 opacity-5 leading-none select-none pointer-events-none">
+              <svg width="160" height="160" viewBox="0 0 24 24" fill="#9ECCFA">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </div>
           </div>
         </section>
 
-        {/* ── MAIN CONTENT ─────────────────────────────────────────────────── */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-24">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-            {/* ── FORM ─────────────────────────────────────────────────────── */}
             <div className="lg:col-span-3 anim-form" ref={formRef}>
 
-              {/* Success state */}
               {status === "success" && (
                 <div ref={successRef} className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden" style={{animation:"scaleIn 0.5s cubic-bezier(0.16,1,0.3,1) both"}}>
                   <div className="bg-[#0B1957] border-b-4 border-[#0B1957] px-8 py-6">
@@ -308,7 +301,7 @@ export default function Contact() {
                       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
                     </div>
                     <div>
-                      <p className="font-black text-2xl uppercase text-[#0B1957] mb-3">Yeay, Pesanmu Terkirim! 🎉</p>
+                      <p className="font-black text-2xl uppercase text-[#0B1957] mb-3">Yeay, Pesanmu Terkirim!</p>
                       <p className="font-semibold text-[#0B1957] opacity-60 leading-relaxed max-w-md">
                         Terima kasih sudah menghubungi saya. Saya akan membalas pesanmu sesegera mungkin, biasanya dalam 24 jam.
                       </p>
@@ -323,10 +316,8 @@ export default function Contact() {
                 </div>
               )}
 
-              {/* Form */}
               {status !== "success" && (
                 <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-                  {/* Form header */}
                   <div className="bg-[#0B1957] border-b-4 border-[#0B1957] px-8 py-5 flex items-center gap-3">
                     <div className="w-8 h-8 bg-[#9ECCFA] border-2 border-[#9ECCFA] flex items-center justify-center flex-shrink-0">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
@@ -337,7 +328,6 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  {/* Error global */}
                   {status === "error" && (
                     <div className="mx-8 mt-6 border-4 border-red-500 bg-red-50 px-5 py-4 flex items-center gap-3">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
@@ -346,7 +336,6 @@ export default function Contact() {
                   )}
 
                   <div className="px-8 py-8 flex flex-col gap-6">
-                    {/* Name + Email */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div style={{animation:"slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.25s both"}}>
                         <label className="block font-black text-xs uppercase tracking-[0.12em] text-[#0B1957] mb-2">
@@ -362,7 +351,8 @@ export default function Contact() {
                         />
                         {errors.name && (
                           <p className="mt-1.5 text-xs font-bold text-red-500 flex items-center gap-1">
-                            <span>⚠</span> {errors.name}
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            {errors.name}
                           </p>
                         )}
                       </div>
@@ -380,13 +370,13 @@ export default function Contact() {
                         />
                         {errors.email && (
                           <p className="mt-1.5 text-xs font-bold text-red-500 flex items-center gap-1">
-                            <span>⚠</span> {errors.email}
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            {errors.email}
                           </p>
                         )}
                       </div>
                     </div>
 
-                    {/* Subject */}
                     <div style={{animation:"slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.35s both"}}>
                       <label className="block font-black text-xs uppercase tracking-[0.12em] text-[#0B1957] mb-2">
                         Subjek <span className="text-[#0B1957] opacity-40 font-semibold normal-case">(opsional)</span>
@@ -401,7 +391,6 @@ export default function Contact() {
                       />
                     </div>
 
-                    {/* Message */}
                     <div style={{animation:"slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.4s both"}}>
                       <div className="flex items-center justify-between mb-2">
                         <label className="block font-black text-xs uppercase tracking-[0.12em] text-[#0B1957]">
@@ -420,12 +409,12 @@ export default function Contact() {
                       />
                       {errors.message && (
                         <p className="mt-1.5 text-xs font-bold text-red-500 flex items-center gap-1">
-                          <span>⚠</span> {errors.message}
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                          {errors.message}
                         </p>
                       )}
                     </div>
 
-                    {/* Submit */}
                     <div style={{animation:"slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.45s both"}}>
                       <button
                         onClick={handleSubmit}
@@ -449,7 +438,6 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  {/* Footer note */}
                   <div className="border-t-4 border-[#0B1957] bg-[#0B1957] px-8 py-4 flex items-center gap-3">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0}}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
                     <p className="text-[10px] font-bold uppercase tracking-widest text-[#D1E8FF] opacity-60">
@@ -460,10 +448,8 @@ export default function Contact() {
               )}
             </div>
 
-            {/* ── SIDEBAR ──────────────────────────────────────────────────── */}
             <div className="lg:col-span-2 flex flex-col gap-5 anim-sidebar">
 
-              {/* Response time card */}
               <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[8px_8px_0_#9ECCFA] px-7 py-6 relative overflow-hidden" style={{animation:"slideRight 0.5s cubic-bezier(0.16,1,0.3,1) 0.35s both"}}>
                 <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{background:"#9ECCFA",clipPath:"polygon(100% 0,0 0,100% 100%)"}}/>
                 <p className="font-black uppercase text-[10px] text-[#9ECCFA] tracking-[0.25em] mb-3">Response Time</p>
@@ -478,12 +464,10 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Contact links */}
               <div style={{animation:"slideRight 0.5s cubic-bezier(0.16,1,0.3,1) 0.45s both"}}>
                 <p className="font-black uppercase text-xs text-[#0B1957] tracking-[0.2em] mb-3 opacity-50">Atau hubungi via</p>
                 <div className="flex flex-col gap-3">
                   {contacts.length === 0 ? (
-                    // Skeleton
                     [0,1,2].map(i => (
                       <div key={i} className="border-4 border-[#0B1957] bg-[#F8F3EA]" style={{height:80,animation:`pulse 1.5s ease ${i*0.1}s infinite`}}/>
                     ))
@@ -492,8 +476,10 @@ export default function Contact() {
                       <a
                         key={c.id}
                         href={c.url}
-                        target={c.platform !== "email" ? "_blank" : undefined}
-                        rel={c.platform !== "email" ? "noopener noreferrer" : undefined}
+                        {...(c.platform !== "email" && {
+                          target: "_blank",
+                          rel: "noopener noreferrer"
+                        })}
                         className="contact-link"
                         style={{animationDelay:`${0.5 + i * 0.07}s`}}
                       >
@@ -518,19 +504,30 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* FAQ / Note card */}
               <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] overflow-hidden" style={{animation:"slideRight 0.5s cubic-bezier(0.16,1,0.3,1) 0.55s both"}}>
                 <div className="bg-[#9ECCFA] border-b-4 border-[#0B1957] px-6 py-4">
-                  <p className="font-black uppercase text-xs text-[#0B1957] tracking-[0.15em]">💡 Tips</p>
+                  <p className="font-black uppercase text-xs text-[#0B1957] tracking-[0.15em]">Tips Menghubungi</p>
                 </div>
                 <div className="px-6 py-5 flex flex-col gap-4">
                   {[
-                    { icon: "🎯", title: "Project Baru", desc: "Sebutkan scope, timeline, dan budget estimasi kamu." },
-                    { icon: "💼", title: "Kolaborasi",   desc: "Ceritakan skill kamu dan bagaimana kita bisa bekerja sama." },
-                    { icon: "❓", title: "Pertanyaan",   desc: "Langsung tulis pertanyaanmu, saya senang membantu!" },
+                    {
+                      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>,
+                      title: "Project Baru",
+                      desc: "Sebutkan scope, timeline, dan budget estimasi kamu."
+                    },
+                    {
+                      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>,
+                      title: "Kolaborasi",
+                      desc: "Ceritakan skill kamu dan bagaimana kita bisa bekerja sama."
+                    },
+                    {
+                      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+                      title: "Pertanyaan",
+                      desc: "Langsung tulis pertanyaanmu, saya senang membantu!"
+                    },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <span className="text-base flex-shrink-0 mt-0.5">{item.icon}</span>
+                      <span className="flex-shrink-0 mt-0.5">{item.icon}</span>
                       <div>
                         <p className="font-black text-xs uppercase text-[#0B1957] mb-0.5 tracking-wide">{item.title}</p>
                         <p className="font-semibold text-xs text-[#0B1957] opacity-55 leading-relaxed">{item.desc}</p>
@@ -543,7 +540,6 @@ export default function Contact() {
           </div>
         </section>
 
-        {/* ── FOOTER ───────────────────────────────────────────────────────── */}
         <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -552,8 +548,6 @@ export default function Contact() {
             </div>
           </div>
         </footer>
-
-        <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       </div>
     </>
   );

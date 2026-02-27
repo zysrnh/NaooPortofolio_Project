@@ -153,7 +153,7 @@ export default function Login() {
         {/* LOGO */}
         <div className="anim-logo mb-8 z-10">
           <div className="border-4 border-[#0B1957] bg-[#0B1957] px-6 py-3 shadow-[6px_6px_0_#9ECCFA]">
-            <span className="font-black text-2xl text-[#9ECCFA] uppercase tracking-widest">Yusron.dev</span>
+            <span className="font-black text-2xl text-[#9ECCFA] uppercase tracking-widest">Naoo.id</span>
           </div>
         </div>
 

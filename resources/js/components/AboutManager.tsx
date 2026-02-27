@@ -110,6 +110,10 @@ const GLOBAL_CSS = `
     border-radius: 50%;
     animation: am-spin 0.6s linear infinite;
   }
+
+  /* Hide scrollbar for tab bar */
+  .am-tabbar::-webkit-scrollbar { display: none; }
+  .am-tabbar { -ms-overflow-style: none; scrollbar-width: none; }
 `;
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
@@ -298,7 +302,6 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
       <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",
         letterSpacing:"0.1em",color:"#0B1957",marginBottom:8}}>{label}</label>
       <div style={{display:"flex",alignItems:"flex-start",gap:14}}>
-        {/* Photo preview */}
         <div style={{width:90,height:112,border:"4px solid #0B1957",boxShadow:"4px 4px 0 #0B1957",
           overflow:"hidden",flexShrink:0,background:"#D1E8FF",position:"relative",cursor:"pointer",
           transition:"transform 0.15s ease,box-shadow 0.15s ease"}}
@@ -324,7 +327,6 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
                 </span>
               </div>
           }
-          {/* Hover overlay */}
           <div style={{position:"absolute",inset:0,background:"rgba(11,25,87,0)",transition:"background 0.15s ease",
             display:"flex",alignItems:"center",justifyContent:"center"}}
             onMouseOver={e=>{e.currentTarget.style.background="rgba(11,25,87,0.25)";}}
@@ -453,15 +455,15 @@ function CapabilitiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         {infoCards.map((card,i)=>(
           <div key={i} className="am-list-item-enter"
             style={{display:"flex",alignItems:"center",gap:8,marginBottom:8,
-              animationDelay:`${i*50}ms`}}>
+              animationDelay:`${i*50}ms`,flexWrap:"wrap"}}>
             <input value={card.label} onChange={e=>updateCard(i,"label",e.target.value)}
               placeholder="Label" className="am-input"
-              style={{flex:"0 0 140px",border:"2px solid #0B1957",padding:"7px 10px",
+              style={{flex:"0 0 120px",minWidth:80,border:"2px solid #0B1957",padding:"7px 10px",
                 fontWeight:800,fontSize:12,background:"#F8F3EA",color:"#0B1957",
                 fontFamily:"inherit",textTransform:"uppercase"}} />
             <input value={card.value} onChange={e=>updateCard(i,"value",e.target.value)}
               placeholder="Value" className="am-input"
-              style={{flex:1,border:"2px solid #0B1957",padding:"7px 10px",
+              style={{flex:1,minWidth:100,border:"2px solid #0B1957",padding:"7px 10px",
                 fontWeight:700,fontSize:13,background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit"}} />
             <button onClick={()=>moveCard(i,-1)} className="am-btn"
               style={{border:"2px solid #0B1957",padding:"6px 8px",background:"#D1E8FF",cursor:"pointer",display:"flex"}}>
@@ -637,7 +639,6 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         <BtnPrimary onClick={openNew}><IconPlus /> Add Experience</BtnPrimary>
       </div>
 
-      {/* MODAL */}
       {editing && (
         <div style={{position:"fixed",inset:0,zIndex:100,
           display:"flex",alignItems:"center",justifyContent:"center",padding:16,
@@ -647,7 +648,6 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
           <div style={{background:"#F8F3EA",border:"4px solid #0B1957",
             boxShadow:"12px 12px 0 #0B1957",width:"100%",maxWidth:580,maxHeight:"90vh",overflow:"auto",
             animation:modalVisible?"am-modalIn 0.35s cubic-bezier(0.16,1,0.3,1)":"am-modalIn 0.25s ease reverse"}}>
-            {/* Modal header */}
             <div style={{background:"#0B1957",padding:"14px 20px",
               display:"flex",justifyContent:"space-between",alignItems:"center",
               position:"sticky",top:0,zIndex:10}}>
@@ -690,7 +690,6 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               </div>
               <Textarea label="Description" value={editing.description} onChange={v=>setEditing({...editing,description:v})} rows={3} />
 
-              {/* Highlights */}
               <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",
                 letterSpacing:"0.1em",color:"#0B1957",marginBottom:8}}>Highlights / Tags</label>
               <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8,minHeight:28}}>
@@ -727,7 +726,6 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         </div>
       )}
 
-      {/* LIST */}
       <div style={{marginTop:16,display:"flex",flexDirection:"column",gap:10}}>
         {!loaded && [0,1,2].map(i=><SkeletonRow key={i} delay={i*80}/>)}
         {loaded && exps.length===0 && (
@@ -825,7 +823,6 @@ function CaseStudiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         <BtnPrimary onClick={openNew}><IconPlus /> Add Case Study</BtnPrimary>
       </div>
 
-      {/* MODAL */}
       {editing && (
         <div style={{position:"fixed",inset:0,zIndex:100,
           display:"flex",alignItems:"center",justifyContent:"center",padding:16,
@@ -859,8 +856,7 @@ function CaseStudiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         </div>
       )}
 
-      {/* GRID */}
-      <div style={{marginTop:16,display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:12}}>
+      <div style={{marginTop:16,display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:12}}>
         {!loaded && [0,1,2,3].map(i=>(
           <div key={i} className="am-skeleton" style={{height:110,animationDelay:`${i*60}ms`}}/>
         ))}
@@ -1108,7 +1104,7 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         {stats.map((stat,i)=>(
           <div key={i}
             style={{
-              display:"flex",alignItems:"center",gap:8,
+              display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",
               border:"3px solid #0B1957",padding:"10px 12px",background:"#fff",
               boxShadow:"3px 3px 0 #0B1957",
               animation: i===justAdded
@@ -1125,7 +1121,6 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               e.currentTarget.style.boxShadow="3px 3px 0 #0B1957";
             }}>
 
-            {/* Icon picker button */}
             <div style={{position:"relative",flexShrink:0}}>
               <button onClick={()=>setIconPicker(iconPicker===i?null:i)}
                 title="Pilih icon" className="am-btn"
@@ -1142,7 +1137,6 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
                 </span>
               </button>
 
-              {/* Icon picker dropdown */}
               {iconPicker===i && (
                 <div style={{
                   position:"absolute",top:50,left:0,zIndex:200,
@@ -1178,21 +1172,18 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               )}
             </div>
 
-            {/* Value */}
             <input value={stat.value} onChange={e=>updateStat(i,"value",e.target.value)}
               placeholder="3+" className="am-input"
               style={{width:64,flexShrink:0,border:"2px solid #0B1957",padding:"7px 8px",
                 fontWeight:900,fontSize:18,textAlign:"center",
                 background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit"}} />
 
-            {/* Label */}
             <input value={stat.label} onChange={e=>updateStat(i,"label",e.target.value)}
               placeholder="Years Coding" className="am-input"
-              style={{flex:1,border:"2px solid #0B1957",padding:"7px 10px",
+              style={{flex:1,minWidth:100,border:"2px solid #0B1957",padding:"7px 10px",
                 fontWeight:700,fontSize:13,background:"#F8F3EA",color:"#0B1957",
                 fontFamily:"inherit",textTransform:"uppercase"}} />
 
-            {/* Controls */}
             <div style={{display:"flex",gap:4,flexShrink:0}}>
               <button onClick={()=>moveStat(i,-1)} className="am-btn"
                 style={{border:"2px solid #0B1957",padding:"5px 7px",background:"#D1E8FF",cursor:"pointer",display:"flex"}}>
@@ -1212,7 +1203,6 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         ))}
       </div>
 
-      {/* Add + Save */}
       <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",marginBottom:24}}>
         {stats.length<10 && (
           <button onClick={addStat} className="am-btn"
@@ -1240,7 +1230,6 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         </span>
       </div>
 
-      {/* Live Preview */}
       {stats.length>0 && (
         <div style={{borderTop:"3px solid #0B1957",paddingTop:16,
           animation:"am-slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.2s both"}}>
@@ -1294,6 +1283,7 @@ export default function AboutManager() {
   const [toastMsg,   setToastMsg]   = useState<{msg:string;type:"ok"|"err"}|null>(null);
   const [tabMounted, setTabMounted] = useState(true);
   const [headerReady,setHeaderReady]= useState(false);
+  const tabbarRef = useRef<HTMLDivElement>(null);
 
   useEffect(()=>{ setTimeout(()=>setHeaderReady(true),80); },[]);
 
@@ -1303,6 +1293,16 @@ export default function AboutManager() {
     if(key===activeTab) return;
     setTabMounted(false);
     setTimeout(()=>{ setActiveTab(key); setTabMounted(true); },160);
+
+    // Auto-scroll active tab into view on mobile
+    setTimeout(()=>{
+      const bar = tabbarRef.current;
+      if(!bar) return;
+      const activeBtn = bar.querySelector(`[data-tab="${key}"]`) as HTMLElement;
+      if(activeBtn) {
+        activeBtn.scrollIntoView({ behavior:"smooth", block:"nearest", inline:"center" });
+      }
+    }, 20);
   };
 
   return (
@@ -1325,40 +1325,59 @@ export default function AboutManager() {
             transition:"width 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s"}} />
         </div>
 
-        {/* Tab bar */}
-        <div style={{display:"flex",background:"#F8F3EA",border:"4px solid #0B1957",
-          boxShadow:"6px 6px 0 #0B1957",marginBottom:28,overflow:"hidden",
-          animation:"am-slideDown 0.4s cubic-bezier(0.16,1,0.3,1) 0.1s both"}}>
-          {TABS.map((tab,i)=>{
-            const isActive = activeTab===tab.key;
-            return (
-              <button key={tab.key} onClick={()=>switchTab(tab.key)}
-                className={`am-tab ${isActive?"active":""}`}
-                style={{
-                  flex:1, flexShrink:0,
-                  padding:"12px 8px",
-                  fontWeight:900,fontSize:10,textTransform:"uppercase",
-                  letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit",
-                  border:"none",borderRight:i<TABS.length-1?"3px solid #0B1957":"none",
-                  borderBottom:isActive?"4px solid #9ECCFA":"4px solid transparent",
-                  background: isActive?"#0B1957":"#F8F3EA",
-                  color: isActive?"#9ECCFA":"#0B1957",
-                  display:"flex",flexDirection:"column",alignItems:"center",gap:4,
-                  position:"relative",
-                  animation:`am-slideDown 0.35s cubic-bezier(0.16,1,0.3,1) ${i*40+100}ms both`,
-                }}>
-                {isActive && (
-                  <div style={{position:"absolute",top:6,right:6,width:6,height:6,
-                    background:"#9ECCFA",animation:"am-popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both"}} />
-                )}
-                <span style={{fontSize:14,lineHeight:1,opacity:isActive?1:0.5,
-                  transition:"opacity 0.15s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1)",
-                  transform:isActive?"scale(1.1)":"scale(1)"}}>{tab.icon}</span>
-                <span style={{lineHeight:1,whiteSpace:"nowrap",overflow:"hidden",
-                  textOverflow:"ellipsis",maxWidth:"100%",padding:"0 4px"}}>{tab.label}</span>
-              </button>
-            );
-          })}
+        {/* Tab bar — horizontally scrollable on mobile */}
+        <div
+          ref={tabbarRef}
+          className="am-tabbar"
+          style={{
+            background:"#F8F3EA",
+            border:"4px solid #0B1957",
+            boxShadow:"6px 6px 0 #0B1957",
+            marginBottom:28,
+            overflowX:"auto",
+            overflowY:"hidden",
+            WebkitOverflowScrolling:"touch" as any,
+            animation:"am-slideDown 0.4s cubic-bezier(0.16,1,0.3,1) 0.1s both",
+          }}
+        >
+          {/* Inner wrapper: full-width on desktop, min-content on mobile */}
+          <div style={{ display:"flex", minWidth:"max-content", width:"100%" }}>
+            {TABS.map((tab,i)=>{
+              const isActive = activeTab===tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  data-tab={tab.key}
+                  onClick={()=>switchTab(tab.key)}
+                  className={`am-tab ${isActive?"active":""}`}
+                  style={{
+                    flex:"1 0 auto",
+                    minWidth:96,
+                    padding:"12px 10px",
+                    fontWeight:900,fontSize:10,textTransform:"uppercase",
+                    letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit",
+                    border:"none",
+                    borderRight:i<TABS.length-1?"3px solid #0B1957":"none",
+                    borderBottom:isActive?"4px solid #9ECCFA":"4px solid transparent",
+                    background: isActive?"#0B1957":"#F8F3EA",
+                    color: isActive?"#9ECCFA":"#0B1957",
+                    display:"flex",flexDirection:"column",alignItems:"center",gap:4,
+                    position:"relative",
+                    animation:`am-slideDown 0.35s cubic-bezier(0.16,1,0.3,1) ${i*40+100}ms both`,
+                    whiteSpace:"nowrap",
+                  }}>
+                  {isActive && (
+                    <div style={{position:"absolute",top:6,right:6,width:6,height:6,
+                      background:"#9ECCFA",animation:"am-popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both"}} />
+                  )}
+                  <span style={{fontSize:14,lineHeight:1,opacity:isActive?1:0.5,
+                    transition:"opacity 0.15s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1)",
+                    transform:isActive?"scale(1.1)":"scale(1)"}}>{tab.icon}</span>
+                  <span style={{lineHeight:1}}>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Tab content */}
