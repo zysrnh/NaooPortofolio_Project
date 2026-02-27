@@ -80,11 +80,27 @@ function getCsrfToken(): string {
   return m ? decodeURIComponent(m[1]) : "";
 }
 
+// ── Scroll Reveal Hook ────────────────────────────────────────────────────────
+function useScrollReveal(delay = 0) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, className: visible ? "section-visible" : "section-hidden", style: { animationDelay: `${delay}s` } };
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // ── CHART COMPONENTS ──────────────────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// ── Sparkline ─────────────────────────────────────────────────────────────────
 function Sparkline({ data, color = "#9ECCFA", height = 36, width = 120 }: {
   data: number[]; color?: string; height?: number; width?: number;
 }) {
@@ -98,7 +114,6 @@ function Sparkline({ data, color = "#9ECCFA", height = 36, width = 120 }: {
     return `${x},${y}`;
   }).join(" ");
   const lastPt = pts.split(" ").slice(-1)[0].split(",");
-
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: "visible" }}>
       <polyline points={pts} fill="none" stroke={color} strokeWidth="2.5"
@@ -109,7 +124,6 @@ function Sparkline({ data, color = "#9ECCFA", height = 36, width = 120 }: {
   );
 }
 
-// ── Mini Bar Chart ─────────────────────────────────────────────────────────────
 function MiniBarChart({ data, color = "#9ECCFA", height = 64 }: {
   data: { label?: string; value: number }[]; color?: string; height?: number;
 }) {
@@ -137,7 +151,6 @@ function MiniBarChart({ data, color = "#9ECCFA", height = 64 }: {
   );
 }
 
-// ── Donut Chart ────────────────────────────────────────────────────────────────
 function DonutChart({ segments, size = 110 }: {
   segments: { label: string; value: number; color: string }[]; size?: number;
 }) {
@@ -171,7 +184,6 @@ function DonutChart({ segments, size = 110 }: {
   );
 }
 
-// ── Stat Card with sparkline + counter ────────────────────────────────────────
 function StatCard({ icon, value, label, color, sparkData, trend, delay = 0 }: {
   icon: React.ReactNode; value: string; label: string; color: string;
   sparkData?: number[]; trend?: number; delay?: number;
@@ -202,9 +214,7 @@ function StatCard({ icon, value, label, color, sparkData, trend, delay = 0 }: {
     }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-3px,-3px)"; (e.currentTarget as HTMLElement).style.boxShadow = "9px 9px 0 #0B1957"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #0B1957"; }}>
-      {/* top accent */}
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 5, background: color, borderBottom: "2px solid #0B1957" }} />
-
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginTop: 4 }}>
         <div style={{ color: "#0B1957" }}>{icon}</div>
         {trend !== undefined && (
@@ -218,12 +228,10 @@ function StatCard({ icon, value, label, color, sparkData, trend, delay = 0 }: {
           </div>
         )}
       </div>
-
       <p style={{ fontWeight: 900, fontSize: 42, color: "#0B1957", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>
         {counted}
       </p>
       <p style={{ fontWeight: 900, fontSize: 9, color: "#0B1957", textTransform: "uppercase", letterSpacing: "0.18em", opacity: 0.55, margin: 0 }}>{label}</p>
-
       {sparkData && (
         <div style={{ marginTop: 2 }}>
           <Sparkline data={sparkData} color={color} height={30} width={130} />
@@ -233,24 +241,20 @@ function StatCard({ icon, value, label, color, sparkData, trend, delay = 0 }: {
   );
 }
 
-// ── Project Status Donut ───────────────────────────────────────────────────────
 function ProjectStatusChart({ projects }: { projects: ProjectItem[] }) {
   const live = projects.filter(p => p.status === "Hosted" || p.status === "Live").length;
   const inProg = projects.filter(p => p.status === "In Progress").length;
   const planning = projects.filter(p => p.status === "Planning").length;
   const other = projects.length - live - inProg - planning;
-
   const segments = [
     { label: "Live",        value: live,     color: "#4ade80" },
     { label: "In Progress", value: inProg,   color: "#FFE8A0" },
     { label: "Planning",    value: planning, color: "#9ECCFA" },
     { label: "Other",       value: other,    color: "#C8B8A0" },
   ].filter(s => s.value > 0);
-
   if (segments.length === 0) return (
     <p style={{ fontWeight: 900, fontSize: 10, color: "#0B1957", opacity: 0.3, textTransform: "uppercase" }}>No data</p>
   );
-
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
       <DonutChart segments={segments} size={100} />
@@ -267,7 +271,6 @@ function ProjectStatusChart({ projects }: { projects: ProjectItem[] }) {
   );
 }
 
-// ── Stack Distribution Bar ─────────────────────────────────────────────────────
 function StackDistribution({ stacks }: { stacks: { category?: string }[] }) {
   if (!stacks.length) return (
     <p style={{ fontWeight: 900, fontSize: 10, color: "#9ECCFA", opacity: 0.3, textTransform: "uppercase" }}>No stacks</p>
@@ -277,7 +280,6 @@ function StackDistribution({ stacks }: { stacks: { category?: string }[] }) {
   const total = stacks.length || 1;
   const entries = Object.entries(categories).sort((a, b) => b[1] - a[1]);
   const colors = ["#9ECCFA", "#FFE8A0", "#D1E8FF", "#4ade80", "#9ECCFA"];
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
       {entries.map(([cat, count], i) => (
@@ -301,7 +303,6 @@ function StackDistribution({ stacks }: { stacks: { category?: string }[] }) {
   );
 }
 
-// ── SVG icons for Activity Feed ───────────────────────────────────────────────
 const IconStatusLive     = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
 const IconStatusProgress = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>;
 const IconStatusPlan     = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
@@ -318,146 +319,147 @@ function getActivityMeta(status: string): { icon: React.ReactNode; color: string
   }
 }
 
-// ── Activity Feed ──────────────────────────────────────────────────────────────
+// ── Activity Feed — Quick Action style hover ──────────────────────────────────
 function ActivityFeed({ projects }: { projects: ProjectItem[] }) {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-
   if (!projects.length) return (
-    <div style={{ padding: "40px 20px", textAlign: "center" }}>
-      <div style={{ color: "#0B1957", opacity: 0.15, marginBottom: 10, display: "flex", justifyContent: "center" }}>
-        <IconStatusDefault size={32} />
+    <div style={{ padding: "50px 20px", textAlign: "center" }}>
+      <div style={{ color: "#0B1957", opacity: 0.12, marginBottom: 12, display: "flex", justifyContent: "center" }}>
+        <IconStatusDefault size={36} />
       </div>
       <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", color: "#0B1957", opacity: 0.3, letterSpacing: "0.15em" }}>No activity yet</p>
     </div>
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
       {projects.slice(0, 6).map((p, i) => {
         const meta = getActivityMeta(p.status);
-        const isHov = hoveredIdx === i;
         return (
-          <div key={p.id}
-            style={{
-              display: "flex", gap: 14, padding: "13px 16px",
-              borderBottom: i < Math.min(projects.length, 6) - 1 ? "2px solid #D1E8FF" : "none",
-              background: isHov ? "#EAF4FF" : "transparent",
-              cursor: "default",
-              transition: "background 0.15s ease",
-              animation: `slideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${0.05 + i * 0.07}s both`,
-              position: "relative",
-            }}
-            onMouseEnter={() => setHoveredIdx(i)}
-            onMouseLeave={() => setHoveredIdx(null)}>
-
-            {/* Left accent bar on hover */}
-            <div style={{
-              position: "absolute", left: 0, top: 0, bottom: 0, width: 3,
-              background: isHov ? meta.color : "transparent",
-              borderRight: isHov ? `2px solid #0B1957` : "none",
-              transition: "background 0.15s ease",
-            }} />
-
-            {/* Icon box */}
-            <div style={{
-              width: 36, height: 36, flexShrink: 0,
-              background: isHov ? meta.color : "#F8F3EA",
-              border: `3px solid #0B1957`,
-              boxShadow: isHov ? `3px 3px 0 #0B1957` : `2px 2px 0 rgba(11,25,87,0.2)`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              color: meta.iconColor,
-              transition: "background 0.15s ease, box-shadow 0.15s ease",
-              transform: isHov ? "translate(-1px,-1px)" : "none",
-            }}>
-              {meta.icon}
-            </div>
-
-            {/* Content */}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 3 }}>
-                <p style={{
-                  fontWeight: 900, fontSize: 11, textTransform: "uppercase",
-                  color: "#0B1957", margin: 0,
-                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                  transition: "color 0.1s ease",
-                }}>{p.title}</p>
-                <span style={{
-                  flexShrink: 0, border: "2px solid #0B1957",
-                  background: meta.color, color: "#0B1957",
-                  padding: "0px 5px", fontSize: 7, fontWeight: 900,
-                  textTransform: "uppercase", letterSpacing: "0.06em",
-                }}>{meta.tag}</span>
-              </div>
-              <p style={{ fontWeight: 600, fontSize: 10, color: "#0B1957", opacity: 0.5, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.desc}</p>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
-                <span style={{ fontWeight: 700, fontSize: 9, color: "#0B1957", opacity: 0.35, textTransform: "uppercase", letterSpacing: "0.06em" }}>{p.date}</span>
-                {(p.stacks ?? []).slice(0, 2).map((s, si) => (
-                  <span key={si} style={{ display: "inline-flex", alignItems: "center", gap: 3, border: "1px solid rgba(11,25,87,0.25)", background: "#D1E8FF", padding: "0px 5px", fontSize: 7, fontWeight: 900, textTransform: "uppercase", color: "#0B1957" }}>
-                    {s.icon && <DbIcon src={s.icon} size={9} />}{s.label}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Arrow on hover */}
-            <div style={{
-              color: "#0B1957", opacity: isHov ? 0.5 : 0,
-              transition: "opacity 0.15s ease",
-              display: "flex", alignItems: "center", flexShrink: 0,
-            }}>
-              <IconArrow size={12} />
-            </div>
-          </div>
+          <ActivityFeedItem key={p.id} project={p} meta={meta} index={i} total={Math.min(projects.length, 6)} />
         );
       })}
     </div>
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// ── GITHUB PUSH CHART (line chart dari contributions per hari, 30 hari) ───────
-// ═══════════════════════════════════════════════════════════════════════════────
+function ActivityFeedItem({ project: p, meta, index: i, total }: {
+  project: ProjectItem;
+  meta: { icon: React.ReactNode; color: string; iconColor: string; tag: string };
+  index: number;
+  total: number;
+}) {
+  const [hov, setHov] = useState(false);
+
+  return (
+    <div
+      style={{
+        display: "flex", gap: 12, padding: "13px 16px",
+        borderBottom: i < total - 1 ? "2px solid #D1E8FF" : "none",
+        background: hov ? meta.color : "#F8F3EA",
+        border: hov ? "0px" : "0px",
+        cursor: "default",
+        transform: hov ? "translate(-3px,-3px)" : "translate(0,0)",
+        boxShadow: hov ? `6px 6px 0 #0B1957` : "none",
+        transition: "transform 0.12s cubic-bezier(0.16,1,0.3,1), box-shadow 0.12s cubic-bezier(0.16,1,0.3,1), background 0.12s ease",
+        animation: `slideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${0.05 + i * 0.07}s both`,
+        position: "relative",
+        zIndex: hov ? 5 : 1,
+        alignItems: "center",
+      }}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+    >
+      {/* Icon box */}
+      <div style={{
+        width: 36, height: 36, flexShrink: 0,
+        background: hov ? "#0B1957" : "#F0F7FF",
+        border: "3px solid #0B1957",
+        boxShadow: hov ? "3px 3px 0 rgba(11,25,87,0.3)" : "2px 2px 0 rgba(11,25,87,0.12)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        color: hov ? meta.color : "#0B1957",
+        transition: "background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease",
+      }}>
+        {meta.icon}
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 3 }}>
+          <p style={{
+            fontWeight: 900, fontSize: 11, textTransform: "uppercase",
+            color: "#0B1957", margin: 0,
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            letterSpacing: "0.06em",
+          }}>{p.title}</p>
+          <span style={{
+            flexShrink: 0,
+            border: "2px solid #0B1957",
+            background: hov ? "#0B1957" : meta.color,
+            color: hov ? meta.color : "#0B1957",
+            padding: "0px 5px", fontSize: 7, fontWeight: 900,
+            textTransform: "uppercase", letterSpacing: "0.06em",
+            transition: "background 0.12s ease, color 0.12s ease",
+          }}>{meta.tag}</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontWeight: 700, fontSize: 9, color: "#0B1957", opacity: hov ? 0.6 : 0.35, textTransform: "uppercase", letterSpacing: "0.06em", transition: "opacity 0.12s" }}>{p.date}</span>
+          {(p.stacks ?? []).slice(0, 3).map((s, si) => (
+            <span key={si} style={{
+              display: "inline-flex", alignItems: "center", gap: 3,
+              border: "2px solid #0B1957",
+              background: hov ? "#0B1957" : "#D1E8FF",
+              color: hov ? "#9ECCFA" : "#0B1957",
+              padding: "0px 5px", fontSize: 7, fontWeight: 900,
+              textTransform: "uppercase",
+              transition: "background 0.12s ease, color 0.12s ease",
+            }}>
+              {s.icon && <DbIcon src={s.icon} size={9} />}{s.label}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Arrow */}
+      <div style={{
+        color: "#0B1957",
+        opacity: hov ? 1 : 0,
+        transform: hov ? "translateX(0)" : "translateX(-6px)",
+        transition: "opacity 0.15s ease, transform 0.18s cubic-bezier(0.16,1,0.3,1)",
+        flexShrink: 0,
+        display: "flex", alignItems: "center",
+      }}>
+        <IconArrow size={13} />
+      </div>
+    </div>
+  );
+}
+
+// ── GitHub Push Chart ─────────────────────────────────────────────────────────
 function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-
-  // ambil 30 hari terakhir
   const last30 = contributions.slice(-30);
   if (!last30.length) return null;
-
   const W = 900, H = 100, PAD = { top: 12, bottom: 28, left: 8, right: 8 };
   const innerW = W - PAD.left - PAD.right;
   const innerH = H - PAD.top - PAD.bottom;
   const maxV = Math.max(...last30.map(d => d.count), 1);
   const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
   const pts = last30.map((d, i) => ({
     x: PAD.left + (i / (last30.length - 1)) * innerW,
     y: PAD.top + innerH - (d.count / maxV) * innerH,
     d,
   }));
-
   const pathD = pts.map((p, i) => {
     if (i === 0) return `M ${p.x} ${p.y}`;
     const prev = pts[i - 1];
     const cpx = (prev.x + p.x) / 2;
     return `C ${cpx} ${prev.y} ${cpx} ${p.y} ${p.x} ${p.y}`;
   }).join(" ");
-
   const areaD = pathD + ` L ${pts[pts.length-1].x} ${PAD.top + innerH} L ${pts[0].x} ${PAD.top + innerH} Z`;
-
-  const fmtDate = (d: string) => {
-    const date = new Date(d);
-    return `${date.getDate()} ${MONTHS_SHORT[date.getMonth()]}`;
-  };
-
-  // Label tanggal setiap 7 hari
-  const dateLabels = last30
-    .map((d, i) => ({ d, i }))
-    .filter((_, i) => i % 7 === 0 || i === last30.length - 1);
-
+  const fmtDate = (d: string) => { const date = new Date(d); return `${date.getDate()} ${MONTHS_SHORT[date.getMonth()]}`; };
+  const dateLabels = last30.map((d, i) => ({ d, i })).filter((_, i) => i % 7 === 0 || i === last30.length - 1);
   const hov = hoveredIdx !== null ? pts[hoveredIdx] : null;
-
   return (
     <div style={{ borderTop: "4px solid #0B1957", padding: "16px 20px 12px", background: "#F8F3EA" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
@@ -476,8 +478,6 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
               <stop offset="100%" stopColor="#9ECCFA" stopOpacity="0.04" />
             </linearGradient>
           </defs>
-
-          {/* Grid lines */}
           {[0, 0.25, 0.5, 0.75, 1].map((pct, i) => {
             const y = PAD.top + (1 - pct) * innerH;
             return (
@@ -491,18 +491,11 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
               </g>
             );
           })}
-
-          {/* Area fill */}
           <path d={areaD} fill="url(#pushGrad)" />
-
-          {/* Main line */}
           <path d={pathD} fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
             style={{ filter: "drop-shadow(0 2px 6px rgba(158,204,250,0.6))" }} />
-
-          {/* Dots — only visible + hovered */}
           {pts.map((p, i) => (
             <g key={i}>
-              {/* invisible hit area */}
               <rect
                 x={i === 0 ? p.x : pts[i - 1].x + (p.x - pts[i - 1].x) / 2}
                 y={PAD.top}
@@ -521,21 +514,16 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
               )}
             </g>
           ))}
-
-          {/* Date labels */}
           {dateLabels.map(({ d, i }) => (
             <text key={i} x={pts[i].x} y={H - 4} textAnchor="middle"
               style={{ fontSize: 7, fill: "#0B1957", opacity: 0.45, fontWeight: 900, fontFamily: "inherit", textTransform: "uppercase" }}>
               {fmtDate(d.date)}
             </text>
           ))}
-
-          {/* Hover crosshair + tooltip */}
           {hov && (
             <>
               <line x1={hov.x} y1={PAD.top} x2={hov.x} y2={PAD.top + innerH}
                 stroke="#0B1957" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.4" />
-              {/* Tooltip box */}
               <g transform={`translate(${Math.min(hov.x + 8, W - 120)}, ${Math.max(hov.y - 48, PAD.top)})`}>
                 <rect x={0} y={0} width={110} height={38} fill="#0B1957" stroke="#9ECCFA" strokeWidth="2" />
                 <rect x={2} y={2} width={110} height={38} fill="none" stroke="rgba(158,204,250,0.15)" strokeWidth="1" />
@@ -554,21 +542,19 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// ── GITHUB CONTRIBUTIONS ──────────────────────────────────────────────────────
-// ═══════════════════════════════════════════════════════════════════════════════
+// ── GitHub Contributions ──────────────────────────────────────────────────────
 interface ContribDay { date: string; count: number; level: 0 | 1 | 2 | 3 | 4; }
 
 function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
-  const [weeks, setWeeks]                 = useState<ContribDay[][]>([]);
-  const [allContribs, setAllContribs]     = useState<ContribDay[]>([]);
-  const [loading, setLoading]             = useState(true);
-  const [totalContribs, setTotal]         = useState(0);
-  const [streak, setStreak]               = useState(0);
-  const [maxDay, setMaxDay]               = useState(0);
-  const [hoveredDay, setHoveredDay]       = useState<ContribDay | null>(null);
-  const [tooltipPos, setTooltipPos]       = useState({ x: 0, y: 0 });
-  const containerRef                      = useRef<HTMLDivElement>(null);
+  const [weeks, setWeeks]             = useState<ContribDay[][]>([]);
+  const [allContribs, setAllContribs] = useState<ContribDay[]>([]);
+  const [loading, setLoading]         = useState(true);
+  const [totalContribs, setTotal]     = useState(0);
+  const [streak, setStreak]           = useState(0);
+  const [maxDay, setMaxDay]           = useState(0);
+  const [hoveredDay, setHoveredDay]   = useState<ContribDay | null>(null);
+  const [tooltipPos, setTooltipPos]   = useState({ x: 0, y: 0 });
+  const containerRef                  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`)
@@ -596,8 +582,8 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
     3: { bg: "#2563eb", border: "#0B1957" },
     4: { bg: "#0B1957", border: "#9ECCFA" },
   };
-  const MONTHS    = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const DAY_LBLS  = ["", "Mon", "", "Wed", "", "Fri", ""];
+  const MONTHS   = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const DAY_LBLS = ["", "Mon", "", "Wed", "", "Fri", ""];
   const CELL = 13, GAP = 3;
 
   const monthLabels = (() => {
@@ -617,7 +603,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
 
   return (
     <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "8px 8px 0 #0B1957", overflow: "hidden" }}>
-      {/* Header */}
       <div style={{ background: "#0B1957", borderBottom: "4px solid #0B1957", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ border: "3px solid #9ECCFA", boxShadow: "3px 3px 0 #9ECCFA", padding: 6, color: "#9ECCFA" }}>
@@ -641,8 +626,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
           ))}
         </div>
       </div>
-
-      {/* Graph area */}
       <div ref={containerRef} style={{ padding: "16px 20px 8px", overflowX: "auto", position: "relative" }}>
         {loading ? (
           <div style={{ display: "flex", gap: GAP }}>
@@ -656,7 +639,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
           </div>
         ) : (
           <>
-            {/* Month labels */}
             <div style={{ display: "flex", gap: GAP, marginBottom: 4, marginLeft: 28 }}>
               {weeks.map((_, wi) => {
                 const lbl = monthLabels.find(m => m.col === wi);
@@ -667,7 +649,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                 );
               })}
             </div>
-            {/* Grid */}
             <div style={{ display: "flex", gap: GAP }}>
               <div style={{ display: "flex", flexDirection: "column", gap: GAP, marginRight: 2, flexShrink: 0, width: 24 }}>
                 {DAY_LBLS.map((d, i) => (
@@ -677,7 +658,10 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                 ))}
               </div>
               {weeks.map((week, wi) => (
-                <div key={wi} style={{ display: "flex", flexDirection: "column", gap: GAP, flexShrink: 0 }}>
+                <div key={wi} style={{
+                  display: "flex", flexDirection: "column", gap: GAP, flexShrink: 0,
+                  animation: `cellColIn 0.4s cubic-bezier(0.16,1,0.3,1) ${wi * 0.008}s both`,
+                }}>
                   {week.map((day, di) => {
                     const cs = CELL_STYLES[day.level];
                     const isHov = hoveredDay?.date === day.date;
@@ -686,9 +670,9 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                         width: CELL, height: CELL, flexShrink: 0,
                         background: cs.bg, border: `2px solid ${cs.border}`,
                         cursor: "pointer",
-                        transform: isHov ? "scale(1.45) translate(-1px,-1px)" : "scale(1)",
-                        boxShadow: isHov ? "0 0 0 2px #0B1957, 2px 2px 0 #0B1957" : day.level > 0 ? "1px 1px 0 #0B1957" : "none",
-                        transition: "transform 0.08s ease, box-shadow 0.08s ease",
+                        transform: isHov ? "scale(1.55)" : "scale(1)",
+                        boxShadow: isHov ? `0 0 0 2px #0B1957, 3px 3px 0 #0B1957, 0 0 8px ${cs.bg}` : day.level > 0 ? "1px 1px 0 #0B1957" : "none",
+                        transition: "transform 0.1s cubic-bezier(0.16,1,0.3,1), box-shadow 0.1s ease",
                         position: "relative", zIndex: isHov ? 10 : 1,
                       }}
                         onMouseEnter={e => {
@@ -703,7 +687,6 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                 </div>
               ))}
             </div>
-            {/* Tooltip */}
             {hoveredDay && (
               <div style={{ position: "absolute", left: tooltipPos.x + 12, top: tooltipPos.y - 52, pointerEvents: "none", zIndex: 50, background: "#0B1957", border: "3px solid #9ECCFA", boxShadow: "4px 4px 0 #9ECCFA", padding: "7px 12px", minWidth: 162 }}>
                 <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", margin: "0 0 3px", textTransform: "uppercase" }}>{hoveredDay.count} commit{hoveredDay.count !== 1 ? "s" : ""}</p>
@@ -713,13 +696,9 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
           </>
         )}
       </div>
-
-      {/* Push Activity Line Chart */}
       {!loading && allContribs.length > 0 && (
         <PushActivityChart contributions={allContribs} />
       )}
-
-      {/* Legend & link */}
       <div style={{ borderTop: "3px solid #0B1957", padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
         <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer"
           style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957", textDecoration: "none", border: "2px solid #0B1957", padding: "4px 10px", background: "#D1E8FF", boxShadow: "2px 2px 0 #0B1957", display: "flex", alignItems: "center", gap: 5 }}>
@@ -737,7 +716,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
   );
 }
 
-// ── Recent Project Card with proper hover + animation ─────────────────────────
+// ── Recent Project Card — ENHANCED ────────────────────────────────────────────
 function RecentProjectCard({ project: p, delay }: { project: ProjectItem; delay: number }) {
   const [hovered, setHovered] = useState(false);
   const meta = getActivityMeta(p.status);
@@ -747,66 +726,104 @@ function RecentProjectCard({ project: p, delay }: { project: ProjectItem; delay:
       style={{
         border: "4px solid #0B1957",
         background: hovered ? "#EAF4FF" : "#F8F3EA",
-        boxShadow: hovered ? "7px 7px 0 #0B1957" : "4px 4px 0 #0B1957",
-        padding: "15px 16px",
-        transform: hovered ? "translate(-3px,-3px)" : "translate(0,0)",
-        transition: "transform 0.18s cubic-bezier(0.16,1,0.3,1), box-shadow 0.18s cubic-bezier(0.16,1,0.3,1), background 0.15s ease",
+        boxShadow: hovered ? "8px 8px 0 #0B1957" : "4px 4px 0 #0B1957",
+        padding: "18px 20px",
+        transform: hovered ? "translate(-4px,-4px)" : "translate(0,0)",
+        transition: "transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s cubic-bezier(0.16,1,0.3,1), background 0.15s ease",
         animation: `slideUp 0.55s cubic-bezier(0.16,1,0.3,1) ${delay}s both`,
         cursor: "default",
         position: "relative",
         overflow: "hidden",
+        minHeight: 120,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
       }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
-
-      {/* Left color accent */}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Top accent bar */}
       <div style={{
-        position: "absolute", left: 0, top: 0, bottom: 0, width: 4,
-        background: hovered ? meta.color : "transparent",
-        transition: "background 0.18s ease",
+        position: "absolute", top: 0, left: 0, right: 0,
+        height: hovered ? 5 : 3,
+        background: hovered ? meta.color : "rgba(11,25,87,0.08)",
+        borderBottom: hovered ? "2px solid #0B1957" : "2px solid transparent",
+        transition: "height 0.2s ease, background 0.2s ease",
       }} />
 
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, paddingLeft: 8 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {/* Title row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+      {/* Left accent bar */}
+      <div style={{
+        position: "absolute", left: 0, top: 0, bottom: 0,
+        width: hovered ? 6 : 3,
+        background: hovered ? meta.color : "rgba(11,25,87,0.08)",
+        borderRight: hovered ? "2px solid #0B1957" : "2px solid transparent",
+        transition: "width 0.2s cubic-bezier(0.16,1,0.3,1), background 0.2s ease",
+      }} />
+
+      {/* Content top */}
+      <div style={{ paddingLeft: 10 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
             <div style={{
-              color: "#0B1957", opacity: hovered ? 1 : 0.5,
-              transition: "opacity 0.15s ease", flexShrink: 0,
+              color: hovered ? "#0B1957" : "#9ECCFA",
+              transition: "color 0.15s ease, transform 0.2s cubic-bezier(0.16,1,0.3,1)",
+              transform: hovered ? "scale(1.2) rotate(-5deg)" : "scale(1) rotate(0deg)",
+              flexShrink: 0,
             }}>
               {meta.icon}
             </div>
-            <p style={{ fontWeight: 900, fontSize: 12, textTransform: "uppercase", color: "#0B1957", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.title}</p>
+            <p style={{
+              fontWeight: 900, fontSize: 13, textTransform: "uppercase", color: "#0B1957",
+              margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              letterSpacing: "0.06em",
+            }}>{p.title}</p>
           </div>
-          {/* Desc */}
-          <p style={{ fontWeight: 600, fontSize: 10, color: "#0B1957", opacity: 0.5, margin: "0 0 9px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.desc}</p>
-          {/* Stacks */}
-          <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-            {(p.stacks ?? []).slice(0, 4).map((s, si) => (
-              <span key={si} style={{
-                border: "2px solid #0B1957", background: hovered ? "#D1E8FF" : "#F0F7FF",
-                color: "#0B1957", padding: "1px 6px", fontSize: 8, fontWeight: 900,
-                textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: 3,
-                transition: "background 0.15s ease",
-              }}>
-                {s.icon && <DbIcon src={s.icon} size={10} />}{s.label}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Right side */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
           <span style={{
-            border: "2px solid #0B1957", padding: "3px 8px", fontSize: 9, fontWeight: 900, textTransform: "uppercase",
-            background: meta.color, color: "#0B1957",
-            boxShadow: hovered ? "2px 2px 0 #0B1957" : "1px 1px 0 rgba(11,25,87,0.3)",
-            transition: "box-shadow 0.15s ease",
+            border: "2px solid #0B1957", padding: "3px 8px", fontSize: 9, fontWeight: 900,
+            textTransform: "uppercase",
+            background: hovered ? meta.color : "#F0F7FF",
+            color: "#0B1957",
+            boxShadow: hovered ? "3px 3px 0 #0B1957" : "1px 1px 0 rgba(11,25,87,0.2)",
+            transition: "background 0.15s ease, box-shadow 0.15s ease",
+            flexShrink: 0, letterSpacing: "0.06em",
           }}>{p.status}</span>
+        </div>
+        <p style={{
+          fontWeight: 600, fontSize: 11, color: "#0B1957", opacity: 0.55, margin: "0 0 10px",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        }}>{p.desc}</p>
+      </div>
+
+      {/* Content bottom */}
+      <div style={{ paddingLeft: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", flex: 1 }}>
+          {(p.stacks ?? []).slice(0, 4).map((s, si) => (
+            <span key={si} style={{
+              border: "2px solid #0B1957",
+              background: hovered ? meta.color : "#D1E8FF",
+              color: "#0B1957", padding: "2px 7px", fontSize: 8, fontWeight: 900,
+              textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: 3,
+              transition: "background 0.15s ease, box-shadow 0.15s ease",
+              boxShadow: hovered ? "1px 1px 0 #0B1957" : "none",
+            }}>
+              {s.icon && <DbIcon src={s.icon} size={10} />}{s.label}
+            </span>
+          ))}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <span style={{ fontWeight: 900, fontSize: 8, color: "#0B1957", opacity: 0.35, textTransform: "uppercase" }}>{p.date}</span>
-          {/* Arrow hint on hover */}
-          <div style={{ opacity: hovered ? 0.5 : 0, transition: "opacity 0.15s ease", color: "#0B1957" }}>
-            <IconArrow size={11} />
+          {/* Arrow slides in */}
+          <div style={{
+            opacity: hovered ? 1 : 0,
+            transform: hovered ? "translateX(0)" : "translateX(-8px)",
+            transition: "opacity 0.2s ease, transform 0.2s cubic-bezier(0.16,1,0.3,1)",
+            color: "#0B1957",
+            border: "2px solid #0B1957",
+            padding: "3px 5px",
+            background: meta.color,
+            display: "flex", alignItems: "center",
+          }}>
+            <IconArrow size={10} />
           </div>
         </div>
       </div>
@@ -849,6 +866,13 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
 
   const shimmer = { background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" };
 
+  const secStats   = useScrollReveal(0);
+  const secCharts  = useScrollReveal(0);
+  const secGithub  = useScrollReveal(0);
+  const secBottom  = useScrollReveal(0);
+  const secActions = useScrollReveal(0);
+  const secStatus  = useScrollReveal(0);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
@@ -868,13 +892,15 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
       </div>
 
       {/* ── Stat Cards ─────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {loading
-          ? [0,1,2,3].map(i => (
-            <div key={i} style={{ border: "4px solid #0B1957", boxShadow: "6px 6px 0 #0B1957", height: 150, ...shimmer }} />
-          ))
-          : STAT_CARDS.map((card, i) => <StatCard key={i} {...card} />)
-        }
+      <div ref={secStats.ref} className={secStats.className} style={secStats.style}>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {loading
+            ? [0,1,2,3].map(i => (
+              <div key={i} style={{ border: "4px solid #0B1957", boxShadow: "6px 6px 0 #0B1957", height: 150, ...shimmer }} />
+            ))
+            : STAT_CARDS.map((card, i) => <StatCard key={i} {...card} />)
+          }
+        </div>
       </div>
 
       {/* ── Unread Banner ──────────────────────────────────────────────────── */}
@@ -899,35 +925,33 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
       )}
 
       {/* ── Charts Row ─────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-        {/* Project Status Donut */}
-        <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "6px 6px 0 #0B1957", padding: "18px 20px", animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s both" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-            <div style={{ color: "#0B1957" }}><IconActivity size={13} /></div>
-            <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#0B1957", margin: 0 }}>Project Status</p>
+      <div ref={secCharts.ref} className={secCharts.className} style={secCharts.style}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "6px 6px 0 #0B1957", padding: "18px 20px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+              <div style={{ color: "#0B1957" }}><IconActivity size={13} /></div>
+              <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#0B1957", margin: 0 }}>Project Status</p>
+            </div>
+            {loading
+              ? <div style={{ height: 110, ...shimmer }} />
+              : <ProjectStatusChart projects={projects} />
+            }
           </div>
-          {loading
-            ? <div style={{ height: 110, ...shimmer }} />
-            : <ProjectStatusChart projects={projects} />
-          }
-        </div>
-
-        {/* Stack Distribution */}
-        <div style={{ border: "4px solid #0B1957", background: "#0B1957", boxShadow: "6px 6px 0 #9ECCFA", padding: "18px 20px", animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.27s both" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-            <div style={{ color: "#9ECCFA" }}><IconLayers size={13} /></div>
-            <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#9ECCFA", margin: 0 }}>Stack Categories</p>
+          <div style={{ border: "4px solid #0B1957", background: "#0B1957", boxShadow: "6px 6px 0 #9ECCFA", padding: "18px 20px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+              <div style={{ color: "#9ECCFA" }}><IconLayers size={13} /></div>
+              <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#9ECCFA", margin: 0 }}>Stack Categories</p>
+            </div>
+            {loading
+              ? <div style={{ height: 80, background: "linear-gradient(90deg,rgba(158,204,250,0.2) 25%,rgba(158,204,250,0.35) 50%,rgba(158,204,250,0.2) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }} />
+              : <StackDistribution stacks={stacks} />
+            }
           </div>
-          {loading
-            ? <div style={{ height: 80, background: "linear-gradient(90deg,rgba(158,204,250,0.2) 25%,rgba(158,204,250,0.35) 50%,rgba(158,204,250,0.2) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }} />
-            : <StackDistribution stacks={stacks} />
-          }
         </div>
       </div>
 
       {/* ── GitHub Contributions ───────────────────────────────────────────── */}
-      <div style={{ animation: "slideUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.35s both" }}>
+      <div ref={secGithub.ref} className={secGithub.className} style={secGithub.style}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
           <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>GitHub Contributions</h2>
           <div style={{ display: "flex", alignItems: "center", gap: 6, border: "2px solid #0B1957", padding: "3px 10px", background: "#D1E8FF" }}>
@@ -938,25 +962,34 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
         <GitHubContributions username="zysrnh" />
       </div>
 
-      {/* ── Bottom Grid: Recent Projects + Activity Feed ────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* ── Bottom Grid: Recent Projects + Activity Feed — SYMMETRIC ────────── */}
+      <div ref={secBottom.ref} className={secBottom.className} style={secBottom.style}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }} className="overview-bottom-grid">
 
         {/* Recent Projects */}
-        <div style={{ animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.4s both" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, height: 36 }}>
             <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>Recent Projects</h2>
             <button onClick={() => onNavClick("projects")}
-              style={{ border: "3px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "6px 12px", fontWeight: 900, fontSize: 9, textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0 #9ECCFA", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 5, letterSpacing: "0.08em" }}>
+              style={{
+                border: "3px solid #0B1957", background: "#0B1957", color: "#9ECCFA",
+                padding: "7px 14px", fontWeight: 900, fontSize: 9, textTransform: "uppercase",
+                cursor: "pointer", boxShadow: "3px 3px 0 #9ECCFA", fontFamily: "inherit",
+                display: "flex", alignItems: "center", gap: 5, letterSpacing: "0.08em",
+                transition: "transform 0.1s ease, box-shadow 0.1s ease",
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "5px 5px 0 #9ECCFA"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "3px 3px 0 #9ECCFA"; }}>
               All <IconArrow size={10} />
             </button>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {loading
               ? [0,1,2].map(i => (
-                <div key={i} style={{ border: "4px solid #0B1957", boxShadow: "4px 4px 0 #0B1957", height: 90, ...shimmer }} />
+                <div key={i} style={{ border: "4px solid #0B1957", boxShadow: "4px 4px 0 #0B1957", height: 120, ...shimmer }} />
               ))
               : projects.length === 0
-                ? <div style={{ border: "4px dashed #0B1957", background: "#F8F3EA", padding: "30px 20px", textAlign: "center" }}>
+                ? <div style={{ border: "4px dashed #0B1957", background: "#F8F3EA", padding: "40px 20px", textAlign: "center", minHeight: 120, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <p style={{ fontWeight: 900, fontSize: 10, color: "#0B1957", opacity: 0.3, textTransform: "uppercase" }}>Belum ada project</p>
                   </div>
                 : projects.slice(0, 3).map((p, i) => (
@@ -967,22 +1000,27 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
         </div>
 
         {/* Activity Feed */}
-        <div style={{ animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.47s both" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, height: 36 }}>
             <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>Activity Feed</h2>
-            <span style={{ border: "2px solid #0B1957", background: "#9ECCFA", color: "#0B1957", padding: "3px 8px", fontWeight: 900, fontSize: 8, textTransform: "uppercase" }}>{projects.length} total</span>
+            <span style={{
+              border: "3px solid #0B1957", background: "#9ECCFA", color: "#0B1957",
+              padding: "4px 10px", fontWeight: 900, fontSize: 9, textTransform: "uppercase",
+              letterSpacing: "0.06em", display: "flex", alignItems: "center",
+            }}>{projects.length} total</span>
           </div>
           <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "4px 4px 0 #0B1957" }}>
             {loading
-              ? <div style={{ height: 200, ...shimmer }} />
+              ? <div style={{ height: 360, ...shimmer }} />
               : <ActivityFeed projects={projects} />
             }
           </div>
         </div>
       </div>
+      </div>{/* close scroll reveal wrapper */}
 
       {/* ── Quick Actions ───────────────────────────────────────────────────── */}
-      <div style={{ animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.5s both" }}>
+      <div ref={secActions.ref} className={secActions.className} style={secActions.style}>
         <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: "0 0 12px", letterSpacing: "0.08em" }}>Quick Actions</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
@@ -1005,7 +1043,8 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
       </div>
 
       {/* ── Status Banner ───────────────────────────────────────────────────── */}
-      <div style={{ border: "4px solid #0B1957", background: "#0B1957", boxShadow: "8px 8px 0 #9ECCFA", padding: "24px 28px", display: "flex", flexDirection: "column", gap: 16, animation: "slideUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.55s both" }}>
+      <div ref={secStatus.ref} className={secStatus.className} style={secStatus.style}>
+        <div style={{ border: "4px solid #0B1957", background: "#0B1957", boxShadow: "8px 8px 0 #9ECCFA", padding: "24px 28px", display: "flex", flexDirection: "column", gap: 16 }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
@@ -1040,7 +1079,6 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
             </div>
           </div>
         </div>
-        {/* Stack icons */}
         {stacks.filter(s => s.is_visible).length > 0 && (
           <div style={{ borderTop: "2px solid rgba(158,204,250,0.2)", paddingTop: 14, display: "flex", flexWrap: "wrap", gap: 6 }}>
             {stacks.filter(s => s.is_visible).slice(0, 14).map((s, i) => (
@@ -1053,6 +1091,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
             ))}
           </div>
         )}
+        </div>
       </div>
 
     </div>
@@ -1437,6 +1476,11 @@ export default function Dashboard() {
         @keyframes pulse       { 0%,100%{opacity:1} 50%{opacity:0.5} }
         @keyframes bounceIn    { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.05)} 100%{transform:scale(1);opacity:1} }
         @keyframes ping        { 0%{transform:scale(1);opacity:0.4} 70%,100%{transform:scale(2.2);opacity:0} }
+        @keyframes cellColIn   { from{opacity:0;transform:translateY(12px) scaleY(0.7)} to{opacity:1;transform:translateY(0) scaleY(1)} }
+        @keyframes sectionReveal { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
+
+        .section-hidden { opacity:0; transform:translateY(32px); }
+        .section-visible { animation: sectionReveal 0.6s cubic-bezier(0.16,1,0.3,1) both; }
 
         .anim-sidebar { animation:slideLeft  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-topbar  { animation:slideUp    0.4s cubic-bezier(0.16,1,0.3,1) 0.08s both; }
@@ -1528,6 +1572,10 @@ export default function Dashboard() {
         .msg-grid { }
         @media (max-width:1023px) { .msg-grid { grid-template-columns:1fr !important; } }
         @media (max-width:767px)  { .main-scroll { padding-bottom:calc(70px + env(safe-area-inset-bottom,0px)) !important; } }
+
+        /* Symmetric bottom grid */
+        .overview-bottom-grid { grid-template-columns: 1fr 1fr; }
+        @media (max-width:1023px) { .overview-bottom-grid { grid-template-columns: 1fr !important; } }
       `}</style>
 
       <div className="min-h-screen bg-[#D1E8FF] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
@@ -1697,5 +1745,7 @@ function ProjectCard({ project }: { project: ProjectItem }) {
         <span className="font-black text-xs text-[#9ECCFA] uppercase cursor-pointer hover:underline flex items-center gap-1">View <IconArrow size={11} /></span>
       </div>
     </div>
+
+    
   );
 }
