@@ -1744,10 +1744,6 @@ function ProjectCard({ project }: { project: ProjectItem }) {
         <span className="font-black text-xs text-[#0B1957] uppercase opacity-50">{project.date}</span>
         <span className="font-black text-xs text-[#9ECCFA] uppercase cursor-pointer hover:underline flex items-center gap-1">View <IconArrow size={11} /></span>
       </div>
-    </div>
-
-      
-
-
+    </div> 
   );
 }
