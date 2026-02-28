@@ -905,7 +905,7 @@ export default function Home() {
               <p className="font-bold uppercase text-xs text-[#0B1957] opacity-50 tracking-widest">Built with React + Vite + Tailwind</p>
             </div>
           </div>
-        </footer>
+        </footer> 
 
         {/* BACK TO TOP */}
         <button className="back-to-top" style={{opacity:showTop?1:0,visibility:showTop?"visible":"hidden"}}
@@ -913,8 +913,8 @@ export default function Home() {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="18 15 12 9 6 15"/>
           </svg>
-        </button>   
+        </button>    
       </div>
     </>  
   ); 
-}   
+}    
