@@ -4,8 +4,8 @@ import { router } from "@inertiajs/react";
 
 // ── Scroll Reveal ─────────────────────────────────────────────────────────────
 function useScrollReveal(ready: boolean) {
-  useEffect(() => {
-    if (!ready) return;
+  useEffect(() => { 
+    if (!ready) return; 
     let lastScrollY = window.scrollY;
     const getTransform = (el: HTMLElement, directionDown: boolean) => {
       if (el.classList.contains("from-left"))  return "translateX(-50px)";
