@@ -8,7 +8,7 @@ export default function Welcome({
 }) {
     const { auth } = usePage().props;
  
-    return (
+    return ( 
         <>
             <Head title="Welcome">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
