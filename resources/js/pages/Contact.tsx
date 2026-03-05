@@ -3,8 +3,8 @@ import { useState, useEffect, useRef } from "react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type ContactPlatform = "whatsapp"|"email"|"github"|"linkedin"|"twitter"|"instagram"|"telegram"|"custom";
-
-interface ContactItem {
+ 
+interface ContactItem { 
   id: number;
   platform: ContactPlatform;
   label: string;
