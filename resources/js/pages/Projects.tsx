@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 
 interface Stack {
   id: number;
-  label: string;
+  label: string; 
   icon: string;
 }
 
