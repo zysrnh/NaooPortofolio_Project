@@ -150,7 +150,7 @@ function TechStack() {
   const categories=Array.from(new Set(stacks.map(s=>s.category)));
   useEffect(()=>{setActiveTab(0);},[categories.length]);
   const switchTab=(i:number)=>{
-    if(i===activeTab) return;
+    if(i===activeTab) return; 
     setAnimating(true); setTimeout(()=>{setActiveTab(i);setAnimating(false);},180);
   };
   const currentTechs=stacks.filter(s=>s.category===categories[activeTab]);
