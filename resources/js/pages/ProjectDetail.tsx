@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { router } from "@inertiajs/react";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/Navbar"; 
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 const IconArrowLeft = () => (
