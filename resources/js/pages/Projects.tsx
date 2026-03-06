@@ -21,7 +21,7 @@ interface Project {
   stacks: Stack[];
   features: { title: string; desc: string }[];
   demoUrl: string | null;
-  githubUrl: string | null;
+  githubUrl: string | null; 
   order: number;
   visible: boolean;
 }
