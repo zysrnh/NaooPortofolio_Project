@@ -15,7 +15,7 @@ interface ContactItem {
 }
 
 type FormState = {
-  name: string;
+  name: string; 
   email: string;
   subject: string;
   message: string;
