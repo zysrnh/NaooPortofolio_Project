@@ -155,7 +155,7 @@ function TechStack() {
   };
   const currentTechs=stacks.filter(s=>s.category===categories[activeTab]);
   const tabLabels=categories.length>0?categories:["Frontend","Backend","Tools","AI Tools"];
-  return (
+  return ( 
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
       <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Tech Stack</h2>
       <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
