@@ -4,7 +4,7 @@ import { router } from "@inertiajs/react";
 
 // ── Scroll Reveal ─────────────────────────────────────────────────────────────
 function useScrollReveal(ready: boolean) {
-  useEffect(() => { 
+  useEffect(() => {  
     if (!ready) return; 
     let lastScrollY = window.scrollY;
     const getTransform = (el: HTMLElement, directionDown: boolean) => {
