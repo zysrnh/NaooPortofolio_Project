@@ -23,7 +23,7 @@ interface Project {
   demoUrl: string | null;
   githubUrl: string | null; 
   order: number;
-  visible: boolean;
+  visible: boolean; 
 }
 
 const STATUS_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
