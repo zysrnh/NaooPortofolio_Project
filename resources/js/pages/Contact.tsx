@@ -7,11 +7,11 @@ type ContactPlatform = "whatsapp"|"email"|"github"|"linkedin"|"twitter"|"instagr
 interface ContactItem { 
   id: number;
   platform: ContactPlatform;
-  label: string;
+  label: string; 
   value: string;
   url: string;
   is_visible: boolean;
-  icon_color: string;
+  icon_color: string; 
 }
 
 type FormState = {
