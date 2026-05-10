@@ -42,6 +42,7 @@ const DbIcon = ({ src, size = 16, alt = "" }: { src: string; size?: number; alt?
 );
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+type Theme = 'naoo' | 'retro';
 interface ProjectItem {
   id: number; slug: string; title: string; desc: string; status: string;
   stacks: { id: number; label: string; icon: string }[];
@@ -322,14 +323,12 @@ function getActivityMeta(status: string): { icon: React.ReactNode; color: string
 }
 
 // ── THEME SELECTOR CARD ──────────────────────────────────────────────────────
-function ThemeSelectorCard() {
-  const themes = [
-    { id: 'naoo',   label: 'Naoo',   bg: '#F8F3EA', primary: '#0B1957', accent: '#9ECCFA' },
-    { id: 'gold',   label: 'Gold',   bg: '#ffffff', primary: '#1a1a1a', accent: '#fbbf24' },
-    { id: 'fiery',  label: 'Fiery',  bg: '#0f172a', primary: '#f43f5e', accent: '#fb7185' },
-    { id: 'mystic', label: 'Mystic', bg: '#fbfcfc', primary: '#111835', accent: '#f8d613' },
-  ];
+const THEME_OPTIONS = [
+  { id: 'naoo',  label: 'Naoo',  desc: 'Classic Blue',      bg: '#F8F3EA', primary: '#0B1957', accent: '#9ECCFA' },
+  { id: 'retro', label: 'Retro', desc: 'American Vintage',  bg: '#e8d8c9', primary: '#4b607f', accent: '#f3701e' },
+];
 
+function ThemeSelectorCard() {
   const [current, setCurrent] = useState(localStorage.getItem('nb-theme') || 'naoo');
 
   const applyTheme = (id: string) => {
@@ -345,29 +344,36 @@ function ThemeSelectorCard() {
         <div style={{ color: "var(--nb-primary)" }}><IconPalette size={14} /></div>
         <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--nb-primary)", margin: 0 }}>Global UI Theme</p>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {themes.map(t => {
+      <div className="grid grid-cols-2 gap-3">
+        {THEME_OPTIONS.map(t => {
           const isActive = current === t.id;
           return (
             <button key={t.id} onClick={() => applyTheme(t.id)}
               style={{
-                border: "3px solid var(--nb-primary)",
+                border: isActive ? `3px solid ${t.primary}` : '2px solid rgba(0,0,0,0.15)',
                 background: t.bg,
-                padding: "8px",
+                padding: "10px 12px",
                 cursor: "pointer",
-                display: "flex", flexDirection: "column", gap: 6,
-                boxShadow: isActive ? "4px 4px 0 var(--nb-primary)" : "2px 2px 0 rgba(0,0,0,0.1)",
-                transform: isActive ? "translate(-2px,-2px)" : "none",
+                display: "flex", alignItems: "center", gap: 10,
+                boxShadow: isActive ? `4px 4px 0 ${t.primary}` : '2px 2px 0 rgba(0,0,0,0.1)',
+                transform: isActive ? 'translate(-2px,-2px)' : 'none',
                 transition: "all 0.1s ease",
                 position: "relative",
+                textAlign: 'left',
               }}>
-              <div style={{ display: "flex", gap: 2 }}>
-                <div style={{ width: 12, height: 12, background: t.primary, border: "1px solid rgba(0,0,0,0.1)" }} />
-                <div style={{ width: 12, height: 12, background: t.accent, border: "1px solid rgba(0,0,0,0.1)" }} />
+              {/* Palette blocks */}
+              <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+                <div style={{ width: 10, height: 28, background: t.primary }} />
+                <div style={{ width: 10, height: 28, background: t.bg, border: '1px solid rgba(0,0,0,0.1)' }} />
+                <div style={{ width: 10, height: 28, background: t.accent }} />
               </div>
-              <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", color: t.id === 'fiery' ? '#fff' : '#000', letterSpacing: "0.05em" }}>{t.label}</span>
+              {/* Labels */}
+              <div>
+                <div style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", color: t.primary, letterSpacing: '0.07em' }}>{t.label}</div>
+                <div style={{ fontSize: 8, color: t.primary, opacity: 0.6, letterSpacing: '0.04em', marginTop: 2 }}>{t.desc}</div>
+              </div>
               {isActive && (
-                <div style={{ position: "absolute", top: -6, right: -6, background: "var(--nb-primary)", color: "var(--nb-accent)", width: 16, height: 16, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%", border: "2px solid var(--nb-primary)", fontSize: 8 }}>
+                <div style={{ position: "absolute", top: -6, right: -6, background: t.primary, color: t.bg, width: 16, height: 16, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%", border: `2px solid ${t.bg}` }}>
                   <IconCheck size={10} />
                 </div>
               )}
@@ -1147,7 +1153,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
             {stacks.filter(s => s.is_visible).slice(0, 14).map((s, i) => (
               <div key={i} title={s.name}
                 style={{ width: 32, height: 32, border: "2px solid var(--nb-accent),0.3)", background: "var(--nb-accent),0.08)", display: "flex", alignItems: "center", justifyContent: "center", transition: "border-color 0.1s, background 0.1s" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#9ECCFA"; (e.currentTarget as HTMLElement).style.background = "var(--nb-accent),0.2)"; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--nb-accent)"; (e.currentTarget as HTMLElement).style.background = "var(--nb-accent),0.2)"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--nb-accent),0.3)"; (e.currentTarget as HTMLElement).style.background = "var(--nb-accent),0.08)"; }}>
                 <DbIcon src={s.icon} size={18} />
               </div>
@@ -1356,7 +1362,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
   return (
     <div>
       {showDetailMobile && selected && (
-        <div className="lg:hidden" style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(11,25,87,0.5)", backdropFilter: "blur(2px)", animation: "fadeIn 0.2s ease both" }} onClick={() => { setSelected(null); setShowDetailMobile(false); }}>
+        <div className="lg:hidden" style={{ position: "fixed", inset: 0, zIndex: 60, background: "var(--nb-primary),0.5)", backdropFilter: "blur(2px)", animation: "fadeIn 0.2s ease both" }} onClick={() => { setSelected(null); setShowDetailMobile(false); }}>
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, maxHeight: "90vh", overflowY: "auto", animation: "slideUpFull 0.35s cubic-bezier(0.16,1,0.3,1) both" }} onClick={e => e.stopPropagation()}>
             <DetailPanel />
           </div>
@@ -1364,19 +1370,19 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
       )}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 18, flexWrap: "wrap", gap: 10 }}>
         <div>
-          <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.3em", color: "#9ECCFA", margin: "0 0 3px" }}>Kotak Masuk</p>
-          <h2 style={{ fontWeight: 900, fontSize: 22, textTransform: "uppercase", color: "#0B1957", margin: 0 }}>Messages</h2>
+          <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.3em", color: "var(--nb-accent)", margin: "0 0 3px" }}>Kotak Masuk</p>
+          <h2 style={{ fontWeight: 900, fontSize: 22, textTransform: "uppercase", color: "var(--nb-primary)", margin: 0 }}>Messages</h2>
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button onClick={fetchAll}
-            style={{ display: "flex", alignItems: "center", gap: 5, border: "4px solid #0B1957", background: "#F8F3EA", color: "#0B1957", padding: "7px 13px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: "pointer", boxShadow: "4px 4px 0 #0B1957", fontFamily: "inherit", transition: "transform 0.08s ease, box-shadow 0.08s ease" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #0B1957"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "4px 4px 0 #0B1957"; }}>
+            style={{ display: "flex", alignItems: "center", gap: 5, border: "4px solid var(--nb-primary)", background: "var(--nb-bg)", color: "var(--nb-primary)", padding: "7px 13px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: "pointer", boxShadow: "4px 4px 0 var(--nb-primary)", fontFamily: "inherit", transition: "transform 0.08s ease, box-shadow 0.08s ease" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 var(--nb-primary)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "4px 4px 0 var(--nb-primary)"; }}>
             <IconRefresh size={13} /> Refresh
           </button>
           {stats.unread > 0 && (
             <button onClick={handleMarkAllRead} disabled={markingAll}
-              style={{ display: "flex", alignItems: "center", gap: 5, border: "4px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "7px 13px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: markingAll ? "wait" : "pointer", boxShadow: "4px 4px 0 #9ECCFA", fontFamily: "inherit", opacity: markingAll ? 0.6 : 1 }}>
+              style={{ display: "flex", alignItems: "center", gap: 5, border: "4px solid var(--nb-primary)", background: "var(--nb-primary)", color: "var(--nb-accent)", padding: "7px 13px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: markingAll ? "wait" : "pointer", boxShadow: "4px 4px 0 var(--nb-accent)", fontFamily: "inherit", opacity: markingAll ? 0.6 : 1 }}>
               <IconCheck size={13} /> Tandai Terbaca
             </button>
           )}
@@ -1384,20 +1390,20 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
       </div>
       <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
         {[
-          { label: "Total",    value: stats.total,  bg: "#0B1957", fg: "#9ECCFA" },
-          { label: "Unread",   value: stats.unread, bg: stats.unread > 0 ? "#FFE8A0" : "#F8F3EA", fg: "#0B1957" },
-          { label: "Hari Ini", value: stats.today,  bg: "#9ECCFA", fg: "#0B1957" },
+          { label: "Total",    value: stats.total,  bg: "var(--nb-primary)", fg: "var(--nb-accent)" },
+          { label: "Unread",   value: stats.unread, bg: stats.unread > 0 ? "var(--nb-accent)" : "var(--nb-bg)", fg: stats.unread > 0 ? "var(--nb-primary)" : "var(--nb-primary)" },
+          { label: "Hari Ini", value: stats.today,  bg: "var(--nb-accent)", fg: "var(--nb-primary)" },
         ].map((s, i) => (
-          <div key={i} style={{ border: "4px solid #0B1957", background: s.bg, color: s.fg, padding: "10px 16px", boxShadow: "4px 4px 0 #0B1957", minWidth: 80, flex: "1 1 80px", animation: `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.07}s both` }}>
+          <div key={i} style={{ border: "4px solid var(--nb-primary)", background: s.bg, color: s.fg, padding: "10px 16px", boxShadow: "4px 4px 0 var(--nb-primary)", minWidth: 80, flex: "1 1 80px", animation: `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.07}s both` }}>
             <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.7, marginBottom: 3 }}>{s.label}</p>
             <p style={{ fontWeight: 900, fontSize: 26, lineHeight: 1, fontVariantNumeric: "tabular-nums", margin: 0 }}>{s.value}</p>
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", border: "4px solid #0B1957", marginBottom: 14, overflow: "hidden", boxShadow: "4px 4px 0 #0B1957" }}>
+      <div style={{ display: "flex", border: "4px solid var(--nb-primary)", marginBottom: 14, overflow: "hidden", boxShadow: "4px 4px 0 var(--nb-primary)" }}>
         {([ ["all","Semua",messages.length], ["unread","Belum",messages.filter(m=>!m.is_read).length], ["read","Dibaca",messages.filter(m=>m.is_read).length] ] as const).map(([key, label, count]) => (
           <button key={key} onClick={() => setFilterTab(key)}
-            style={{ flex: 1, padding: "10px 6px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", borderRight: key !== "read" ? "4px solid #0B1957" : "none", borderLeft: "none", borderTop: "none", borderBottom: "none", background: filterTab === key ? "#0B1957" : "#F8F3EA", color: filterTab === key ? "#9ECCFA" : "#0B1957", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }}>
+            style={{ flex: 1, padding: "10px 6px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", borderRight: key !== "read" ? "4px solid var(--nb-primary)" : "none", borderLeft: "none", borderTop: "none", borderBottom: "none", background: filterTab === key ? "var(--nb-primary)" : "var(--nb-bg)", color: filterTab === key ? "var(--nb-accent)" : "var(--nb-primary)", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }}>
             {label}
             <span style={{ background: filterTab === key ? "var(--nb-accent),0.2)" : "var(--nb-accent-light)", color: filterTab === key ? "#9ECCFA" : "#0B1957", border: `2px solid ${filterTab === key ? "#9ECCFA" : "#0B1957"}`, fontSize: 9, fontWeight: 900, padding: "1px 5px", minWidth: 18, textAlign: "center" }}>{count}</span>
           </button>
@@ -1499,9 +1505,9 @@ const NavItems = ({ activeNav, unreadCount, onNavClick, onClose }: { activeNav: 
         {item.icon}
         {item.label}
         {item.key === "messages" && unreadCount > 0 ? (
-          <span style={{ marginLeft: "auto", background: "#9ECCFA", color: "#0B1957", border: "2px solid #9ECCFA", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
+          <span style={{ marginLeft: "auto", background: "var(--nb-accent)", color: "var(--nb-primary)", border: "2px solid var(--nb-accent)", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
         ) : activeNav === item.key ? (
-          <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "#9ECCFA", display: "inline-block", flexShrink: 0 }} />
+          <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "var(--nb-accent)", display: "inline-block", flexShrink: 0 }} />
         ) : null}
       </div>
     ))}
@@ -1509,9 +1515,9 @@ const NavItems = ({ activeNav, unreadCount, onNavClick, onClose }: { activeNav: 
 );
 
 const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => void; onLogout: () => void }) => (
-  <div style={{ borderTop: "4px solid #9ECCFA", padding: "20px", position: "relative", zIndex: 10 }}>
+  <div style={{ borderTop: "4px solid var(--nb-accent)", padding: "20px", position: "relative", zIndex: 10 }}>
     <div style={{ marginBottom: 12 }}>
-      <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
+      <p style={{ fontWeight: 900, fontSize: 11, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
       <p style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: "2px 0 0" }}>{user?.email ?? "yusron@dev.com"}</p>
     </div>
     <button className="home-btn-sidebar" onClick={onHome}><IconHome size={13} /> Homepage</button>
@@ -1553,12 +1559,12 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
           display:flex; align-items:center; gap:10px;
           padding:12px 16px; font-weight:800; font-size:13px;
           text-transform:uppercase; letter-spacing:0.08em;
-          color:#9ECCFA; cursor:pointer; border-left:4px solid transparent;
+          color: var(--nb-accent); cursor:pointer; border-left:4px solid transparent;
           transition:background 0.12s ease, color 0.12s ease, border-color 0.12s ease, padding-left 0.15s ease;
           animation: slideLeft 0.4s cubic-bezier(0.16,1,0.3,1) both;
         }
-        .nav-item:hover  { background:var(--nb-accent),0.1); color:#F8F3EA; padding-left:22px; }
-        .nav-item.active { background:var(--nb-accent),0.15); color:#F8F3EA; border-left-color:#9ECCFA; padding-left:22px; }
+        .nav-item:hover  { background:var(--nb-accent),0.1); color:var(--nb-primary); padding-left:22px; }
+        .nav-item.active { background:var(--nb-accent),0.15); color:var(--nb-primary); border-left-color:var(--nb-accent); padding-left:22px; }
 
         .home-btn-sidebar {
           display:flex; align-items:center; gap:8px; width:100%;
@@ -1738,22 +1744,22 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
 
             {activeNav === "profile" && (
               <div className="content-fade space-y-5 sm:space-y-6 max-w-2xl">
-                <h2 className="font-black text-2xl uppercase text-[#0B1957]">Profile</h2>
-                <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] overflow-hidden" style={{ animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both" }}>
-                  <div className="bg-[#9ECCFA] h-16 sm:h-20 border-b-4 border-[#0B1957] relative">
-                    <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(45deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 12px)" }} />
+                <h2 className="font-black text-2xl uppercase text-[var(--nb-primary)]">Profile</h2>
+                <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] overflow-hidden" style={{ animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both" }}>
+                  <div className="bg-[var(--nb-accent)] h-16 sm:h-20 border-b-4 border-[var(--nb-primary)] relative">
+                    <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(45deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 12px)" }} />
                   </div>
                   <div className="px-6 sm:px-8 pb-6 sm:pb-8 relative -mt-8">
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 border-4 border-[#F8F3EA] bg-[#0B1957] flex items-center justify-center font-black text-xl sm:text-2xl text-[#9ECCFA] mb-4" style={{ boxShadow: "4px 4px 0 #9ECCFA" }}>
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 border-4 border-[var(--nb-bg)] bg-[var(--nb-primary)] flex items-center justify-center font-black text-xl sm:text-2xl text-[var(--nb-accent)] mb-4" style={{ boxShadow: "4px 4px 0 var(--nb-accent)" }}>
                       {(user?.name ?? "Y")[0]}
                     </div>
-                    <h3 className="font-black text-xl sm:text-2xl uppercase text-[#F8F3EA] mb-1">{user?.name ?? "Zaki Yusron"}</h3>
-                    <p className="font-semibold text-xs sm:text-sm text-[#9ECCFA] mb-5 sm:mb-6">{user?.email ?? "yusron@dev.com"}</p>
+                    <h3 className="font-black text-xl sm:text-2xl uppercase text-[var(--nb-bg)] mb-1">{user?.name ?? "Zaki Yusron"}</h3>
+                    <p className="font-semibold text-xs sm:text-sm text-[var(--nb-accent-light)] mb-5 sm:mb-6">{user?.email ?? "yusron@dev.com"}</p>
                     <div className="grid grid-cols-2 gap-2 sm:gap-3">
                       {[{ label: "Role", value: "IT Programmer" }, { label: "Focus", value: "Fullstack Web" }, { label: "Stack", value: "React + Laravel" }, { label: "Status", value: "Open to Work" }].map((item, i) => (
-                        <div key={i} className="border-2 border-[#9ECCFA] p-2 sm:p-3" style={{ animation: `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${0.2 + i * 0.06}s both` }}>
-                          <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest mb-1">{item.label}</p>
-                          <p className="font-bold text-xs sm:text-sm text-[#F8F3EA]">{item.value}</p>
+                        <div key={i} className="border-2 border-[var(--nb-accent)] p-2 sm:p-3" style={{ animation: `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${0.2 + i * 0.06}s both` }}>
+                          <p className="font-black text-xs text-[var(--nb-accent)] uppercase tracking-widest mb-1">{item.label}</p>
+                          <p className="font-bold text-xs sm:text-sm text-[var(--nb-bg)]">{item.value}</p>
                         </div>
                       ))}
                     </div>

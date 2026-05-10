@@ -59,7 +59,7 @@ const STATUS_CFG: Record<string,{bg:string;fg:string}> = {
   "Planning":    {bg:"var(--nb-bg)", fg:"var(--nb-primary)"},
 };
 
-const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
+const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
 
 const CROP_ASPECT_W = 16;
 const CROP_ASPECT_H = 9;
@@ -174,13 +174,13 @@ const STYLES = `
   .pc2-input {
     width:100%; border:4px solid var(--nb-primary);
     padding:10px 14px; font-weight:700; font-size:13px;
-    color:var(--nb-primary); background:white; outline:none;
+    color:var(--nb-primary); background:var(--nb-bg); outline:none;
     font-family:inherit; box-sizing:border-box;
     transition:box-shadow 0.15s ease, transform 0.12s ease;
   }
   .pc2-input:focus { box-shadow:4px 4px 0 var(--nb-accent); transform:translate(-1px,-1px); }
-  .pc2-input.err { border-color:#e53e3e; background:#fff5f5; }
-  .pc2-input::placeholder { color:rgba(11,25,87,0.3); font-weight:600; }
+  .pc2-input.err { border-color:#ef4444; background:var(--nb-bg); }
+  .pc2-input::placeholder { color:var(--nb-primary),0.3); font-weight:600; }
   .pc2-input[type=textarea], textarea.pc2-input { resize:vertical; }
 
   /* ── Thumb ── */
@@ -197,7 +197,7 @@ const STYLES = `
 
   /* ── Feature row ── */
   .pc2-feat { border:3px solid var(--nb-primary); padding:12px 14px; background:var(--nb-bg); box-shadow:3px 3px 0 var(--nb-primary); display:flex; gap:10px; align-items:flex-start; transition:transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; animation:pcSlideUp 0.3s cubic-bezier(0.16,1,0.3,1); }
-  .pc2-feat:hover { background:#EAF4FF; transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--nb-primary); }
+  .pc2-feat:hover { background:var(--nb-accent-light); transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--nb-primary); }
 
   /* ── Action buttons in card ── */
   .pc2-action {

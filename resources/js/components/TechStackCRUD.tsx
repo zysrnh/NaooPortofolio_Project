@@ -30,12 +30,12 @@ const CATEGORY_STYLE: Record<string, { bg: string; text: string; border: string 
   Database: { bg: "bg-[var(--nb-accent-light)]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" },
   DevOps:   { bg: "bg-[var(--nb-bg)]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" },
   Language: { bg: "bg-[var(--nb-primary)]", text: "text-[var(--nb-accent)]", border: "border-[var(--nb-accent)]"  },
-  Other:    { bg: "bg-[#E8E8E8]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" },
+  Other:    { bg: "bg-[var(--nb-accent-light)]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" },
 };
 
 // Fallback style untuk kategori custom
 const getCategoryStyle = (cat: string) =>
-  CATEGORY_STYLE[cat] ?? { bg: "bg-[#E8E8E8]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" };
+  CATEGORY_STYLE[cat] ?? { bg: "bg-[var(--nb-accent-light)]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" };
 
 // ── CSRF Helper ──────────────────────────────────────────────────────────────
 function getCsrf(): string {
@@ -103,7 +103,7 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
+const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 function Toast({ message, type }: { message: string; type: "success" | "error" }) {
@@ -233,7 +233,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
               value={name}
               onChange={e => { setName(e.target.value); setNameErr(""); }}
               placeholder="Contoh: React, Laravel, Python..."
-              className={`w-full border-4 ${nameErr ? "border-red-500" : "border-[var(--nb-primary)]"} bg-white px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow`}
+              className={`w-full border-4 ${nameErr ? "border-red-500" : "border-[var(--nb-primary)]"} bg-[var(--nb-bg)] px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow`}
             />
             {nameErr && <p className="text-red-500 font-bold text-xs mt-1">{nameErr}</p>}
           </div>
@@ -268,14 +268,14 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
                   onChange={e => { setCustomCat(e.target.value); setCatErr(""); }}
                   placeholder="Contoh: Platform, Mobile, AI Tools..."
                   autoFocus
-                  className={`w-full border-4 ${catErr ? "border-red-500" : "border-[var(--nb-primary)]"} bg-white px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow`}
+                  className={`w-full border-4 ${catErr ? "border-red-500" : "border-[var(--nb-primary)]"} bg-[var(--nb-bg)] px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow`}
                 />
                 {catErr && <p className="text-red-500 font-bold text-xs mt-1">{catErr}</p>}
                 {/* Preview badge kategori */}
                 {customCat.trim() && (
                   <div className="mt-2 flex items-center gap-2">
                     <span className="font-black text-[10px] text-[var(--nb-primary)] opacity-50 uppercase tracking-widest">Preview:</span>
-                    <span className="border-2 border-[var(--nb-primary)] bg-[#E8E8E8] px-2 py-0.5 font-black text-xs uppercase text-[var(--nb-primary)]">
+                    <span className="border-2 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] px-2 py-0.5 font-black text-xs uppercase text-[var(--nb-primary)]">
                       {customCat.trim()}
                     </span>
                   </div>
@@ -290,7 +290,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
               Upload Icon <span className="text-red-500">*</span>
             </label>
             <div
-              className={`border-4 border-dashed ${dragging ? "border-[var(--nb-accent)] bg-[var(--nb-accent-light)]" : iconErr ? "border-red-500 bg-red-50" : "border-[var(--nb-primary)] bg-white"} p-6 flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-[var(--nb-accent-light)]`}
+              className={`border-4 border-dashed ${dragging ? "border-[var(--nb-accent)] bg-[var(--nb-accent-light)]" : iconErr ? "border-red-500 bg-red-50" : "border-[var(--nb-primary)] bg-[var(--nb-bg)]"} p-6 flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-[var(--nb-accent-light)]`}
               onClick={() => fileRef.current?.click()}
               onDragOver={e => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
@@ -330,7 +330,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
               value={icon.startsWith("data:") ? "" : icon}
               onChange={e => { setIcon(e.target.value); setIconPreview(e.target.value); setIconErr(""); }}
               placeholder="https://example.com/icon.png"
-              className="w-full border-4 border-[var(--nb-primary)] bg-white px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow"
+              className="w-full border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow"
             />
           </div>
         </div>
@@ -358,7 +358,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
 
 // Helper kecil biar gak typo di JSX
 function getategoryStyle(cat: string) {
-  return CATEGORY_STYLE[cat] ?? { bg: "bg-[#E8E8E8]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" };
+  return CATEGORY_STYLE[cat] ?? { bg: "bg-[var(--nb-accent-light)]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" };
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────

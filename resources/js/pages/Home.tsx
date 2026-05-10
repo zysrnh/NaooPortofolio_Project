@@ -604,7 +604,7 @@ export default function Home() {
         @keyframes slideLeft{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
         @keyframes slideRight{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
         @keyframes shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
-        body{background-color:var(--nb-accent-light);}
+        body{background-color:var(--nb-bg); color:var(--nb-primary);}
         .anim-navbar{animation:slideDown 0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both;}
         .anim-hero-img{animation:slideLeft 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both;}
         .anim-hero-text{animation:slideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s both;}
