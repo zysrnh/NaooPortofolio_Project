@@ -112,7 +112,7 @@ export default function Login() {
 
         .show-btn {
           display:flex; align-items:center; gap:5px;
-          border:2px solid #0B1957; background:#D1E8FF; padding:4px 10px;
+          border:2px solid #0B1957; background:var(--nb-accent-light); padding:4px 10px;
           font-size:11px; font-weight:800; text-transform:uppercase; color:#0B1957;
           cursor:pointer; letter-spacing:0.05em; font-family:inherit;
           transition:background 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
@@ -126,7 +126,7 @@ export default function Login() {
           background:#FFD1D1; border:2px solid #0B1957; padding:2px 8px;
         }
 
-        .progress-wrap { height:4px; background:#D1E8FF; }
+        .progress-wrap { height:4px; background:var(--nb-accent-light); }
         .progress-fill {
           height:100%; background:#9ECCFA; position:relative; overflow:hidden;
           transition:width 0.1s linear;
@@ -139,7 +139,7 @@ export default function Login() {
       `}</style>
 
       <div
-        className="min-h-screen bg-[#D1E8FF] flex flex-col items-center justify-center px-4 relative overflow-hidden"
+        className="min-h-screen bg-[var(--nb-accent-light)] flex flex-col items-center justify-center px-4 relative overflow-hidden"
         style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}
       >
         <div className="grid-bg" />
@@ -231,7 +231,7 @@ export default function Login() {
             </div>
 
             {/* Seeded account hint */}
-            <div className="p-4" style={{ border: "3px solid #0B1957", background: "#D1E8FF", boxShadow: "4px 4px 0 #0B1957" }}>
+            <div className="p-4" style={{ border: "3px solid #0B1957", background: "var(--nb-accent-light)", boxShadow: "4px 4px 0 #0B1957" }}>
               <div className="flex items-center gap-2 mb-3">
                 <IconKey />
                 <p className="font-black uppercase text-xs text-[#0B1957] tracking-widest">Seeded Account</p>

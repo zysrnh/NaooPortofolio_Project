@@ -27,7 +27,7 @@ const PRESET_CATEGORIES = ["Frontend", "Backend", "Database", "DevOps", "Languag
 const CATEGORY_STYLE: Record<string, { bg: string; text: string; border: string }> = {
   Frontend: { bg: "bg-[#9ECCFA]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
   Backend:  { bg: "bg-[#FFE8A0]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
-  Database: { bg: "bg-[#D1E8FF]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
+  Database: { bg: "bg-[var(--nb-accent-light)]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
   DevOps:   { bg: "bg-[#F8F3EA]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
   Language: { bg: "bg-[#0B1957]", text: "text-[#9ECCFA]", border: "border-[#9ECCFA]"  },
   Other:    { bg: "bg-[#E8E8E8]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
@@ -290,7 +290,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
               Upload Icon <span className="text-red-500">*</span>
             </label>
             <div
-              className={`border-4 border-dashed ${dragging ? "border-[#9ECCFA] bg-[#D1E8FF]" : iconErr ? "border-red-500 bg-red-50" : "border-[#0B1957] bg-white"} p-6 flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-[#D1E8FF]`}
+              className={`border-4 border-dashed ${dragging ? "border-[#9ECCFA] bg-[var(--nb-accent-light)]" : iconErr ? "border-red-500 bg-red-50" : "border-[#0B1957] bg-white"} p-6 flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-[var(--nb-accent-light)]`}
               onClick={() => fileRef.current?.click()}
               onDragOver={e => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
@@ -298,7 +298,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
             >
               {iconPreview ? (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-20 h-20 border-4 border-[#0B1957] bg-[#D1E8FF] shadow-[4px_4px_0_#0B1957] overflow-hidden">
+                  <div className="w-20 h-20 border-4 border-[#0B1957] bg-[var(--nb-accent-light)] shadow-[4px_4px_0_#0B1957] overflow-hidden">
                     <img src={iconPreview} alt="preview"
                       className="w-full h-full object-cover"
                       onError={e => { (e.target as HTMLImageElement).src = FALLBACK_ICON; }} />
@@ -464,7 +464,7 @@ export default function TechStackCRUD() {
         .stack-card:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 #9ECCFA, 11px 11px 0 #0B1957; }
 
         .icon-box {
-          width: 80px; height: 80px; border: 3px solid #0B1957; background: #D1E8FF;
+          width: 80px; height: 80px; border: 3px solid #0B1957; background: var(--nb-accent-light);
           overflow: hidden; flex-shrink: 0; box-shadow: 3px 3px 0 #0B1957;
           transition: transform 0.15s ease;
         }
@@ -501,7 +501,7 @@ export default function TechStackCRUD() {
         .add-btn:active { transform: translate(2px,2px);  box-shadow: 2px 2px 0 #9ECCFA; }
 
         .edit-btn {
-          border: 2px solid #0B1957; background: #D1E8FF; padding: 6px 10px;
+          border: 2px solid #0B1957; background: var(--nb-accent-light); padding: 6px 10px;
           font-weight: 900; font-size: 11px; text-transform: uppercase; color: #0B1957;
           cursor: pointer; box-shadow: 2px 2px 0 #0B1957;
           display: flex; align-items: center; gap: 4px;
@@ -518,7 +518,7 @@ export default function TechStackCRUD() {
         }
         .del-btn:hover { transform: translate(1px,1px); box-shadow: 1px 1px 0 #0B1957; }
 
-        .skeleton { background: #D1E8FF; animation: pulse 1.2s ease infinite; }
+        .skeleton { background: var(--nb-accent-light); animation: pulse 1.2s ease infinite; }
       `}</style>
 
       {/* ── HEADER ── */}

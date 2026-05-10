@@ -54,9 +54,9 @@ const EMPTY_FORM: ProjectData = {
 };
 const STATUS_OPTS = ["Hosted","In Progress","Planning"] as const;
 const STATUS_CFG: Record<string,{bg:string;fg:string}> = {
-  "Hosted":      {bg:"#9ECCFA", fg:"#0B1957"},
-  "In Progress": {bg:"#FFE8A0", fg:"#0B1957"},
-  "Planning":    {bg:"#F8F3EA", fg:"#0B1957"},
+  "Hosted":      {bg:"var(--nb-accent)", fg:"var(--nb-primary)"},
+  "In Progress": {bg:"var(--nb-secondary)", fg:"var(--nb-primary)"},
+  "Planning":    {bg:"var(--nb-bg)", fg:"var(--nb-primary)"},
 };
 
 const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
@@ -105,110 +105,110 @@ const STYLES = `
   @keyframes pcCardIn    { from{opacity:0;transform:translateY(24px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
 
   .pc2-skeleton {
-    background:linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%);
+    background:linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%);
     background-size:200% 100%;
     animation:pcShimmer 1.5s ease infinite, pcPulse 1.5s ease infinite;
-    border:3px solid #0B1957;
+    border:3px solid var(--nb-primary);
   }
 
   /* ── Project card ── */
   .pc2-card {
-    border:4px solid #0B1957;
-    background:#F8F3EA;
-    box-shadow:5px 5px 0 #0B1957;
+    border:4px solid var(--nb-primary);
+    background:var(--nb-bg);
+    box-shadow:5px 5px 0 var(--nb-primary);
     transition:transform 0.22s cubic-bezier(0.16,1,0.3,1), box-shadow 0.22s cubic-bezier(0.16,1,0.3,1);
   }
   .pc2-card:hover {
     transform:translate(-3px,-3px);
-    box-shadow:8px 8px 0 #9ECCFA, 10px 10px 0 #0B1957;
+    box-shadow:8px 8px 0 var(--nb-accent), 10px 10px 0 var(--nb-primary);
   }
   .pc2-card.pc2-hidden {
     opacity:0.48;
-    box-shadow:3px 3px 0 #0B1957;
+    box-shadow:3px 3px 0 var(--nb-primary);
   }
   .pc2-card.pc2-hidden:hover {
     transform:translate(-2px,-2px);
-    box-shadow:5px 5px 0 #0B1957;
+    box-shadow:5px 5px 0 var(--nb-primary);
     opacity:0.65;
   }
 
   /* ── Stack chip ── */
   .pc2-chip {
     display:inline-flex; align-items:center; gap:4px;
-    border:2px solid #0B1957; padding:3px 8px;
-    background:#D1E8FF; font-weight:800; font-size:10px;
-    text-transform:uppercase; letter-spacing:0.06em; color:#0B1957;
+    border:2px solid var(--nb-primary); padding:3px 8px;
+    background:var(--nb-accent-light); font-weight:800; font-size:10px;
+    text-transform:uppercase; letter-spacing:0.06em; color:var(--nb-primary);
     transition:transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
     cursor:default;
   }
-  .pc2-chip:hover { transform:translate(-1px,-1px); box-shadow:2px 2px 0 #0B1957; background:#9ECCFA; }
+  .pc2-chip:hover { transform:translate(-1px,-1px); box-shadow:2px 2px 0 var(--nb-primary); background:var(--nb-accent); }
 
   /* ── Stack select chip ── */
   .pc2-stack-sel {
     display:inline-flex; align-items:center; gap:5px;
-    border:2px solid #0B1957; padding:4px 10px;
-    background:#F8F3EA; font-weight:800; font-size:10px;
-    text-transform:uppercase; letter-spacing:0.06em; color:#0B1957;
-    cursor:pointer; box-shadow:2px 2px 0 #0B1957;
+    border:2px solid var(--nb-primary); padding:4px 10px;
+    background:var(--nb-bg); font-weight:800; font-size:10px;
+    text-transform:uppercase; letter-spacing:0.06em; color:var(--nb-primary);
+    cursor:pointer; box-shadow:2px 2px 0 var(--nb-primary);
     transition:transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
   }
-  .pc2-stack-sel:hover { transform:translate(-1px,-1px); box-shadow:3px 3px 0 #0B1957; background:#D1E8FF; }
-  .pc2-stack-sel.active { background:#0B1957; color:#9ECCFA; box-shadow:2px 2px 0 #9ECCFA; }
-  .pc2-stack-sel.active:hover { transform:translate(-1px,-1px); box-shadow:3px 3px 0 #9ECCFA; }
+  .pc2-stack-sel:hover { transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--nb-primary); background:var(--nb-accent-light); }
+  .pc2-stack-sel.active { background:var(--nb-primary); color:var(--nb-accent); box-shadow:2px 2px 0 var(--nb-accent); }
+  .pc2-stack-sel.active:hover { transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--nb-accent); }
 
   /* ── Filter tab ── */
   .pc2-tab {
     flex:1; padding:11px 8px; font-weight:900; font-size:11px;
     text-transform:uppercase; letter-spacing:0.1em;
-    border:none; border-right:4px solid #0B1957;
+    border:none; border-right:4px solid var(--nb-primary);
     cursor:pointer; font-family:inherit;
     display:flex; align-items:center; justify-content:center; gap:8px;
     transition:background 0.15s ease, color 0.15s ease;
   }
   .pc2-tab:last-child { border-right:none; }
-  .pc2-tab.active  { background:#0B1957; color:#9ECCFA; }
-  .pc2-tab:not(.active) { background:#F8F3EA; color:#0B1957; }
-  .pc2-tab:not(.active):hover { background:#D1E8FF; }
+  .pc2-tab.active  { background:var(--nb-primary); color:var(--nb-accent); }
+  .pc2-tab:not(.active) { background:var(--nb-bg); color:var(--nb-primary); }
+  .pc2-tab:not(.active):hover { background:var(--nb-accent-light); }
 
   /* ── Input ── */
   .pc2-input {
-    width:100%; border:4px solid #0B1957;
+    width:100%; border:4px solid var(--nb-primary);
     padding:10px 14px; font-weight:700; font-size:13px;
-    color:#0B1957; background:white; outline:none;
+    color:var(--nb-primary); background:white; outline:none;
     font-family:inherit; box-sizing:border-box;
     transition:box-shadow 0.15s ease, transform 0.12s ease;
   }
-  .pc2-input:focus { box-shadow:4px 4px 0 #9ECCFA; transform:translate(-1px,-1px); }
+  .pc2-input:focus { box-shadow:4px 4px 0 var(--nb-accent); transform:translate(-1px,-1px); }
   .pc2-input.err { border-color:#e53e3e; background:#fff5f5; }
   .pc2-input::placeholder { color:rgba(11,25,87,0.3); font-weight:600; }
   .pc2-input[type=textarea], textarea.pc2-input { resize:vertical; }
 
   /* ── Thumb ── */
-  .pc2-thumb { position:relative; overflow:hidden; border:3px solid #0B1957; box-shadow:3px 3px 0 #0B1957; transition:transform 0.15s ease, box-shadow 0.15s ease; }
-  .pc2-thumb:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 #0B1957; }
+  .pc2-thumb { position:relative; overflow:hidden; border:3px solid var(--nb-primary); box-shadow:3px 3px 0 var(--nb-primary); transition:transform 0.15s ease, box-shadow 0.15s ease; }
+  .pc2-thumb:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--nb-primary); }
   .pc2-thumb img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease; }
   .pc2-thumb:hover img { transform:scale(1.08); }
-  .pc2-thumb-del { position:absolute; top:3px; right:3px; width:20px; height:20px; background:#0B1957; border:2px solid #9ECCFA; color:#9ECCFA; display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; transition:opacity 0.15s ease; font-size:10px; }
+  .pc2-thumb-del { position:absolute; top:3px; right:3px; width:20px; height:20px; background:var(--nb-primary); border:2px solid var(--nb-accent); color:var(--nb-accent); display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; transition:opacity 0.15s ease; font-size:10px; }
   .pc2-thumb:hover .pc2-thumb-del { opacity:1; }
 
   /* ── Upload zone ── */
-  .pc2-upload { width:96px; height:68px; border:3px dashed #0B1957; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; gap:4px; transition:background 0.15s ease, transform 0.12s ease; }
-  .pc2-upload:hover { background:#D1E8FF; transform:translate(-1px,-1px); }
+  .pc2-upload { width:96px; height:68px; border:3px dashed var(--nb-primary); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; gap:4px; transition:background 0.15s ease, transform 0.12s ease; }
+  .pc2-upload:hover { background:var(--nb-accent-light); transform:translate(-1px,-1px); }
 
   /* ── Feature row ── */
-  .pc2-feat { border:3px solid #0B1957; padding:12px 14px; background:#F8F3EA; box-shadow:3px 3px 0 #0B1957; display:flex; gap:10px; align-items:flex-start; transition:transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; animation:pcSlideUp 0.3s cubic-bezier(0.16,1,0.3,1); }
-  .pc2-feat:hover { background:#EAF4FF; transform:translate(-1px,-1px); box-shadow:4px 4px 0 #0B1957; }
+  .pc2-feat { border:3px solid var(--nb-primary); padding:12px 14px; background:var(--nb-bg); box-shadow:3px 3px 0 var(--nb-primary); display:flex; gap:10px; align-items:flex-start; transition:transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; animation:pcSlideUp 0.3s cubic-bezier(0.16,1,0.3,1); }
+  .pc2-feat:hover { background:#EAF4FF; transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--nb-primary); }
 
   /* ── Action buttons in card ── */
   .pc2-action {
     display:inline-flex; align-items:center; justify-content:center; gap:5px;
-    border:3px solid #0B1957; padding:5px 10px;
+    border:3px solid var(--nb-primary); padding:5px 10px;
     font-weight:900; font-size:11px; text-transform:uppercase; letter-spacing:0.05em;
     cursor:pointer; font-family:inherit;
-    box-shadow:2px 2px 0 #0B1957;
+    box-shadow:2px 2px 0 var(--nb-primary);
     transition:transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease, color 0.1s ease;
   }
-  .pc2-action:hover:not(:disabled) { transform:translate(-1px,-1px); box-shadow:3px 3px 0 #0B1957; }
+  .pc2-action:hover:not(:disabled) { transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--nb-primary); }
   .pc2-action:disabled { opacity:0.5; cursor:not-allowed; }
 `;
 
@@ -216,7 +216,7 @@ const STYLES = `
 function Toast({ msg, ok, onDone }: { msg:string; ok:boolean; onDone:()=>void }) {
   useEffect(()=>{ const t=setTimeout(onDone,2800); return ()=>clearTimeout(t); },[]);
   return (
-    <div style={{position:"fixed",bottom:28,right:28,zIndex:999,display:"flex",alignItems:"center",gap:10,border:"4px solid #0B1957",background:ok?"#9ECCFA":"#ef4444",color:ok?"#0B1957":"white",padding:"12px 20px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",boxShadow:"6px 6px 0 #0B1957",maxWidth:320,animation:"pcToastIn 0.35s cubic-bezier(0.16,1,0.3,1)"}}>
+    <div style={{position:"fixed",bottom:28,right:28,zIndex:999,display:"flex",alignItems:"center",gap:10,border:"4px solid var(--nb-primary)",background:ok?"var(--nb-accent)":"#ef4444",color:ok?"var(--nb-primary)":"white",padding:"12px 20px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",boxShadow:"6px 6px 0 var(--nb-primary)",maxWidth:320,animation:"pcToastIn 0.35s cubic-bezier(0.16,1,0.3,1)"}}>
       {ok?<IconCheck/>:null}{msg}
     </div>
   );
@@ -242,10 +242,10 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
     const ctx = canvas.getContext("2d")!;
     const { scale, offsetX, offsetY } = stateRef.current;
     ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
-    ctx.fillStyle = "#0B1957"; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    ctx.fillStyle = "var(--nb-primary)"; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
     ctx.drawImage(img, offsetX, offsetY, img.naturalWidth * scale, img.naturalHeight * scale);
     ctx.save();
-    ctx.strokeStyle = "#9ECCFA"; ctx.lineWidth = 3; ctx.strokeRect(2, 2, CANVAS_W - 4, CANVAS_H - 4);
+    ctx.strokeStyle = "var(--nb-accent)"; ctx.lineWidth = 3; ctx.strokeRect(2, 2, CANVAS_W - 4, CANVAS_H - 4);
     ctx.strokeStyle = "rgba(158,204,250,0.25)"; ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(CANVAS_W/3,0);ctx.lineTo(CANVAS_W/3,CANVAS_H);
@@ -253,7 +253,7 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
     ctx.moveTo(0,CANVAS_H/3);ctx.lineTo(CANVAS_W,CANVAS_H/3);
     ctx.moveTo(0,CANVAS_H*2/3);ctx.lineTo(CANVAS_W,CANVAS_H*2/3);
     ctx.stroke();
-    const BL = 24; ctx.strokeStyle = "#9ECCFA"; ctx.lineWidth = 4;
+    const BL = 24; ctx.strokeStyle = "var(--nb-accent)"; ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.moveTo(2,2+BL);ctx.lineTo(2,2);ctx.lineTo(2+BL,2);
     ctx.moveTo(CANVAS_W-2-BL,2);ctx.lineTo(CANVAS_W-2,2);ctx.lineTo(CANVAS_W-2,2+BL);
@@ -307,24 +307,24 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
 
   return (
     <div style={{position:"fixed",inset:0,zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(11,25,87,0.85)",backdropFilter:"blur(6px)",padding:16}}>
-      <div style={{background:"#0B1957",border:"4px solid #9ECCFA",boxShadow:"16px 16px 0 #9ECCFA",width:"100%",maxWidth:540,display:"flex",flexDirection:"column"}}>
-        <div style={{borderBottom:"4px solid #9ECCFA",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div style={{display:"flex",alignItems:"center",gap:12,color:"#9ECCFA"}}><IconCrop /><span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.15em"}}>Crop Foto Project</span></div>
-          <button style={{color:"#9ECCFA",background:"transparent",border:"none",cursor:"pointer"}} onClick={onCancel}><IconClose /></button>
+      <div style={{background:"var(--nb-primary)",border:"4px solid var(--nb-accent)",boxShadow:"16px 16px 0 var(--nb-accent)",width:"100%",maxWidth:540,display:"flex",flexDirection:"column"}}>
+        <div style={{borderBottom:"4px solid var(--nb-accent)",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:12,color:"var(--nb-accent)"}}><IconCrop /><span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.15em"}}>Crop Foto Project</span></div>
+          <button style={{color:"var(--nb-accent)",background:"transparent",border:"none",cursor:"pointer"}} onClick={onCancel}><IconClose /></button>
         </div>
-        <div style={{position:"relative",display:"flex",justifyContent:"center",background:"#040d3a",borderBottom:"4px solid #9ECCFA",overflow:"hidden"}}>
+        <div style={{position:"relative",display:"flex",justifyContent:"center",background:"#040d3a",borderBottom:"4px solid var(--nb-accent)",overflow:"hidden"}}>
           <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{display:"block",cursor:"grab",width:"100%",maxWidth:CANVAS_W,userSelect:"none",touchAction:"none"}} onMouseDown={onMouseDown} onWheel={e=>{e.preventDefault();zoom(e.deltaY<0?0.07:-0.07);}} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} />
         </div>
-        <div style={{padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"4px solid #9ECCFA"}}>
+        <div style={{padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"4px solid var(--nb-accent)"}}>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={()=>zoom(-0.15)} style={{border:"2px solid #9ECCFA",background:"transparent",color:"#9ECCFA",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}><IconZoomOut /></button>
-            <button onClick={()=>zoom(0.15)}  style={{border:"2px solid #9ECCFA",background:"transparent",color:"#9ECCFA",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}><IconZoomIn /></button>
+            <button onClick={()=>zoom(-0.15)} style={{border:"2px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}><IconZoomOut /></button>
+            <button onClick={()=>zoom(0.15)}  style={{border:"2px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}><IconZoomIn /></button>
           </div>
-          <button onClick={()=>{const img=imgRef.current;if(!img)return;const sc=Math.max(CANVAS_W/img.naturalWidth,CANVAS_H/img.naturalHeight);stateRef.current={scale:sc,offsetX:(CANVAS_W-img.naturalWidth*sc)/2,offsetY:(CANVAS_H-img.naturalWidth*sc)/2};requestDraw();}} style={{display:"flex",alignItems:"center",gap:6,border:"2px solid #9ECCFA",background:"transparent",color:"#9ECCFA",padding:"6px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer"}}><IconRefresh /> Reset</button>
+          <button onClick={()=>{const img=imgRef.current;if(!img)return;const sc=Math.max(CANVAS_W/img.naturalWidth,CANVAS_H/img.naturalHeight);stateRef.current={scale:sc,offsetX:(CANVAS_W-img.naturalWidth*sc)/2,offsetY:(CANVAS_H-img.naturalWidth*sc)/2};requestDraw();}} style={{display:"flex",alignItems:"center",gap:6,border:"2px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",padding:"6px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer"}}><IconRefresh /> Reset</button>
         </div>
-        <div style={{padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"#0B1957"}}>
-          <button onClick={onCancel} style={{border:"4px solid #9ECCFA",background:"transparent",color:"#9ECCFA",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer"}}>Batal</button>
-          <button onClick={handleConfirm} style={{display:"flex",alignItems:"center",gap:8,border:"4px solid #9ECCFA",background:"#9ECCFA",color:"#0B1957",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",cursor:"pointer"}}><IconCheck /> Selesai Crop</button>
+        <div style={{padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"var(--nb-primary)"}}>
+          <button onClick={onCancel} style={{border:"4px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer"}}>Batal</button>
+          <button onClick={handleConfirm} style={{display:"flex",alignItems:"center",gap:8,border:"4px solid var(--nb-accent)",background:"var(--nb-accent)",color:"var(--nb-primary)",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",cursor:"pointer"}}><IconCheck /> Selesai Crop</button>
         </div>
       </div>
     </div>
@@ -351,16 +351,16 @@ function CollaboratorModal({ item, index, onSave, onCancel, onUpload }: {
 
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(11,25,87,0.8)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",backdropFilter:"blur(8px)",animation:"pcOverlay 0.2s ease"}}>
-      <div style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"12px 12px 0 #0B1957",width:"100%",maxWidth:450,maxHeight:"90vh",overflowY:"auto",animation:"pcModalIn 0.3s cubic-bezier(0.16,1,0.3,1)"}}>
-        <div style={{background:"#0B1957",padding:"14px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
-          <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",color:"#9ECCFA",letterSpacing:"0.1em"}}>{index!==null?"Edit Kolaborator":"Tambah Kolaborator"}</span>
-          <button onClick={onCancel} style={{background:"transparent",border:"none",color:"#9ECCFA",cursor:"pointer"}}><IconClose/></button>
+      <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",boxShadow:"12px 12px 0 var(--nb-primary)",width:"100%",maxWidth:450,maxHeight:"90vh",overflowY:"auto",animation:"pcModalIn 0.3s cubic-bezier(0.16,1,0.3,1)"}}>
+        <div style={{background:"var(--nb-primary)",padding:"14px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
+          <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",color:"var(--nb-accent)",letterSpacing:"0.1em"}}>{index!==null?"Edit Kolaborator":"Tambah Kolaborator"}</span>
+          <button onClick={onCancel} style={{background:"transparent",border:"none",color:"var(--nb-accent)",cursor:"pointer"}}><IconClose/></button>
         </div>
         <div style={{padding:20,display:"flex",flexDirection:"column",gap:14}}>
           <div style={{display:"flex",justifyContent:"center",marginBottom:10}}>
-            <div style={{position:"relative",width:80,height:80,border:"3px solid #0B1957",boxShadow:"4px 4px 0 #0B1957",background:"#D1E8FF"}}>
+            <div style={{position:"relative",width:80,height:80,border:"3px solid var(--nb-primary)",boxShadow:"4px 4px 0 var(--nb-primary)",background:"var(--nb-accent-light)"}}>
               {form.photo ? <img src={form.photo} style={{width:"100%",height:"100%",objectFit:"cover"}}/> : <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",fontSize:24}}>👤</div>}
-              <button onClick={onUpload} style={{position:"absolute",bottom:-8,right:-8,width:28,height:28,background:"#0B1957",color:"#9ECCFA",border:"2px solid #9ECCFA",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}><IconImg/></button>
+              <button onClick={onUpload} style={{position:"absolute",bottom:-8,right:-8,width:28,height:28,background:"var(--nb-primary)",color:"var(--nb-accent)",border:"2px solid var(--nb-accent)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}><IconImg/></button>
             </div>
           </div>
           <Field label="Nama Kolaborator">
@@ -375,30 +375,30 @@ function CollaboratorModal({ item, index, onSave, onCancel, onUpload }: {
             </Field>
           </div>
 
-          <div className="border-4 border-[#0B1957] p-5 bg-white shadow-[6px_6px_0_#0B1957]">
-            <p className="font-black text-[10px] uppercase text-[#0B1957] mb-4 opacity-50 tracking-[0.2em]">Added Social Links</p>
+          <div className="border-4 border-[var(--nb-primary)] p-5 bg-white shadow-[6px_6px_0_var(--nb-primary)]">
+            <p className="font-black text-[10px] uppercase text-[var(--nb-primary)] mb-4 opacity-50 tracking-[0.2em]">Added Social Links</p>
             <div className="space-y-2 mb-6">
               {form.socials.length > 0 ? (
                 form.socials.map((s, i) => (
-                  <div key={i} className="flex items-center gap-3 border-2 border-[#0B1957] p-2 bg-[#F8F3EA] group">
-                    <div className="w-6 h-6 bg-[#0B1957] text-[#9ECCFA] flex items-center justify-center text-[10px] font-black uppercase">
+                  <div key={i} className="flex items-center gap-3 border-2 border-[var(--nb-primary)] p-2 bg-[var(--nb-bg)] group">
+                    <div className="w-6 h-6 bg-[var(--nb-primary)] text-[var(--nb-accent)] flex items-center justify-center text-[10px] font-black uppercase">
                        {s.platform.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
-                       <p className="font-black text-[10px] uppercase text-[#0B1957] leading-none mb-0.5">{s.platform}</p>
-                       <p className="font-bold text-[9px] text-[#0B1957] opacity-40 truncate">{s.url}</p>
+                       <p className="font-black text-[10px] uppercase text-[var(--nb-primary)] leading-none mb-0.5">{s.platform}</p>
+                       <p className="font-bold text-[9px] text-[var(--nb-primary)] opacity-40 truncate">{s.url}</p>
                     </div>
                     <button onClick={() => removeSocial(i)} className="text-[#e53e3e] hover:scale-125 transition-transform font-black px-2 text-sm">✕</button>
                   </div>
                 ))
               ) : (
-                <div className="py-4 border-2 border-dashed border-[#0B1957]/10 text-center">
-                   <p className="text-[9px] font-black uppercase text-[#0B1957] opacity-20 tracking-widest">No links added yet</p>
+                <div className="py-4 border-2 border-dashed border-[var(--nb-primary)]/10 text-center">
+                   <p className="text-[9px] font-black uppercase text-[var(--nb-primary)] opacity-20 tracking-widest">No links added yet</p>
                 </div>
               )}
             </div>
 
-            <p className="font-black text-[10px] uppercase text-[#0B1957] mb-2 opacity-50 tracking-[0.2em]">Add New Link</p>
+            <p className="font-black text-[10px] uppercase text-[var(--nb-primary)] mb-2 opacity-50 tracking-[0.2em]">Add New Link</p>
             <div className="flex gap-2">
               <select className="pc2-input !w-28 !py-2 !text-[10px] !font-black uppercase" value={newLink.platform} onChange={e=>setNewLink(l=>({...l,platform:e.target.value}))}>
                 <option value="instagram">Instagram</option>
@@ -408,19 +408,19 @@ function CollaboratorModal({ item, index, onSave, onCancel, onUpload }: {
                 <option value="web">Website</option>
               </select>
               <input className="pc2-input !flex-1 !py-2 !text-[10px] !font-bold" value={newLink.url} onChange={e=>setNewLink(l=>({...l,url:e.target.value}))} placeholder="Paste URL here..."/>
-              <button onClick={addSocial} className="bg-[#0B1957] text-[#9ECCFA] border-2 border-[#0B1957] px-4 font-black hover:bg-[#9ECCFA] hover:text-[#0B1957] transition-all shadow-[3px_3px_0_#0B1957] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">+</button>
+              <button onClick={addSocial} className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-2 border-[var(--nb-primary)] px-4 font-black hover:bg-[var(--nb-accent)] hover:text-[var(--nb-primary)] transition-all shadow-[3px_3px_0_var(--nb-primary)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">+</button>
             </div>
           </div>
         </div>
-        <div style={{padding:"14px 20px",borderTop:"4px solid #0B1957",display:"flex",gap:10,position:"sticky",bottom:0,background:"#F8F3EA"}}>
+        <div style={{padding:"14px 20px",borderTop:"4px solid var(--nb-primary)",display:"flex",gap:10,position:"sticky",bottom:0,background:"var(--nb-bg)"}}>
           <button onClick={onCancel}
-            style={{flex:1,border:"3px solid #0B1957",background:"transparent",color:"#0B1957",padding:10,fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer",transition:"background 0.15s ease"}}
-            onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#D1E8FF";}}
+            style={{flex:1,border:"3px solid var(--nb-primary)",background:"transparent",color:"var(--nb-primary)",padding:10,fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer",transition:"background 0.15s ease"}}
+            onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-accent-light)";}}
             onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="transparent";}}>
             Batal
           </button>
           <button onClick={()=>onSave(form)} disabled={!form.name||!form.role}
-            style={{flex:1,border:"3px solid #0B1957",background:"#0B1957",color:"#9ECCFA",padding:10,fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer",opacity:(!form.name||!form.role)?0.5:1,transition:"transform 0.1s ease"}}
+            style={{flex:1,border:"3px solid var(--nb-primary)",background:"var(--nb-primary)",color:"var(--nb-accent)",padding:10,fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer",opacity:(!form.name||!form.role)?0.5:1,transition:"transform 0.1s ease"}}
             onMouseEnter={e=>{if(form.name&&form.role)(e.currentTarget as HTMLElement).style.transform="scale(1.02)";}}
             onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";}}>
             Simpan
@@ -435,24 +435,24 @@ function CollaboratorModal({ item, index, onSave, onCancel, onUpload }: {
 function ConfirmModal({ msg, onConfirm, onCancel }: { msg:string; onConfirm:()=>void; onCancel:()=>void }) {
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(11,25,87,0.72)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",backdropFilter:"blur(5px)",animation:"pcOverlay 0.2s ease"}}>
-      <div style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"12px 12px 0 #0B1957",padding:32,maxWidth:380,width:"90%",animation:"pcModalIn 0.35s cubic-bezier(0.16,1,0.3,1)"}}>
+      <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",boxShadow:"12px 12px 0 var(--nb-primary)",padding:32,maxWidth:380,width:"90%",animation:"pcModalIn 0.35s cubic-bezier(0.16,1,0.3,1)"}}>
         <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
-          <div style={{width:40,height:40,background:"#ef4444",border:"3px solid #0B1957",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+          <div style={{width:40,height:40,background:"#ef4444",border:"3px solid var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <IconTrash/>
           </div>
-          <p style={{fontWeight:900,fontSize:13,textTransform:"uppercase",color:"#0B1957",lineHeight:1.5,margin:0}}>{msg}</p>
+          <p style={{fontWeight:900,fontSize:13,textTransform:"uppercase",color:"var(--nb-primary)",lineHeight:1.5,margin:0}}>{msg}</p>
         </div>
         <div style={{display:"flex",gap:12}}>
           <button onClick={onConfirm}
-            style={{flex:1,border:"4px solid #0B1957",background:"#ef4444",color:"white",padding:"10px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",boxShadow:"4px 4px 0 #0B1957",fontFamily:"inherit",transition:"transform 0.1s ease"}}
+            style={{flex:1,border:"4px solid var(--nb-primary)",background:"#ef4444",color:"white",padding:"10px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",boxShadow:"4px 4px 0 var(--nb-primary)",fontFamily:"inherit",transition:"transform 0.1s ease"}}
             onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";}}
             onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";}}>
             Ya, Hapus
           </button>
           <button onClick={onCancel}
-            style={{flex:1,border:"4px solid #0B1957",background:"#F8F3EA",color:"#0B1957",padding:"10px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",boxShadow:"4px 4px 0 #0B1957",fontFamily:"inherit",transition:"transform 0.1s ease, background 0.1s ease"}}
-            onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#D1E8FF";(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";}}
-            onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#F8F3EA";(e.currentTarget as HTMLElement).style.transform="";}}>
+            style={{flex:1,border:"4px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",padding:"10px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",boxShadow:"4px 4px 0 var(--nb-primary)",fontFamily:"inherit",transition:"transform 0.1s ease, background 0.1s ease"}}
+            onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-accent-light)";(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";}}
+            onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.transform="";}}>
             Batal
           </button>
         </div>
@@ -486,7 +486,7 @@ function ProjectCard({ p, index, onToggle, onEdit, onDelete }: {
             <img src={p.images[0]} alt={p.title} style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top"}}/>
           </div>
         ) : (
-          <div style={{width:220,height:140,flexShrink:0,border:"3px solid #0B1957",background:"#D1E8FF",boxShadow:"3px 3px 0 #0B1957",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{width:220,height:140,flexShrink:0,border:"3px solid var(--nb-primary)",background:"var(--nb-accent-light)",boxShadow:"3px 3px 0 var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center"}}>
             <span style={{fontSize:40,opacity:0.15}}>🗂</span>
           </div>
         )}
@@ -495,33 +495,33 @@ function ProjectCard({ p, index, onToggle, onEdit, onDelete }: {
         <div style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",gap:0,minHeight:140}}>
           {/* Title row */}
           <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:4}}>
-            <span style={{fontWeight:900,fontSize:15,textTransform:"uppercase",color:"#0B1957",letterSpacing:"0.05em"}}>{p.title}</span>
-            <span style={{border:"2px solid #0B1957",background:sc.bg,color:sc.fg,padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.08em",transition:"transform 0.12s ease"}}
+            <span style={{fontWeight:900,fontSize:15,textTransform:"uppercase",color:"var(--nb-primary)",letterSpacing:"0.05em"}}>{p.title}</span>
+            <span style={{border:"2px solid var(--nb-primary)",background:sc.bg,color:sc.fg,padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.08em",transition:"transform 0.12s ease"}}
               onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";}}
               onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";}}>
               {p.status}
             </span>
             {!p.visible&&(
-              <span style={{border:"2px solid #0B1957",background:"#F8F3EA",color:"#0B1957",padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",opacity:0.45}}>Hidden</span>
+              <span style={{border:"2px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",opacity:0.45}}>Hidden</span>
             )}
           </div>
 
           {/* Subtitle */}
           {p.subtitle&&(
-            <p style={{fontWeight:700,fontSize:11,color:"#0B1957",opacity:0.5,textTransform:"uppercase",letterSpacing:"0.06em",margin:"0 0 4px"}}>{p.subtitle}</p>
+            <p style={{fontWeight:700,fontSize:11,color:"var(--nb-primary)",opacity:0.5,textTransform:"uppercase",letterSpacing:"0.06em",margin:"0 0 4px"}}>{p.subtitle}</p>
           )}
 
           {/* Date + Duration + Work Type */}
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-            <p style={{fontWeight:800,fontSize:11,color:"#0B1957",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.08em",margin:0}}>{p.date}{p.duration&&` · ${p.duration}`}</p>
-            <span style={{width:4,height:4,background:"#0B1957",opacity:0.2,borderRadius:"50%"}}/>
-            <span style={{fontWeight:900,fontSize:10,color:p.workType==="Solo"?"#0B1957":"#9ECCFA",background:p.workType==="Solo"?"transparent":"#0B1957",border:p.workType==="Solo"?"2px solid #0B1957":"none",padding:"1px 6px",textTransform:"uppercase",letterSpacing:"0.05em"}}>
+            <p style={{fontWeight:800,fontSize:11,color:"var(--nb-primary)",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.08em",margin:0}}>{p.date}{p.duration&&` · ${p.duration}`}</p>
+            <span style={{width:4,height:4,background:"var(--nb-primary)",opacity:0.2,borderRadius:"50%"}}/>
+            <span style={{fontWeight:900,fontSize:10,color:p.workType==="Solo"?"var(--nb-primary)":"var(--nb-accent)",background:p.workType==="Solo"?"transparent":"var(--nb-primary)",border:p.workType==="Solo"?"2px solid var(--nb-primary)":"none",padding:"1px 6px",textTransform:"uppercase",letterSpacing:"0.05em"}}>
               {p.workType==="Solo" ? p.soloRole || "Solo" : `${p.collaborators?.length || 0} Kolaborator`}
             </span>
           </div>
 
           {/* Desc */}
-          <p style={{fontWeight:600,fontSize:12,color:"#0B1957",opacity:0.65,lineHeight:1.55,marginBottom:10,display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden",flex:1}}>{p.desc}</p>
+          <p style={{fontWeight:600,fontSize:12,color:"var(--nb-primary)",opacity:0.65,lineHeight:1.55,marginBottom:10,display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden",flex:1}}>{p.desc}</p>
 
           {/* Stack chips */}
           <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:14}}>
@@ -531,36 +531,36 @@ function ProjectCard({ p, index, onToggle, onEdit, onDelete }: {
                 {s.label}
               </div>
             ))}
-            {p.stacks?.length>6&&(<div style={{border:"2px solid #0B1957",padding:"3px 8px",background:"#0B1957",color:"#9ECCFA",fontWeight:900,fontSize:10,textTransform:"uppercase"}}>+{p.stacks.length-6}</div>)}
+            {p.stacks?.length>6&&(<div style={{border:"2px solid var(--nb-primary)",padding:"3px 8px",background:"var(--nb-primary)",color:"var(--nb-accent)",fontWeight:900,fontSize:10,textTransform:"uppercase"}}>+{p.stacks.length-6}</div>)}
           </div>
 
           {/* Actions */}
-          <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",borderTop:"3px solid #0B1957",paddingTop:12,marginTop:"auto"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",borderTop:"3px solid var(--nb-primary)",paddingTop:12,marginTop:"auto"}}>
             <button className="pc2-action" onClick={onToggle}
-              style={{background:p.visible?"#F8F3EA":"#0B1957",color:p.visible?"#0B1957":"#9ECCFA"}}
-              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 #0B1957";}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="2px 2px 0 #0B1957";}}>
+              style={{background:p.visible?"var(--nb-bg)":"var(--nb-primary)",color:p.visible?"var(--nb-primary)":"var(--nb-accent)"}}
+              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 var(--nb-primary)";}}
+              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="2px 2px 0 var(--nb-primary)";}}>
               {p.visible?<><IconEye/><span>Tampil</span></>:<><IconEyeOff/><span>Hidden</span></>}
             </button>
             {p.demoUrl&&(
               <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" className="pc2-action"
-                style={{background:"#D1E8FF",color:"#0B1957",textDecoration:"none"}}
-                onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 #0B1957";}}
-                onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="2px 2px 0 #0B1957";}}>
+                style={{background:"var(--nb-accent-light)",color:"var(--nb-primary)",textDecoration:"none"}}
+                onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 var(--nb-primary)";}}
+                onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="2px 2px 0 var(--nb-primary)";}}>
                 <IconExternal/><span>Demo</span>
               </a>
             )}
             <div style={{flex:1}}/>
             <button className="pc2-action" onClick={onEdit}
-              style={{background:"#F8F3EA",color:"#0B1957"}}
-              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#0B1957";(e.currentTarget as HTMLElement).style.color="#9ECCFA";(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 #0B1957";}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#F8F3EA";(e.currentTarget as HTMLElement).style.color="#0B1957";(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="2px 2px 0 #0B1957";}}>
+              style={{background:"var(--nb-bg)",color:"var(--nb-primary)"}}
+              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-primary)";(e.currentTarget as HTMLElement).style.color="var(--nb-accent)";(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 var(--nb-primary)";}}
+              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.color="var(--nb-primary)";(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="2px 2px 0 var(--nb-primary)";}}>
               <IconEdit/><span>Edit</span>
             </button>
             <button className="pc2-action" onClick={onDelete}
-              style={{background:"#F8F3EA",color:"#0B1957"}}
+              style={{background:"var(--nb-bg)",color:"var(--nb-primary)"}}
               onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ef4444";(e.currentTarget as HTMLElement).style.color="white";(e.currentTarget as HTMLElement).style.borderColor="#ef4444";(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#F8F3EA";(e.currentTarget as HTMLElement).style.color="#0B1957";(e.currentTarget as HTMLElement).style.borderColor="#0B1957";(e.currentTarget as HTMLElement).style.transform="";}}>
+              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.color="var(--nb-primary)";(e.currentTarget as HTMLElement).style.borderColor="var(--nb-primary)";(e.currentTarget as HTMLElement).style.transform="";}}>
               <IconTrash/><span>Hapus</span>
             </button>
           </div>
@@ -573,7 +573,7 @@ function ProjectCard({ p, index, onToggle, onEdit, onDelete }: {
 // ── Input helper (Moved outside to prevent focus loss) ──
 const Field = ({label,err,children}:{label:string;err?:string;children:React.ReactNode}) => (
   <div style={{display:"flex",flexDirection:"column",gap:4}}>
-    <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957"}}>{label}</label>
+    <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)"}}>{label}</label>
     {children}
     {err&&<span style={{fontSize:11,fontWeight:800,color:"#e53e3e",textTransform:"uppercase",letterSpacing:"0.05em"}}>↑ {err}</span>}
   </div>
@@ -736,14 +736,14 @@ export default function ProjectCRUD() {
       {/* ── Page Header ── */}
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:24,gap:16,flexWrap:"wrap",opacity:headerIn?1:0,transform:headerIn?"translateY(0)":"translateY(-18px)",transition:"opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)"}}>
         <div>
-          <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.3em",color:"#9ECCFA",margin:"0 0 4px",opacity:headerIn?1:0,transform:headerIn?"translateX(0)":"translateX(-12px)",transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s"}}>Kelola</p>
-          <h2 style={{fontWeight:900,fontSize:26,textTransform:"uppercase",color:"#0B1957",margin:"0 0 6px",opacity:headerIn?1:0,transform:headerIn?"translateX(0)":"translateX(-12px)",transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s"}}>Projects</h2>
-          <p style={{fontWeight:600,fontSize:12,color:"#0B1957",opacity:0.5,margin:0}}>{loading?"Memuat data...":projects.length+" project tersimpan"}</p>
+          <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.3em",color:"var(--nb-accent)",margin:"0 0 4px",opacity:headerIn?1:0,transform:headerIn?"translateX(0)":"translateX(-12px)",transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s"}}>Kelola</p>
+          <h2 style={{fontWeight:900,fontSize:26,textTransform:"uppercase",color:"var(--nb-primary)",margin:"0 0 6px",opacity:headerIn?1:0,transform:headerIn?"translateX(0)":"translateX(-12px)",transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s"}}>Projects</h2>
+          <p style={{fontWeight:600,fontSize:12,color:"var(--nb-primary)",opacity:0.5,margin:0}}>{loading?"Memuat data...":projects.length+" project tersimpan"}</p>
         </div>
         <button onClick={openAdd}
-          style={{display:"flex",alignItems:"center",gap:8,border:"4px solid #0B1957",background:"#0B1957",color:"#9ECCFA",padding:"10px 20px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",boxShadow:"4px 4px 0 #9ECCFA",fontFamily:"inherit",opacity:headerIn?1:0,transform:headerIn?"translateX(0)":"translateX(16px)",transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s, box-shadow 0.1s ease"}}
-          onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="6px 6px 0 #9ECCFA";}}
-          onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 #9ECCFA";}}>
+          style={{display:"flex",alignItems:"center",gap:8,border:"4px solid var(--nb-primary)",background:"var(--nb-primary)",color:"var(--nb-accent)",padding:"10px 20px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",boxShadow:"4px 4px 0 var(--nb-accent)",fontFamily:"inherit",opacity:headerIn?1:0,transform:headerIn?"translateX(0)":"translateX(16px)",transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s, box-shadow 0.1s ease"}}
+          onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="6px 6px 0 var(--nb-accent)";}}
+          onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 var(--nb-accent)";}}>
           <IconPlus/> Tambah Project
         </button>
       </div>
@@ -751,13 +751,13 @@ export default function ProjectCRUD() {
       {/* ── Stats ── */}
       <div style={{display:"flex",gap:10,marginBottom:18,flexWrap:"wrap",animation:"pcSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.15s both"}}>
         {[
-          {n:projects.length,label:"Total",   bg:"#0B1957",fg:"#9ECCFA"},
-          {n:visibleCount,   label:"Tampil",  bg:"#9ECCFA",fg:"#0B1957"},
-          {n:hiddenCount,    label:"Hidden",  bg:"#F8F3EA",fg:"#0B1957"},
-          {n:projects.filter(p=>p.status==="Hosted").length,      label:"Hosted",      bg:"#D1E8FF",fg:"#0B1957"},
-          {n:projects.filter(p=>p.status==="In Progress").length, label:"In Progress", bg:"#FFE8A0",fg:"#0B1957"},
+          {n:projects.length,label:"Total",   bg:"var(--nb-primary)",fg:"var(--nb-accent)"},
+          {n:visibleCount,   label:"Tampil",  bg:"var(--nb-accent)",fg:"var(--nb-primary)"},
+          {n:hiddenCount,    label:"Hidden",  bg:"var(--nb-bg)",fg:"var(--nb-primary)"},
+          {n:projects.filter(p=>p.status==="Hosted").length,      label:"Hosted",      bg:"var(--nb-accent-light)",fg:"var(--nb-primary)"},
+          {n:projects.filter(p=>p.status==="In Progress").length, label:"In Progress", bg:"var(--nb-secondary)",fg:"var(--nb-primary)"},
         ].map((c,i)=>(
-          <div key={i} style={{border:"4px solid #0B1957",background:c.bg,color:c.fg,display:"flex",alignItems:"center",gap:6,padding:"6px 14px",boxShadow:"3px 3px 0 #0B1957",animation:`pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${0.15+i*0.06}s both`}}>
+          <div key={i} style={{border:"4px solid var(--nb-primary)",background:c.bg,color:c.fg,display:"flex",alignItems:"center",gap:6,padding:"6px 14px",boxShadow:"3px 3px 0 var(--nb-primary)",animation:`pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${0.15+i*0.06}s both`}}>
             <span style={{fontWeight:900,fontSize:22,lineHeight:1,fontVariantNumeric:"tabular-nums"}}>{loading?"—":c.n}</span>
             <span style={{fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.75}}>{c.label}</span>
           </div>
@@ -766,11 +766,11 @@ export default function ProjectCRUD() {
 
       {/* ── Filter tabs ── */}
       {!loading&&projects.length>0&&(
-        <div style={{display:"flex",border:"4px solid #0B1957",marginBottom:16,overflow:"hidden",boxShadow:"4px 4px 0 #0B1957",animation:"pcSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.3s both"}}>
+        <div style={{display:"flex",border:"4px solid var(--nb-primary)",marginBottom:16,overflow:"hidden",boxShadow:"4px 4px 0 var(--nb-primary)",animation:"pcSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.3s both"}}>
           {([["all","Semua",projects.length],["visible","Tampil",visibleCount],["hidden","Hidden",hiddenCount]] as const).map(([key,label,count])=>(
             <button key={key} onClick={()=>setFilterTab(key as any)} className={`pc2-tab${filterTab===key?" active":""}`}>
               {label}
-              <span style={{background:filterTab===key?"rgba(158,204,250,0.2)":"#D1E8FF",color:filterTab===key?"#9ECCFA":"#0B1957",border:`2px solid ${filterTab===key?"#9ECCFA":"#0B1957"}`,fontSize:10,fontWeight:900,padding:"1px 7px",minWidth:22,textAlign:"center",transition:"all 0.15s ease"}}>{count}</span>
+              <span style={{background:filterTab===key?"rgba(158,204,250,0.2)":"var(--nb-accent-light)",color:filterTab===key?"var(--nb-accent)":"var(--nb-primary)",border:`2px solid ${filterTab===key?"var(--nb-accent)":"var(--nb-primary)"}`,fontSize:10,fontWeight:900,padding:"1px 7px",minWidth:22,textAlign:"center",transition:"all 0.15s ease"}}>{count}</span>
             </button>
           ))}
         </div>
@@ -780,7 +780,7 @@ export default function ProjectCRUD() {
       {loading ? (
         <div style={{display:"flex",flexDirection:"column",gap:14}}>
           {[0,1,2].map(i=>(
-            <div key={i} style={{border:"4px solid #0B1957",background:"#F8F3EA",boxShadow:"5px 5px 0 #0B1957",padding:"18px 22px",animation:`pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.09}s both`}}>
+            <div key={i} style={{border:"4px solid var(--nb-primary)",background:"var(--nb-bg)",boxShadow:"5px 5px 0 var(--nb-primary)",padding:"18px 22px",animation:`pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.09}s both`}}>
               <div style={{display:"flex",gap:18,alignItems:"flex-start"}}>
                 <div className="pc2-skeleton" style={{width:96,height:72,flexShrink:0,border:"none"}}/>
                 <div style={{flex:1,display:"flex",flexDirection:"column",gap:8}}>
@@ -799,9 +799,9 @@ export default function ProjectCRUD() {
           ))}
         </div>
       ) : filtered.length===0 ? (
-        <div style={{border:"4px dashed #0B1957",background:"#F8F3EA",padding:"64px 24px",textAlign:"center",animation:"pcFadeIn 0.4s ease"}}>
+        <div style={{border:"4px dashed var(--nb-primary)",background:"var(--nb-bg)",padding:"64px 24px",textAlign:"center",animation:"pcFadeIn 0.4s ease"}}>
           <div style={{fontSize:48,marginBottom:16,opacity:0.1}}><IconFolder/></div>
-          <p style={{fontWeight:900,fontSize:14,textTransform:"uppercase",color:"#0B1957",opacity:0.35,margin:0,letterSpacing:"0.15em"}}>
+          <p style={{fontWeight:900,fontSize:14,textTransform:"uppercase",color:"var(--nb-primary)",opacity:0.35,margin:0,letterSpacing:"0.15em"}}>
             {filterTab==="visible"?"Tidak ada project yang ditampilkan":filterTab==="hidden"?"Tidak ada project yang disembunyikan":"Belum ada project — klik Tambah Project!"}
           </p>
         </div>
@@ -818,12 +818,12 @@ export default function ProjectCRUD() {
 
       {/* ── Footer legend ── */}
       {!loading&&filtered.length>0&&(
-        <div style={{marginTop:16,background:"#0B1957",border:"4px solid #0B1957",boxShadow:"4px 4px 0 #9ECCFA",padding:"10px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",animation:"pcFadeIn 0.5s ease 0.4s both"}}>
+        <div style={{marginTop:16,background:"var(--nb-primary)",border:"4px solid var(--nb-primary)",boxShadow:"4px 4px 0 var(--nb-accent)",padding:"10px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",animation:"pcFadeIn 0.5s ease 0.4s both"}}>
           <div style={{display:"flex",alignItems:"center",gap:20,flexWrap:"wrap"}}>
-            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"#9ECCFA"}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em"}}>Tampil di homepage</span></div>
-            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"transparent",opacity:0.5}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em",opacity:0.5}}>Disembunyikan</span></div>
+            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid var(--nb-accent)",background:"var(--nb-accent)"}}/><span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.12em"}}>Tampil di homepage</span></div>
+            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid var(--nb-accent)",background:"transparent",opacity:0.5}}/><span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.12em",opacity:0.5}}>Disembunyikan</span></div>
           </div>
-          <span style={{fontWeight:700,fontSize:10,color:"#D1E8FF",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.1em"}}>{visibleCount}/{projects.length} aktif</span>
+          <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.1em"}}>{visibleCount}/{projects.length} aktif</span>
         </div>
       )}
 
@@ -837,16 +837,16 @@ export default function ProjectCRUD() {
       {modalOpen&&(
         <div style={{position:"fixed",inset:0,background:"rgba(11,25,87,0.72)",zIndex:100,display:"flex",alignItems:"flex-start",justifyContent:"center",overflow:"auto",padding:"32px 16px",backdropFilter:"blur(5px)",animation:"pcOverlay 0.25s ease"}}
           onClick={e=>{if(e.target===e.currentTarget)closeModal();}}>
-          <div ref={modalRef} style={{background:"#D1E8FF",border:"4px solid #0B1957",boxShadow:"14px 14px 0 #0B1957",width:"100%",maxWidth:760,flexShrink:0,animation:"pcModalIn 0.4s cubic-bezier(0.16,1,0.3,1)",margin:"auto"}}>
+          <div ref={modalRef} style={{background:"var(--nb-accent-light)",border:"4px solid var(--nb-primary)",boxShadow:"14px 14px 0 var(--nb-primary)",width:"100%",maxWidth:760,flexShrink:0,animation:"pcModalIn 0.4s cubic-bezier(0.16,1,0.3,1)",margin:"auto"}}>
 
             {/* Modal Header */}
-            <div style={{background:"#0B1957",padding:"20px 28px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <div style={{background:"var(--nb-primary)",padding:"20px 28px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
               <div>
-                <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.3em",color:"#9ECCFA",margin:"0 0 3px",opacity:0.8}}>{editTarget?"Edit":"Tambah"} Project</p>
-                <h3 style={{fontWeight:900,fontSize:20,textTransform:"uppercase",color:"#F8F3EA",margin:0,letterSpacing:"0.05em"}}>{editTarget?editTarget.title:"Project Baru"}</h3>
+                <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.3em",color:"var(--nb-accent)",margin:"0 0 3px",opacity:0.8}}>{editTarget?"Edit":"Tambah"} Project</p>
+                <h3 style={{fontWeight:900,fontSize:20,textTransform:"uppercase",color:"var(--nb-bg)",margin:0,letterSpacing:"0.05em"}}>{editTarget?editTarget.title:"Project Baru"}</h3>
               </div>
               <button onClick={closeModal}
-                style={{border:"3px solid #9ECCFA",background:"transparent",color:"#9ECCFA",width:38,height:38,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"transform 0.15s ease, background 0.15s ease",fontFamily:"inherit"}}
+                style={{border:"3px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",width:38,height:38,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"transform 0.15s ease, background 0.15s ease",fontFamily:"inherit"}}
                 onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="rotate(90deg)";(e.currentTarget as HTMLElement).style.background="rgba(158,204,250,0.15)";}}
                 onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.background="transparent";}}>
                 <IconClose/>
@@ -854,7 +854,7 @@ export default function ProjectCRUD() {
             </div>
 
             {/* Progress bar */}
-            <div style={{height:3,background:"linear-gradient(90deg,#9ECCFA,#D1E8FF,#9ECCFA)",backgroundSize:"200% 100%",animation:"pcShimmer 2s ease infinite"}}/>
+            <div style={{height:3,background:"linear-gradient(90deg,var(--nb-accent),var(--nb-accent-light),var(--nb-accent))",backgroundSize:"200% 100%",animation:"pcShimmer 2s ease infinite"}}/>
 
             {/* Modal Body */}
             <div style={{padding:"24px 28px",display:"flex",flexDirection:"column",gap:20,maxHeight:"72vh",overflowY:"auto"}}>
@@ -909,12 +909,12 @@ export default function ProjectCRUD() {
               </div>
 
               {/* Collaboration Section */}
-              <div style={{background:"#F8F3EA",border:"4px solid #0B1957",padding:20,boxShadow:"6px 6px 0 #0B1957",animation:"pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.28s both",display:"flex",flexDirection:"column",gap:16}}>
-                <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.15em",color:"#0B1957",margin:0}}>Tipe Pengerjaan</p>
+              <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",padding:20,boxShadow:"6px 6px 0 var(--nb-primary)",animation:"pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.28s both",display:"flex",flexDirection:"column",gap:16}}>
+                <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.15em",color:"var(--nb-primary)",margin:0}}>Tipe Pengerjaan</p>
                 <div style={{display:"flex",gap:10}}>
                   {["Solo","Collaboration"].map(t=>(
                     <button key={t} onClick={()=>setForm(f=>({...f,work_type:t as any}))}
-                      style={{flex:1,padding:"10px",border:"3px solid #0B1957",background:form.work_type===t?"#0B1957":"white",color:form.work_type===t?"#9ECCFA":"#0B1957",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",transition:"all 0.15s ease"}}>
+                      style={{flex:1,padding:"10px",border:"3px solid var(--nb-primary)",background:form.work_type===t?"var(--nb-primary)":"white",color:form.work_type===t?"var(--nb-accent)":"var(--nb-primary)",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",transition:"all 0.15s ease"}}>
                       {t==="Solo"?"Pengerjaan Mandiri":"Kolaborasi Tim"}
                     </button>
                   ))}
@@ -929,25 +929,25 @@ export default function ProjectCRUD() {
                 ) : (
                   <div style={{animation:"pcSlideUp 0.3s ease",display:"flex",flexDirection:"column",gap:12}}>
                     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                      <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"#0B1957",opacity:0.6,margin:0}}>Daftar Kolaborator</p>
+                      <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"var(--nb-primary)",opacity:0.6,margin:0}}>Daftar Kolaborator</p>
                       <button onClick={()=>setCollabModal({open:true,index:null,item:null})}
-                        style={{border:"2px solid #0B1957",background:"#0B1957",color:"#9ECCFA",padding:"4px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",cursor:"pointer"}}>+ Tambah</button>
+                        style={{border:"2px solid var(--nb-primary)",background:"var(--nb-primary)",color:"var(--nb-accent)",padding:"4px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",cursor:"pointer"}}>+ Tambah</button>
                     </div>
                     <div style={{display:"flex",flexDirection:"column",gap:8}}>
                       {form.collaborators.length===0 ? (
-                        <p style={{fontSize:11,fontWeight:700,opacity:0.4,textAlign:"center",padding:"10px",border:"2px dashed #0B1957"}}>Belum ada kolaborator</p>
+                        <p style={{fontSize:11,fontWeight:700,opacity:0.4,textAlign:"center",padding:"10px",border:"2px dashed var(--nb-primary)"}}>Belum ada kolaborator</p>
                       ) : form.collaborators.map((c,i)=>(
-                        <div key={i} style={{display:"flex",alignItems:"center",gap:10,background:"white",border:"2px solid #0B1957",padding:8}}>
-                          <div style={{width:32,height:32,border:"2px solid #0B1957",background:"#D1E8FF",flexShrink:0}}>
+                        <div key={i} style={{display:"flex",alignItems:"center",gap:10,background:"white",border:"2px solid var(--nb-primary)",padding:8}}>
+                          <div style={{width:32,height:32,border:"2px solid var(--nb-primary)",background:"var(--nb-accent-light)",flexShrink:0}}>
                             {c.photo ? <img src={c.photo} style={{width:"100%",height:"100%",objectFit:"cover"}}/> : <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",fontSize:14}}>👤</div>}
                           </div>
                           <div style={{flex:1,minWidth:0}}>
-                            <p style={{fontWeight:900,fontSize:11,color:"#0B1957",margin:0}}>{c.name}</p>
-                            <p style={{fontWeight:700,fontSize:9,color:"#0B1957",opacity:0.5,margin:0}}>{c.role}</p>
+                            <p style={{fontWeight:900,fontSize:11,color:"var(--nb-primary)",margin:0}}>{c.name}</p>
+                            <p style={{fontWeight:700,fontSize:9,color:"var(--nb-primary)",opacity:0.5,margin:0}}>{c.role}</p>
                           </div>
                           <div style={{display:"flex",gap:4}}>
-                            <button onClick={()=>setCollabModal({open:true,index:i,item:c})} style={{width:24,height:24,border:"2px solid #0B1957",background:"#D1E8FF",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><IconEdit/></button>
-                            <button onClick={()=>setForm(f=>({...f,collaborators:f.collaborators.filter((_,j)=>j!==i)}))} style={{width:24,height:24,border:"2px solid #0B1957",background:"#ef4444",color:"white",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+                            <button onClick={()=>setCollabModal({open:true,index:i,item:c})} style={{width:24,height:24,border:"2px solid var(--nb-primary)",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><IconEdit/></button>
+                            <button onClick={()=>setForm(f=>({...f,collaborators:f.collaborators.filter((_,j)=>j!==i)}))} style={{width:24,height:24,border:"2px solid var(--nb-primary)",background:"#ef4444",color:"white",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
                           </div>
                         </div>
                       ))}
@@ -962,13 +962,13 @@ export default function ProjectCRUD() {
                   <input className="pc2-input" type="number" value={form.order} onChange={e=>setForm(f=>({...f,order:Number(e.target.value)}))}/>
                 </Field>
                 <div style={{paddingTop:18}}>
-                  <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:8}}>Visibility</p>
+                  <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:8}}>Visibility</p>
                   <div style={{display:"flex",alignItems:"center",gap:12}}>
                     <div onClick={()=>setForm(f=>({...f,visible:!f.visible}))}
-                      style={{width:52,height:28,border:"4px solid #0B1957",background:form.visible?"#0B1957":"#F8F3EA",cursor:"pointer",position:"relative",transition:"background 0.2s ease",boxShadow:"3px 3px 0 #0B1957",flexShrink:0}}>
-                      <div style={{position:"absolute",top:2,left:form.visible?22:2,width:16,height:16,background:form.visible?"#9ECCFA":"#0B1957",transition:"left 0.2s cubic-bezier(0.16,1,0.3,1)"}}/>
+                      style={{width:52,height:28,border:"4px solid var(--nb-primary)",background:form.visible?"var(--nb-primary)":"var(--nb-bg)",cursor:"pointer",position:"relative",transition:"background 0.2s ease",boxShadow:"3px 3px 0 var(--nb-primary)",flexShrink:0}}>
+                      <div style={{position:"absolute",top:2,left:form.visible?22:2,width:16,height:16,background:form.visible?"var(--nb-accent)":"var(--nb-primary)",transition:"left 0.2s cubic-bezier(0.16,1,0.3,1)"}}/>
                     </div>
-                    <div style={{border:"3px solid #0B1957",background:form.visible?"#0B1957":"#F8F3EA",color:form.visible?"#9ECCFA":"#0B1957",padding:"4px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",boxShadow:"2px 2px 0 #0B1957",cursor:"pointer",transition:"all 0.15s ease"}} onClick={()=>setForm(f=>({...f,visible:!f.visible}))}>
+                    <div style={{border:"3px solid var(--nb-primary)",background:form.visible?"var(--nb-primary)":"var(--nb-bg)",color:form.visible?"var(--nb-accent)":"var(--nb-primary)",padding:"4px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",boxShadow:"2px 2px 0 var(--nb-primary)",cursor:"pointer",transition:"all 0.15s ease"}} onClick={()=>setForm(f=>({...f,visible:!f.visible}))}>
                       {form.visible?"Tampil di Homepage":"Tersembunyi"}
                     </div>
                   </div>
@@ -977,19 +977,19 @@ export default function ProjectCRUD() {
 
               {/* Tech Stacks */}
               <div style={{animation:"pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.35s both"}}>
-                <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:10}}>
+                <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:10}}>
                   Tech Stack
                   {form.tech_stack_ids.length>0&&(
-                    <span style={{marginLeft:8,background:"#0B1957",color:"#9ECCFA",border:"2px solid #0B1957",fontSize:10,fontWeight:900,padding:"1px 7px"}}>{form.tech_stack_ids.length} dipilih</span>
+                    <span style={{marginLeft:8,background:"var(--nb-primary)",color:"var(--nb-accent)",border:"2px solid var(--nb-primary)",fontSize:10,fontWeight:900,padding:"1px 7px"}}>{form.tech_stack_ids.length} dipilih</span>
                   )}
                 </p>
                 {Object.keys(stacksByCategory).length===0 ? (
-                  <p style={{fontWeight:700,fontSize:12,color:"#0B1957",opacity:0.5}}>Belum ada tech stack.</p>
+                  <p style={{fontWeight:700,fontSize:12,color:"var(--nb-primary)",opacity:0.5}}>Belum ada tech stack.</p>
                 ) : (
-                  <div style={{background:"#F8F3EA",border:"4px solid #0B1957",padding:16,display:"flex",flexDirection:"column",gap:14,boxShadow:"4px 4px 0 #0B1957"}}>
+                  <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",padding:16,display:"flex",flexDirection:"column",gap:14,boxShadow:"4px 4px 0 var(--nb-primary)"}}>
                     {Object.entries(stacksByCategory).map(([cat,stacks])=>(
                       <div key={cat}>
-                        <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"#0B1957",opacity:0.45,letterSpacing:"0.15em",margin:"0 0 8px"}}>{cat}</p>
+                        <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"var(--nb-primary)",opacity:0.45,letterSpacing:"0.15em",margin:"0 0 8px"}}>{cat}</p>
                         <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
                           {stacks.map(s=>(
                             <div key={s.id} className={`pc2-stack-sel${form.tech_stack_ids.includes(s.id)?" active":""}`} onClick={()=>toggleStack(s.id)}>
@@ -1007,7 +1007,7 @@ export default function ProjectCRUD() {
 
               {/* Images */}
               <div style={{animation:"pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.40s both"}}>
-                <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:10}}>
+                <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:10}}>
                   Gambar Project
                   <span style={{marginLeft:8,fontWeight:600,fontSize:10,opacity:0.4,textTransform:"none",letterSpacing:0}}>— gambar pertama jadi thumbnail</span>
                 </p>
@@ -1020,7 +1020,7 @@ export default function ProjectCRUD() {
                   ))}
                   <div className="pc2-upload" style={{opacity:uploading?0.5:1}} onClick={()=>!uploading&&triggerUpload("project")}>
                     {uploading?<IconSpin/>:<IconImg/>}
-                    <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",color:"#0B1957",letterSpacing:"0.08em"}}>{uploading?"Upload...":"+ Upload"}</span>
+                    <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",color:"var(--nb-primary)",letterSpacing:"0.08em"}}>{uploading?"Upload...":"+ Upload"}</span>
                   </div>
                   <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}} onChange={handleUpload}/>
                 </div>
@@ -1029,9 +1029,9 @@ export default function ProjectCRUD() {
               {/* Features */}
               <div style={{animation:"pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.45s both"}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-                  <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",margin:0}}>Fitur-Fitur</p>
+                  <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",margin:0}}>Fitur-Fitur</p>
                   <button onClick={addFeature}
-                    style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",background:"#0B1957",color:"#9ECCFA",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer",boxShadow:"2px 2px 0 #9ECCFA",fontFamily:"inherit",transition:"transform 0.1s ease"}}
+                    style={{display:"flex",alignItems:"center",gap:6,border:"3px solid var(--nb-primary)",background:"var(--nb-primary)",color:"var(--nb-accent)",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer",boxShadow:"2px 2px 0 var(--nb-accent)",fontFamily:"inherit",transition:"transform 0.1s ease"}}
                     onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";}}
                     onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";}}>
                     <IconPlus/> Tambah Fitur
@@ -1039,21 +1039,21 @@ export default function ProjectCRUD() {
                 </div>
                 <div style={{display:"flex",flexDirection:"column",gap:10}}>
                   {form.features.length===0&&(
-                    <div style={{border:"3px dashed #0B1957",padding:"16px",textAlign:"center",opacity:0.4}}>
-                      <p style={{fontWeight:700,fontSize:12,textTransform:"uppercase",color:"#0B1957",margin:0}}>Belum ada fitur — klik Tambah Fitur</p>
+                    <div style={{border:"3px dashed var(--nb-primary)",padding:"16px",textAlign:"center",opacity:0.4}}>
+                      <p style={{fontWeight:700,fontSize:12,textTransform:"uppercase",color:"var(--nb-primary)",margin:0}}>Belum ada fitur — klik Tambah Fitur</p>
                     </div>
                   )}
                   {form.features.map((f,i)=>(
                     <div key={i} className="pc2-feat">
-                      <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,background:"#0B1957",color:"#9ECCFA",fontWeight:900,fontSize:11,flexShrink:0,marginTop:4}}>#{i+1}</div>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,background:"var(--nb-primary)",color:"var(--nb-accent)",fontWeight:900,fontSize:11,flexShrink:0,marginTop:4}}>#{i+1}</div>
                       <div style={{flex:1,display:"flex",flexDirection:"column",gap:8}}>
-                        <input className="pc2-input" placeholder="Nama fitur..." value={f.title} onChange={e=>setFeature(i,"title",e.target.value)} style={{border:"3px solid #0B1957"}}/>
-                        <input className="pc2-input" placeholder="Deskripsi fitur..." value={f.desc} onChange={e=>setFeature(i,"desc",e.target.value)} style={{border:"3px solid #0B1957"}}/>
+                        <input className="pc2-input" placeholder="Nama fitur..." value={f.title} onChange={e=>setFeature(i,"title",e.target.value)} style={{border:"3px solid var(--nb-primary)"}}/>
+                        <input className="pc2-input" placeholder="Deskripsi fitur..." value={f.desc} onChange={e=>setFeature(i,"desc",e.target.value)} style={{border:"3px solid var(--nb-primary)"}}/>
                       </div>
                       <button onClick={()=>removeFeature(i)}
-                        style={{flexShrink:0,width:32,height:32,border:"3px solid #0B1957",background:"#F8F3EA",color:"#0B1957",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",marginTop:4,transition:"all 0.1s ease"}}
+                        style={{flexShrink:0,width:32,height:32,border:"3px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",marginTop:4,transition:"all 0.1s ease"}}
                         onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ef4444";(e.currentTarget as HTMLElement).style.color="white";(e.currentTarget as HTMLElement).style.borderColor="#ef4444";}}
-                        onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#F8F3EA";(e.currentTarget as HTMLElement).style.color="#0B1957";(e.currentTarget as HTMLElement).style.borderColor="#0B1957";}}>
+                        onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.color="var(--nb-primary)";(e.currentTarget as HTMLElement).style.borderColor="var(--nb-primary)";}}>
                         <IconTrash/>
                       </button>
                     </div>
@@ -1063,17 +1063,17 @@ export default function ProjectCRUD() {
             </div>
 
             {/* Modal Footer */}
-            <div style={{padding:"16px 28px",borderTop:"4px solid #0B1957",background:"#0B1957",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-              <span style={{fontWeight:700,fontSize:10,color:"#D1E8FF",opacity:0.5,textTransform:"uppercase",letterSpacing:"0.1em"}}>{editTarget?"Mode edit project":"Isi semua field wajib (*)"}</span>
+            <div style={{padding:"16px 28px",borderTop:"4px solid var(--nb-primary)",background:"var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.5,textTransform:"uppercase",letterSpacing:"0.1em"}}>{editTarget?"Mode edit project":"Isi semua field wajib (*)"}</span>
               <div style={{display:"flex",gap:12}}>
                 <button onClick={closeModal} disabled={saving}
-                  style={{border:"4px solid #9ECCFA",background:"transparent",color:"#9ECCFA",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit",transition:"background 0.1s ease"}}
+                  style={{border:"4px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit",transition:"background 0.1s ease"}}
                   onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="rgba(158,204,250,0.12)";}}
                   onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="transparent";}}>
                   Batal
                 </button>
                 <button onClick={handleSave} disabled={saving}
-                  style={{display:"flex",alignItems:"center",gap:8,border:"4px solid #9ECCFA",background:"#9ECCFA",color:"#0B1957",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:saving?"wait":"pointer",boxShadow:"4px 4px 0 rgba(158,204,250,0.4)",fontFamily:"inherit",transition:"transform 0.1s ease, box-shadow 0.1s ease",opacity:saving?0.7:1}}
+                  style={{display:"flex",alignItems:"center",gap:8,border:"4px solid var(--nb-accent)",background:"var(--nb-accent)",color:"var(--nb-primary)",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:saving?"wait":"pointer",boxShadow:"4px 4px 0 rgba(158,204,250,0.4)",fontFamily:"inherit",transition:"transform 0.1s ease, box-shadow 0.1s ease",opacity:saving?0.7:1}}
                   onMouseEnter={e=>{if(!saving){(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="6px 6px 0 rgba(158,204,250,0.4)";}}}
                   onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 rgba(158,204,250,0.4)";}}>
                   {saving?<IconSpin/>:<IconSave/>}{saving?"Menyimpan...":(editTarget?"Update Project":"Simpan Project")}

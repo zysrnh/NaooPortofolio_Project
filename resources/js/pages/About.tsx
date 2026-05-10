@@ -44,14 +44,14 @@ function useScrollReveal(ready: boolean) {
 
 // ── FloatingBlocks ────────────────────────────────────────────────────────────
 const BLOCK_CONFIGS = [
-  { top:"8%",  left:"3%",   size:64, color:"#9ECCFA", type:"filled",  animDelay:"0s"   },
-  { top:"55%", left:"2%",   size:20, color:"#0B1957", type:"outline", animDelay:"1.2s" },
-  { top:"30%", left:"1.5%", size:14, color:"#9ECCFA", type:"filled",  animDelay:"2.4s" },
-  { top:"75%", left:"4%",   size:40, color:"#F8F3EA", type:"outline", animDelay:"0.6s" },
-  { top:"12%", left:"92%",  size:28, color:"#0B1957", type:"filled",  animDelay:"1.8s" },
-  { top:"45%", left:"94%",  size:48, color:"#9ECCFA", type:"outline", animDelay:"0.3s" },
-  { top:"70%", left:"91%",  size:16, color:"#F8F3EA", type:"filled",  animDelay:"2.1s" },
-  { top:"85%", left:"93%",  size:36, color:"#9ECCFA", type:"outline", animDelay:"1.5s" },
+  { top:"8%",  left:"3%",   size:64, color:"var(--nb-accent)", type:"filled",  animDelay:"0s"   },
+  { top:"55%", left:"2%",   size:20, color:"var(--nb-primary)", type:"outline", animDelay:"1.2s" },
+  { top:"30%", left:"1.5%", size:14, color:"var(--nb-accent)", type:"filled",  animDelay:"2.4s" },
+  { top:"75%", left:"4%",   size:40, color:"var(--nb-bg)", type:"outline", animDelay:"0.6s" },
+  { top:"12%", left:"92%",  size:28, color:"var(--nb-primary)", type:"filled",  animDelay:"1.8s" },
+  { top:"45%", left:"94%",  size:48, color:"var(--nb-accent)", type:"outline", animDelay:"0.3s" },
+  { top:"70%", left:"91%",  size:16, color:"var(--nb-bg)", type:"filled",  animDelay:"2.1s" },
+  { top:"85%", left:"93%",  size:36, color:"var(--nb-accent)", type:"outline", animDelay:"1.5s" },
 ];
 function FloatingBlocks() {
   return (
@@ -61,8 +61,8 @@ function FloatingBlocks() {
         {BLOCK_CONFIGS.map((cfg,i)=>(
           <div key={i} style={{position:"absolute",top:cfg.top,left:cfg.left,width:cfg.size,height:cfg.size,
             background:cfg.type==="filled"?cfg.color:"transparent",
-            border:cfg.type==="outline"?`4px solid ${cfg.color}`:`3px solid rgba(11,25,87,0.3)`,
-            boxShadow:`4px 4px 0 rgba(11,25,87,0.4)`,
+            border:cfg.type==="outline"?`4px solid ${cfg.color}`:`3px solid var(--nb-primary)`,
+            boxShadow:`4px 4px 0 var(--nb-primary)`,
             animation:`floatBob ${3.5+i*0.4}s ease-in-out ${cfg.animDelay} infinite`}} />
         ))}
       </div>
@@ -98,12 +98,12 @@ const DEFAULT_HERO: HeroData = {
 const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3C/svg%3E";
 
 const TYPE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  internship: { bg: "#0B1957", text: "#9ECCFA", border: "#9ECCFA" },
-  freelance:  { bg: "#9ECCFA", text: "#0B1957", border: "#0B1957" },
-  learning:   { bg: "#F8F3EA", text: "#0B1957", border: "#0B1957" },
-  project:    { bg: "#D1E8FF", text: "#0B1957", border: "#0B1957" },
-  fulltime:   { bg: "#0B1957", text: "#9ECCFA", border: "#9ECCFA" },
-  parttime:   { bg: "#FFE8A0", text: "#0B1957", border: "#0B1957" },
+  internship: { bg: "var(--nb-primary)", text: "var(--nb-accent)", border: "var(--nb-accent)" },
+  freelance:  { bg: "var(--nb-accent)", text: "var(--nb-primary)", border: "var(--nb-primary)" },
+  learning:   { bg: "var(--nb-bg)", text: "var(--nb-primary)", border: "var(--nb-primary)" },
+  project:    { bg: "var(--nb-accent-light)", text: "var(--nb-primary)", border: "var(--nb-primary)" },
+  fulltime:   { bg: "var(--nb-primary)", text: "var(--nb-accent)", border: "var(--nb-accent)" },
+  parttime:   { bg: "var(--nb-secondary)", text: "var(--nb-primary)", border: "var(--nb-primary)" },
 };
 
 const fmtDate = (d: string | null) => {
@@ -144,12 +144,12 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
 
   const CELL_STYLES: Record<number, { bg: string; border: string; shadow: string }> = {
     0: { bg:"#E8E0D4", border:"#C8B8A0", shadow:"none" },
-    1: { bg:"#9ECCFA", border:"#0B1957", shadow:"2px 2px 0 #0B1957" },
-    2: { bg:"#5aa8f0", border:"#0B1957", shadow:"2px 2px 0 #0B1957" },
-    3: { bg:"#2563eb", border:"#0B1957", shadow:"2px 2px 0 #0B1957" },
-    4: { bg:"#0B1957", border:"#9ECCFA", shadow:"2px 2px 0 #9ECCFA" },
+    1: { bg:"var(--nb-accent)", border:"var(--nb-primary)", shadow:"2px 2px 0 var(--nb-primary)" },
+    2: { bg:"#5aa8f0", border:"var(--nb-primary)", shadow:"2px 2px 0 var(--nb-primary)" },
+    3: { bg:"#2563eb", border:"var(--nb-primary)", shadow:"2px 2px 0 var(--nb-primary)" },
+    4: { bg:"var(--nb-primary)", border:"var(--nb-accent)", shadow:"2px 2px 0 var(--nb-accent)" },
   };
-  const LEGEND_COLORS = ["#E8E0D4","#9ECCFA","#5aa8f0","#2563eb","#0B1957"];
+  const LEGEND_COLORS = ["#E8E0D4","var(--nb-accent)","#5aa8f0","#2563eb","var(--nb-primary)"];
   const DAY_LABELS    = ["","Mon","","Wed","","Fri",""];
   const MONTHS        = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const CELL = 14, GAP = 3;
@@ -175,16 +175,16 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">GitHub Activity</h2>
-      <div className="border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-        <div className="bg-[#0B1957] px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">GitHub Activity</h2>
+      <div className="border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
+        <div className="bg-[var(--nb-primary)] px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div style={{border:"3px solid #9ECCFA",boxShadow:"3px 3px 0 #9ECCFA",padding:8}}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="#9ECCFA"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <div style={{border:"3px solid var(--nb-accent)",boxShadow:"3px 3px 0 var(--nb-accent)",padding:8}}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--nb-accent)"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
             </div>
             <div>
-              <p className="font-black text-[#9ECCFA] uppercase tracking-[0.25em] mb-0.5" style={{fontSize:10}}>Contribution Graph</p>
-              <p className="font-black text-[#F8F3EA] text-xl uppercase tracking-widest">@{username}</p>
+              <p className="font-black text-[var(--nb-accent)] uppercase tracking-[0.25em] mb-0.5" style={{fontSize:10}}>Contribution Graph</p>
+              <p className="font-black text-[var(--nb-bg)] text-xl uppercase tracking-widest">@{username}</p>
             </div>
           </div>
           <div className="flex gap-3 flex-wrap">
@@ -194,14 +194,14 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
               { val: loading?"…":maxDay.toString(),        label:"Best Day"      },
             ].map((s, i) => (
               <div key={i} className="flex flex-col items-center px-4 py-3 min-w-[80px]"
-                style={{border:"3px solid #9ECCFA",boxShadow:"3px 3px 0 #9ECCFA",background:"rgba(158,204,250,0.08)"}}>
-                <span className="font-black tabular-nums text-[#9ECCFA]" style={{fontSize:"clamp(1.4rem,3vw,1.8rem)"}}>{s.val}</span>
-                <span className="font-black text-[#D1E8FF] uppercase tracking-widest mt-0.5" style={{fontSize:9}}>{s.label}</span>
+                style={{border:"3px solid var(--nb-accent)",boxShadow:"3px 3px 0 var(--nb-accent)",background:"rgba(158,204,250,0.08)"}}>
+                <span className="font-black tabular-nums text-[var(--nb-accent)]" style={{fontSize:"clamp(1.4rem,3vw,1.8rem)"}}>{s.val}</span>
+                <span className="font-black text-[var(--nb-accent-light)] uppercase tracking-widest mt-0.5" style={{fontSize:9}}>{s.label}</span>
               </div>
             ))}
           </div>
         </div>
-        <div className="bg-[#F8F3EA]">
+        <div className="bg-[var(--nb-bg)]">
           <div ref={containerRef} className="px-5 sm:px-8 pt-6 pb-4 overflow-x-auto relative">
             {loading ? (
               <div style={{display:"flex",gap:GAP}}>
@@ -220,7 +220,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                     const lbl = monthLabels.find(m => m.col === wi);
                     return (
                       <div key={wi} style={{width:CELL,flexShrink:0,overflow:"visible"}}>
-                        {lbl && <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957",whiteSpace:"nowrap",display:"block"}}>{lbl.label}</span>}
+                        {lbl && <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em",color:"var(--nb-primary)",whiteSpace:"nowrap",display:"block"}}>{lbl.label}</span>}
                       </div>
                     );
                   })}
@@ -229,7 +229,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                   <div style={{display:"flex",flexDirection:"column",gap:GAP,marginRight:4,flexShrink:0,width:26}}>
                     {DAY_LABELS.map((d, i) => (
                       <div key={i} style={{height:CELL,display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                        {d && <span style={{fontWeight:900,fontSize:8,textTransform:"uppercase",letterSpacing:"0.08em",color:"#0B1957",opacity:0.5}}>{d}</span>}
+                        {d && <span style={{fontWeight:900,fontSize:8,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--nb-primary)",opacity:0.5}}>{d}</span>}
                       </div>
                     ))}
                   </div>
@@ -242,7 +242,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                           <div key={di} style={{
                             width:CELL,height:CELL,flexShrink:0,
                             background:cs.bg, border:`2px solid ${cs.border}`,
-                            boxShadow:isHov?`0 0 0 2px #0B1957, 3px 3px 0 #0B1957`:cs.shadow,
+                            boxShadow:isHov?`0 0 0 2px var(--nb-primary), 3px 3px 0 var(--nb-primary)`:cs.shadow,
                             cursor:"pointer",
                             transform:isHov?"scale(1.35) translate(-1px,-1px)":"scale(1)",
                             transition:"transform 0.08s ease,box-shadow 0.08s ease",
@@ -257,30 +257,30 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                   ))}
                 </div>
                 {hoveredDay && (
-                  <div style={{position:"absolute",left:tooltipPos.x+14,top:tooltipPos.y-56,pointerEvents:"none",zIndex:50,background:"#0B1957",border:"3px solid #9ECCFA",boxShadow:"4px 4px 0 #9ECCFA",padding:"8px 12px",minWidth:170}}>
+                  <div style={{position:"absolute",left:tooltipPos.x+14,top:tooltipPos.y-56,pointerEvents:"none",zIndex:50,background:"var(--nb-primary)",border:"3px solid var(--nb-accent)",boxShadow:"4px 4px 0 var(--nb-accent)",padding:"8px 12px",minWidth:170}}>
                     <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
-                      <div style={{width:10,height:10,flexShrink:0,background:CELL_STYLES[hoveredDay.level].bg,border:`2px solid ${hoveredDay.level===4?"#9ECCFA":"#0B1957"}`,boxShadow:hoveredDay.level>0?"1px 1px 0 #9ECCFA":"none"}}/>
-                      <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",color:"#9ECCFA"}}>{hoveredDay.count} commit{hoveredDay.count!==1?"s":""}</p>
+                      <div style={{width:10,height:10,flexShrink:0,background:CELL_STYLES[hoveredDay.level].bg,border:`2px solid ${hoveredDay.level===4?"var(--nb-accent)":"var(--nb-primary)"}`,boxShadow:hoveredDay.level>0?"1px 1px 0 var(--nb-accent)":"none"}}/>
+                      <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",color:"var(--nb-accent)"}}>{hoveredDay.count} commit{hoveredDay.count!==1?"s":""}</p>
                     </div>
-                    <p style={{fontWeight:600,fontSize:10,color:"#D1E8FF",textTransform:"capitalize"}}>{fmt(hoveredDay.date)}</p>
+                    <p style={{fontWeight:600,fontSize:10,color:"var(--nb-accent-light)",textTransform:"capitalize"}}>{fmt(hoveredDay.date)}</p>
                   </div>
                 )}
               </>
             )}
           </div>
-          <div className="border-t-4 border-[#0B1957] px-5 sm:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
+          <div className="border-t-4 border-[var(--nb-primary)] px-5 sm:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
             <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer"
               className="btn-brutal font-black text-xs uppercase tracking-widest flex items-center gap-2"
-              style={{border:"3px solid #0B1957",padding:"6px 14px",background:"#0B1957",color:"#9ECCFA",boxShadow:"3px 3px 0 #9ECCFA",textDecoration:"none"}}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="#9ECCFA"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              style={{border:"3px solid var(--nb-primary)",padding:"6px 14px",background:"var(--nb-primary)",color:"var(--nb-accent)",boxShadow:"3px 3px 0 var(--nb-accent)",textDecoration:"none"}}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--nb-accent)"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
               View Profile →
             </a>
             <div style={{display:"flex",alignItems:"center",gap:6}}>
-              <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957",opacity:0.45}}>Less</span>
+              <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em",color:"var(--nb-primary)",opacity:0.45}}>Less</span>
               {LEGEND_COLORS.map((c,i) => (
-                <div key={i} style={{width:12,height:12,flexShrink:0,background:c,border:`2px solid ${i===4?"#9ECCFA":"#0B1957"}`,boxShadow:i>0?`1px 1px 0 ${i===4?"#9ECCFA":"#0B1957"}`:"none"}}/>
+                <div key={i} style={{width:12,height:12,flexShrink:0,background:c,border:`2px solid ${i===4?"var(--nb-accent)":"var(--nb-primary)"}`,boxShadow:i>0?`1px 1px 0 ${i===4?"var(--nb-accent)":"var(--nb-primary)"}`:"none"}}/>
               ))}
-              <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957",opacity:0.45}}>More</span>
+              <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.1em",color:"var(--nb-primary)",opacity:0.45}}>More</span>
             </div>
           </div>
         </div>
@@ -333,10 +333,10 @@ function Stats() {
 
   return (
     <section ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">By the Numbers</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">By the Numbers</h2>
       <div className={`grid gap-4`} style={{gridTemplateColumns:`repeat(${loading?5:Math.min(stats.length,5)},1fr)`}}>
         {loading && Array.from({length:5}).map((_,i)=>(
-          <div key={i} className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-6 flex flex-col items-center">
+          <div key={i} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] p-6 flex flex-col items-center">
             <div className="skeleton-shimmer w-8 h-8 mb-3"/>
             <div className="skeleton-shimmer h-8 w-12 mb-2"/>
             <div className="skeleton-shimmer h-3 w-full"/>
@@ -344,16 +344,16 @@ function Stats() {
         ))}
         {!loading && stats.map((stat, i) => (
           <div key={i}
-            className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-6 flex flex-col items-center text-center group hover:bg-[#0B1957] hover:shadow-[8px_8px_0_#9ECCFA] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200">
-            <div className="text-[#0B1957] group-hover:text-[#9ECCFA] transition-colors duration-200 mb-3"
+            className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] p-6 flex flex-col items-center text-center group hover:bg-[var(--nb-primary)] hover:shadow-[8px_8px_0_var(--nb-accent)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200">
+            <div className="text-[var(--nb-primary)] group-hover:text-[var(--nb-accent)] transition-colors duration-200 mb-3"
               style={{animation:counted?`statIn 0.5s cubic-bezier(0.16,1,0.3,1) ${i*0.08}s both`:"none"}}>
               {getStatIcon(stat.icon_key)}
             </div>
-            <span className="font-black text-3xl text-[#0B1957] group-hover:text-[#9ECCFA] transition-colors duration-200 tabular-nums leading-none mb-1"
+            <span className="font-black text-3xl text-[var(--nb-primary)] group-hover:text-[var(--nb-accent)] transition-colors duration-200 tabular-nums leading-none mb-1"
               style={{animation:counted?`statIn 0.5s cubic-bezier(0.16,1,0.3,1) ${i*0.08+0.05}s both`:"none"}}>
               {stat.value}
             </span>
-            <span className="font-black text-xs uppercase tracking-widest text-[#0B1957] group-hover:text-[#D1E8FF] transition-colors duration-200 opacity-60 group-hover:opacity-100">
+            <span className="font-black text-xs uppercase tracking-widest text-[var(--nb-primary)] group-hover:text-[var(--nb-accent-light)] transition-colors duration-200 opacity-60 group-hover:opacity-100">
               {stat.label}
             </span>
           </div>
@@ -383,13 +383,13 @@ function TechStack() {
   };
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Tech Stack</h2>
-      <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-        <div className="flex border-b-4 border-[#0B1957] overflow-x-auto">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Tech Stack</h2>
+      <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
+        <div className="flex border-b-4 border-[var(--nb-primary)] overflow-x-auto">
           {tabLabels.map((label, i) => (
             <button key={label} onClick={() => switchTab(i)}
-              className={`flex-shrink-0 flex-1 py-3 px-3 sm:px-4 font-black uppercase text-xs sm:text-sm tracking-wider border-r-4 border-[#0B1957] last:border-r-0 transition-all duration-150 whitespace-nowrap
-                ${activeTab===i?"bg-[#0B1957] text-[#9ECCFA]":"bg-[#F8F3EA] text-[#0B1957] hover:bg-[#D1E8FF]"}`}>
+              className={`flex-shrink-0 flex-1 py-3 px-3 sm:px-4 font-black uppercase text-xs sm:text-sm tracking-wider border-r-4 border-[var(--nb-primary)] last:border-r-0 transition-all duration-150 whitespace-nowrap
+                ${activeTab===i?"bg-[var(--nb-primary)] text-[var(--nb-accent)]":"bg-[var(--nb-bg)] text-[var(--nb-primary)] hover:bg-[var(--nb-accent-light)]"}`}>
               {label}
             </button>
           ))}
@@ -397,12 +397,12 @@ function TechStack() {
         <div className="p-6 sm:p-10 min-h-[180px] flex flex-wrap gap-3 sm:gap-5 items-start content-start"
           style={{opacity:animating?0:1,transform:animating?"translateY(8px)":"translateY(0)",transition:"opacity 0.18s ease, transform 0.18s ease"}}>
           {loading && Array.from({length:5}).map((_,i) => (
-            <div key={i} className="tech-chip" style={{background:"#D1E8FF",opacity:0.5}}>
-              <div style={{width:26,height:26,background:"#9ECCFA",border:"2px solid #0B1957",flexShrink:0}}/>
-              <span style={{color:"transparent",background:"#9ECCFA",minWidth:60}}>___</span>
+            <div key={i} className="tech-chip" style={{background:"var(--nb-accent-light)",opacity:0.5}}>
+              <div style={{width:26,height:26,background:"var(--nb-accent)",border:"2px solid var(--nb-primary)",flexShrink:0}}/>
+              <span style={{color:"transparent",background:"var(--nb-accent)",minWidth:60}}>___</span>
             </div>
           ))}
-          {!loading && categories.length === 0 && <p className="font-bold text-xs uppercase text-[#0B1957] opacity-40 tracking-widest self-center w-full text-center py-8">Belum ada tech stack</p>}
+          {!loading && categories.length === 0 && <p className="font-bold text-xs uppercase text-[var(--nb-primary)] opacity-40 tracking-widest self-center w-full text-center py-8">Belum ada tech stack</p>}
           {!loading && currentTechs.map(tech => (
             <div key={tech.id} className="tech-chip">
               <img src={tech.icon} alt={tech.name} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}}/>
@@ -410,7 +410,7 @@ function TechStack() {
             </div>
           ))}
         </div>
-        <div className="h-2 bg-[#9ECCFA] border-t-4 border-[#0B1957]"/>
+        <div className="h-2 bg-[var(--nb-accent)] border-t-4 border-[var(--nb-primary)]"/>
       </div>
     </section>
   );
@@ -442,10 +442,10 @@ function Capabilities() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">What I Do Best</h2>
-      <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] overflow-hidden">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">What I Do Best</h2>
+      <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] overflow-hidden">
         <div className="p-7 sm:p-10">
-          <p className="font-bold text-[#D1E8FF] text-base sm:text-lg leading-relaxed mb-8 max-w-2xl border-l-4 border-[#9ECCFA] pl-4">
+          <p className="font-bold text-[var(--nb-accent-light)] text-base sm:text-lg leading-relaxed mb-8 max-w-2xl border-l-4 border-[var(--nb-accent)] pl-4">
             {bio}
           </p>
 
@@ -453,9 +453,9 @@ function Capabilities() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
             {infoCards.map((card, i) => (
               <div key={i} className="transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5"
-                style={{border:"2px solid #9ECCFA",padding:"14px",cursor:"default"}}>
-                <p className="text-[#9ECCFA] font-black uppercase text-xs tracking-widest mb-1">{card.label}</p>
-                <p className="text-[#F8F3EA] font-bold text-sm">{card.value}</p>
+                style={{border:"2px solid var(--nb-accent)",padding:"14px",cursor:"default"}}>
+                <p className="text-[var(--nb-accent)] font-black uppercase text-xs tracking-widest mb-1">{card.label}</p>
+                <p className="text-[var(--nb-bg)] font-bold text-sm">{card.value}</p>
               </div>
             ))}
           </div>
@@ -463,7 +463,7 @@ function Capabilities() {
           {/* Featured Tech Stack with icons */}
           {featStacks.length > 0 && (
             <div className="mb-7">
-              <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest mb-3 opacity-60">Tech Stack</p>
+              <p className="font-black text-xs text-[var(--nb-accent)] uppercase tracking-widest mb-3 opacity-60">Tech Stack</p>
               <div className="flex flex-wrap gap-2">
                 {featStacks.map(stack => (
                   <div key={stack.id}
@@ -472,7 +472,7 @@ function Capabilities() {
                     <img src={stack.icon} alt={stack.name}
                       onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}}
                       style={{width:20,height:20,objectFit:"cover",border:"2px solid rgba(158,204,250,0.5)",flexShrink:0}} />
-                    <span style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"#9ECCFA",letterSpacing:"0.06em"}}>{stack.name}</span>
+                    <span style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"var(--nb-accent)",letterSpacing:"0.06em"}}>{stack.name}</span>
                   </div>
                 ))}
               </div>
@@ -483,7 +483,7 @@ function Capabilities() {
           <div className="flex flex-wrap gap-2">
             {highlights.map((tag, i) => (
               <span key={i} className="font-black text-xs uppercase px-4 py-2 tracking-widest transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5"
-                style={{border:"2px solid #9ECCFA",color:"#9ECCFA",background:"rgba(158,204,250,0.1)",
+                style={{border:"2px solid var(--nb-accent)",color:"var(--nb-accent)",background:"rgba(158,204,250,0.1)",
                   animation:`statIn 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.06}s both`}}>
                 {tag}
               </span>
@@ -508,13 +508,13 @@ function ExperienceTimeline() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Experience</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Experience</h2>
       {loading && (
         <div className="flex flex-col gap-4">
           {[1,2,3].map(i => (
             <div key={i} className="flex gap-5 items-start">
               <div className="w-10 flex justify-center mt-1"><div className="w-4 h-4 skeleton-shimmer"/></div>
-              <div className="flex-1 border-4 border-[#0B1957] p-5 bg-[#F8F3EA]">
+              <div className="flex-1 border-4 border-[var(--nb-primary)] p-5 bg-[var(--nb-bg)]">
                 <div className="skeleton-shimmer h-5 w-48 mb-2"/>
                 <div className="skeleton-shimmer h-3 w-32 mb-3"/>
                 <div className="skeleton-shimmer h-3 w-full mb-1"/>
@@ -525,11 +525,11 @@ function ExperienceTimeline() {
         </div>
       )}
       {!loading && exps.length === 0 && (
-        <p className="font-bold text-sm text-[#0B1957] opacity-40 italic">Belum ada experience.</p>
+        <p className="font-bold text-sm text-[var(--nb-primary)] opacity-40 italic">Belum ada experience.</p>
       )}
       {!loading && exps.length > 0 && (
         <div className="relative">
-          <div className="absolute left-[19px] sm:left-[23px] top-0 bottom-0 w-[3px] bg-[#0B1957]" style={{zIndex:0}}/>
+          <div className="absolute left-[19px] sm:left-[23px] top-0 bottom-0 w-[3px] bg-[var(--nb-primary)]" style={{zIndex:0}}/>
           <div className="flex flex-col gap-6">
             {exps.map((exp) => {
               const tc = TYPE_COLORS[exp.type] ?? TYPE_COLORS.project;
@@ -537,38 +537,38 @@ function ExperienceTimeline() {
               return (
                 <div key={exp.id} className="relative flex gap-5 sm:gap-7 items-start group" style={{zIndex:1}}>
                   <div className="flex-shrink-0 mt-1" style={{width:40,display:"flex",justifyContent:"center"}}>
-                    <div style={{width:16,height:16,background:isCurrent?"#9ECCFA":"#0B1957",border:"3px solid #0B1957",
-                      boxShadow:`3px 3px 0 ${isCurrent?"#0B1957":"#9ECCFA"}`,position:"relative",zIndex:2,transition:"transform 0.12s ease"}}
+                    <div style={{width:16,height:16,background:isCurrent?"var(--nb-accent)":"var(--nb-primary)",border:"3px solid var(--nb-primary)",
+                      boxShadow:`3px 3px 0 ${isCurrent?"var(--nb-primary)":"var(--nb-accent)"}`,position:"relative",zIndex:2,transition:"transform 0.12s ease"}}
                       className="group-hover:scale-125"/>
                   </div>
-                  <div className="flex-1 bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-5 sm:p-6 group-hover:shadow-[8px_8px_0_#0B1957] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition-all duration-150">
+                  <div className="flex-1 bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] p-5 sm:p-6 group-hover:shadow-[8px_8px_0_var(--nb-primary)] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition-all duration-150">
                     <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                       <div>
-                        <h3 className="font-black text-lg uppercase text-[#0B1957] leading-tight">{exp.title}</h3>
-                        <p className="font-bold text-xs uppercase tracking-widest text-[#0B1957] opacity-60 mt-0.5">{exp.company}</p>
+                        <h3 className="font-black text-lg uppercase text-[var(--nb-primary)] leading-tight">{exp.title}</h3>
+                        <p className="font-bold text-xs uppercase tracking-widest text-[var(--nb-primary)] opacity-60 mt-0.5">{exp.company}</p>
                       </div>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-black text-xs uppercase tracking-widest px-3 py-1"
                           style={{border:`3px solid ${tc.border}`,background:tc.bg,color:tc.text,boxShadow:`2px 2px 0 ${tc.border}`}}>
                           {exp.type}
                         </span>
-                        <span className="font-bold text-xs uppercase tracking-wider text-[#0B1957] opacity-50 whitespace-nowrap">
+                        <span className="font-bold text-xs uppercase tracking-wider text-[var(--nb-primary)] opacity-50 whitespace-nowrap">
                           {fmtDate(exp.start_date)} — {fmtDate(exp.end_date)}
                         </span>
                         {isCurrent && (
                           <span className="font-black text-xs uppercase tracking-widest px-2 py-0.5"
-                            style={{border:"2px solid #9ECCFA",background:"rgba(158,204,250,0.15)",color:"#0B1957",boxShadow:"1px 1px 0 #9ECCFA"}}>
+                            style={{border:"2px solid var(--nb-accent)",background:"rgba(158,204,250,0.15)",color:"var(--nb-primary)",boxShadow:"1px 1px 0 var(--nb-accent)"}}>
                             ● Active
                           </span>
                         )}
                       </div>
                     </div>
-                    <p className="font-semibold text-sm text-[#0B1957] leading-relaxed mb-3 opacity-80">{exp.description}</p>
+                    <p className="font-semibold text-sm text-[var(--nb-primary)] leading-relaxed mb-3 opacity-80">{exp.description}</p>
                     {exp.highlights && exp.highlights.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {exp.highlights.map((h, hi) => (
                           <span key={hi} className="font-black text-xs uppercase px-2 py-1"
-                            style={{border:"2px solid #9ECCFA",color:"#0B1957",background:"rgba(158,204,250,0.1)"}}>
+                            style={{border:"2px solid var(--nb-accent)",color:"var(--nb-primary)",background:"rgba(158,204,250,0.1)"}}>
                             {h}
                           </span>
                         ))}
@@ -600,11 +600,11 @@ function CaseStudies() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-scale">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Case Studies</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Case Studies</h2>
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {[1,2,3,4].map(i=>(
-            <div key={i} className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-6">
+            <div key={i} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] p-6">
               <div className="skeleton-shimmer h-4 w-32 mb-3"/>
               <div className="skeleton-shimmer h-3 w-full mb-2"/>
               <div className="skeleton-shimmer h-3 w-4/5"/>
@@ -614,15 +614,15 @@ function CaseStudies() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {cases.map((cs, i) => (
-            <div key={cs.id} className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] p-6 group hover:shadow-[8px_8px_0_#0B1957] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-150">
+            <div key={cs.id} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] p-6 group hover:shadow-[8px_8px_0_var(--nb-primary)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-150">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center font-black text-sm"
-                  style={{background:"#0B1957",color:"#9ECCFA",border:"2px solid #9ECCFA",boxShadow:"2px 2px 0 #9ECCFA"}}>
+                  style={{background:"var(--nb-primary)",color:"var(--nb-accent)",border:"2px solid var(--nb-accent)",boxShadow:"2px 2px 0 var(--nb-accent)"}}>
                   {String(i+1).padStart(2,"0")}
                 </div>
-                <h3 className="font-black uppercase text-sm tracking-widest text-[#0B1957]">{cs.title}</h3>
+                <h3 className="font-black uppercase text-sm tracking-widest text-[var(--nb-primary)]">{cs.title}</h3>
               </div>
-              <p className="font-semibold text-sm text-[#0B1957] leading-relaxed opacity-75">{cs.short_story}</p>
+              <p className="font-semibold text-sm text-[var(--nb-primary)] leading-relaxed opacity-75">{cs.short_story}</p>
             </div>
           ))}
         </div>
@@ -650,34 +650,34 @@ function Availability() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[#0B1957]">Availability</h2>
-      <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] p-7 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Availability</h2>
+      <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] p-7 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="relative flex-shrink-0" style={{width:16,height:16}}>
             <div style={{width:16,height:16,background:"#4ade80",border:"3px solid rgba(74,222,128,0.4)",position:"absolute"}}/>
             <div style={{width:16,height:16,background:"#4ade80",animation:"ping 1.4s ease-in-out infinite",opacity:0.4,position:"absolute"}}/>
           </div>
           <div>
-            <p className="font-black text-[#9ECCFA] uppercase tracking-[0.25em] text-xs mb-1">Current Status</p>
-            <p className="font-black text-[#F8F3EA] text-2xl uppercase">{avail.status}</p>
+            <p className="font-black text-[var(--nb-accent)] uppercase tracking-[0.25em] text-xs mb-1">Current Status</p>
+            <p className="font-black text-[var(--nb-bg)] text-2xl uppercase">{avail.status}</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
           {badges.map((b, i) => (
             <div key={i} style={{
-              border:`3px solid ${b.active?"#9ECCFA":"rgba(158,204,250,0.2)"}`,
+              border:`3px solid ${b.active?"var(--nb-accent)":"rgba(158,204,250,0.2)"}`,
               background:b.active?"rgba(158,204,250,0.15)":"transparent",
               padding:"8px 18px",
-              boxShadow:b.active?"3px 3px 0 #9ECCFA":"none",
+              boxShadow:b.active?"3px 3px 0 var(--nb-accent)":"none",
             }}>
-              <p className="font-black text-xs uppercase tracking-widest" style={{color:b.active?"#9ECCFA":"rgba(158,204,250,0.35)"}}>
+              <p className="font-black text-xs uppercase tracking-widest" style={{color:b.active?"var(--nb-accent)":"rgba(158,204,250,0.35)"}}>
                 {b.active ? "✓" : "✗"} {b.label}
               </p>
             </div>
           ))}
           {avail.timezone && (
             <div style={{border:"3px solid rgba(158,204,250,0.4)",padding:"8px 18px"}}>
-              <p className="font-black text-xs uppercase tracking-widest text-[#9ECCFA] opacity-70">WIB · {avail.timezone}</p>
+              <p className="font-black text-xs uppercase tracking-widest text-[var(--nb-accent)] opacity-70">WIB · {avail.timezone}</p>
             </div>
           )}
         </div>
@@ -736,38 +736,38 @@ export default function About() {
         @keyframes shimmer    { from{background-position:-200% 0} to{background-position:200% 0} }
         @keyframes statIn     { from{opacity:0;transform:translateY(10px) scale(0.9)} to{opacity:1;transform:translateY(0) scale(1)} }
         @keyframes ping       { 0%{transform:scale(1);opacity:0.4} 70%,100%{transform:scale(2.4);opacity:0} }
-        body { background-color:#D1E8FF; }
+        body { background-color:var(--nb-accent-light); }
 
         .anim-navbar    { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-hero-text { animation: slideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
         .anim-hero-img  { animation: slideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.10s both; }
 
         .btn-brutal { transition:transform 0.08s ease,box-shadow 0.08s ease; }
-        .btn-brutal:hover  { transform:translate(2px,2px);  box-shadow:2px 2px 0 #0B1957 !important; }
-        .btn-brutal:active { transform:translate(4px,4px);  box-shadow:0   0   0 #0B1957 !important; }
+        .btn-brutal:hover  { transform:translate(2px,2px);  box-shadow:2px 2px 0 var(--nb-primary) !important; }
+        .btn-brutal:active { transform:translate(4px,4px);  box-shadow:0   0   0 var(--nb-primary) !important; }
 
-        .photo-wrap { position:relative;overflow:hidden;border:4px solid #0B1957;box-shadow:10px 10px 0 #0B1957;flex-shrink:0;transition:transform 0.15s ease,box-shadow 0.15s ease; }
-        .photo-wrap:hover { transform:translate(-3px,-3px); box-shadow:13px 13px 0 #0B1957; }
+        .photo-wrap { position:relative;overflow:hidden;border:4px solid var(--nb-primary);box-shadow:10px 10px 0 var(--nb-primary);flex-shrink:0;transition:transform 0.15s ease,box-shadow 0.15s ease; }
+        .photo-wrap:hover { transform:translate(-3px,-3px); box-shadow:13px 13px 0 var(--nb-primary); }
         .photo-wrap img { position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center top; }
 
-        .hero-skeleton  { background:linear-gradient(90deg,#9ECCFA 25%,#D1E8FF 50%,#9ECCFA 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite; }
+        .hero-skeleton  { background:linear-gradient(90deg,var(--nb-accent) 25%,var(--nb-accent-light) 50%,var(--nb-accent) 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite; }
         .about-skeleton { background:linear-gradient(90deg,rgba(158,204,250,0.3) 25%,rgba(158,204,250,0.5) 50%,rgba(158,204,250,0.3) 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite; }
-        .skeleton-shimmer { background:linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite; }
+        .skeleton-shimmer { background:linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite; }
 
-        .tech-chip { display:inline-flex;align-items:center;gap:8px;border:3px solid #0B1957;padding:7px 14px 7px 7px;background:#F8F3EA;font-size:11px;font-weight:800;text-transform:uppercase;color:#0B1957;letter-spacing:0.06em;transition:transform 0.12s ease,box-shadow 0.12s ease,background 0.12s ease;cursor:default;box-shadow:3px 3px 0 #0B1957;flex:0 0 calc(25% - 15px);justify-content:flex-start;box-sizing:border-box; }
+        .tech-chip { display:inline-flex;align-items:center;gap:8px;border:3px solid var(--nb-primary);padding:7px 14px 7px 7px;background:var(--nb-bg);font-size:11px;font-weight:800;text-transform:uppercase;color:var(--nb-primary);letter-spacing:0.06em;transition:transform 0.12s ease,box-shadow 0.12s ease,background 0.12s ease;cursor:default;box-shadow:3px 3px 0 var(--nb-primary);flex:0 0 calc(25% - 15px);justify-content:flex-start;box-sizing:border-box; }
         @media(max-width:640px){.tech-chip{flex:0 0 calc(50% - 6px);}}
-        .tech-chip:hover { background:#9ECCFA;transform:translate(-2px,-2px);box-shadow:5px 5px 0 #0B1957; }
-        .tech-chip img { width:26px;height:26px;object-fit:cover;border:2px solid #0B1957;flex-shrink:0; }
+        .tech-chip:hover { background:var(--nb-accent);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--nb-primary); }
+        .tech-chip img { width:26px;height:26px;object-fit:cover;border:2px solid var(--nb-primary);flex-shrink:0; }
 
-        .back-to-top { position:fixed;bottom:28px;right:28px;z-index:99;width:48px;height:48px;border:4px solid #0B1957;background:#0B1957;box-shadow:4px 4px 0 #9ECCFA;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.1s ease,box-shadow 0.1s ease,opacity 0.3s ease,visibility 0.3s ease; }
-        .back-to-top:hover  { transform:translate(-2px,-2px);box-shadow:6px 6px 0 #9ECCFA; }
-        .back-to-top:active { transform:translate(0,0);       box-shadow:2px 2px 0 #9ECCFA; }
+        .back-to-top { position:fixed;bottom:28px;right:28px;z-index:99;width:48px;height:48px;border:4px solid var(--nb-primary);background:var(--nb-primary);box-shadow:4px 4px 0 var(--nb-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.1s ease,box-shadow 0.1s ease,opacity 0.3s ease,visibility 0.3s ease; }
+        .back-to-top:hover  { transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--nb-accent); }
+        .back-to-top:active { transform:translate(0,0);       box-shadow:2px 2px 0 var(--nb-accent); }
 
         .photo2-frame { position:absolute;bottom:12%;right:10%;
-          border:4px solid #0B1957;box-shadow:6px 6px 0 #0B1957;
-          overflow:hidden;z-index:9;transform:rotate(3deg);background:#D1E8FF;
+          border:4px solid var(--nb-primary);box-shadow:6px 6px 0 var(--nb-primary);
+          overflow:hidden;z-index:9;transform:rotate(3deg);background:var(--nb-accent-light);
           transition:transform 0.15s ease,box-shadow 0.15s ease; }
-        .photo2-frame:hover { transform:rotate(1deg) translate(-2px,-2px); box-shadow:8px 8px 0 #0B1957; }
+        .photo2-frame:hover { transform:rotate(1deg) translate(-2px,-2px); box-shadow:8px 8px 0 var(--nb-primary); }
         .photo2-frame img { width:100%;height:100%;object-fit:cover;object-position:center top;display:block; }
       `}</style>
 
@@ -778,39 +778,39 @@ export default function About() {
         {/* PAGE HEADER */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-6 sm:pb-8 flex items-center gap-6">
           <button onClick={() => router.visit("/")}
-            className="btn-brutal border-4 border-[#0B1957] px-4 py-2 font-black uppercase text-sm shadow-[4px_4px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] flex items-center gap-2">
+            className="btn-brutal border-4 border-[var(--nb-primary)] px-4 py-2 font-black uppercase text-sm shadow-[4px_4px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)] flex items-center gap-2">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
             </svg>
             Back
           </button>
           <div>
-            <p className="font-black uppercase text-xs text-[#0B1957] opacity-50 tracking-[0.25em]">Portfolio</p>
-            <h1 className="font-black uppercase text-2xl sm:text-3xl text-[#0B1957] leading-none">About Me</h1>
+            <p className="font-black uppercase text-xs text-[var(--nb-primary)] opacity-50 tracking-[0.25em]">Portfolio</p>
+            <h1 className="font-black uppercase text-2xl sm:text-3xl text-[var(--nb-primary)] leading-none">About Me</h1>
           </div>
         </div>
 
         {/* BIO HERO — Text LEFT, Dual Photo RIGHT */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-16">
-          <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] flex flex-col md:flex-row overflow-hidden">
+          <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] flex flex-col md:flex-row overflow-hidden">
 
             {/* Text LEFT */}
             <div className="anim-hero-text flex-1 p-8 sm:p-12 flex flex-col justify-center relative order-2 md:order-1">
-              <span className="absolute top-5 right-8 text-8xl font-black text-[#9ECCFA] select-none leading-none opacity-15" aria-hidden>"</span>
+              <span className="absolute top-5 right-8 text-8xl font-black text-[var(--nb-accent)] select-none leading-none opacity-15" aria-hidden>"</span>
 
               {heroLoading ? (
                 <div className="space-y-3 mb-6">
                   <div className="about-skeleton h-12 w-64"/>
-                  <div className="w-12 h-1 bg-[#9ECCFA] mt-1"/>
+                  <div className="w-12 h-1 bg-[var(--nb-accent)] mt-1"/>
                   <div className="about-skeleton h-4 w-full mt-3"/>
                   <div className="about-skeleton h-4 w-4/5"/>
                 </div>
               ) : (
                 <>
-                  <h2 className="text-4xl sm:text-5xl font-black uppercase text-[#F8F3EA] mb-4 leading-tight">{hero.name}</h2>
-                  <div className="w-12 h-1 bg-[#9ECCFA] mb-5"/>
-                  <p className="font-bold uppercase mb-5 text-[#9ECCFA] tracking-wider text-sm border-l-4 border-[#9ECCFA] pl-3">{hero.title}</p>
-                  <p className="font-semibold text-[#D1E8FF] leading-relaxed max-w-lg text-base">
+                  <h2 className="text-4xl sm:text-5xl font-black uppercase text-[var(--nb-bg)] mb-4 leading-tight">{hero.name}</h2>
+                  <div className="w-12 h-1 bg-[var(--nb-accent)] mb-5"/>
+                  <p className="font-bold uppercase mb-5 text-[var(--nb-accent)] tracking-wider text-sm border-l-4 border-[var(--nb-accent)] pl-3">{hero.title}</p>
+                  <p className="font-semibold text-[var(--nb-accent-light)] leading-relaxed max-w-lg text-base">
                     {about.extra_bio || hero.bio}
                   </p>
                 </>
@@ -820,7 +820,7 @@ export default function About() {
                 <div className="flex flex-wrap gap-2 mt-6">
                   {about.highlights.filter(Boolean).map((tag, i) => (
                     <span key={i} className="font-black text-xs uppercase px-3 py-1.5 tracking-widest"
-                      style={{border:"2px solid #9ECCFA",color:"#9ECCFA",background:"rgba(158,204,250,0.1)",
+                      style={{border:"2px solid var(--nb-accent)",color:"var(--nb-accent)",background:"rgba(158,204,250,0.1)",
                         animation:`statIn 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.06}s both`}}>
                       {tag}
                     </span>
@@ -830,9 +830,9 @@ export default function About() {
             </div>
 
             {/* Photo RIGHT — Dual photo layout */}
-            <div className="anim-hero-img md:w-2/5 relative bg-[#9ECCFA] border-b-4 md:border-b-0 md:border-l-4 border-[#0B1957] flex items-center justify-center py-10 px-8 min-h-[300px] sm:min-h-[360px] order-1 md:order-2">
+            <div className="anim-hero-img md:w-2/5 relative bg-[var(--nb-accent)] border-b-4 md:border-b-0 md:border-l-4 border-[var(--nb-primary)] flex items-center justify-center py-10 px-8 min-h-[300px] sm:min-h-[360px] order-1 md:order-2">
               {/* Grid bg */}
-              <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#0B1957 0,#0B1957 1px,transparent 1px,transparent 32px)"}}/>
+              <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 32px)"}}/>
 
               {/* Primary photo — front, larger */}
               <div className="photo-wrap relative z-10" style={{width:"min(165px,48vw)",height:"min(210px,60vw)"}}>
@@ -878,11 +878,11 @@ export default function About() {
         <Availability/>
 
         {/* FOOTER */}
-        <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA] reveal">
+        <footer className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] reveal">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => router.visit("/")}>Naoo.id</div>
-              <p className="font-bold uppercase text-xs text-[#0B1957] opacity-50 tracking-widest">© {new Date().getFullYear()} Zaki Yusron Hasyimmi</p>
+              <div className="font-black text-xl text-[var(--nb-primary)] cursor-pointer" onClick={() => router.visit("/")}>Naoo.id</div>
+              <p className="font-bold uppercase text-xs text-[var(--nb-primary)] opacity-50 tracking-widest">© {new Date().getFullYear()} Zaki Yusron Hasyimmi</p>
             </div>
           </div>
         </footer>
@@ -890,7 +890,7 @@ export default function About() {
         {/* BACK TO TOP */}
         <button className="back-to-top" style={{opacity:showTop?1:0,visibility:showTop?"visible":"hidden"}}
           onClick={() => window.scrollTo({top:0,behavior:"smooth"})} aria-label="Back to top">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--nb-accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="18 15 12 9 6 15"/>
           </svg>
         </button>

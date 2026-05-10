@@ -29,9 +29,9 @@ interface Project {
 }
 
 const STATUS_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
-  "Hosted":      { bg: "bg-[#9ECCFA]",  text: "text-[#0B1957]", dot: "bg-[#0B1957]" },
-  "In Progress": { bg: "bg-[#FFE8A0]",  text: "text-[#0B1957]", dot: "bg-[#F59E0B]" },
-  "Planning":    { bg: "bg-[#F8F3EA]",  text: "text-[#0B1957]", dot: "bg-[#9ECCFA]" },
+  "Hosted":      { bg: "bg-[var(--nb-accent)]",  text: "text-[var(--nb-primary)]", dot: "bg-[var(--nb-primary)]" },
+  "In Progress": { bg: "bg-[var(--nb-secondary)]",  text: "text-[var(--nb-primary)]", dot: "bg-[#F59E0B]" },
+  "Planning":    { bg: "bg-[var(--nb-bg)]",  text: "text-[var(--nb-primary)]", dot: "bg-[var(--nb-accent)]" },
 };
 
 const ALL_FILTERS = ["All", "Hosted", "In Progress", "Planning"];
@@ -138,21 +138,21 @@ function SkeletonCard({ delay = 0 }: { delay?: number }) {
   return (
     <div
       style={{
-        border: "4px solid #0B1957",
-        background: "#F8F3EA",
-        boxShadow: "5px 5px 0 #0B1957",
+        border: "4px solid var(--nb-primary)",
+        background: "var(--nb-bg)",
+        boxShadow: "5px 5px 0 var(--nb-primary)",
         opacity: 0,
         animation: `skeletonFadeIn 0.4s ease ${delay}ms forwards`,
       }}
     >
-      <div className="skeleton-shimmer" style={{ width: "100%", height: 176, borderBottom: "4px solid #0B1957" }} />
+      <div className="skeleton-shimmer" style={{ width: "100%", height: 176, borderBottom: "4px solid var(--nb-primary)" }} />
       <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
         <div className="skeleton-shimmer" style={{ height: 14, width: "70%", borderRadius: 0 }} />
         <div className="skeleton-shimmer" style={{ height: 11, width: "90%", borderRadius: 0 }} />
         <div className="skeleton-shimmer" style={{ height: 11, width: "60%", borderRadius: 0 }} />
         <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-          <div className="skeleton-shimmer" style={{ width: 36, height: 36, border: "2px solid #0B1957" }} />
-          <div className="skeleton-shimmer" style={{ width: 36, height: 36, border: "2px solid #0B1957" }} />
+          <div className="skeleton-shimmer" style={{ width: 36, height: 36, border: "2px solid var(--nb-primary)" }} />
+          <div className="skeleton-shimmer" style={{ width: 36, height: 36, border: "2px solid var(--nb-primary)" }} />
         </div>
       </div>
     </div>
@@ -302,19 +302,19 @@ export default function Projects() {
           position: relative;
           overflow: visible !important;
           cursor: pointer;
-          background: #F8F3EA;
-          border: 4px solid #0B1957;
-          box-shadow: 5px 5px 0 #0B1957;
+          background: var(--nb-bg);
+          border: 4px solid var(--nb-primary);
+          box-shadow: 5px 5px 0 var(--nb-primary);
           transition: transform 0.18s cubic-bezier(0.16,1,0.3,1),
                       box-shadow 0.18s cubic-bezier(0.16,1,0.3,1);
         }
         .spotlight-card:hover {
           transform: translate(-4px,-4px);
-          box-shadow: 9px 9px 0 #9ECCFA, 11px 11px 0 #0B1957;
+          box-shadow: 9px 9px 0 var(--nb-accent), 11px 11px 0 var(--nb-primary);
         }
         .spotlight-card:active {
           transform: translate(1px,1px);
-          box-shadow: 3px 3px 0 #0B1957;
+          box-shadow: 3px 3px 0 var(--nb-primary);
         }
         .spotlight-card:hover .card-img { transform: scale(1.07); }
         .card-img { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); }
@@ -334,11 +334,11 @@ export default function Projects() {
         }
 
         .filter-btn {
-          border: 3px solid #0B1957; padding: 8px 18px;
+          border: 3px solid var(--nb-primary); padding: 8px 18px;
           font-weight: 900; font-size: 12px; text-transform: uppercase;
           letter-spacing: 0.08em; cursor: pointer;
           transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease, color 0.15s ease;
-          box-shadow: 3px 3px 0 #0B1957;
+          box-shadow: 3px 3px 0 var(--nb-primary);
           position: relative; overflow: hidden;
         }
         .filter-btn::after {
@@ -350,81 +350,81 @@ export default function Projects() {
           transition: opacity 0.2s;
         }
         .filter-btn:hover::after { opacity: 1; animation: shimmer 0.6s ease; }
-        .filter-btn:hover  { transform: translate(2px,2px); box-shadow: 1px 1px 0 #0B1957; }
-        .filter-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 #0B1957; }
-        .filter-btn.active { background: #0B1957; color: #9ECCFA; animation: pulseGlow 2s ease 0.3s; }
+        .filter-btn:hover  { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--nb-primary); }
+        .filter-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 var(--nb-primary); }
+        .filter-btn.active { background: var(--nb-primary); color: var(--nb-accent); animation: pulseGlow 2s ease 0.3s; }
 
         .back-btn {
           display: inline-flex; align-items: center; gap: 8px;
-          border: 4px solid #0B1957; padding: 10px 20px;
+          border: 4px solid var(--nb-primary); padding: 10px 20px;
           font-weight: 900; font-size: 13px; text-transform: uppercase;
-          color: #0B1957; background: #F8F3EA; cursor: pointer;
-          box-shadow: 4px 4px 0 #0B1957; letter-spacing: 0.07em;
+          color: var(--nb-primary); background: var(--nb-bg); cursor: pointer;
+          box-shadow: 4px 4px 0 var(--nb-primary); letter-spacing: 0.07em;
           transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
-        .back-btn:hover  { transform: translate(2px,2px); box-shadow: 2px 2px 0 #0B1957; }
-        .back-btn:active { transform: translate(4px,4px); box-shadow: 0 0 0 #0B1957; }
+        .back-btn:hover  { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--nb-primary); }
+        .back-btn:active { transform: translate(4px,4px); box-shadow: 0 0 0 var(--nb-primary); }
         .back-btn svg { transition: transform 0.2s ease; }
         .back-btn:hover svg { transform: translateX(-3px); }
 
         .page-btn {
-          border: 3px solid #0B1957; width: 40px; height: 40px;
+          border: 3px solid var(--nb-primary); width: 40px; height: 40px;
           font-weight: 900; font-size: 13px;
           display: flex; align-items: center; justify-content: center;
           cursor: pointer;
           transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.12s ease;
-          box-shadow: 3px 3px 0 #0B1957; background: #F8F3EA; color: #0B1957;
+          box-shadow: 3px 3px 0 var(--nb-primary); background: var(--nb-bg); color: var(--nb-primary);
         }
-        .page-btn:hover  { transform: translate(2px,2px); box-shadow: 1px 1px 0 #0B1957; }
-        .page-btn.active { background: #0B1957; color: #9ECCFA; }
+        .page-btn:hover  { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--nb-primary); }
+        .page-btn.active { background: var(--nb-primary); color: var(--nb-accent); }
         .page-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
         .dot {
           width: 12px; height: 12px;
-          border: 2px solid #0B1957; background: transparent;
+          border: 2px solid var(--nb-primary); background: transparent;
           transition: all 0.3s cubic-bezier(0.16,1,0.3,1); cursor: pointer; flex-shrink: 0;
         }
-        .dot.active { background: #0B1957; width: 32px; }
-        .dot:hover:not(.active) { background: #9ECCFA; }
+        .dot.active { background: var(--nb-primary); width: 32px; }
+        .dot:hover:not(.active) { background: var(--nb-accent); }
 
         .stack-chip {
           transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
         .stack-chip:hover {
           transform: translate(-1px, -1px);
-          box-shadow: 3px 3px 0 #0B1957;
+          box-shadow: 3px 3px 0 var(--nb-primary);
         }
 
         .hero-grid {
           background-image:
-            repeating-linear-gradient(0deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px),
-            repeating-linear-gradient(90deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px);
+            repeating-linear-gradient(0deg,var(--nb-accent) 0,var(--nb-accent) 1px,transparent 1px,transparent 40px),
+            repeating-linear-gradient(90deg,var(--nb-accent) 0,var(--nb-accent) 1px,transparent 1px,transparent 40px);
         }
 
         .skeleton-shimmer {
-          background: linear-gradient(90deg, #D1E8FF 25%, #b8daff 50%, #D1E8FF 75%);
+          background: linear-gradient(90deg, var(--nb-accent-light) 25%, var(--nb-accent) 50%, var(--nb-accent-light) 75%);
           background-size: 200% 100%;
           animation: shimmer 1.4s ease infinite, skeletonPulse 1.4s ease infinite;
         }
 
         .error-box {
-          border: 4px solid #0B1957; background: #FFD1D1;
-          box-shadow: 6px 6px 0 #0B1957;
+          border: 4px solid var(--nb-primary); background: #FFD1D1;
+          box-shadow: 6px 6px 0 var(--nb-primary);
           padding: 40px 24px; text-align: center;
         }
 
         .retry-btn {
-          border: 3px solid #0B1957; padding: 10px 24px;
+          border: 3px solid var(--nb-primary); padding: 10px 24px;
           font-weight: 900; font-size: 12px; text-transform: uppercase;
-          background: #0B1957; color: #9ECCFA; cursor: pointer;
-          box-shadow: 3px 3px 0 #9ECCFA;
+          background: var(--nb-primary); color: var(--nb-accent); cursor: pointer;
+          box-shadow: 3px 3px 0 var(--nb-accent);
           transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
-        .retry-btn:hover  { transform: translate(2px,2px); box-shadow: 1px 1px 0 #9ECCFA; }
-        .retry-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 #9ECCFA; }
+        .retry-btn:hover  { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--nb-accent); }
+        .retry-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 var(--nb-accent); }
       `}</style>
 
-      <div className="min-h-screen bg-[#D1E8FF] page-wrapper">
+      <div className="min-h-screen bg-[var(--nb-accent-light)] page-wrapper">
         <Navbar />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-20">
@@ -442,22 +442,22 @@ export default function Projects() {
           {/* HERO */}
           <div
             ref={heroRef}
-            className="hero-block bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] p-8 sm:p-10 mb-8 relative overflow-hidden"
+            className="hero-block bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] p-8 sm:p-10 mb-8 relative overflow-hidden"
           >
             <div
               className="absolute inset-0 opacity-10 hero-grid"
               style={{ transform: `translateY(${heroOffset}px)`, transition: "transform 0.1s linear" }}
             />
             <div className="absolute top-0 right-0 w-32 h-32 opacity-5" style={{
-              background: "radial-gradient(circle at top right, #9ECCFA, transparent 70%)"
+              background: "radial-gradient(circle at top right, var(--nb-accent), transparent 70%)"
             }} />
 
             <div className="relative z-10">
-              <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-[0.3em] mb-2">Portfolio</p>
-              <h1 className="text-3xl sm:text-5xl font-black uppercase text-[#F8F3EA] mb-3 leading-tight">
+              <p className="font-black uppercase text-xs text-[var(--nb-accent)] tracking-[0.3em] mb-2">Portfolio</p>
+              <h1 className="text-3xl sm:text-5xl font-black uppercase text-[var(--nb-bg)] mb-3 leading-tight">
                 All Projects
               </h1>
-              <p className="font-semibold text-[#D1E8FF] text-base sm:text-lg max-w-2xl">
+              <p className="font-semibold text-[var(--nb-accent-light)] text-base sm:text-lg max-w-2xl">
                 Semua project yang pernah dibangun — dari web app, dashboard, hingga tools internal.
               </p>
 
@@ -470,11 +470,11 @@ export default function Projects() {
                   ].map((stat, i) => (
                     <div
                       key={i}
-                      className="hero-stat border-2 border-[#9ECCFA] px-4 py-2 inline-flex items-center gap-2"
+                      className="hero-stat border-2 border-[var(--nb-accent)] px-4 py-2 inline-flex items-center gap-2"
                       style={{ animationDelay: `${0.35 + i * 0.1}s` }}
                     >
-                      <span className="font-black text-[#9ECCFA] text-xl">{stat.count}</span>
-                      <span className="font-black text-[#D1E8FF] text-xs uppercase tracking-widest">{stat.label}</span>
+                      <span className="font-black text-[var(--nb-accent)] text-xl">{stat.count}</span>
+                      <span className="font-black text-[var(--nb-accent-light)] text-xs uppercase tracking-widest">{stat.label}</span>
                     </div>
                   ))}
                 </div>
@@ -483,7 +483,7 @@ export default function Projects() {
               {loading && (
                 <div className="mt-6 flex gap-4 flex-wrap">
                   {[0, 1, 2].map(i => (
-                    <div key={i} className="skeleton-shimmer border-2 border-[#9ECCFA] px-4 py-2 inline-flex items-center gap-2" style={{ width: 130, height: 42 }} />
+                    <div key={i} className="skeleton-shimmer border-2 border-[var(--nb-accent)] px-4 py-2 inline-flex items-center gap-2" style={{ width: 130, height: 42 }} />
                   ))}
                 </div>
               )}
@@ -495,7 +495,7 @@ export default function Projects() {
             {ALL_FILTERS.map((f, i) => (
               <button
                 key={f}
-                className={`filter-btn ${filter === f ? "active" : "bg-[#F8F3EA] text-[#0B1957]"}`}
+                className={`filter-btn ${filter === f ? "active" : "bg-[var(--nb-bg)] text-[var(--nb-primary)]"}`}
                 style={{ transitionDelay: `${i * 40}ms` }}
                 onClick={() => handleFilter(f)}
                 disabled={loading}
@@ -514,8 +514,8 @@ export default function Projects() {
           {error && (
             <AnimBlock>
               <div className="error-box mb-8">
-                <p className="font-black uppercase text-lg text-[#0B1957] mb-2">Gagal Memuat Data</p>
-                <p className="font-semibold text-[#0B1957] opacity-60 mb-6">Koneksi ke server gagal. Coba lagi.</p>
+                <p className="font-black uppercase text-lg text-[var(--nb-primary)] mb-2">Gagal Memuat Data</p>
+                <p className="font-semibold text-[var(--nb-primary)] opacity-60 mb-6">Koneksi ke server gagal. Coba lagi.</p>
                 <button
                   className="retry-btn"
                   onClick={() => {
@@ -559,7 +559,7 @@ export default function Projects() {
                     onClick={() => router.visit(`/projects/${p.slug}`)}
                   >
                     {/* Image */}
-                    <div className="w-full h-44 overflow-hidden border-b-4 border-[#0B1957] relative">
+                    <div className="w-full h-44 overflow-hidden border-b-4 border-[var(--nb-primary)] relative">
                       {p.images?.[0] ? (
                         <img
                           src={p.images[0]}
@@ -567,21 +567,21 @@ export default function Projects() {
                           className="card-img w-full h-full object-cover object-top"
                         />
                       ) : (
-                        <div className="w-full h-full bg-[#D1E8FF] flex items-center justify-center">
-                          <span className="font-black uppercase text-xs text-[#0B1957] opacity-30">No Image</span>
+                        <div className="w-full h-full bg-[var(--nb-accent-light)] flex items-center justify-center">
+                          <span className="font-black uppercase text-xs text-[var(--nb-primary)] opacity-30">No Image</span>
                         </div>
                       )}
-                      <div className="card-overlay absolute inset-0 bg-[#0B1957] bg-opacity-65 flex items-center justify-center">
-                        <span className="text-[#9ECCFA] font-black uppercase text-sm border-2 border-[#9ECCFA] px-4 py-2">
+                      <div className="card-overlay absolute inset-0 bg-[var(--nb-primary)] bg-opacity-65 flex items-center justify-center">
+                        <span className="text-[var(--nb-accent)] font-black uppercase text-sm border-2 border-[var(--nb-accent)] px-4 py-2">
                           Lihat Detail →
                         </span>
                       </div>
-                      <div className={`absolute top-3 left-3 inline-flex items-center gap-1.5 border-2 border-[#0B1957] px-3 py-1 ${st.bg} z-20`}>
+                      <div className={`absolute top-3 left-3 inline-flex items-center gap-1.5 border-2 border-[var(--nb-primary)] px-3 py-1 ${st.bg} z-20`}>
                         <div className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
                         <span className={`font-black uppercase text-xs tracking-wide ${st.text}`}>{p.status}</span>
                       </div>
-                      <div className="absolute top-3 right-3 z-20 bg-[#0B1957] border-2 border-[#9ECCFA] px-2 py-0.5">
-                        <span className="font-black text-[9px] text-[#9ECCFA] uppercase tracking-tighter">
+                      <div className="absolute top-3 right-3 z-20 bg-[var(--nb-primary)] border-2 border-[var(--nb-accent)] px-2 py-0.5">
+                        <span className="font-black text-[9px] text-[var(--nb-accent)] uppercase tracking-tighter">
                           {p.workType === "Solo" ? (p.soloRole || "Solo") : "Collab"}
                         </span>
                       </div>
@@ -590,16 +590,16 @@ export default function Projects() {
                     {/* Content */}
                     <div className="p-5 relative z-20">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-black uppercase text-sm text-[#0B1957] leading-tight">{p.title}</h3>
-                        <span className="text-xs font-bold text-[#0B1957] opacity-50 flex-shrink-0">{p.date}</span>
+                        <h3 className="font-black uppercase text-sm text-[var(--nb-primary)] leading-tight">{p.title}</h3>
+                        <span className="text-xs font-bold text-[var(--nb-primary)] opacity-50 flex-shrink-0">{p.date}</span>
                       </div>
-                      <p className="font-semibold text-xs text-[#0B1957] opacity-70 mb-4 leading-relaxed">{p.desc}</p>
+                      <p className="font-semibold text-xs text-[var(--nb-primary)] opacity-70 mb-4 leading-relaxed">{p.desc}</p>
                       <div className="flex flex-wrap gap-2">
                         {p.stacks?.map((s, j) => (
                           <div
                             key={j}
                             title={s.label}
-                            className="stack-chip border-2 border-[#0B1957] bg-[#D1E8FF] p-1.5"
+                            className="stack-chip border-2 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] p-1.5"
                           >
                             <img src={s.icon} alt={s.label} className="w-6 h-6 object-contain" />
                           </div>
@@ -615,9 +615,9 @@ export default function Projects() {
           {/* EMPTY */}
           {!loading && !error && filtered.length === 0 && (
             <AnimBlock>
-              <div className="text-center py-20 border-4 border-[#0B1957] bg-[#F8F3EA] shadow-[6px_6px_0_#0B1957]">
-                <p className="font-black uppercase text-2xl text-[#0B1957] mb-2">Tidak Ada Project</p>
-                <p className="font-semibold text-[#0B1957] opacity-60">Coba filter yang lain</p>
+              <div className="text-center py-20 border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)]">
+                <p className="font-black uppercase text-2xl text-[var(--nb-primary)] mb-2">Tidak Ada Project</p>
+                <p className="font-semibold text-[var(--nb-primary)] opacity-60">Coba filter yang lain</p>
               </div>
             </AnimBlock>
           )}

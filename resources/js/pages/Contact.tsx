@@ -32,7 +32,7 @@ function PlatformIcon({ platform, size = 20 }: { platform: ContactPlatform; size
     case "email":
       return <svg width={s} height={s} viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>;
     case "github":
-      return <svg width={s} height={s} viewBox="0 0 24 24" fill="#9ECCFA"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>;
+      return <svg width={s} height={s} viewBox="0 0 24 24" fill="var(--nb-accent)"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>;
     case "linkedin":
       return <svg width={s} height={s} viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>;
     case "instagram":
@@ -48,12 +48,12 @@ function PlatformIcon({ platform, size = 20 }: { platform: ContactPlatform; size
 
 // ── FloatingBlocks ─────────────────────────────────────────────────────────────
 const BLOCK_CONFIGS = [
-  { top:"6%",  left:"2%",   size:56, color:"#9ECCFA", type:"filled",  animDelay:"0s"   },
-  { top:"50%", left:"1.5%", size:18, color:"#0B1957", type:"outline", animDelay:"1.2s" },
-  { top:"80%", left:"3%",   size:36, color:"#F8F3EA", type:"outline", animDelay:"0.6s" },
-  { top:"15%", left:"93%",  size:24, color:"#0B1957", type:"filled",  animDelay:"1.8s" },
-  { top:"55%", left:"94%",  size:44, color:"#9ECCFA", type:"outline", animDelay:"0.3s" },
-  { top:"85%", left:"92%",  size:32, color:"#9ECCFA", type:"outline", animDelay:"1.5s" },
+  { top:"6%",  left:"2%",   size:56, color:"var(--nb-accent)", type:"filled",  animDelay:"0s"   },
+  { top:"50%", left:"1.5%", size:18, color:"var(--nb-primary)", type:"outline", animDelay:"1.2s" },
+  { top:"80%", left:"3%",   size:36, color:"var(--nb-bg)", type:"outline", animDelay:"0.6s" },
+  { top:"15%", left:"93%",  size:24, color:"var(--nb-primary)", type:"filled",  animDelay:"1.8s" },
+  { top:"55%", left:"94%",  size:44, color:"var(--nb-accent)", type:"outline", animDelay:"0.3s" },
+  { top:"85%", left:"92%",  size:32, color:"var(--nb-accent)", type:"outline", animDelay:"1.5s" },
 ];
 
 function FloatingBlocks() {
@@ -64,8 +64,8 @@ function FloatingBlocks() {
         {BLOCK_CONFIGS.map((cfg,i)=>(
           <div key={i} style={{position:"absolute",top:cfg.top,left:cfg.left,width:cfg.size,height:cfg.size,
             background:cfg.type==="filled"?cfg.color:"transparent",
-            border:cfg.type==="outline"?`4px solid ${cfg.color}`:`3px solid rgba(11,25,87,0.3)`,
-            boxShadow:`4px 4px 0 rgba(11,25,87,0.4)`,
+            border:cfg.type==="outline"?`4px solid ${cfg.color}`:`3px solid var(--nb-primary)`,
+            boxShadow:`4px 4px 0 var(--nb-primary)`,
             animation:`floatBob ${3.5+i*0.4}s ease-in-out ${cfg.animDelay} infinite`}} />
         ))}
       </div>
@@ -167,7 +167,7 @@ export default function Contact() {
         @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:0.5} }
         @keyframes spin       { to{transform:rotate(360deg)} }
 
-        body { background-color: #D1E8FF; }
+        body { background-color: var(--nb-accent-light); }
 
         .anim-navbar  { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-hero    { animation: slideUp    0.7s cubic-bezier(0.16,1,0.3,1) 0.1s  both; }
@@ -179,28 +179,28 @@ export default function Contact() {
         }
         .btn-brutal:hover:not(:disabled) {
           transform: translate(2px,2px);
-          box-shadow: 2px 2px 0 #0B1957 !important;
+          box-shadow: 2px 2px 0 var(--nb-primary) !important;
         }
         .btn-brutal:active:not(:disabled) {
           transform: translate(4px,4px);
-          box-shadow: 0 0 0 #0B1957 !important;
+          box-shadow: 0 0 0 var(--nb-primary) !important;
         }
 
         .form-input {
           width: 100%;
-          border: 4px solid #0B1957;
+          border: 4px solid var(--nb-primary);
           background: white;
           padding: 12px 16px;
           font-weight: 700;
           font-size: 14px;
-          color: #0B1957;
+          color: var(--nb-primary);
           outline: none;
           box-sizing: border-box;
           font-family: inherit;
           transition: box-shadow 0.15s ease, transform 0.12s ease, border-color 0.15s ease;
         }
         .form-input:focus {
-          box-shadow: 4px 4px 0 #9ECCFA;
+          box-shadow: 4px 4px 0 var(--nb-accent);
           transform: translate(-1px,-1px);
         }
         .form-input.error {
@@ -208,7 +208,7 @@ export default function Contact() {
           box-shadow: 4px 4px 0 rgba(239,68,68,0.3);
         }
         .form-input::placeholder {
-          color: #0B1957;
+          color: var(--nb-primary);
           opacity: 0.3;
           font-weight: 600;
         }
@@ -218,31 +218,31 @@ export default function Contact() {
           align-items: center;
           gap: 14px;
           padding: 16px 20px;
-          border: 4px solid #0B1957;
-          background: #F8F3EA;
-          box-shadow: 4px 4px 0 #0B1957;
+          border: 4px solid var(--nb-primary);
+          background: var(--nb-bg);
+          box-shadow: 4px 4px 0 var(--nb-primary);
           text-decoration: none;
           transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.12s ease;
         }
         .contact-link:hover {
           transform: translate(-3px,-3px);
-          box-shadow: 7px 7px 0 #0B1957;
-          background: #D1E8FF;
+          box-shadow: 7px 7px 0 var(--nb-primary);
+          background: var(--nb-accent-light);
         }
         .contact-link:hover .contact-link-icon {
           transform: translate(-2px,-2px);
-          box-shadow: 4px 4px 0 #0B1957;
+          box-shadow: 4px 4px 0 var(--nb-primary);
         }
         .contact-link-icon {
           width: 48px;
           height: 48px;
-          border: 3px solid #0B1957;
+          border: 3px solid var(--nb-primary);
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
           transition: transform 0.15s ease, box-shadow 0.15s ease;
-          box-shadow: 2px 2px 0 #0B1957;
+          box-shadow: 2px 2px 0 var(--nb-primary);
         }
 
         .sending-spinner {
@@ -255,23 +255,23 @@ export default function Contact() {
         <div className="anim-navbar"><Navbar /></div>
 
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-8 sm:pb-12 anim-hero">
-          <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[10px_10px_0_#9ECCFA] px-8 sm:px-12 py-10 sm:py-14 relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10" style={{backgroundImage:"repeating-linear-gradient(0deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,#9ECCFA 0,#9ECCFA 1px,transparent 1px,transparent 40px)"}}/>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#9ECCFA] opacity-10" style={{clipPath:"polygon(100% 0,0 0,100% 100%)"}}/>
+          <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] px-8 sm:px-12 py-10 sm:py-14 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-accent) 0,var(--nb-accent) 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,var(--nb-accent) 0,var(--nb-accent) 1px,transparent 1px,transparent 40px)"}}/>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--nb-accent)] opacity-10" style={{clipPath:"polygon(100% 0,0 0,100% 100%)"}}/>
 
             <div className="relative z-10 max-w-2xl">
-              <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-[0.35em] mb-3">Get in touch</p>
-              <h1 className="text-4xl sm:text-6xl font-black uppercase text-[#F8F3EA] mb-5 leading-[0.95]">
+              <p className="font-black uppercase text-xs text-[var(--nb-accent)] tracking-[0.35em] mb-3">Get in touch</p>
+              <h1 className="text-4xl sm:text-6xl font-black uppercase text-[var(--nb-bg)] mb-5 leading-[0.95]">
                 Let's<br/>
-                <span className="text-[#9ECCFA]">Talk.</span>
+                <span className="text-[var(--nb-accent)]">Talk.</span>
               </h1>
-              <p className="font-semibold text-[#D1E8FF] text-base sm:text-lg leading-relaxed max-w-lg opacity-80">
+              <p className="font-semibold text-[var(--nb-accent-light)] text-base sm:text-lg leading-relaxed max-w-lg opacity-80">
                 Punya project, pertanyaan, atau sekadar ingin berkenalan? Kirimkan pesan dan saya akan membalas secepatnya.
               </p>
             </div>
 
             <div className="absolute bottom-4 right-8 opacity-5 leading-none select-none pointer-events-none">
-              <svg width="160" height="160" viewBox="0 0 24 24" fill="#9ECCFA">
+              <svg width="160" height="160" viewBox="0 0 24 24" fill="var(--nb-accent)">
                 <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
               </svg>
             </div>
@@ -284,31 +284,31 @@ export default function Contact() {
             <div className="lg:col-span-3 anim-form" ref={formRef}>
 
               {status === "success" && (
-                <div ref={successRef} className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden" style={{animation:"scaleIn 0.5s cubic-bezier(0.16,1,0.3,1) both"}}>
-                  <div className="bg-[#0B1957] border-b-4 border-[#0B1957] px-8 py-6">
+                <div ref={successRef} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden" style={{animation:"scaleIn 0.5s cubic-bezier(0.16,1,0.3,1) both"}}>
+                  <div className="bg-[var(--nb-primary)] border-b-4 border-[var(--nb-primary)] px-8 py-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-[#9ECCFA] border-4 border-[#9ECCFA] flex items-center justify-center flex-shrink-0" style={{animation:"checkBounce 0.6s cubic-bezier(0.16,1,0.3,1) 0.2s both"}}>
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <div className="w-14 h-14 bg-[var(--nb-accent)] border-4 border-[var(--nb-accent)] flex items-center justify-center flex-shrink-0" style={{animation:"checkBounce 0.6s cubic-bezier(0.16,1,0.3,1) 0.2s both"}}>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                       </div>
                       <div>
-                        <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest mb-1">Terkirim!</p>
-                        <p className="font-black text-xl uppercase text-[#F8F3EA]">Pesan Berhasil Dikirim</p>
+                        <p className="font-black uppercase text-xs text-[var(--nb-accent)] tracking-widest mb-1">Terkirim!</p>
+                        <p className="font-black text-xl uppercase text-[var(--nb-bg)]">Pesan Berhasil Dikirim</p>
                       </div>
                     </div>
                   </div>
                   <div className="px-8 py-10 text-center flex flex-col items-center gap-6">
-                    <div className="w-20 h-20 bg-[#D1E8FF] border-4 border-[#0B1957] flex items-center justify-center" style={{boxShadow:"6px 6px 0 #0B1957"}}>
-                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    <div className="w-20 h-20 bg-[var(--nb-accent-light)] border-4 border-[var(--nb-primary)] flex items-center justify-center" style={{boxShadow:"6px 6px 0 var(--nb-primary)"}}>
+                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2.5" strokeLinecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
                     </div>
                     <div>
-                      <p className="font-black text-2xl uppercase text-[#0B1957] mb-3">Yeay, Pesanmu Terkirim!</p>
-                      <p className="font-semibold text-[#0B1957] opacity-60 leading-relaxed max-w-md">
+                      <p className="font-black text-2xl uppercase text-[var(--nb-primary)] mb-3">Yeay, Pesanmu Terkirim!</p>
+                      <p className="font-semibold text-[var(--nb-primary)] opacity-60 leading-relaxed max-w-md">
                         Terima kasih sudah menghubungi saya. Saya akan membalas pesanmu sesegera mungkin, biasanya dalam 24 jam.
                       </p>
                     </div>
                     <button
                       onClick={resetForm}
-                      className="btn-brutal border-4 border-[#0B1957] px-8 py-3 font-black uppercase text-sm shadow-[4px_4px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]"
+                      className="btn-brutal border-4 border-[var(--nb-primary)] px-8 py-3 font-black uppercase text-sm shadow-[4px_4px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)]"
                     >
                       Kirim Pesan Lain →
                     </button>
@@ -317,14 +317,14 @@ export default function Contact() {
               )}
 
               {status !== "success" && (
-                <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[10px_10px_0_#0B1957] overflow-hidden">
-                  <div className="bg-[#0B1957] border-b-4 border-[#0B1957] px-8 py-5 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-[#9ECCFA] border-2 border-[#9ECCFA] flex items-center justify-center flex-shrink-0">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
+                  <div className="bg-[var(--nb-primary)] border-b-4 border-[var(--nb-primary)] px-8 py-5 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-[var(--nb-accent)] border-2 border-[var(--nb-accent)] flex items-center justify-center flex-shrink-0">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2.5" strokeLinecap="round"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                     </div>
                     <div>
-                      <p className="font-black uppercase text-xs text-[#9ECCFA] tracking-widest">Form Kontak</p>
-                      <p className="font-bold text-[#F8F3EA] text-sm">Isi form di bawah untuk mengirim pesan</p>
+                      <p className="font-black uppercase text-xs text-[var(--nb-accent)] tracking-widest">Form Kontak</p>
+                      <p className="font-bold text-[var(--nb-bg)] text-sm">Isi form di bawah untuk mengirim pesan</p>
                     </div>
                   </div>
 
@@ -338,7 +338,7 @@ export default function Contact() {
                   <div className="px-8 py-8 flex flex-col gap-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div style={{animation:"slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.25s both"}}>
-                        <label className="block font-black text-xs uppercase tracking-[0.12em] text-[#0B1957] mb-2">
+                        <label className="block font-black text-xs uppercase tracking-[0.12em] text-[var(--nb-primary)] mb-2">
                           Nama <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -357,7 +357,7 @@ export default function Contact() {
                         )}
                       </div>
                       <div style={{animation:"slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.3s both"}}>
-                        <label className="block font-black text-xs uppercase tracking-[0.12em] text-[#0B1957] mb-2">
+                        <label className="block font-black text-xs uppercase tracking-[0.12em] text-[var(--nb-primary)] mb-2">
                           Email <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -378,8 +378,8 @@ export default function Contact() {
                     </div>
 
                     <div style={{animation:"slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.35s both"}}>
-                      <label className="block font-black text-xs uppercase tracking-[0.12em] text-[#0B1957] mb-2">
-                        Subjek <span className="text-[#0B1957] opacity-40 font-semibold normal-case">(opsional)</span>
+                      <label className="block font-black text-xs uppercase tracking-[0.12em] text-[var(--nb-primary)] mb-2">
+                        Subjek <span className="text-[var(--nb-primary)] opacity-40 font-semibold normal-case">(opsional)</span>
                       </label>
                       <input
                         type="text"
@@ -393,10 +393,10 @@ export default function Contact() {
 
                     <div style={{animation:"slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.4s both"}}>
                       <div className="flex items-center justify-between mb-2">
-                        <label className="block font-black text-xs uppercase tracking-[0.12em] text-[#0B1957]">
+                        <label className="block font-black text-xs uppercase tracking-[0.12em] text-[var(--nb-primary)]">
                           Pesan <span className="text-red-500">*</span>
                         </label>
-                        <span className="text-xs font-bold text-[#0B1957] opacity-40">{form.message.length}/3000</span>
+                        <span className="text-xs font-bold text-[var(--nb-primary)] opacity-40">{form.message.length}/3000</span>
                       </div>
                       <textarea
                         value={form.message}
@@ -419,7 +419,7 @@ export default function Contact() {
                       <button
                         onClick={handleSubmit}
                         disabled={status === "sending"}
-                        className="btn-brutal w-full border-4 border-[#0B1957] py-4 font-black uppercase text-sm shadow-[4px_4px_0_#0B1957] bg-[#0B1957] text-[#9ECCFA] flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="btn-brutal w-full border-4 border-[var(--nb-primary)] py-4 font-black uppercase text-sm shadow-[4px_4px_0_var(--nb-primary)] bg-[var(--nb-primary)] text-[var(--nb-accent)] flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
                       >
                         {status === "sending" ? (
                           <>
@@ -438,9 +438,9 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  <div className="border-t-4 border-[#0B1957] bg-[#0B1957] px-8 py-4 flex items-center gap-3">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0}}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#D1E8FF] opacity-60">
+                  <div className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-primary)] px-8 py-4 flex items-center gap-3">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--nb-accent)" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0}}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--nb-accent-light)] opacity-60">
                       Data kamu aman — tidak akan dibagikan ke pihak ketiga
                     </p>
                   </div>
@@ -450,14 +450,14 @@ export default function Contact() {
 
             <div className="lg:col-span-2 flex flex-col gap-5 anim-sidebar">
 
-              <div className="bg-[#0B1957] border-4 border-[#0B1957] shadow-[8px_8px_0_#9ECCFA] px-7 py-6 relative overflow-hidden" style={{animation:"slideRight 0.5s cubic-bezier(0.16,1,0.3,1) 0.35s both"}}>
-                <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{background:"#9ECCFA",clipPath:"polygon(100% 0,0 0,100% 100%)"}}/>
-                <p className="font-black uppercase text-[10px] text-[#9ECCFA] tracking-[0.25em] mb-3">Response Time</p>
+              <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[8px_8px_0_var(--nb-accent)] px-7 py-6 relative overflow-hidden" style={{animation:"slideRight 0.5s cubic-bezier(0.16,1,0.3,1) 0.35s both"}}>
+                <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{background:"var(--nb-accent)",clipPath:"polygon(100% 0,0 0,100% 100%)"}}/>
+                <p className="font-black uppercase text-[10px] text-[var(--nb-accent)] tracking-[0.25em] mb-3">Response Time</p>
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="font-black text-4xl text-[#9ECCFA]">&lt;24</span>
-                  <span className="font-black text-sm text-[#F8F3EA] uppercase">Jam</span>
+                  <span className="font-black text-4xl text-[var(--nb-accent)]">&lt;24</span>
+                  <span className="font-black text-sm text-[var(--nb-bg)] uppercase">Jam</span>
                 </div>
-                <p className="font-semibold text-[#D1E8FF] text-sm opacity-70">Biasanya saya membalas dalam waktu kurang dari 24 jam pada hari kerja.</p>
+                <p className="font-semibold text-[var(--nb-accent-light)] text-sm opacity-70">Biasanya saya membalas dalam waktu kurang dari 24 jam pada hari kerja.</p>
                 <div className="flex items-center gap-2 mt-4">
                   <div className="w-2 h-2 rounded-full bg-green-400" style={{animation:"pulse 1.5s ease infinite"}}/>
                   <span className="font-black text-xs text-green-400 uppercase tracking-widest">Open to Work</span>
@@ -465,11 +465,11 @@ export default function Contact() {
               </div>
 
               <div style={{animation:"slideRight 0.5s cubic-bezier(0.16,1,0.3,1) 0.45s both"}}>
-                <p className="font-black uppercase text-xs text-[#0B1957] tracking-[0.2em] mb-3 opacity-50">Atau hubungi via</p>
+                <p className="font-black uppercase text-xs text-[var(--nb-primary)] tracking-[0.2em] mb-3 opacity-50">Atau hubungi via</p>
                 <div className="flex flex-col gap-3">
                   {contacts.length === 0 ? (
                     [0,1,2].map(i => (
-                      <div key={i} className="border-4 border-[#0B1957] bg-[#F8F3EA]" style={{height:80,animation:`pulse 1.5s ease ${i*0.1}s infinite`}}/>
+                      <div key={i} className="border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)]" style={{height:80,animation:`pulse 1.5s ease ${i*0.1}s infinite`}}/>
                     ))
                   ) : (
                     contacts.map((c, i) => (
@@ -485,15 +485,15 @@ export default function Contact() {
                       >
                         <div
                           className="contact-link-icon"
-                          style={{ background: c.icon_color || "#0B1957" }}
+                          style={{ background: c.icon_color || "var(--nb-primary)" }}
                         >
                           <PlatformIcon platform={c.platform} size={22} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-black uppercase text-[10px] text-[#9ECCFA] tracking-widest mb-0.5">{c.label}</p>
-                          <p className="font-black text-[#0B1957] text-sm leading-tight truncate">{c.value}</p>
+                          <p className="font-black uppercase text-[10px] text-[var(--nb-accent)] tracking-widest mb-0.5">{c.label}</p>
+                          <p className="font-black text-[var(--nb-primary)] text-sm leading-tight truncate">{c.value}</p>
                         </div>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0,opacity:0.3}}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0,opacity:0.3}}>
                           <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
                           <polyline points="15 3 21 3 21 9"/>
                           <line x1="10" y1="14" x2="21" y2="3"/>
@@ -504,24 +504,24 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[6px_6px_0_#0B1957] overflow-hidden" style={{animation:"slideRight 0.5s cubic-bezier(0.16,1,0.3,1) 0.55s both"}}>
-                <div className="bg-[#9ECCFA] border-b-4 border-[#0B1957] px-6 py-4">
-                  <p className="font-black uppercase text-xs text-[#0B1957] tracking-[0.15em]">Tips Menghubungi</p>
+              <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] overflow-hidden" style={{animation:"slideRight 0.5s cubic-bezier(0.16,1,0.3,1) 0.55s both"}}>
+                <div className="bg-[var(--nb-accent)] border-b-4 border-[var(--nb-primary)] px-6 py-4">
+                  <p className="font-black uppercase text-xs text-[var(--nb-primary)] tracking-[0.15em]">Tips Menghubungi</p>
                 </div>
                 <div className="px-6 py-5 flex flex-col gap-4">
                   {[
                     {
-                      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>,
+                      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>,
                       title: "Project Baru",
                       desc: "Sebutkan scope, timeline, dan budget estimasi kamu."
                     },
                     {
-                      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>,
+                      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>,
                       title: "Kolaborasi",
                       desc: "Ceritakan skill kamu dan bagaimana kita bisa bekerja sama."
                     },
                     {
-                      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+                      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
                       title: "Pertanyaan",
                       desc: "Langsung tulis pertanyaanmu, saya senang membantu!"
                     },
@@ -529,8 +529,8 @@ export default function Contact() {
                     <div key={i} className="flex items-start gap-3">
                       <span className="flex-shrink-0 mt-0.5">{item.icon}</span>
                       <div>
-                        <p className="font-black text-xs uppercase text-[#0B1957] mb-0.5 tracking-wide">{item.title}</p>
-                        <p className="font-semibold text-xs text-[#0B1957] opacity-55 leading-relaxed">{item.desc}</p>
+                        <p className="font-black text-xs uppercase text-[var(--nb-primary)] mb-0.5 tracking-wide">{item.title}</p>
+                        <p className="font-semibold text-xs text-[var(--nb-primary)] opacity-55 leading-relaxed">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -540,11 +540,11 @@ export default function Contact() {
           </div>
         </section>
 
-        <footer className="border-t-4 border-[#0B1957] bg-[#F8F3EA]">
+        <footer className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <p className="font-bold uppercase text-xs text-[#0B1957] tracking-widest">© {new Date().getFullYear()} Zaki Yusron Hasyimmi</p>
-              <p className="font-bold uppercase text-xs text-[#0B1957] opacity-40 tracking-widest">Built with React + Laravel</p>
+              <p className="font-bold uppercase text-xs text-[var(--nb-primary)] tracking-widest">© {new Date().getFullYear()} Zaki Yusron Hasyimmi</p>
+              <p className="font-bold uppercase text-xs text-[var(--nb-primary)] opacity-40 tracking-widest">Built with React + Laravel</p>
             </div>
           </div>
         </footer>

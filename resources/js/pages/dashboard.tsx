@@ -138,7 +138,7 @@ function MiniBarChart({ data, color = "#9ECCFA", height = 64 }: {
               height: `${Math.max((d.value / max) * 100, 5)}%`,
               background: i === data.length - 1 ? "#0B1957" : color,
               border: "2px solid #0B1957",
-              boxShadow: "1px 1px 0 rgba(11,25,87,0.3)",
+              boxShadow: "1px 1px 0 var(--nb-primary)",
               transition: `height 0.7s cubic-bezier(0.16,1,0.3,1) ${i * 0.04}s`,
             }} />
           </div>
@@ -160,7 +160,7 @@ function DonutChart({ segments, size = 110 }: {
   const circumference = 2 * Math.PI * r;
   return (
     <svg width={size} height={size} viewBox="0 0 100 100">
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#D1E8FF" strokeWidth={strokeW} />
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--nb-accent-light)" strokeWidth={strokeW} />
       {segments.map((seg, i) => {
         const pct = seg.value / total;
         const dash = pct * circumference;
@@ -279,14 +279,14 @@ function StackDistribution({ stacks }: { stacks: { category?: string }[] }) {
   stacks.forEach(s => { const c = (s as any).category || "Other"; categories[c] = (categories[c] || 0) + 1; });
   const total = stacks.length || 1;
   const entries = Object.entries(categories).sort((a, b) => b[1] - a[1]);
-  const colors = ["#9ECCFA", "#FFE8A0", "#D1E8FF", "#4ade80", "#9ECCFA"];
+  const colors = ["#9ECCFA", "#FFE8A0", "var(--nb-accent-light)", "#4ade80", "#9ECCFA"];
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
       {entries.map(([cat, count], i) => (
         <div key={i}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
             <span style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", color: "#9ECCFA", letterSpacing: "0.1em" }}>{cat}</span>
-            <span style={{ fontWeight: 900, fontSize: 9, color: "#D1E8FF", opacity: 0.7 }}>{count}</span>
+            <span style={{ fontWeight: 900, fontSize: 9, color: "var(--nb-accent-light)", opacity: 0.7 }}>{count}</span>
           </div>
           <div style={{ height: 14, background: "rgba(158,204,250,0.12)", border: "2px solid rgba(158,204,250,0.3)" }}>
             <div style={{
@@ -314,7 +314,7 @@ function getActivityMeta(status: string): { icon: React.ReactNode; color: string
     case "Hosted": return { icon: <IconStatusHosted size={15} />, color: "#9ECCFA", iconColor: "#0B1957", tag: "Deployed" };
     case "Live":   return { icon: <IconStatusLive size={15} />,   color: "#4ade80", iconColor: "#0B1957", tag: "Live" };
     case "In Progress": return { icon: <IconStatusProgress size={15} />, color: "#FFE8A0", iconColor: "#0B1957", tag: "WIP" };
-    case "Planning":    return { icon: <IconStatusPlan size={15} />,     color: "#D1E8FF",  iconColor: "#0B1957", tag: "Planned" };
+    case "Planning":    return { icon: <IconStatusPlan size={15} />,     color: "var(--nb-accent-light)",  iconColor: "#0B1957", tag: "Planned" };
     default: return { icon: <IconStatusDefault size={15} />, color: "#F8F3EA", iconColor: "#0B1957", tag: status };
   }
 }
@@ -354,7 +354,7 @@ function ActivityFeedItem({ project: p, meta, index: i, total }: {
     <div
       style={{
         display: "flex", gap: 12, padding: "13px 16px",
-        borderBottom: i < total - 1 ? "2px solid #D1E8FF" : "none",
+        borderBottom: i < total - 1 ? "2px solid var(--nb-accent-light)" : "none",
         background: hov ? meta.color : "#F8F3EA",
         border: hov ? "0px" : "0px",
         cursor: "default",
@@ -374,7 +374,7 @@ function ActivityFeedItem({ project: p, meta, index: i, total }: {
         width: 36, height: 36, flexShrink: 0,
         background: hov ? "#0B1957" : "#F0F7FF",
         border: "3px solid #0B1957",
-        boxShadow: hov ? "3px 3px 0 rgba(11,25,87,0.3)" : "2px 2px 0 rgba(11,25,87,0.12)",
+        boxShadow: hov ? "3px 3px 0 var(--nb-primary)" : "2px 2px 0 rgba(11,25,87,0.12)",
         display: "flex", alignItems: "center", justifyContent: "center",
         color: hov ? meta.color : "#0B1957",
         transition: "background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease",
@@ -407,7 +407,7 @@ function ActivityFeedItem({ project: p, meta, index: i, total }: {
             <span key={si} style={{
               display: "inline-flex", alignItems: "center", gap: 3,
               border: "2px solid #0B1957",
-              background: hov ? "#0B1957" : "#D1E8FF",
+              background: hov ? "#0B1957" : "var(--nb-accent-light)",
               color: hov ? "#9ECCFA" : "#0B1957",
               padding: "0px 5px", fontSize: 7, fontWeight: 900,
               textTransform: "uppercase",
@@ -482,7 +482,7 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
             const y = PAD.top + (1 - pct) * innerH;
             return (
               <g key={i}>
-                <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y} stroke="#D1E8FF" strokeWidth="1" strokeDasharray={i === 0 ? "none" : "4 4"} />
+                <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y} stroke="var(--nb-accent-light)" strokeWidth="1" strokeDasharray={i === 0 ? "none" : "4 4"} />
                 {pct > 0 && (
                   <text x={PAD.left - 2} y={y + 4} textAnchor="end" style={{ fontSize: 7, fill: "#0B1957", opacity: 0.4, fontWeight: 900, fontFamily: "inherit" }}>
                     {Math.round(maxV * pct)}
@@ -530,7 +530,7 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
                 <text x={8} y={14} style={{ fontSize: 8, fill: "#9ECCFA", fontWeight: 900, fontFamily: "inherit", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   {hov.d.count} commit{hov.d.count !== 1 ? "s" : ""}
                 </text>
-                <text x={8} y={28} style={{ fontSize: 7, fill: "#D1E8FF", fontWeight: 600, fontFamily: "inherit" }}>
+                <text x={8} y={28} style={{ fontSize: 7, fill: "var(--nb-accent-light)", fontWeight: 600, fontFamily: "inherit" }}>
                   {fmtDate(hov.d.date)} {new Date(hov.d.date).getFullYear()}
                 </text>
               </g>
@@ -621,7 +621,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
           ].map((s, i) => (
             <div key={i} style={{ border: "2px solid #9ECCFA", background: "rgba(158,204,250,0.08)", padding: "6px 12px", textAlign: "center", boxShadow: "2px 2px 0 #9ECCFA" }}>
               <p style={{ fontWeight: 900, fontSize: 18, color: "#9ECCFA", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
-              <p style={{ fontWeight: 900, fontSize: 8, color: "#D1E8FF", margin: 0, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.7 }}>{s.label}</p>
+              <p style={{ fontWeight: 900, fontSize: 8, color: "var(--nb-accent-light)", margin: 0, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.7 }}>{s.label}</p>
             </div>
           ))}
         </div>
@@ -632,7 +632,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
             {Array.from({ length: 52 }).map((_, wi) => (
               <div key={wi} style={{ display: "flex", flexDirection: "column", gap: GAP }}>
                 {Array.from({ length: 7 }).map((_, di) => (
-                  <div key={di} style={{ width: CELL, height: CELL, background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }} />
+                  <div key={di} style={{ width: CELL, height: CELL, background: "linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }} />
                 ))}
               </div>
             ))}
@@ -690,7 +690,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
             {hoveredDay && (
               <div style={{ position: "absolute", left: tooltipPos.x + 12, top: tooltipPos.y - 52, pointerEvents: "none", zIndex: 50, background: "#0B1957", border: "3px solid #9ECCFA", boxShadow: "4px 4px 0 #9ECCFA", padding: "7px 12px", minWidth: 162 }}>
                 <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", margin: "0 0 3px", textTransform: "uppercase" }}>{hoveredDay.count} commit{hoveredDay.count !== 1 ? "s" : ""}</p>
-                <p style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", margin: 0 }}>{fmt(hoveredDay.date)}</p>
+                <p style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", margin: 0 }}>{fmt(hoveredDay.date)}</p>
               </div>
             )}
           </>
@@ -701,7 +701,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
       )}
       <div style={{ borderTop: "3px solid #0B1957", padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
         <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer"
-          style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957", textDecoration: "none", border: "2px solid #0B1957", padding: "4px 10px", background: "#D1E8FF", boxShadow: "2px 2px 0 #0B1957", display: "flex", alignItems: "center", gap: 5 }}>
+          style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957", textDecoration: "none", border: "2px solid #0B1957", padding: "4px 10px", background: "var(--nb-accent-light)", boxShadow: "2px 2px 0 #0B1957", display: "flex", alignItems: "center", gap: 5 }}>
           <IconGithub size={10} /> Profile →
         </a>
         <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
@@ -800,7 +800,7 @@ function RecentProjectCard({ project: p, delay }: { project: ProjectItem; delay:
           {(p.stacks ?? []).slice(0, 4).map((s, si) => (
             <span key={si} style={{
               border: "2px solid #0B1957",
-              background: hovered ? meta.color : "#D1E8FF",
+              background: hovered ? meta.color : "var(--nb-accent-light)",
               color: "#0B1957", padding: "2px 7px", fontSize: 8, fontWeight: 900,
               textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: 3,
               transition: "background 0.15s ease, box-shadow 0.15s ease",
@@ -861,10 +861,10 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
     { icon: <IconFolder size={22} />,  value: String(projects.length), label: "Total Projects", color: "#9ECCFA",  sparkData: [1,2,1,3,2,4,3, projects.length], trend: 12,  delay: 0.15 },
     { icon: <IconRocket size={22} />,  value: String(live),            label: "Live Projects",  color: "#4ade80",  sparkData: [0,1,1,2,1,2,live,live],           trend: 8,   delay: 0.22 },
     { icon: <IconGear   size={22} />,  value: String(inProg),          label: "In Progress",    color: "#FFE8A0",  sparkData: [0,1,0,2,1,inProg,inProg,inProg],  trend: -5,  delay: 0.29 },
-    { icon: <IconLayers size={22} />,  value: String(stacks.length),   label: "Tech Stacks",    color: "#D1E8FF",  sparkData: [1,2,3,4,5,6,stacks.length,stacks.length], trend: 20, delay: 0.36 },
+    { icon: <IconLayers size={22} />,  value: String(stacks.length),   label: "Tech Stacks",    color: "var(--nb-accent-light)",  sparkData: [1,2,3,4,5,6,stacks.length,stacks.length], trend: 20, delay: 0.36 },
   ];
 
-  const shimmer = { background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" };
+  const shimmer = { background: "linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" };
 
   const secStats   = useScrollReveal(0);
   const secCharts  = useScrollReveal(0);
@@ -954,7 +954,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
       <div ref={secGithub.ref} className={secGithub.className} style={secGithub.style}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
           <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>GitHub Contributions</h2>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, border: "2px solid #0B1957", padding: "3px 10px", background: "#D1E8FF" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, border: "2px solid #0B1957", padding: "3px 10px", background: "var(--nb-accent-light)" }}>
             <div style={{ width: 7, height: 7, background: "#4ade80", flexShrink: 0, animation: "ping 1.5s ease infinite" }} />
             <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957" }}>Live Data</span>
           </div>
@@ -1026,7 +1026,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
           {[
             { label: "Add Project",    icon: <IconFolder size={16} />, key: "projects",  bg: "#9ECCFA"  },
             { label: "Manage Stacks",  icon: <IconLayers size={16} />, key: "stacks",    bg: "#FFE8A0"  },
-            { label: "Edit Homepage",  icon: <IconCode   size={16} />, key: "homepage",  bg: "#D1E8FF"  },
+            { label: "Edit Homepage",  icon: <IconCode   size={16} />, key: "homepage",  bg: "var(--nb-accent-light)"  },
             { label: "Messages",       icon: <IconMail   size={16} />, key: "messages",  bg: "#F8F3EA", badge: unreadCount > 0 ? unreadCount : null },
           ].map((action, i) => (
             <button key={i} onClick={() => onNavClick(action.key)}
@@ -1054,7 +1054,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
             <p style={{ fontWeight: 900, fontSize: 26, color: "#F8F3EA", textTransform: "uppercase", margin: 0 }}>
               {availability?.status ?? "Open to Work"}
             </p>
-            <p style={{ fontWeight: 600, fontSize: 12, color: "#D1E8FF", opacity: 0.65, margin: "6px 0 0" }}>
+            <p style={{ fontWeight: 600, fontSize: 12, color: "var(--nb-accent-light)", opacity: 0.65, margin: "6px 0 0" }}>
               {availability
                 ? [availability.freelance && "Freelance", availability.remote && "Remote", availability.collaboration && "Collaboration"].filter(Boolean).join(" · ")
                 : "Freelance · Remote · Collaboration"
@@ -1070,7 +1070,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
               <div key={i} style={{ border: "3px solid rgba(158,204,250,0.4)", background: "rgba(158,204,250,0.08)", padding: "10px 16px", textAlign: "center", boxShadow: "3px 3px 0 rgba(158,204,250,0.25)" }}>
                 <div style={{ color: "#9ECCFA", display: "flex", justifyContent: "center", marginBottom: 4 }}>{s.icon}</div>
                 <p style={{ fontWeight: 900, fontSize: 22, color: "#9ECCFA", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
-                <p style={{ fontWeight: 900, fontSize: 8, color: "#D1E8FF", opacity: 0.6, margin: "4px 0 0", textTransform: "uppercase", letterSpacing: "0.1em" }}>{s.label}</p>
+                <p style={{ fontWeight: 900, fontSize: 8, color: "var(--nb-accent-light)", opacity: 0.6, margin: "4px 0 0", textTransform: "uppercase", letterSpacing: "0.1em" }}>{s.label}</p>
               </div>
             ))}
             <div style={{ border: "3px solid #9ECCFA", padding: "10px 16px", textAlign: "center" }}>
@@ -1230,17 +1230,17 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
       </div>
       <div style={{ padding: "18px 18px 22px" }}>
         <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.4, marginBottom: 8 }}>Pesan</p>
-        <div style={{ border: "3px solid #0B1957", background: "white", padding: "14px 16px", fontWeight: 600, fontSize: 13, color: "#0B1957", lineHeight: 1.75, whiteSpace: "pre-wrap", boxShadow: "3px 3px 0 #D1E8FF" }}>{selected.message}</div>
+        <div style={{ border: "3px solid #0B1957", background: "white", padding: "14px 16px", fontWeight: 600, fontSize: 13, color: "#0B1957", lineHeight: 1.75, whiteSpace: "pre-wrap", boxShadow: "3px 3px 0 var(--nb-accent-light)" }}>{selected.message}</div>
       </div>
       <div style={{ borderTop: "4px solid #0B1957" }}>
         {replyOpen && (
           <div style={{ borderBottom: "4px solid #0B1957", padding: "14px 18px", background: "#F0F7FF" }}>
             <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0B1957", opacity: 0.5, marginBottom: 6 }}>Balas ke: <span style={{ opacity: 1 }}>{selected.email}</span></p>
             <textarea value={replyBody} onChange={e => setReplyBody(e.target.value)} placeholder="Tulis balasan..." rows={4}
-              style={{ width: "100%", border: "3px solid #0B1957", background: "white", padding: "10px 12px", fontWeight: 600, fontSize: 13, color: "#0B1957", lineHeight: 1.6, resize: "vertical", fontFamily: "inherit", boxShadow: "3px 3px 0 #D1E8FF", outline: "none", boxSizing: "border-box" }} />
+              style={{ width: "100%", border: "3px solid #0B1957", background: "white", padding: "10px 12px", fontWeight: 600, fontSize: 13, color: "#0B1957", lineHeight: 1.6, resize: "vertical", fontFamily: "inherit", boxShadow: "3px 3px 0 var(--nb-accent-light)", outline: "none", boxSizing: "border-box" }} />
             <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
               <button onClick={handleSendReply} disabled={sending || !replyBody.trim()}
-                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, border: "3px solid #0B1957", background: sending || !replyBody.trim() ? "#D1E8FF" : "#0B1957", color: sending || !replyBody.trim() ? "#0B1957" : "#9ECCFA", padding: "9px 14px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: sending || !replyBody.trim() ? "not-allowed" : "pointer", fontFamily: "inherit", boxShadow: "3px 3px 0 #9ECCFA" }}>
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, border: "3px solid #0B1957", background: sending || !replyBody.trim() ? "var(--nb-accent-light)" : "#0B1957", color: sending || !replyBody.trim() ? "#0B1957" : "#9ECCFA", padding: "9px 14px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: sending || !replyBody.trim() ? "not-allowed" : "pointer", fontFamily: "inherit", boxShadow: "3px 3px 0 #9ECCFA" }}>
                 {sending ? <><IconRefresh size={12} /> Mengirim...</> : <><IconMail size={12} /> Kirim</>}
               </button>
               <button onClick={() => { setReplyOpen(false); setReplyBody(""); }}
@@ -1271,18 +1271,18 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
       <div style={{ display: "flex", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
         {[1,2,3].map(i => (
           <div key={i} style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "4px 4px 0 #0B1957", padding: "14px 20px", minWidth: 90, flex: "1 1 90px" }}>
-            <div style={{ height: 10, width: 60, background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite", marginBottom: 8 }}/>
-            <div style={{ height: 26, width: 44, background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }}/>
+            <div style={{ height: 10, width: 60, background: "linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite", marginBottom: 8 }}/>
+            <div style={{ height: 26, width: 44, background: "linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }}/>
           </div>
         ))}
       </div>
       {[0,1,2,3].map(i => (
         <div key={i} style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "4px 4px 0 #0B1957", padding: "16px 18px", marginBottom: 10 }}>
           <div style={{ display: "flex", gap: 12 }}>
-            <div style={{ width: 40, height: 40, background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite", border: "3px solid #0B1957", flexShrink: 0 }}/>
+            <div style={{ width: 40, height: 40, background: "linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite", border: "3px solid #0B1957", flexShrink: 0 }}/>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
-              <div style={{ height: 11, width: "35%", background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }}/>
-              <div style={{ height: 10, width: "65%", background: "linear-gradient(90deg,#D1E8FF 25%,#b8daff 50%,#D1E8FF 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }}/>
+              <div style={{ height: 11, width: "35%", background: "linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }}/>
+              <div style={{ height: 10, width: "65%", background: "linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }}/>
             </div>
           </div>
         </div>
@@ -1336,7 +1336,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
           <button key={key} onClick={() => setFilterTab(key)}
             style={{ flex: 1, padding: "10px 6px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", borderRight: key !== "read" ? "4px solid #0B1957" : "none", borderLeft: "none", borderTop: "none", borderBottom: "none", background: filterTab === key ? "#0B1957" : "#F8F3EA", color: filterTab === key ? "#9ECCFA" : "#0B1957", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }}>
             {label}
-            <span style={{ background: filterTab === key ? "rgba(158,204,250,0.2)" : "#D1E8FF", color: filterTab === key ? "#9ECCFA" : "#0B1957", border: `2px solid ${filterTab === key ? "#9ECCFA" : "#0B1957"}`, fontSize: 9, fontWeight: 900, padding: "1px 5px", minWidth: 18, textAlign: "center" }}>{count}</span>
+            <span style={{ background: filterTab === key ? "rgba(158,204,250,0.2)" : "var(--nb-accent-light)", color: filterTab === key ? "#9ECCFA" : "#0B1957", border: `2px solid ${filterTab === key ? "#9ECCFA" : "#0B1957"}`, fontSize: 9, fontWeight: 900, padding: "1px 5px", minWidth: 18, textAlign: "center" }}>{count}</span>
           </button>
         ))}
       </div>
@@ -1366,7 +1366,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
                     {!msg.is_read && <span style={{ border: "2px solid #0B1957", background: "#9ECCFA", color: "#0B1957", fontSize: 8, fontWeight: 900, padding: "1px 5px", textTransform: "uppercase" }}>Baru</span>}
                   </div>
                   <p style={{ fontWeight: 700, fontSize: 11, color: selected?.id === msg.id ? "#9ECCFA" : "#0B1957", opacity: 0.7, marginBottom: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{msg.subject || "(Tanpa Subjek)"}</p>
-                  <p style={{ fontWeight: 600, fontSize: 10, color: selected?.id === msg.id ? "#D1E8FF" : "#0B1957", opacity: 0.5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{msg.message}</p>
+                  <p style={{ fontWeight: 600, fontSize: 10, color: selected?.id === msg.id ? "var(--nb-accent-light)" : "#0B1957", opacity: 0.5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{msg.message}</p>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 6 }}>
                     <span style={{ fontWeight: 700, fontSize: 9, color: selected?.id === msg.id ? "#9ECCFA" : "#0B1957", opacity: 0.45, textTransform: "uppercase", letterSpacing: "0.06em" }}>{fmt(msg.created_at)}</span>
                     <button onClick={e => { e.stopPropagation(); handleDelete(msg.id); }} disabled={deleting === msg.id}
@@ -1449,7 +1449,7 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
   <div style={{ borderTop: "4px solid #9ECCFA", padding: "20px", position: "relative", zIndex: 10 }}>
     <div style={{ marginBottom: 12 }}>
       <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
-      <p style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", opacity: 0.6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: "2px 0 0" }}>{user?.email ?? "yusron@dev.com"}</p>
+      <p style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: "2px 0 0" }}>{user?.email ?? "yusron@dev.com"}</p>
     </div>
     <button className="home-btn-sidebar" onClick={onHome}><IconHome size={13} /> Homepage</button>
     <button className="logout-btn" style={{ width: "100%" }} onClick={onLogout}><IconLogOut /> Logout</button>
@@ -1518,7 +1518,7 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
         .home-btn-topbar:hover  { transform:translate(2px,2px); box-shadow:1px 1px 0 #0B1957; }
 
         .stack-tag {
-          border:2px solid #0B1957; background:#D1E8FF; padding:3px 8px;
+          border:2px solid #0B1957; background:var(--nb-accent-light); padding:3px 8px;
           font-size:10px; font-weight:800; text-transform:uppercase; color:#0B1957; letter-spacing:0.05em;
           transition:background 0.1s ease, transform 0.08s ease;
         }
@@ -1578,14 +1578,14 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
         @media (max-width:1023px) { .overview-bottom-grid { grid-template-columns: 1fr !important; } }
       `}</style>
 
-      <div className="min-h-screen bg-[#D1E8FF] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
+      <div className="min-h-screen bg-[var(--nb-accent-light)] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
 
         {/* SIDEBAR Desktop */}
         <aside className="anim-sidebar hidden md:flex flex-col w-64 bg-[#0B1957] border-r-4 border-[#0B1957] relative min-h-screen flex-shrink-0">
           <div className="grid-bg-dark" />
           <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative">
             <div style={{ fontWeight: 900, fontSize: 20, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
-            <div style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Dashboard</div>
+            <div style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Dashboard</div>
           </div>
           <nav style={{ flex: 1, paddingTop: 16, paddingBottom: 16, position: "relative" }}>
             <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} />
@@ -1603,7 +1603,7 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
           <div style={{ borderBottom: "4px solid #9ECCFA", padding: "20px 24px", position: "relative", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
               <div style={{ fontWeight: 900, fontSize: 18, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
-              <div style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", opacity: 0.6, textTransform: "uppercase" }}>Dashboard</div>
+              <div style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, textTransform: "uppercase" }}>Dashboard</div>
             </div>
             <button style={{ border: "2px solid #9ECCFA", padding: 8, color: "#9ECCFA", background: "transparent", cursor: "pointer", display: "flex" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>
           </div>

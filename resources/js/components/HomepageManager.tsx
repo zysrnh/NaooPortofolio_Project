@@ -117,7 +117,7 @@ const GLOBAL_STYLES = `
   * { box-sizing: border-box; }
 
   .hm-skeleton {
-    background: linear-gradient(90deg, #D1E8FF 25%, #b8daff 50%, #D1E8FF 75%);
+    background: linear-gradient(90deg, var(--nb-accent-light) 25%, var(--nb-accent) 50%, var(--nb-accent-light) 75%);
     background-size: 200% 100%;
     animation: hmShimmer 1.5s ease infinite, hmPulse 1.5s ease infinite;
     border: 3px solid #0B1957;
@@ -170,7 +170,7 @@ const GLOBAL_STYLES = `
     gap: 5px;
     border: 2px solid #0B1957;
     padding: 3px 8px;
-    background: #D1E8FF;
+    background: var(--nb-accent-light);
     font-weight: 800;
     font-size: 10px;
     text-transform: uppercase;
@@ -211,7 +211,7 @@ const GLOBAL_STYLES = `
     transition: opacity 0.2s;
   }
   .hm-section-btn:hover:not(:disabled)::after { opacity: 1; animation: hmShimmer 0.5s ease; }
-  .hm-section-btn:hover:not(:disabled) { background: #D1E8FF; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
+  .hm-section-btn:hover:not(:disabled) { background: var(--nb-accent-light); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
   .hm-section-btn.active { background: #0B1957; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #9ECCFA; }
   .hm-section-btn:disabled { cursor: not-allowed; opacity: 0.55; }
 
@@ -243,7 +243,7 @@ const GLOBAL_STYLES = `
   }
   .hm-mobile-nav-tab:last-child { border-right: none; }
   .hm-mobile-nav-tab.active { background: #0B1957; color: #9ECCFA; }
-  .hm-mobile-nav-tab:not(.active):hover { background: #D1E8FF; }
+  .hm-mobile-nav-tab:not(.active):hover { background: var(--nb-accent-light); }
 
   /* ── Filter tab ── */
   .hm-filter-tab {
@@ -266,7 +266,7 @@ const GLOBAL_STYLES = `
   .hm-filter-tab:last-child { border-right: none; }
   .hm-filter-tab.active { background: #0B1957; color: #9ECCFA; }
   .hm-filter-tab:not(.active) { background: #F8F3EA; color: #0B1957; }
-  .hm-filter-tab:not(.active):hover { background: #D1E8FF; }
+  .hm-filter-tab:not(.active):hover { background: var(--nb-accent-light); }
 
   /* ── Toggle button ── */
   .hm-toggle-btn {
@@ -634,7 +634,7 @@ function AddStackModal({ hiddenStacks, adding, onAdd, onClose }: {
               <div className="flex flex-col gap-2">
                 {items.map((stack,si) => (
                   <button key={stack.id} disabled={adding===stack.id} onClick={()=>onAdd(stack)}
-                    className="flex items-center gap-3 p-3 bg-white hover:bg-[#D1E8FF] transition-all text-left w-full"
+                    className="flex items-center gap-3 p-3 bg-white hover:bg-[var(--nb-accent-light)] transition-all text-left w-full"
                     style={{border:"3px solid #0B1957",boxShadow:"3px 3px 0 #0B1957",opacity:adding===stack.id?0.6:1,cursor:adding===stack.id?"wait":"pointer",animation:`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${si*0.04}s both`}}>
                     <img src={stack.icon} alt={stack.name} style={{width:32,height:32,objectFit:"cover",border:"2px solid #0B1957",flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}} />
                     <div className="flex-1 min-w-0"><p className="font-black text-xs uppercase text-[#0B1957]">{stack.name}</p><p className="font-semibold text-[10px] text-[#0B1957] opacity-40 uppercase tracking-widest">{stack.category}</p></div>
@@ -734,7 +734,7 @@ function TechStackVisibility() {
         </div>
         <div style={{display:"flex",alignItems:"center",gap:10,animation:"hmSlideLeft 0.4s cubic-bezier(0.16,1,0.3,1) 0.1s both"}}>
           <button onClick={()=>setShowModal(true)} disabled={loading||hiddenStacks.length===0}
-            style={{display:"flex",alignItems:"center",gap:6,border:"4px solid #0B1957",background:hiddenStacks.length===0?"#D1E8FF":"#0B1957",color:hiddenStacks.length===0?"#0B1957":"#9ECCFA",padding:"8px 16px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(loading||hiddenStacks.length===0)?"not-allowed":"pointer",boxShadow:"4px 4px 0 #9ECCFA",opacity:(loading||hiddenStacks.length===0)?0.5:1,fontFamily:"inherit",transition:"transform 0.1s ease, box-shadow 0.1s ease"}}
+            style={{display:"flex",alignItems:"center",gap:6,border:"4px solid #0B1957",background:hiddenStacks.length===0?"var(--nb-accent-light)":"#0B1957",color:hiddenStacks.length===0?"#0B1957":"#9ECCFA",padding:"8px 16px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(loading||hiddenStacks.length===0)?"not-allowed":"pointer",boxShadow:"4px 4px 0 #9ECCFA",opacity:(loading||hiddenStacks.length===0)?0.5:1,fontFamily:"inherit",transition:"transform 0.1s ease, box-shadow 0.1s ease"}}
             onMouseEnter={e=>{if(!loading&&hiddenStacks.length>0){(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="6px 6px 0 #9ECCFA";}}}
             onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="translate(0,0)";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 #9ECCFA";}}>
             <IconPlus /> Tambah Stack
@@ -772,7 +772,7 @@ function TechStackVisibility() {
           {!loading&&currentTechs.map((tech,i)=>(
             <button key={tech.id} onClick={()=>!toggling&&handleToggle(tech)} disabled={toggling===tech.id}
               style={{display:"inline-flex",alignItems:"center",gap:8,border:"3px solid #0B1957",padding:"7px 12px 7px 7px",background:"#F8F3EA",opacity:toggling===tech.id?0.5:1,boxShadow:"3px 3px 0 #0B1957",cursor:toggling===tech.id?"wait":"pointer",fontFamily:"inherit",fontWeight:800,fontSize:11,textTransform:"uppercase",letterSpacing:"0.06em",color:"#0B1957",transition:"transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease",animation:mounted?`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`:"none"}}
-              onMouseEnter={e=>{if(toggling!==tech.id){(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 #0B1957";(e.currentTarget as HTMLElement).style.background="#D1E8FF";}}}
+              onMouseEnter={e=>{if(toggling!==tech.id){(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 #0B1957";(e.currentTarget as HTMLElement).style.background="var(--nb-accent-light)";}}}
               onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="translate(0,0)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 #0B1957";(e.currentTarget as HTMLElement).style.background="#F8F3EA";}}>
               <img src={tech.icon} alt={tech.name} style={{width:26,height:26,objectFit:"cover",border:"2px solid #0B1957",flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}}/>
               <span>{tech.name}</span>
@@ -786,7 +786,7 @@ function TechStackVisibility() {
             <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"#9ECCFA"}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em"}}>Tampil di homepage</span></div>
             <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"transparent"}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em",opacity:0.5}}>Disembunyikan</span></div>
           </div>
-          <span style={{fontWeight:700,fontSize:10,color:"#D1E8FF",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.1em"}}>Perubahan langsung tersimpan</span>
+          <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.1em"}}>Perubahan langsung tersimpan</span>
         </div>
       </div>
 
@@ -887,7 +887,7 @@ function HeroSection() {
           <p style={{fontWeight:900,fontSize:11,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.2em",marginBottom:4}}>Preview Hero</p>
           <p style={{fontWeight:900,fontSize:22,color:"#F8F3EA",textTransform:"uppercase",lineHeight:1.1,marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{form.name||"—"}</p>
           <p style={{fontWeight:800,fontSize:12,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:4}}>{form.title||"—"}</p>
-          <p style={{fontWeight:600,fontSize:12,color:"#D1E8FF",opacity:0.7,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{form.bio||"—"}</p>
+          <p style={{fontWeight:600,fontSize:12,color:"var(--nb-accent-light)",opacity:0.7,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{form.bio||"—"}</p>
         </div>
       </div>
 
@@ -932,13 +932,13 @@ function HeroSection() {
             </label>
             <div className="hm-hero-photo-row" style={{display:"flex",gap:16,alignItems:"flex-start"}}>
               <div style={{flexShrink:0,display:"flex",flexDirection:"column",gap:8,alignItems:"center"}}>
-                <div style={{width:96,height:112,border:"4px solid #0B1957",overflow:"hidden",boxShadow:"4px 4px 0 #0B1957",background:"#D1E8FF",position:"relative"}}>
+                <div style={{width:96,height:112,border:"4px solid #0B1957",overflow:"hidden",boxShadow:"4px 4px 0 #0B1957",background:"var(--nb-accent-light)",position:"relative"}}>
                   <img src={preview??FALLBACK_PHOTO} alt="foto" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_PHOTO;}}/>
                 </div>
                 {preview&&preview!==FALLBACK_PHOTO&&<button onClick={()=>setCropSrc(preview!)} style={{display:"flex",alignItems:"center",gap:4,border:"2px solid #0B1957",background:"transparent",color:"#0B1957",padding:"5px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit"}}><IconCrop/>Re-crop</button>}
               </div>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{border:`4px dashed ${dragging?"#9ECCFA":"#0B1957"}`,background:dragging?"#D1E8FF":"white",padding:"20px",display:"flex",flexDirection:"column",alignItems:"center",gap:8,cursor:"pointer",transition:"all 0.15s ease"}}
+                <div style={{border:`4px dashed ${dragging?"#9ECCFA":"#0B1957"}`,background:dragging?"var(--nb-accent-light)":"white",padding:"20px",display:"flex",flexDirection:"column",alignItems:"center",gap:8,cursor:"pointer",transition:"all 0.15s ease"}}
                   onClick={()=>fileRef.current?.click()}
                   onDragOver={e=>{e.preventDefault();setDragging(true);}}
                   onDragLeave={()=>setDragging(false)}
@@ -961,7 +961,7 @@ function HeroSection() {
 
         {/* Footer */}
         <div className="hm-footer-bar" style={{borderTop:"4px solid #0B1957",background:"#0B1957",padding:"16px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
-          <span style={{fontWeight:700,fontSize:10,color:"#D1E8FF",opacity:0.6,textTransform:"uppercase",letterSpacing:"0.1em"}}>{dirty?"⚠ Ada perubahan yang belum disimpan":"✓ Semua perubahan tersimpan"}</span>
+          <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.6,textTransform:"uppercase",letterSpacing:"0.1em"}}>{dirty?"⚠ Ada perubahan yang belum disimpan":"✓ Semua perubahan tersimpan"}</span>
           <button onClick={handleSave} disabled={saving||!dirty}
             style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid #9ECCFA",background:dirty?"#9ECCFA":"transparent",color:dirty?"#0B1957":"#9ECCFA",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(saving||!dirty)?"not-allowed":"pointer",boxShadow:dirty?"4px 4px 0 rgba(158,204,250,0.4)":"none",opacity:!dirty?0.5:1,fontFamily:"inherit",transition:"all 0.1s ease",whiteSpace:"nowrap"}}>
             {saving?<IconSpin/>:<IconSave/>}{saving?"Menyimpan...":"Simpan"}
@@ -1077,7 +1077,7 @@ function ContactFormModal({ item, onSave, onClose }: {
         <div style={{borderTop:"4px solid #0B1957",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"#F8F3EA",flexShrink:0,gap:10}}>
           <button onClick={onClose} style={{border:"4px solid #0B1957",background:"transparent",color:"#0B1957",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit"}}>Batal</button>
           <button onClick={handleSubmit} disabled={!value.trim()||!url.trim()}
-            style={{display:"flex",alignItems:"center",gap:8,border:"4px solid #0B1957",background:(!value.trim()||!url.trim())?"#D1E8FF":"#0B1957",color:(!value.trim()||!url.trim())?"#0B1957":"#9ECCFA",padding:"10px 24px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:(!value.trim()||!url.trim())?"not-allowed":"pointer",boxShadow:"4px 4px 0 #9ECCFA",fontFamily:"inherit",opacity:(!value.trim()||!url.trim())?0.5:1}}>
+            style={{display:"flex",alignItems:"center",gap:8,border:"4px solid #0B1957",background:(!value.trim()||!url.trim())?"var(--nb-accent-light)":"#0B1957",color:(!value.trim()||!url.trim())?"#0B1957":"#9ECCFA",padding:"10px 24px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:(!value.trim()||!url.trim())?"not-allowed":"pointer",boxShadow:"4px 4px 0 #9ECCFA",fontFamily:"inherit",opacity:(!value.trim()||!url.trim())?0.5:1}}>
             <IconCheck/>{isEdit?"Simpan Perubahan":"Tambah Kontak"}
           </button>
         </div>
@@ -1180,7 +1180,7 @@ function ContactSection() {
         <p style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.2em",marginBottom:10}}>Preview di Homepage</p>
         <div style={{display:"flex",flexWrap:"wrap",gap:10}}>
           {contacts.filter(c=>c.is_visible).length===0
-            ? <p style={{fontWeight:700,fontSize:12,textTransform:"uppercase",color:"#D1E8FF",opacity:0.4,letterSpacing:"0.1em"}}>Belum ada kontak yang ditampilkan</p>
+            ? <p style={{fontWeight:700,fontSize:12,textTransform:"uppercase",color:"var(--nb-accent-light)",opacity:0.4,letterSpacing:"0.1em"}}>Belum ada kontak yang ditampilkan</p>
             : contacts.filter(c=>c.is_visible).map((c,i)=>(
               <div key={c.id} style={{display:"flex",alignItems:"center",gap:8,border:"2px solid #9ECCFA",padding:"6px 12px 6px 6px",background:"rgba(158,204,250,0.1)",animation:`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`}}>
                 <div style={{width:28,height:28,background:c.icon_color,border:"2px solid #9ECCFA",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
@@ -1226,7 +1226,7 @@ function ContactSection() {
                   <div style={{minWidth:0}}>
                     <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
                       <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"#0B1957",letterSpacing:"0.06em"}}>{c.label}</p>
-                      <span className="hm-contact-platform-badge" style={{border:"2px solid #0B1957",background:"#D1E8FF",fontSize:9,fontWeight:900,padding:"2px 6px",textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957"}}>{c.platform}</span>
+                      <span className="hm-contact-platform-badge" style={{border:"2px solid #0B1957",background:"var(--nb-accent-light)",fontSize:9,fontWeight:900,padding:"2px 6px",textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957"}}>{c.platform}</span>
                     </div>
                     <p className="hm-contact-value-text" style={{fontWeight:600,fontSize:12,color:"#0B1957",opacity:0.6,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.value}</p>
                     <a className="hm-contact-url" href={c.url} target="_blank" rel="noopener noreferrer" style={{fontWeight:600,fontSize:10,color:"#0B1957",opacity:0.4,display:"flex",alignItems:"center",gap:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",textDecoration:"none"}}>
@@ -1253,7 +1253,7 @@ function ContactSection() {
           </div>
         )}
         <div className="hm-footer-bar" style={{borderTop:"4px solid #0B1957",background:"#0B1957",padding:"14px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
-          <span style={{fontWeight:700,fontSize:10,color:"#D1E8FF",opacity:0.6,textTransform:"uppercase",letterSpacing:"0.1em"}}>{dirty?"⚠ Ada perubahan yang belum disimpan":"✓ Semua perubahan tersimpan"}</span>
+          <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.6,textTransform:"uppercase",letterSpacing:"0.1em"}}>{dirty?"⚠ Ada perubahan yang belum disimpan":"✓ Semua perubahan tersimpan"}</span>
           <button onClick={handleSaveAll} disabled={saving||!dirty}
             style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid #9ECCFA",background:dirty?"#9ECCFA":"transparent",color:dirty?"#0B1957":"#9ECCFA",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(saving||!dirty)?"not-allowed":"pointer",boxShadow:dirty?"4px 4px 0 rgba(158,204,250,0.4)":"none",opacity:!dirty?0.5:1,fontFamily:"inherit",whiteSpace:"nowrap"}}>
             {saving?<IconSpin/>:<IconSave/>}{saving?"Menyimpan...":"Simpan Semua"}
@@ -1303,7 +1303,7 @@ function ProjectCard({ p, index, onToggle, toggling }: {
             <img src={p.images[0]} alt={p.title} style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top",display:"block",transition:"transform 0.45s cubic-bezier(0.16,1,0.3,1)"}}/>
           </div>
         ) : (
-          <div className="hm-proj-thumb-wrap" style={{width:96,height:72,flexShrink:0,border:"3px solid #0B1957",background:"#D1E8FF",boxShadow:"3px 3px 0 #0B1957",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div className="hm-proj-thumb-wrap" style={{width:96,height:72,flexShrink:0,border:"3px solid #0B1957",background:"var(--nb-accent-light)",boxShadow:"3px 3px 0 #0B1957",display:"flex",alignItems:"center",justifyContent:"center"}}>
             <span style={{fontSize:24,opacity:0.2}}>🗂</span>
           </div>
         )}
@@ -1441,7 +1441,7 @@ function ProjectsSection() {
         {([["all","Semua",projects.length],["visible","Tampil",visibleCount],["hidden","Hidden",hiddenCount]] as const).map(([key,label,count])=>(
           <button key={key} onClick={()=>setFilterTab(key)} className={`hm-filter-tab${filterTab===key?" active":""}`}>
             {label}
-            <span style={{background:filterTab===key?"rgba(158,204,250,0.2)":"#D1E8FF",color:filterTab===key?"#9ECCFA":"#0B1957",border:`2px solid ${filterTab===key?"#9ECCFA":"#0B1957"}`,fontSize:10,fontWeight:900,padding:"1px 7px",minWidth:22,textAlign:"center"}}>{count}</span>
+            <span style={{background:filterTab===key?"rgba(158,204,250,0.2)":"var(--nb-accent-light)",color:filterTab===key?"#9ECCFA":"#0B1957",border:`2px solid ${filterTab===key?"#9ECCFA":"#0B1957"}`,fontSize:10,fontWeight:900,padding:"1px 7px",minWidth:22,textAlign:"center"}}>{count}</span>
           </button>
         ))}
       </div>
@@ -1470,7 +1470,7 @@ function ProjectsSection() {
             <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"#9ECCFA"}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em"}}>Tampil di homepage</span></div>
             <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"transparent",opacity:0.5}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em",opacity:0.5}}>Disembunyikan</span></div>
           </div>
-          <span style={{fontWeight:700,fontSize:10,color:"#D1E8FF",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.1em"}}>{visibleCount}/{projects.length} aktif</span>
+          <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.1em"}}>{visibleCount}/{projects.length} aktif</span>
         </div>
       )}
 
@@ -1615,7 +1615,7 @@ function AboutSection() {
                 Info Cards <span style={{fontWeight:600,fontSize:10,opacity:0.4,textTransform:"none",letterSpacing:0}}>— maks 8</span>
               </label>
               <button onClick={addCard} disabled={form.info_cards.length>=8}
-                style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",background:form.info_cards.length>=8?"#D1E8FF":"#0B1957",color:form.info_cards.length>=8?"#0B1957":"#9ECCFA",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:form.info_cards.length>=8?"not-allowed":"pointer",boxShadow:"2px 2px 0 #9ECCFA",fontFamily:"inherit",opacity:form.info_cards.length>=8?0.5:1}}>
+                style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",background:form.info_cards.length>=8?"var(--nb-accent-light)":"#0B1957",color:form.info_cards.length>=8?"#0B1957":"#9ECCFA",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:form.info_cards.length>=8?"not-allowed":"pointer",boxShadow:"2px 2px 0 #9ECCFA",fontFamily:"inherit",opacity:form.info_cards.length>=8?0.5:1}}>
                 <IconPlus/> Tambah
               </button>
             </div>
@@ -1653,7 +1653,7 @@ function AboutSection() {
                 Highlight Tags <span style={{fontWeight:600,fontSize:10,opacity:0.4,textTransform:"none",letterSpacing:0}}>— maks 10</span>
               </label>
               <button onClick={addHighlight} disabled={form.highlights.length>=10}
-                style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",background:form.highlights.length>=10?"#D1E8FF":"#0B1957",color:form.highlights.length>=10?"#0B1957":"#9ECCFA",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:form.highlights.length>=10?"not-allowed":"pointer",boxShadow:"2px 2px 0 #9ECCFA",fontFamily:"inherit",opacity:form.highlights.length>=10?0.5:1}}>
+                style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",background:form.highlights.length>=10?"var(--nb-accent-light)":"#0B1957",color:form.highlights.length>=10?"#0B1957":"#9ECCFA",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:form.highlights.length>=10?"not-allowed":"pointer",boxShadow:"2px 2px 0 #9ECCFA",fontFamily:"inherit",opacity:form.highlights.length>=10?0.5:1}}>
                 <IconPlus/> Tambah
               </button>
             </div>
@@ -1682,7 +1682,7 @@ function AboutSection() {
           </div>
 
           {/* Note */}
-          <div style={{background:"#D1E8FF",border:"3px solid #0B1957",padding:"12px 16px",display:"flex",gap:10,alignItems:"flex-start"}}>
+          <div style={{background:"var(--nb-accent-light)",border:"3px solid #0B1957",padding:"12px 16px",display:"flex",gap:10,alignItems:"flex-start"}}>
             <span style={{fontWeight:900,fontSize:14,flexShrink:0,color:"#0B1957"}}>ℹ</span>
             <p style={{fontWeight:600,fontSize:12,color:"#0B1957",opacity:0.7,lineHeight:1.5}}>
               Nama, foto, dan bio utama diambil dari <strong>Hero Section</strong>.
@@ -1691,7 +1691,7 @@ function AboutSection() {
         </div>
 
         <div className="hm-footer-bar" style={{borderTop:"4px solid #0B1957",background:"#0B1957",padding:"16px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
-          <span style={{fontWeight:700,fontSize:10,color:"#D1E8FF",opacity:0.6,textTransform:"uppercase",letterSpacing:"0.1em"}}>{dirty?"⚠ Ada perubahan belum disimpan":"✓ Tersimpan"}</span>
+          <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.6,textTransform:"uppercase",letterSpacing:"0.1em"}}>{dirty?"⚠ Ada perubahan belum disimpan":"✓ Tersimpan"}</span>
           <button onClick={handleSave} disabled={saving||!dirty}
             style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid #9ECCFA",background:dirty?"#9ECCFA":"transparent",color:dirty?"#0B1957":"#9ECCFA",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(saving||!dirty)?"not-allowed":"pointer",boxShadow:dirty?"4px 4px 0 rgba(158,204,250,0.4)":"none",opacity:!dirty?0.5:1,fontFamily:"inherit",whiteSpace:"nowrap"}}>
             {saving?<IconSpin/>:<IconSave/>}{saving?"Menyimpan...":"Simpan About"}
@@ -1789,7 +1789,7 @@ export default function HomepageManager() {
                       <span style={{fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.06em",lineHeight:1.2,color:isActive?"#9ECCFA":"#0B1957"}}>{section.label}</span>
                       {isSoon&&<span style={{display:"inline-flex",alignItems:"center",gap:4,border:`1px solid ${isActive?"#9ECCFA":"#0B1957"}`,padding:"2px 6px",fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.08em",color:isActive?"#9ECCFA":"#0B1957",opacity:0.6}}><IconLock/>Soon</span>}
                     </div>
-                    <p style={{fontWeight:600,fontSize:10,lineHeight:1.4,marginTop:2,color:isActive?"#D1E8FF":"#0B1957",opacity:isActive?0.75:0.45}}>{section.description}</p>
+                    <p style={{fontWeight:600,fontSize:10,lineHeight:1.4,marginTop:2,color:isActive?"var(--nb-accent-light)":"#0B1957",opacity:isActive?0.75:0.45}}>{section.description}</p>
                   </div>
                 </button>
               );

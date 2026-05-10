@@ -132,12 +132,48 @@
     --sidebar-ring: oklch(0.439 0 0);
 }
 
+:root {
+    /* Naoo Theme (Default) */
+    --nb-bg: #F8F3EA;
+    --nb-primary: #0B1957;
+    --nb-accent: #9ECCFA;
+    --nb-accent-light: #D1E8FF;
+    --nb-secondary: #FFE8A0;
+    --nb-shadow: #0B1957;
+    --nb-text: #0B1957;
+    --nb-text-inv: #9ECCFA;
+}
+
+[data-theme='gold'] {
+    --nb-bg: #E5E5E5;
+    --nb-primary: #000000;
+    --nb-accent: #FCA311;
+    --nb-accent-light: #FFFFFF;
+    --nb-secondary: #14213D;
+    --nb-shadow: #000000;
+    --nb-text: #000000;
+    --nb-text-inv: #FCA311;
+}
+
+[data-theme='fiery'] {
+    --nb-bg: #FDF0D5;
+    --nb-primary: #003049;
+    --nb-accent: #C1121F;
+    --nb-accent-light: #669BBC;
+    --nb-secondary: #780000;
+    --nb-shadow: #003049;
+    --nb-text: #003049;
+    --nb-text-inv: #FDF0D5;
+}
+
 @layer base {
     * {
         @apply border-border;
     }
 
     body {
-        @apply bg-background text-foreground;
+        background-color: var(--nb-bg);
+        color: var(--nb-text);
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 }

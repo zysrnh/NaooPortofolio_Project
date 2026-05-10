@@ -94,7 +94,7 @@ const GLOBAL_CSS = `
   }
 
   .am-skeleton {
-    background: linear-gradient(90deg, #D1E8FF 25%, #b8d8ff 50%, #D1E8FF 75%);
+    background: linear-gradient(90deg, var(--nb-accent-light) 25%, #b8d8ff 50%, var(--nb-accent-light) 75%);
     background-size: 200% 100%;
     animation: am-shimmer 1.4s ease infinite;
   }
@@ -239,7 +239,7 @@ const SectionBox = ({ title, children, delay=0 }: {
 // ── Skeleton row ──────────────────────────────────────────────────────────────
 const SkeletonRow = ({ delay=0 }:{ delay?:number }) => (
   <div className="am-section-enter" style={{animationDelay:`${delay}ms`,
-    border:"3px solid #D1E8FF",padding:"14px 16px",marginBottom:10}}>
+    border:"3px solid var(--nb-accent-light)",padding:"14px 16px",marginBottom:10}}>
     <div className="am-skeleton" style={{height:14,width:"40%",marginBottom:8}}/>
     <div className="am-skeleton" style={{height:11,width:"65%"}}/>
   </div>
@@ -321,7 +321,7 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         letterSpacing:"0.1em",color:"#0B1957",marginBottom:8}}>{label}</label>
       <div style={{display:"flex",alignItems:"flex-start",gap:14}}>
         <div style={{width:90,height:112,border:"4px solid #0B1957",boxShadow:"4px 4px 0 #0B1957",
-          overflow:"hidden",flexShrink:0,background:"#D1E8FF",position:"relative",cursor:"pointer",
+          overflow:"hidden",flexShrink:0,background:"var(--nb-accent-light)",position:"relative",cursor:"pointer",
           transition:"transform 0.15s ease,box-shadow 0.15s ease"}}
           onClick={()=>fileRef.current?.click()}
           onMouseOver={e=>{
@@ -355,7 +355,7 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
           <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}} onChange={onPick} />
           <button onClick={()=>fileRef.current?.click()} className="am-btn"
             style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",padding:"8px 14px",
-              background:"#D1E8FF",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",
+              background:"var(--nb-accent-light)",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",
               color:"#0B1957",cursor:"pointer",fontFamily:"inherit",boxShadow:"3px 3px 0 #0B1957",marginBottom:8}}>
             <IconImage /> Choose Photo
           </button>
@@ -490,11 +490,11 @@ function CapabilitiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               style={{flex:1,minWidth:100,border:"2px solid #0B1957",padding:"7px 10px",
                 fontWeight:700,fontSize:13,background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit"}} />
             <button onClick={()=>moveCard(i,-1)} className="am-btn"
-              style={{border:"2px solid #0B1957",padding:"6px 8px",background:"#D1E8FF",cursor:"pointer",display:"flex"}}>
+              style={{border:"2px solid #0B1957",padding:"6px 8px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
               <IconUp />
             </button>
             <button onClick={()=>moveCard(i,1)} className="am-btn"
-              style={{border:"2px solid #0B1957",padding:"6px 8px",background:"#D1E8FF",cursor:"pointer",display:"flex"}}>
+              style={{border:"2px solid #0B1957",padding:"6px 8px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
               <IconDown />
             </button>
             <BtnDanger onClick={()=>removeCard(i)}><IconTrash /></BtnDanger>
@@ -512,7 +512,7 @@ function CapabilitiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:12,minHeight:32}}>
           {highlights.map((h,i)=>(
             <div key={`${h}-${i}`} style={{display:"flex",alignItems:"center",gap:4,
-              border:"2px solid #0B1957",padding:"5px 10px",background:"#D1E8FF",
+              border:"2px solid #0B1957",padding:"5px 10px",background:"var(--nb-accent-light)",
               animation:"am-tagPop 0.25s cubic-bezier(0.34,1.56,0.64,1) both",
               animationDelay:`${i*40}ms`}}>
               <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",color:"#0B1957"}}>{h}</span>
@@ -603,7 +603,7 @@ const TYPE_COLORS: Record<string,{bg:string;text:string;border:string}> = {
   internship:{bg:"#0B1957",text:"#9ECCFA",border:"#9ECCFA"},
   freelance: {bg:"#9ECCFA",text:"#0B1957",border:"#0B1957"},
   learning:  {bg:"#F8F3EA",text:"#0B1957",border:"#0B1957"},
-  project:   {bg:"#D1E8FF",text:"#0B1957",border:"#0B1957"},
+  project:   {bg:"var(--nb-accent-light)",text:"#0B1957",border:"#0B1957"},
   fulltime:  {bg:"#0B1957",text:"#9ECCFA",border:"#9ECCFA"},
   parttime:  {bg:"#FFE8A0",text:"#0B1957",border:"#0B1957"},
 };
@@ -733,7 +733,7 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8,minHeight:28}}>
                 {editing.highlights.map((h,i)=>(
                   <div key={i} style={{display:"flex",alignItems:"center",gap:4,
-                    border:"2px solid #0B1957",padding:"3px 10px",background:"#D1E8FF",
+                    border:"2px solid #0B1957",padding:"3px 10px",background:"var(--nb-accent-light)",
                     animation:"am-tagPop 0.2s cubic-bezier(0.34,1.56,0.64,1) both",
                     animationDelay:`${i*30}ms`}}>
                     <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",color:"#0B1957"}}>{h}</span>
@@ -771,7 +771,7 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
             animation:"am-fadeIn 0.5s ease both"}}>No experiences yet. Add one!</p>
         )}
         {loaded && exps.map((exp,i)=>{
-          const tc = TYPE_COLORS[exp.type]??{bg:"#D1E8FF",text:"#0B1957",border:"#0B1957"};
+          const tc = TYPE_COLORS[exp.type]??{bg:"var(--nb-accent-light)",text:"#0B1957",border:"#0B1957"};
           return (
             <div key={exp.id} className="am-card"
               style={{border:"3px solid #0B1957",background:"#fff",boxShadow:"4px 4px 0 #0B1957",
@@ -797,7 +797,7 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
                 </div>
                 <div style={{display:"flex",gap:6}}>
                   <button onClick={()=>openEdit(exp)} className="am-btn"
-                    style={{border:"2px solid #0B1957",padding:"5px 10px",background:"#D1E8FF",cursor:"pointer",
+                    style={{border:"2px solid #0B1957",padding:"5px 10px",background:"var(--nb-accent-light)",cursor:"pointer",
                       display:"flex",alignItems:"center",gap:5,fontWeight:900,fontSize:11,
                       textTransform:"uppercase",fontFamily:"inherit",boxShadow:"2px 2px 0 #0B1957"}}>
                     <IconEdit /> Edit
@@ -937,7 +937,7 @@ function CaseStudiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
             </p>
             <div style={{display:"flex",gap:6}}>
               <button onClick={()=>openEdit(cs)} className="am-btn"
-                style={{border:"2px solid #0B1957",padding:"5px 10px",background:"#D1E8FF",cursor:"pointer",
+                style={{border:"2px solid #0B1957",padding:"5px 10px",background:"var(--nb-accent-light)",cursor:"pointer",
                   display:"flex",alignItems:"center",gap:4,fontWeight:900,fontSize:11,
                   textTransform:"uppercase",fontFamily:"inherit",boxShadow:"2px 2px 0 #0B1957"}}>
                 <IconEdit /> Edit
@@ -1189,7 +1189,7 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               <button onClick={()=>setIconPicker(iconPicker===i?null:i)}
                 title="Pilih icon" className="am-btn"
                 style={{width:42,height:42,border:"3px solid #0B1957",
-                  background:iconPicker===i?"#0B1957":"#D1E8FF",
+                  background:iconPicker===i?"#0B1957":"var(--nb-accent-light)",
                   color:iconPicker===i?"#9ECCFA":"#0B1957",
                   display:"flex",alignItems:"center",justifyContent:"center",
                   cursor:"pointer",flexShrink:0,
@@ -1250,11 +1250,11 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
 
             <div style={{display:"flex",gap:4,flexShrink:0}}>
               <button onClick={()=>moveStat(i,-1)} className="am-btn"
-                style={{border:"2px solid #0B1957",padding:"5px 7px",background:"#D1E8FF",cursor:"pointer",display:"flex"}}>
+                style={{border:"2px solid #0B1957",padding:"5px 7px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
                 <IconUp />
               </button>
               <button onClick={()=>moveStat(i,1)} className="am-btn"
-                style={{border:"2px solid #0B1957",padding:"5px 7px",background:"#D1E8FF",cursor:"pointer",display:"flex"}}>
+                style={{border:"2px solid #0B1957",padding:"5px 7px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
                 <IconDown />
               </button>
               <button onClick={()=>removeStat(i)} className="am-btn"
@@ -1277,7 +1277,7 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               cursor:"pointer",fontFamily:"inherit",transition:"border-style 0.15s ease,background 0.15s ease"}}
             onMouseOver={e=>{
               e.currentTarget.style.borderStyle="solid";
-              e.currentTarget.style.background="#D1E8FF";
+              e.currentTarget.style.background="var(--nb-accent-light)";
             }}
             onMouseOut={e=>{
               e.currentTarget.style.borderStyle="dashed";

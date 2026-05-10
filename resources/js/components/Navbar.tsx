@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { label: "Home",     href: "hero" },
@@ -124,20 +125,20 @@ export default function Navbar() {
         }
         .nav-link::after {
           content: ''; position: absolute; bottom: 0; left: 0;
-          width: 0%; height: 2px; background-color: #0B1957;
+          width: 0%; height: 2px; background-color: var(--nb-primary);
           transition: width 0.2s cubic-bezier(0.16,1,0.3,1);
         }
         .nav-link:hover::after, .nav-link.active::after { width: 100%; }
-        .nav-link.active { color: #0B1957; font-weight: 900; }
+        .nav-link.active { color: var(--nb-primary); font-weight: 900; }
 
         .logo-hover { transition: transform 0.15s ease; display: inline-block; }
         .logo-hover:hover { transform: translate(-2px, -2px); }
 
         .btn-nav { transition: transform 0.08s ease, box-shadow 0.08s ease; }
-        .btn-nav:hover  { transform: translate(2px, 2px);  box-shadow: 1px 1px 0 #0B1957 !important; }
-        .btn-nav:active { transform: translate(3px, 3px);  box-shadow: 0   0   0 #0B1957 !important; }
+        .btn-nav:hover  { transform: translate(2px, 2px);  box-shadow: 1px 1px 0 var(--nb-primary) !important; }
+        .btn-nav:active { transform: translate(3px, 3px);  box-shadow: 0   0   0 var(--nb-primary) !important; }
 
-        .ham-line { display: block; width: 22px; height: 2px; background: #0B1957; transition: all 0.25s ease; transform-origin: center; }
+        .ham-line { display: block; width: 22px; height: 2px; background: var(--nb-primary); transition: all 0.25s ease; transform-origin: center; }
         .ham-open .ham-line:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .ham-open .ham-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .ham-open .ham-line:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
@@ -148,22 +149,22 @@ export default function Navbar() {
         .mobile-nav-link {
           display: block; padding: 14px 24px;
           font-weight: 800; text-transform: uppercase; font-size: 15px;
-          color: #0B1957; border-bottom: 2px solid #0B1957;
+          color: var(--nb-primary); border-bottom: 2px solid var(--nb-primary);
           transition: background 0.1s ease, padding-left 0.15s ease;
           letter-spacing: 0.05em; cursor: pointer;
         }
-        .mobile-nav-link:hover, .mobile-nav-link.active { background: #D1E8FF; padding-left: 32px; }
-        .mobile-nav-link.active { border-left: 4px solid #0B1957; }
+        .mobile-nav-link:hover, .mobile-nav-link.active { background: var(--nb-accent-light); padding-left: 32px; }
+        .mobile-nav-link.active { border-left: 4px solid var(--nb-primary); }
       `}</style>
 
-      <div className="w-full border-4 border-[#0B1957] bg-[#F8F3EA] shadow-[6px_6px_0_#0B1957] sticky top-0 z-50">
+      <div className="w-full border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
-          <div className="logo-hover font-black text-xl text-[#0B1957] cursor-pointer" onClick={() => router.visit("/")}>
+          <div className="logo-hover font-black text-xl text-[var(--nb-primary)] cursor-pointer" onClick={() => router.visit("/")}>
             Zyrsnh
           </div>
 
-          <div className="hidden md:flex gap-8 font-semibold text-[#0B1957]">
+          <div className="hidden md:flex gap-8 font-semibold text-[var(--nb-primary)]">
             {navLinks.map(link => (
               <a key={link.href} onClick={() => handleNavLink(link.href)}
                 className={`nav-link ${getActiveLink(link.href) ? "active" : ""}`}>
@@ -174,17 +175,17 @@ export default function Navbar() {
 
           <div className="hidden md:flex gap-3">
             <button onClick={handlePrimaryBtn}
-              className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957]">
+              className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)]">
               {isLoggedIn ? "Dashboard" : "Login"}
             </button>
             <button onClick={handleContactBtn}
-              className="btn-nav border-4 border-[#0B1957] px-4 py-2 font-bold shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957]">
+              className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)]">
               Contact Me
             </button>
           </div>
 
           <button
-            className={`md:hidden flex flex-col gap-[6px] p-2 border-4 border-[#0B1957] shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] btn-nav ${menuOpen ? "ham-open" : ""}`}
+            className={`md:hidden flex flex-col gap-[6px] p-2 border-4 border-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] btn-nav ${menuOpen ? "ham-open" : ""}`}
             onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
             <span className="ham-line" />
             <span className="ham-line" />
@@ -192,7 +193,7 @@ export default function Navbar() {
           </button>
         </div>
 
-        <div className={`mobile-menu border-t-4 border-[#0B1957] bg-[#F8F3EA] md:hidden ${menuOpen ? "open" : ""}`}>
+        <div className={`mobile-menu border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] md:hidden ${menuOpen ? "open" : ""}`}>
           {navLinks.map(link => (
             <a key={link.href} onClick={() => handleNavLink(link.href)}
               className={`mobile-nav-link ${getActiveLink(link.href) ? "active" : ""}`}>
@@ -201,16 +202,17 @@ export default function Navbar() {
           ))}
           <div className="flex gap-3 p-4">
             <button onClick={handlePrimaryBtn}
-              className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] uppercase text-sm">
+              className="btn-nav flex-1 border-4 border-[var(--nb-primary)] py-3 font-black shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)] uppercase text-sm">
               {isLoggedIn ? "Dashboard" : "Login"}
             </button>
             <button onClick={handleContactBtn}
-              className="btn-nav flex-1 border-4 border-[#0B1957] py-3 font-black shadow-[3px_3px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] uppercase text-sm">
+              className="btn-nav flex-1 border-4 border-[var(--nb-primary)] py-3 font-black shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)] uppercase text-sm">
               Contact Me
             </button>
           </div>
         </div>
       </div>
+      <ThemeToggle />
     </>
   );
 }
