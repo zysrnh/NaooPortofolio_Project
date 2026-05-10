@@ -157,7 +157,7 @@ export default function Navbar() {
         .mobile-nav-link.active { border-left: 4px solid var(--nb-primary); }
       `}</style>
 
-      <div className="w-full border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] sticky top-0 z-[100]">
+      <div className="w-full border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] sticky top-0 z-[99999]">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
           <div className="logo-hover font-black text-xl text-[var(--nb-primary)] cursor-pointer" onClick={() => router.visit("/")}>

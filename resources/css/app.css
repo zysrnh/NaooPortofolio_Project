@@ -248,14 +248,14 @@
     --sidebar-primary: var(--nb-primary);
     --sidebar-primary-foreground: var(--nb-accent);
 [data-theme='mystic'] {
-    --nb-bg: #F5EBE0;
-    --nb-primary: #13273F;
-    --nb-accent: #4E0803;
-    --nb-accent-light: #758BA2;
-    --nb-secondary: #6F4E37;
-    --nb-shadow: #13273F;
-    --nb-text: #13273F;
-    --nb-text-inv: #F5EBE0;
+    --nb-bg: #fbfcfc;
+    --nb-primary: #111835;
+    --nb-accent: #f8d613;
+    --nb-accent-light: #0248c1;
+    --nb-secondary: #0248c1;
+    --nb-shadow: #111835;
+    --nb-text: #111835;
+    --nb-text-inv: #fbfcfc;
 
     /* Global Mapping */
     --background: var(--nb-bg);
@@ -271,19 +271,19 @@
     --muted: var(--nb-accent-light);
     --muted-foreground: var(--nb-bg);
     --accent: var(--nb-accent);
-    --accent-foreground: var(--nb-bg);
+    --accent-foreground: var(--nb-primary);
     --border: var(--nb-primary);
     --input: var(--nb-bg);
     --ring: var(--nb-accent);
 
     /* Sidebar Mapping */
-    --sidebar: var(--nb-bg);
-    --sidebar-foreground: var(--nb-text);
-    --sidebar-primary: var(--nb-primary);
-    --sidebar-primary-foreground: var(--nb-bg);
-    --sidebar-accent: var(--nb-accent);
+    --sidebar: var(--nb-primary);
+    --sidebar-foreground: var(--nb-bg);
+    --sidebar-primary: var(--nb-accent);
+    --sidebar-primary-foreground: var(--nb-primary);
+    --sidebar-accent: var(--nb-accent-light);
     --sidebar-accent-foreground: var(--nb-bg);
-    --sidebar-border: var(--nb-primary);
+    --sidebar-border: var(--nb-accent);
     --sidebar-ring: var(--nb-accent);
 }
 

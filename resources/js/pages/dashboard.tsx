@@ -3,8 +3,9 @@ import { router, usePage } from "@inertiajs/react";
 import TechStackCRUD from "@/components/TechStackCRUD";
 import HomepageManager from "@/components/HomepageManager";
 import ProjectCRUD from "@/components/ProjectCRUD";
-import AboutManager from "@/components/AboutManager"; 
- 
+import AboutManager from "@/components/AboutManager";
+import ThemeToggle from "../components/ThemeToggle";
+
 // ── SVG Icons ─────────────────────────────────────────────────────────────────
 const IconFolder    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
 const IconRocket    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>;
@@ -15,10 +16,11 @@ const IconUser      = ({ size = 18 }: { size?: number }) => <svg width={size} he
 const IconLogOut    = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
 const IconHome      = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
 const IconClose     = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
-const IconMenu      = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="2.5" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
+const IconMenu      = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
 const IconArrow     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
-const IconClock     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
-const IconBriefcase = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>;
+const IconClock     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+const IconBriefcase = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>;
+const IconPalette   = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>;
 const IconGlobe     = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>;
 const IconInfo      = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>;
 const IconMail      = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>;
@@ -57,10 +59,10 @@ interface Availability {
 }
 
 const STATUS_STYLE: Record<string, string> = {
-  "Hosted":      "bg-[#9ECCFA] border-[#0B1957] text-[#0B1957]",
-  "Live":        "bg-[#9ECCFA] border-[#0B1957] text-[#0B1957]",
-  "In Progress": "bg-[#FFE8A0] border-[#0B1957] text-[#0B1957]",
-  "Planning":    "bg-[#F8F3EA] border-[#0B1957] text-[#0B1957]",
+  "Hosted":      "bg-[var(--nb-accent)] border-[var(--nb-primary)] text-[var(--nb-primary)]",
+  "Live":        "bg-[var(--nb-accent)] border-[var(--nb-primary)] text-[var(--nb-primary)]",
+  "In Progress": "bg-[var(--nb-accent-light)] border-[var(--nb-primary)] text-[var(--nb-primary)]",
+  "Planning":    "bg-[var(--nb-bg)] border-[var(--nb-primary)] text-[var(--nb-primary)]",
 };
 
 const NAV_ITEMS = [
@@ -119,7 +121,7 @@ function Sparkline({ data, color = "#9ECCFA", height = 36, width = 120 }: {
       <polyline points={pts} fill="none" stroke={color} strokeWidth="2.5"
         strokeLinecap="round" strokeLinejoin="round"
         style={{ filter: `drop-shadow(0 2px 6px ${color}88)` }} />
-      <circle cx={lastPt[0]} cy={lastPt[1]} r="3.5" fill={color} stroke="#0B1957" strokeWidth="2" />
+      <circle cx={lastPt[0]} cy={lastPt[1]} r="3.5" fill={color} stroke="var(--nb-primary)" strokeWidth="2" />
     </svg>
   );
 }
@@ -136,14 +138,14 @@ function MiniBarChart({ data, color = "#9ECCFA", height = 64 }: {
             <div style={{
               width: "100%",
               height: `${Math.max((d.value / max) * 100, 5)}%`,
-              background: i === data.length - 1 ? "#0B1957" : color,
-              border: "2px solid #0B1957",
+              background: i === data.length - 1 ? "var(--nb-primary)" : color,
+              border: "2px solid var(--nb-primary)",
               boxShadow: "1px 1px 0 var(--nb-primary)",
               transition: `height 0.7s cubic-bezier(0.16,1,0.3,1) ${i * 0.04}s`,
             }} />
           </div>
           {d.label && (
-            <span style={{ fontSize: 7, fontWeight: 900, color: "#0B1957", opacity: 0.45, textTransform: "uppercase" }}>{d.label}</span>
+            <span style={{ fontSize: 7, fontWeight: 900, color: "var(--nb-primary)", opacity: 0.45, textTransform: "uppercase" }}>{d.label}</span>
           )}
         </div>
       ))}
@@ -176,8 +178,8 @@ function DonutChart({ segments, size = 110 }: {
           />
         );
       })}
-      <circle cx={cx} cy={cy} r={r - strokeW / 2 - 2} fill="#F8F3EA" />
-      <text x="50" y="54" textAnchor="middle" style={{ fontWeight: 900, fontSize: 14, fill: "#0B1957", fontFamily: "inherit" }}>
+      <circle cx={cx} cy={cy} r={r - strokeW / 2 - 2} fill="var(--nb-bg)" />
+      <text x="50" y="54" textAnchor="middle" style={{ fontWeight: 900, fontSize: 14, fill: "var(--nb-primary)", fontFamily: "inherit" }}>
         {total}
       </text>
     </svg>
@@ -206,20 +208,20 @@ function StatCard({ icon, value, label, color, sparkData, trend, delay = 0 }: {
 
   return (
     <div style={{
-      border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "6px 6px 0 #0B1957",
+      border: "4px solid var(--nb-primary)", background: "var(--nb-bg)", boxShadow: "6px 6px 0 var(--nb-primary)",
       padding: "20px", display: "flex", flexDirection: "column", gap: 8,
       animation: `slideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${delay}s both`,
       transition: "transform 0.15s ease, box-shadow 0.15s ease",
       position: "relative", overflow: "hidden", cursor: "default",
     }}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-3px,-3px)"; (e.currentTarget as HTMLElement).style.boxShadow = "9px 9px 0 #0B1957"; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #0B1957"; }}>
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 5, background: color, borderBottom: "2px solid #0B1957" }} />
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-3px,-3px)"; (e.currentTarget as HTMLElement).style.boxShadow = "9px 9px 0 var(--nb-primary)"; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 var(--nb-primary)"; }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 5, background: color, borderBottom: "2px solid var(--nb-primary)" }} />
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginTop: 4 }}>
-        <div style={{ color: "#0B1957" }}>{icon}</div>
+        <div style={{ color: "var(--nb-primary)" }}>{icon}</div>
         {trend !== undefined && (
-          <div style={{ display: "flex", alignItems: "center", gap: 3, border: "2px solid #0B1957", padding: "2px 6px", background: trend >= 0 ? "#9ECCFA" : "#FFE8A0", flexShrink: 0 }}>
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#0B1957" strokeWidth="3.5" strokeLinecap="round">
+          <div style={{ display: "flex", alignItems: "center", gap: 3, border: "2px solid var(--nb-primary)", padding: "2px 6px", background: trend >= 0 ? "var(--nb-accent)" : "var(--nb-accent-light)", flexShrink: 0 }}>
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="3.5" strokeLinecap="round">
               {trend >= 0
                 ? <polyline points="1 18 8.5 10.5 13.5 15.5 23 6" />
                 : <polyline points="1 6 8.5 13.5 13.5 8.5 23 18" />}
@@ -228,10 +230,10 @@ function StatCard({ icon, value, label, color, sparkData, trend, delay = 0 }: {
           </div>
         )}
       </div>
-      <p style={{ fontWeight: 900, fontSize: 42, color: "#0B1957", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>
+      <p style={{ fontWeight: 900, fontSize: 42, color: "var(--nb-primary)", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>
         {counted}
       </p>
-      <p style={{ fontWeight: 900, fontSize: 9, color: "#0B1957", textTransform: "uppercase", letterSpacing: "0.18em", opacity: 0.55, margin: 0 }}>{label}</p>
+      <p style={{ fontWeight: 900, fontSize: 9, color: "var(--nb-primary)", textTransform: "uppercase", letterSpacing: "0.18em", opacity: 0.55, margin: 0 }}>{label}</p>
       {sparkData && (
         <div style={{ marginTop: 2 }}>
           <Sparkline data={sparkData} color={color} height={30} width={130} />
@@ -253,7 +255,7 @@ function ProjectStatusChart({ projects }: { projects: ProjectItem[] }) {
     { label: "Other",       value: other,    color: "#C8B8A0" },
   ].filter(s => s.value > 0);
   if (segments.length === 0) return (
-    <p style={{ fontWeight: 900, fontSize: 10, color: "#0B1957", opacity: 0.3, textTransform: "uppercase" }}>No data</p>
+    <p style={{ fontWeight: 900, fontSize: 10, color: "var(--nb-primary)", opacity: 0.3, textTransform: "uppercase" }}>No data</p>
   );
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
@@ -261,9 +263,9 @@ function ProjectStatusChart({ projects }: { projects: ProjectItem[] }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
         {segments.map((s, i) => (
           <div key={i} style={{ display: "flex", alignItems: "center", gap: 7 }}>
-            <div style={{ width: 12, height: 12, background: s.color, border: "2px solid #0B1957", boxShadow: "1px 1px 0 #0B1957", flexShrink: 0 }} />
-            <span style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", color: "#0B1957", letterSpacing: "0.08em" }}>{s.label}</span>
-            <span style={{ fontWeight: 900, fontSize: 16, color: "#0B1957", marginLeft: "auto", paddingLeft: 12, fontVariantNumeric: "tabular-nums" }}>{s.value}</span>
+            <div style={{ width: 12, height: 12, background: s.color, border: "2px solid var(--nb-primary)", boxShadow: "1px 1px 0 var(--nb-primary)", flexShrink: 0 }} />
+            <span style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", color: "var(--nb-primary)", letterSpacing: "0.08em" }}>{s.label}</span>
+            <span style={{ fontWeight: 900, fontSize: 16, color: "var(--nb-primary)", marginLeft: "auto", paddingLeft: 12, fontVariantNumeric: "tabular-nums" }}>{s.value}</span>
           </div>
         ))}
       </div>
@@ -293,7 +295,7 @@ function StackDistribution({ stacks }: { stacks: { category?: string }[] }) {
               height: "100%",
               width: `${(count / total) * 100}%`,
               background: colors[i % colors.length],
-              borderRight: count < total ? "2px solid #0B1957" : "none",
+              borderRight: count < total ? "2px solid var(--nb-primary)" : "none",
               transition: `width 0.9s cubic-bezier(0.16,1,0.3,1) ${i * 0.1}s`,
             }} />
           </div>
@@ -319,14 +321,72 @@ function getActivityMeta(status: string): { icon: React.ReactNode; color: string
   }
 }
 
+// ── THEME SELECTOR CARD ──────────────────────────────────────────────────────
+function ThemeSelectorCard() {
+  const themes = [
+    { id: 'naoo',   label: 'Naoo',   bg: '#F8F3EA', primary: '#0B1957', accent: '#9ECCFA' },
+    { id: 'gold',   label: 'Gold',   bg: '#ffffff', primary: '#1a1a1a', accent: '#fbbf24' },
+    { id: 'fiery',  label: 'Fiery',  bg: '#0f172a', primary: '#f43f5e', accent: '#fb7185' },
+    { id: 'mystic', label: 'Mystic', bg: '#fbfcfc', primary: '#111835', accent: '#f8d613' },
+  ];
+
+  const [current, setCurrent] = useState(localStorage.getItem('nb-theme') || 'naoo');
+
+  const applyTheme = (id: string) => {
+    setCurrent(id);
+    localStorage.setItem('nb-theme', id);
+    document.documentElement.setAttribute('data-theme', id);
+    window.dispatchEvent(new Event('storage'));
+  };
+
+  return (
+    <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-bg)", boxShadow: "6px 6px 0 var(--nb-primary)", padding: "18px 20px", animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.4s both" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+        <div style={{ color: "var(--nb-primary)" }}><IconPalette size={14} /></div>
+        <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--nb-primary)", margin: 0 }}>Global UI Theme</p>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {themes.map(t => {
+          const isActive = current === t.id;
+          return (
+            <button key={t.id} onClick={() => applyTheme(t.id)}
+              style={{
+                border: "3px solid var(--nb-primary)",
+                background: t.bg,
+                padding: "8px",
+                cursor: "pointer",
+                display: "flex", flexDirection: "column", gap: 6,
+                boxShadow: isActive ? "4px 4px 0 var(--nb-primary)" : "2px 2px 0 rgba(0,0,0,0.1)",
+                transform: isActive ? "translate(-2px,-2px)" : "none",
+                transition: "all 0.1s ease",
+                position: "relative",
+              }}>
+              <div style={{ display: "flex", gap: 2 }}>
+                <div style={{ width: 12, height: 12, background: t.primary, border: "1px solid rgba(0,0,0,0.1)" }} />
+                <div style={{ width: 12, height: 12, background: t.accent, border: "1px solid rgba(0,0,0,0.1)" }} />
+              </div>
+              <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", color: t.id === 'fiery' ? '#fff' : '#000', letterSpacing: "0.05em" }}>{t.label}</span>
+              {isActive && (
+                <div style={{ position: "absolute", top: -6, right: -6, background: "var(--nb-primary)", color: "var(--nb-accent)", width: 16, height: 16, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%", border: "2px solid var(--nb-primary)", fontSize: 8 }}>
+                  <IconCheck size={10} />
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ── Activity Feed — Quick Action style hover ──────────────────────────────────
 function ActivityFeed({ projects }: { projects: ProjectItem[] }) {
   if (!projects.length) return (
     <div style={{ padding: "50px 20px", textAlign: "center" }}>
-      <div style={{ color: "#0B1957", opacity: 0.12, marginBottom: 12, display: "flex", justifyContent: "center" }}>
+      <div style={{ color: "var(--nb-primary)", opacity: 0.12, marginBottom: 12, display: "flex", justifyContent: "center" }}>
         <IconStatusDefault size={36} />
       </div>
-      <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", color: "#0B1957", opacity: 0.3, letterSpacing: "0.15em" }}>No activity yet</p>
+      <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", color: "var(--nb-primary)", opacity: 0.3, letterSpacing: "0.15em" }}>No activity yet</p>
     </div>
   );
 
@@ -355,11 +415,11 @@ function ActivityFeedItem({ project: p, meta, index: i, total }: {
       style={{
         display: "flex", gap: 12, padding: "13px 16px",
         borderBottom: i < total - 1 ? "2px solid var(--nb-accent-light)" : "none",
-        background: hov ? meta.color : "#F8F3EA",
+        background: hov ? meta.color : "var(--nb-bg)",
         border: hov ? "0px" : "0px",
         cursor: "default",
         transform: hov ? "translate(-3px,-3px)" : "translate(0,0)",
-        boxShadow: hov ? `6px 6px 0 #0B1957` : "none",
+        boxShadow: hov ? `6px 6px 0 var(--nb-primary)` : "none",
         transition: "transform 0.12s cubic-bezier(0.16,1,0.3,1), box-shadow 0.12s cubic-bezier(0.16,1,0.3,1), background 0.12s ease",
         animation: `slideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${0.05 + i * 0.07}s both`,
         position: "relative",
@@ -372,11 +432,11 @@ function ActivityFeedItem({ project: p, meta, index: i, total }: {
       {/* Icon box */}
       <div style={{
         width: 36, height: 36, flexShrink: 0,
-        background: hov ? "#0B1957" : "#F0F7FF",
-        border: "3px solid #0B1957",
-        boxShadow: hov ? "3px 3px 0 var(--nb-primary)" : "2px 2px 0 rgba(11,25,87,0.12)",
+        background: hov ? "var(--nb-primary)" : "var(--nb-bg)",
+        border: "3px solid var(--nb-primary)",
+        boxShadow: hov ? "3px 3px 0 var(--nb-primary)" : "2px 2px 0 rgba(0,0,0,0.12)",
         display: "flex", alignItems: "center", justifyContent: "center",
-        color: hov ? meta.color : "#0B1957",
+        color: hov ? meta.color : "var(--nb-primary)",
         transition: "background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease",
       }}>
         {meta.icon}
@@ -387,28 +447,28 @@ function ActivityFeedItem({ project: p, meta, index: i, total }: {
         <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 3 }}>
           <p style={{
             fontWeight: 900, fontSize: 11, textTransform: "uppercase",
-            color: "#0B1957", margin: 0,
+            color: "var(--nb-primary)", margin: 0,
             overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
             letterSpacing: "0.06em",
           }}>{p.title}</p>
           <span style={{
             flexShrink: 0,
-            border: "2px solid #0B1957",
-            background: hov ? "#0B1957" : meta.color,
-            color: hov ? meta.color : "#0B1957",
+            border: "2px solid var(--nb-primary)",
+            background: hov ? "var(--nb-primary)" : meta.color,
+            color: hov ? meta.color : "var(--nb-primary)",
             padding: "0px 5px", fontSize: 7, fontWeight: 900,
             textTransform: "uppercase", letterSpacing: "0.06em",
             transition: "background 0.12s ease, color 0.12s ease",
           }}>{meta.tag}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ fontWeight: 700, fontSize: 9, color: "#0B1957", opacity: hov ? 0.6 : 0.35, textTransform: "uppercase", letterSpacing: "0.06em", transition: "opacity 0.12s" }}>{p.date}</span>
+          <span style={{ fontWeight: 700, fontSize: 9, color: "var(--nb-primary)", opacity: hov ? 0.6 : 0.35, textTransform: "uppercase", letterSpacing: "0.06em", transition: "opacity 0.12s" }}>{p.date}</span>
           {(p.stacks ?? []).slice(0, 3).map((s, si) => (
             <span key={si} style={{
               display: "inline-flex", alignItems: "center", gap: 3,
-              border: "2px solid #0B1957",
-              background: hov ? "#0B1957" : "var(--nb-accent-light)",
-              color: hov ? "#9ECCFA" : "#0B1957",
+              border: "2px solid var(--nb-primary)",
+              background: hov ? "var(--nb-primary)" : "var(--nb-accent-light)",
+              color: hov ? "var(--nb-accent)" : "var(--nb-primary)",
               padding: "0px 5px", fontSize: 7, fontWeight: 900,
               textTransform: "uppercase",
               transition: "background 0.12s ease, color 0.12s ease",
@@ -421,7 +481,7 @@ function ActivityFeedItem({ project: p, meta, index: i, total }: {
 
       {/* Arrow */}
       <div style={{
-        color: "#0B1957",
+        color: "var(--nb-primary)",
         opacity: hov ? 1 : 0,
         transform: hov ? "translateX(0)" : "translateX(-6px)",
         transition: "opacity 0.15s ease, transform 0.18s cubic-bezier(0.16,1,0.3,1)",
@@ -461,11 +521,11 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
   const dateLabels = last30.map((d, i) => ({ d, i })).filter((_, i) => i % 7 === 0 || i === last30.length - 1);
   const hov = hoveredIdx !== null ? pts[hoveredIdx] : null;
   return (
-    <div style={{ borderTop: "4px solid #0B1957", padding: "16px 20px 12px", background: "#F8F3EA" }}>
+    <div style={{ borderTop: "4px solid var(--nb-primary)", padding: "16px 20px 12px", background: "var(--nb-bg)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-        <div style={{ color: "#0B1957" }}><IconActivity size={13} /></div>
-        <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#0B1957", margin: 0 }}>Push Activity — Last 30 Days</p>
-        <span style={{ marginLeft: "auto", fontWeight: 900, fontSize: 9, color: "#0B1957", opacity: 0.45, textTransform: "uppercase" }}>
+        <div style={{ color: "var(--nb-primary)" }}><IconActivity size={13} /></div>
+        <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--nb-primary)", margin: 0 }}>Push Activity — Last 30 Days</p>
+        <span style={{ marginLeft: "auto", fontWeight: 900, fontSize: 9, color: "var(--nb-primary)", opacity: 0.45, textTransform: "uppercase" }}>
           {last30.reduce((s, d) => s + d.count, 0)} commits total
         </span>
       </div>
@@ -484,7 +544,7 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
               <g key={i}>
                 <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y} stroke="var(--nb-accent-light)" strokeWidth="1" strokeDasharray={i === 0 ? "none" : "4 4"} />
                 {pct > 0 && (
-                  <text x={PAD.left - 2} y={y + 4} textAnchor="end" style={{ fontSize: 7, fill: "#0B1957", opacity: 0.4, fontWeight: 900, fontFamily: "inherit" }}>
+                  <text x={PAD.left - 2} y={y + 4} textAnchor="end" style={{ fontSize: 7, fill: "var(--nb-primary)", opacity: 0.4, fontWeight: 900, fontFamily: "inherit" }}>
                     {Math.round(maxV * pct)}
                   </text>
                 )}
@@ -506,8 +566,8 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
               />
               {(p.d.count > 0 || hoveredIdx === i) && (
                 <circle cx={p.x} cy={p.y} r={hoveredIdx === i ? 5 : 3}
-                  fill={hoveredIdx === i ? "#0B1957" : "#9ECCFA"}
-                  stroke={hoveredIdx === i ? "#9ECCFA" : "#0B1957"}
+                  fill={hoveredIdx === i ? "var(--nb-primary)" : "var(--nb-accent)"}
+                  stroke={hoveredIdx === i ? "var(--nb-accent)" : "var(--nb-primary)"}
                   strokeWidth={2}
                   style={{ transition: "r 0.1s ease" }}
                 />
@@ -516,7 +576,7 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
           ))}
           {dateLabels.map(({ d, i }) => (
             <text key={i} x={pts[i].x} y={H - 4} textAnchor="middle"
-              style={{ fontSize: 7, fill: "#0B1957", opacity: 0.45, fontWeight: 900, fontFamily: "inherit", textTransform: "uppercase" }}>
+              style={{ fontSize: 7, fill: "var(--nb-primary)", opacity: 0.45, fontWeight: 900, fontFamily: "inherit", textTransform: "uppercase" }}>
               {fmtDate(d.date)}
             </text>
           ))}
@@ -525,9 +585,9 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
               <line x1={hov.x} y1={PAD.top} x2={hov.x} y2={PAD.top + innerH}
                 stroke="#0B1957" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.4" />
               <g transform={`translate(${Math.min(hov.x + 8, W - 120)}, ${Math.max(hov.y - 48, PAD.top)})`}>
-                <rect x={0} y={0} width={110} height={38} fill="#0B1957" stroke="#9ECCFA" strokeWidth="2" />
+                <rect x={0} y={0} width={110} height={38} fill="var(--nb-primary)" stroke="var(--nb-accent)" strokeWidth="2" />
                 <rect x={2} y={2} width={110} height={38} fill="none" stroke="var(--nb-accent),0.15)" strokeWidth="1" />
-                <text x={8} y={14} style={{ fontSize: 8, fill: "#9ECCFA", fontWeight: 900, fontFamily: "inherit", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <text x={8} y={14} style={{ fontSize: 8, fill: "var(--nb-accent)", fontWeight: 900, fontFamily: "inherit", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   {hov.d.count} commit{hov.d.count !== 1 ? "s" : ""}
                 </text>
                 <text x={8} y={28} style={{ fontSize: 7, fill: "var(--nb-accent-light)", fontWeight: 600, fontFamily: "inherit" }}>
@@ -602,15 +662,15 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
     new Date(d).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
   return (
-    <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "8px 8px 0 #0B1957", overflow: "hidden" }}>
-      <div style={{ background: "#0B1957", borderBottom: "4px solid #0B1957", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+    <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-bg)", boxShadow: "8px 8px 0 var(--nb-primary)", overflow: "hidden" }}>
+      <div style={{ background: "var(--nb-primary)", borderBottom: "4px solid var(--nb-primary)", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ border: "3px solid #9ECCFA", boxShadow: "3px 3px 0 #9ECCFA", padding: 6, color: "#9ECCFA" }}>
+          <div style={{ border: "3px solid var(--nb-accent)", boxShadow: "3px 3px 0 var(--nb-accent)", padding: 6, color: "var(--nb-accent)" }}>
             <IconGithub size={18} />
           </div>
           <div>
-            <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.25em", color: "#9ECCFA", opacity: 0.7, margin: 0 }}>GitHub Activity</p>
-            <p style={{ fontWeight: 900, fontSize: 15, textTransform: "uppercase", color: "#F8F3EA", margin: 0, letterSpacing: "0.06em" }}>@{username}</p>
+            <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.25em", color: "var(--nb-accent)", opacity: 0.7, margin: 0 }}>GitHub Activity</p>
+            <p style={{ fontWeight: 900, fontSize: 15, textTransform: "uppercase", color: "var(--nb-bg)", margin: 0, letterSpacing: "0.06em" }}>@{username}</p>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -619,8 +679,8 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
             { val: loading ? "…" : streak,        label: "Streak"  },
             { val: loading ? "…" : maxDay,        label: "Best Day" },
           ].map((s, i) => (
-            <div key={i} style={{ border: "2px solid #9ECCFA", background: "var(--nb-accent),0.08)", padding: "6px 12px", textAlign: "center", boxShadow: "2px 2px 0 #9ECCFA" }}>
-              <p style={{ fontWeight: 900, fontSize: 18, color: "#9ECCFA", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
+            <div key={i} style={{ border: "2px solid var(--nb-accent)", background: "var(--nb-accent),0.08)", padding: "6px 12px", textAlign: "center", boxShadow: "2px 2px 0 var(--nb-accent)" }}>
+              <p style={{ fontWeight: 900, fontSize: 18, color: "var(--nb-accent)", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
               <p style={{ fontWeight: 900, fontSize: 8, color: "var(--nb-accent-light)", margin: 0, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.7 }}>{s.label}</p>
             </div>
           ))}
@@ -644,7 +704,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                 const lbl = monthLabels.find(m => m.col === wi);
                 return (
                   <div key={wi} style={{ width: CELL, flexShrink: 0, overflow: "visible" }}>
-                    {lbl && <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.08em", color: "#0B1957", opacity: 0.5, whiteSpace: "nowrap", display: "block" }}>{lbl.label}</span>}
+                    {lbl && <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--nb-primary)", opacity: 0.5, whiteSpace: "nowrap", display: "block" }}>{lbl.label}</span>}
                   </div>
                 );
               })}
@@ -653,7 +713,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
               <div style={{ display: "flex", flexDirection: "column", gap: GAP, marginRight: 2, flexShrink: 0, width: 24 }}>
                 {DAY_LBLS.map((d, i) => (
                   <div key={i} style={{ height: CELL, display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-                    {d && <span style={{ fontWeight: 900, fontSize: 7, textTransform: "uppercase", color: "#0B1957", opacity: 0.4 }}>{d}</span>}
+                    {d && <span style={{ fontWeight: 900, fontSize: 7, textTransform: "uppercase", color: "var(--nb-primary)", opacity: 0.4 }}>{d}</span>}
                   </div>
                 ))}
               </div>
@@ -671,7 +731,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
                         background: cs.bg, border: `2px solid ${cs.border}`,
                         cursor: "pointer",
                         transform: isHov ? "scale(1.55)" : "scale(1)",
-                        boxShadow: isHov ? `0 0 0 2px #0B1957, 3px 3px 0 #0B1957, 0 0 8px ${cs.bg}` : day.level > 0 ? "1px 1px 0 #0B1957" : "none",
+                        boxShadow: isHov ? `0 0 0 2px var(--nb-primary), 3px 3px 0 var(--nb-primary), 0 0 8px ${cs.bg}` : day.level > 0 ? "1px 1px 0 var(--nb-primary)" : "none",
                         transition: "transform 0.1s cubic-bezier(0.16,1,0.3,1), box-shadow 0.1s ease",
                         position: "relative", zIndex: isHov ? 10 : 1,
                       }}
@@ -688,8 +748,8 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
               ))}
             </div>
             {hoveredDay && (
-              <div style={{ position: "absolute", left: tooltipPos.x + 12, top: tooltipPos.y - 52, pointerEvents: "none", zIndex: 50, background: "#0B1957", border: "3px solid #9ECCFA", boxShadow: "4px 4px 0 #9ECCFA", padding: "7px 12px", minWidth: 162 }}>
-                <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", margin: "0 0 3px", textTransform: "uppercase" }}>{hoveredDay.count} commit{hoveredDay.count !== 1 ? "s" : ""}</p>
+              <div style={{ position: "absolute", left: tooltipPos.x + 12, top: tooltipPos.y - 52, pointerEvents: "none", zIndex: 50, background: "var(--nb-primary)", border: "3px solid var(--nb-accent)", boxShadow: "4px 4px 0 var(--nb-accent)", padding: "7px 12px", minWidth: 162 }}>
+                <p style={{ fontWeight: 900, fontSize: 11, color: "var(--nb-accent)", margin: "0 0 3px", textTransform: "uppercase" }}>{hoveredDay.count} commit{hoveredDay.count !== 1 ? "s" : ""}</p>
                 <p style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", margin: 0 }}>{fmt(hoveredDay.date)}</p>
               </div>
             )}
@@ -699,17 +759,17 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
       {!loading && allContribs.length > 0 && (
         <PushActivityChart contributions={allContribs} />
       )}
-      <div style={{ borderTop: "3px solid #0B1957", padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+      <div style={{ borderTop: "3px solid var(--nb-primary)", padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
         <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer"
-          style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957", textDecoration: "none", border: "2px solid #0B1957", padding: "4px 10px", background: "var(--nb-accent-light)", boxShadow: "2px 2px 0 #0B1957", display: "flex", alignItems: "center", gap: 5 }}>
+          style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--nb-primary)", textDecoration: "none", border: "2px solid var(--nb-primary)", padding: "4px 10px", background: "var(--nb-accent-light)", boxShadow: "2px 2px 0 var(--nb-primary)", display: "flex", alignItems: "center", gap: 5 }}>
           <IconGithub size={10} /> Profile →
         </a>
         <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", color: "#0B1957", opacity: 0.4 }}>Less</span>
+          <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", color: "var(--nb-primary)", opacity: 0.4 }}>Less</span>
           {[0, 1, 2, 3, 4].map(lvl => (
-            <div key={lvl} style={{ width: 10, height: 10, background: CELL_STYLES[lvl].bg, border: `2px solid ${CELL_STYLES[lvl].border}`, boxShadow: lvl > 0 ? "1px 1px 0 #0B1957" : "none" }} />
+            <div key={lvl} style={{ width: 10, height: 10, background: CELL_STYLES[lvl].bg, border: `2px solid ${CELL_STYLES[lvl].border}`, boxShadow: lvl > 0 ? "1px 1px 0 var(--nb-primary)" : "none" }} />
           ))}
-          <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", color: "#0B1957", opacity: 0.4 }}>More</span>
+          <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", color: "var(--nb-primary)", opacity: 0.4 }}>More</span>
         </div>
       </div>
     </div>
@@ -724,9 +784,9 @@ function RecentProjectCard({ project: p, delay }: { project: ProjectItem; delay:
   return (
     <div
       style={{
-        border: "4px solid #0B1957",
-        background: hovered ? "#EAF4FF" : "#F8F3EA",
-        boxShadow: hovered ? "8px 8px 0 #0B1957" : "4px 4px 0 #0B1957",
+        border: "4px solid var(--nb-primary)",
+        background: hovered ? "var(--nb-accent-light)" : "var(--nb-bg)",
+        boxShadow: hovered ? "8px 8px 0 var(--nb-primary)" : "4px 4px 0 var(--nb-primary)",
         padding: "18px 20px",
         transform: hovered ? "translate(-4px,-4px)" : "translate(0,0)",
         transition: "transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s cubic-bezier(0.16,1,0.3,1), background 0.15s ease",
@@ -746,8 +806,8 @@ function RecentProjectCard({ project: p, delay }: { project: ProjectItem; delay:
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0,
         height: hovered ? 5 : 3,
-        background: hovered ? meta.color : "rgba(11,25,87,0.08)",
-        borderBottom: hovered ? "2px solid #0B1957" : "2px solid transparent",
+        background: hovered ? meta.color : "rgba(0,0,0,0.08)",
+        borderBottom: hovered ? "2px solid var(--nb-primary)" : "2px solid transparent",
         transition: "height 0.2s ease, background 0.2s ease",
       }} />
 
@@ -755,8 +815,8 @@ function RecentProjectCard({ project: p, delay }: { project: ProjectItem; delay:
       <div style={{
         position: "absolute", left: 0, top: 0, bottom: 0,
         width: hovered ? 6 : 3,
-        background: hovered ? meta.color : "rgba(11,25,87,0.08)",
-        borderRight: hovered ? "2px solid #0B1957" : "2px solid transparent",
+        background: hovered ? meta.color : "rgba(0,0,0,0.08)",
+        borderRight: hovered ? "2px solid var(--nb-primary)" : "2px solid transparent",
         transition: "width 0.2s cubic-bezier(0.16,1,0.3,1), background 0.2s ease",
       }} />
 
@@ -765,7 +825,7 @@ function RecentProjectCard({ project: p, delay }: { project: ProjectItem; delay:
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
             <div style={{
-              color: hovered ? "#0B1957" : "#9ECCFA",
+              color: hovered ? "var(--nb-primary)" : "var(--nb-accent)",
               transition: "color 0.15s ease, transform 0.2s cubic-bezier(0.16,1,0.3,1)",
               transform: hovered ? "scale(1.2) rotate(-5deg)" : "scale(1) rotate(0deg)",
               flexShrink: 0,
@@ -773,23 +833,23 @@ function RecentProjectCard({ project: p, delay }: { project: ProjectItem; delay:
               {meta.icon}
             </div>
             <p style={{
-              fontWeight: 900, fontSize: 13, textTransform: "uppercase", color: "#0B1957",
+              fontWeight: 900, fontSize: 13, textTransform: "uppercase", color: "var(--nb-primary)",
               margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
               letterSpacing: "0.06em",
             }}>{p.title}</p>
           </div>
           <span style={{
-            border: "2px solid #0B1957", padding: "3px 8px", fontSize: 9, fontWeight: 900,
+            border: "2px solid var(--nb-primary)", padding: "3px 8px", fontSize: 9, fontWeight: 900,
             textTransform: "uppercase",
-            background: hovered ? meta.color : "#F0F7FF",
-            color: "#0B1957",
-            boxShadow: hovered ? "3px 3px 0 #0B1957" : "1px 1px 0 rgba(11,25,87,0.2)",
+            background: hovered ? meta.color : "var(--nb-bg)",
+            color: "var(--nb-primary)",
+            boxShadow: hovered ? "3px 3px 0 var(--nb-primary)" : "1px 1px 0 rgba(0,0,0,0.2)",
             transition: "background 0.15s ease, box-shadow 0.15s ease",
             flexShrink: 0, letterSpacing: "0.06em",
           }}>{p.status}</span>
         </div>
         <p style={{
-          fontWeight: 600, fontSize: 11, color: "#0B1957", opacity: 0.55, margin: "0 0 10px",
+          fontWeight: 600, fontSize: 11, color: "var(--nb-primary)", opacity: 0.55, margin: "0 0 10px",
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }}>{p.desc}</p>
       </div>
@@ -858,10 +918,10 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
   const inProg = projects.filter(p => p.status === "In Progress").length;
 
   const STAT_CARDS = [
-    { icon: <IconFolder size={22} />,  value: String(projects.length), label: "Total Projects", color: "#9ECCFA",  sparkData: [1,2,1,3,2,4,3, projects.length], trend: 12,  delay: 0.15 },
+    { icon: <IconFolder size={22} />,  value: String(projects.length), label: "Total Projects", color: "var(--nb-accent)",  sparkData: [1,2,1,3,2,4,3, projects.length], trend: 12,  delay: 0.15 },
     { icon: <IconRocket size={22} />,  value: String(live),            label: "Live Projects",  color: "#4ade80",  sparkData: [0,1,1,2,1,2,live,live],           trend: 8,   delay: 0.22 },
-    { icon: <IconGear   size={22} />,  value: String(inProg),          label: "In Progress",    color: "#FFE8A0",  sparkData: [0,1,0,2,1,inProg,inProg,inProg],  trend: -5,  delay: 0.29 },
-    { icon: <IconLayers size={22} />,  value: String(stacks.length),   label: "Tech Stacks",    color: "var(--nb-accent-light)",  sparkData: [1,2,3,4,5,6,stacks.length,stacks.length], trend: 20, delay: 0.36 },
+    { icon: <IconGear   size={22} />,  value: String(inProg),          label: "In Progress",    color: "var(--nb-accent-light)",  sparkData: [0,1,0,2,1,inProg,inProg,inProg],  trend: -5,  delay: 0.29 },
+    { icon: <IconLayers size={22} />,  value: String(stacks.length),   label: "Tech Stacks",    color: "var(--nb-accent)",  sparkData: [1,2,3,4,5,6,stacks.length,stacks.length], trend: 20, delay: 0.36 },
   ];
 
   const shimmer = { background: "linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" };
@@ -879,15 +939,15 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12, animation: "slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.05s both" }}>
         <div>
-          <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.4em", color: "#9ECCFA", margin: "0 0 4px" }}>Portfolio CMS</p>
-          <h1 style={{ fontWeight: 900, fontSize: 26, textTransform: "uppercase", color: "#0B1957", margin: 0 }}>Overview</h1>
+          <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.4em", color: "var(--nb-accent)", margin: "0 0 4px" }}>Portfolio CMS</p>
+          <h1 style={{ fontWeight: 900, fontSize: 26, textTransform: "uppercase", color: "var(--nb-primary)", margin: 0 }}>Overview</h1>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, border: "4px solid #0B1957", padding: "10px 16px", background: "#0B1957", boxShadow: "4px 4px 0 #9ECCFA" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, border: "4px solid var(--nb-primary)", padding: "10px 16px", background: "var(--nb-primary)", boxShadow: "4px 4px 0 var(--nb-accent)" }}>
           <div style={{ position: "relative", width: 10, height: 10, flexShrink: 0 }}>
             <div style={{ width: 10, height: 10, background: "#4ade80", position: "absolute" }} />
             <div style={{ width: 10, height: 10, background: "#4ade80", position: "absolute", animation: "ping 1.5s ease infinite", opacity: 0.4 }} />
           </div>
-          <span style={{ fontWeight: 900, fontSize: 8, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.2em" }}>System Online</span>
+          <span style={{ fontWeight: 900, fontSize: 8, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.2em" }}>System Online</span>
         </div>
       </div>
 
@@ -896,7 +956,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {loading
             ? [0,1,2,3].map(i => (
-              <div key={i} style={{ border: "4px solid #0B1957", boxShadow: "6px 6px 0 #0B1957", height: 150, ...shimmer }} />
+              <div key={i} style={{ border: "4px solid var(--nb-primary)", boxShadow: "6px 6px 0 var(--nb-primary)", height: 150, ...shimmer }} />
             ))
             : STAT_CARDS.map((card, i) => <StatCard key={i} {...card} />)
           }
@@ -905,18 +965,18 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
 
       {/* ── Unread Banner ──────────────────────────────────────────────────── */}
       {unreadCount > 0 && (
-        <div style={{ border: "4px solid #0B1957", background: "#FFE8A0", boxShadow: "6px 6px 0 #0B1957", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", animation: "bounceIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s both" }}>
+        <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-accent)", boxShadow: "6px 6px 0 var(--nb-primary)", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", animation: "bounceIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s both" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 40, height: 40, background: "#0B1957", border: "3px solid #0B1957", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ECCFA", flexShrink: 0, animation: "pulse 2s ease infinite" }}>
+            <div style={{ width: 40, height: 40, background: "var(--nb-primary)", border: "3px solid var(--nb-primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--nb-bg)", flexShrink: 0, animation: "pulse 2s ease infinite" }}>
               <IconMail size={18} />
             </div>
             <div>
-              <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.2em", color: "#0B1957", opacity: 0.5, margin: "0 0 2px" }}>Notifikasi Masuk</p>
-              <p style={{ fontWeight: 900, fontSize: 15, color: "#0B1957", margin: 0 }}>Ada <span style={{ fontSize: 22 }}>{unreadCount}</span> pesan baru belum dibaca</p>
+              <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.2em", color: "var(--nb-primary)", opacity: 0.5, margin: "0 0 2px" }}>Notifikasi Masuk</p>
+              <p style={{ fontWeight: 900, fontSize: 15, color: "var(--nb-primary)", margin: 0 }}>Ada <span style={{ fontSize: 22 }}>{unreadCount}</span> pesan baru belum dibaca</p>
             </div>
           </div>
           <button onClick={() => onNavClick("messages")}
-            style={{ border: "4px solid #0B1957", background: "#0B1957", color: "#9ECCFA", padding: "10px 18px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: "pointer", boxShadow: "4px 4px 0 #9ECCFA", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6, transition: "transform 0.08s ease" }}
+            style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-primary)", color: "var(--nb-bg)", padding: "10px 18px", fontWeight: 900, fontSize: 11, textTransform: "uppercase", cursor: "pointer", boxShadow: "4px 4px 0 var(--nb-accent)", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6, transition: "transform 0.08s ease" }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; }}>
             Buka Pesan <IconArrow size={13} />
@@ -927,20 +987,20 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
       {/* ── Charts Row ─────────────────────────────────────────────────────── */}
       <div ref={secCharts.ref} className={secCharts.className} style={secCharts.style}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "6px 6px 0 #0B1957", padding: "18px 20px" }}>
+          <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-bg)", boxShadow: "6px 6px 0 var(--nb-primary)", padding: "18px 20px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-              <div style={{ color: "#0B1957" }}><IconActivity size={13} /></div>
-              <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#0B1957", margin: 0 }}>Project Status</p>
+              <div style={{ color: "var(--nb-primary)" }}><IconActivity size={13} /></div>
+              <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--nb-primary)", margin: 0 }}>Project Status</p>
             </div>
             {loading
               ? <div style={{ height: 110, ...shimmer }} />
               : <ProjectStatusChart projects={projects} />
             }
           </div>
-          <div style={{ border: "4px solid #0B1957", background: "#0B1957", boxShadow: "6px 6px 0 #9ECCFA", padding: "18px 20px" }}>
+          <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-primary)", boxShadow: "6px 6px 0 var(--nb-accent)", padding: "18px 20px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-              <div style={{ color: "#9ECCFA" }}><IconLayers size={13} /></div>
-              <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#9ECCFA", margin: 0 }}>Stack Categories</p>
+              <div style={{ color: "var(--nb-accent)" }}><IconLayers size={13} /></div>
+              <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--nb-accent)", margin: 0 }}>Stack Categories</p>
             </div>
             {loading
               ? <div style={{ height: 80, background: "linear-gradient(90deg,var(--nb-accent),0.2) 25%,var(--nb-accent),0.35) 50%,var(--nb-accent),0.2) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }} />
@@ -948,15 +1008,18 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
             }
           </div>
         </div>
+
+        {/* Theme Selector Grid Integration */}
+        <ThemeSelectorCard />
       </div>
 
       {/* ── GitHub Contributions ───────────────────────────────────────────── */}
       <div ref={secGithub.ref} className={secGithub.className} style={secGithub.style}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>GitHub Contributions</h2>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, border: "2px solid #0B1957", padding: "3px 10px", background: "var(--nb-accent-light)" }}>
+          <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "var(--nb-primary)", margin: 0, letterSpacing: "0.08em" }}>GitHub Contributions</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, border: "2px solid var(--nb-primary)", padding: "3px 10px", background: "var(--nb-accent-light)" }}>
             <div style={{ width: 7, height: 7, background: "#4ade80", flexShrink: 0, animation: "ping 1.5s ease infinite" }} />
-            <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0B1957" }}>Live Data</span>
+            <span style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--nb-primary)" }}>Live Data</span>
           </div>
         </div>
         <GitHubContributions username="zysrnh" />
@@ -969,28 +1032,28 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
         {/* Recent Projects */}
         <div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, height: 36 }}>
-            <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>Recent Projects</h2>
+            <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "var(--nb-primary)", margin: 0, letterSpacing: "0.08em" }}>Recent Projects</h2>
             <button onClick={() => onNavClick("projects")}
               style={{
-                border: "3px solid #0B1957", background: "#0B1957", color: "#9ECCFA",
+                border: "3px solid var(--nb-primary)", background: "var(--nb-primary)", color: "var(--nb-bg)",
                 padding: "7px 14px", fontWeight: 900, fontSize: 9, textTransform: "uppercase",
-                cursor: "pointer", boxShadow: "3px 3px 0 #9ECCFA", fontFamily: "inherit",
+                cursor: "pointer", boxShadow: "3px 3px 0 var(--nb-accent)", fontFamily: "inherit",
                 display: "flex", alignItems: "center", gap: 5, letterSpacing: "0.08em",
                 transition: "transform 0.1s ease, box-shadow 0.1s ease",
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "5px 5px 0 #9ECCFA"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "3px 3px 0 #9ECCFA"; }}>
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "5px 5px 0 var(--nb-accent)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "3px 3px 0 var(--nb-accent)"; }}>
               All <IconArrow size={10} />
             </button>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {loading
               ? [0,1,2].map(i => (
-                <div key={i} style={{ border: "4px solid #0B1957", boxShadow: "4px 4px 0 #0B1957", height: 120, ...shimmer }} />
+                <div key={i} style={{ border: "4px solid var(--nb-primary)", boxShadow: "4px 4px 0 var(--nb-primary)", height: 120, ...shimmer }} />
               ))
               : projects.length === 0
-                ? <div style={{ border: "4px dashed #0B1957", background: "#F8F3EA", padding: "40px 20px", textAlign: "center", minHeight: 120, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <p style={{ fontWeight: 900, fontSize: 10, color: "#0B1957", opacity: 0.3, textTransform: "uppercase" }}>Belum ada project</p>
+                ? <div style={{ border: "4px dashed var(--nb-primary)", background: "var(--nb-bg)", padding: "40px 20px", textAlign: "center", minHeight: 120, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <p style={{ fontWeight: 900, fontSize: 10, color: "var(--nb-primary)", opacity: 0.3, textTransform: "uppercase" }}>Belum ada project</p>
                   </div>
                 : projects.slice(0, 3).map((p, i) => (
                   <RecentProjectCard key={p.id} project={p} delay={0.45 + i * 0.1} />
@@ -1002,14 +1065,14 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
         {/* Activity Feed */}
         <div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, height: 36 }}>
-            <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: 0, letterSpacing: "0.08em" }}>Activity Feed</h2>
+            <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "var(--nb-primary)", margin: 0, letterSpacing: "0.08em" }}>Activity Feed</h2>
             <span style={{
-              border: "3px solid #0B1957", background: "#9ECCFA", color: "#0B1957",
+              border: "3px solid var(--nb-primary)", background: "var(--nb-accent)", color: "var(--nb-primary)",
               padding: "4px 10px", fontWeight: 900, fontSize: 9, textTransform: "uppercase",
               letterSpacing: "0.06em", display: "flex", alignItems: "center",
             }}>{projects.length} total</span>
           </div>
-          <div style={{ border: "4px solid #0B1957", background: "#F8F3EA", boxShadow: "4px 4px 0 #0B1957" }}>
+          <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-bg)", boxShadow: "4px 4px 0 var(--nb-primary)" }}>
             {loading
               ? <div style={{ height: 360, ...shimmer }} />
               : <ActivityFeed projects={projects} />
@@ -1021,21 +1084,21 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
 
       {/* ── Quick Actions ───────────────────────────────────────────────────── */}
       <div ref={secActions.ref} className={secActions.className} style={secActions.style}>
-        <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#0B1957", margin: "0 0 12px", letterSpacing: "0.08em" }}>Quick Actions</h2>
+        <h2 style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "var(--nb-primary)", margin: "0 0 12px", letterSpacing: "0.08em" }}>Quick Actions</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: "Add Project",    icon: <IconFolder size={16} />, key: "projects",  bg: "#9ECCFA"  },
-            { label: "Manage Stacks",  icon: <IconLayers size={16} />, key: "stacks",    bg: "#FFE8A0"  },
-            { label: "Edit Homepage",  icon: <IconCode   size={16} />, key: "homepage",  bg: "var(--nb-accent-light)"  },
-            { label: "Messages",       icon: <IconMail   size={16} />, key: "messages",  bg: "#F8F3EA", badge: unreadCount > 0 ? unreadCount : null },
+            { label: "Add Project",    icon: <IconFolder size={16} />, key: "projects",  bg: "var(--nb-accent)"  },
+            { label: "Manage Stacks",  icon: <IconLayers size={16} />, key: "stacks",    bg: "var(--nb-accent-light)"  },
+            { label: "Edit Homepage",  icon: <IconCode   size={16} />, key: "homepage",  bg: "var(--nb-bg)"  },
+            { label: "Messages",       icon: <IconMail   size={16} />, key: "messages",  bg: "var(--nb-bg)", badge: unreadCount > 0 ? unreadCount : null },
           ].map((action, i) => (
             <button key={i} onClick={() => onNavClick(action.key)}
-              style={{ border: "4px solid #0B1957", background: action.bg, color: "#0B1957", padding: "14px 16px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", boxShadow: "4px 4px 0 #0B1957", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 8, letterSpacing: "0.08em", transition: "transform 0.08s ease, box-shadow 0.08s ease", position: "relative" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 #0B1957"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "4px 4px 0 #0B1957"; }}>
+              style={{ border: "4px solid var(--nb-primary)", background: action.bg, color: "var(--nb-primary)", padding: "14px 16px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", boxShadow: "4px 4px 0 var(--nb-primary)", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 8, letterSpacing: "0.08em", transition: "transform 0.08s ease, box-shadow 0.08s ease", position: "relative" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "6px 6px 0 var(--nb-primary)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "4px 4px 0 var(--nb-primary)"; }}>
               {action.icon} {action.label}
               {action.badge && (
-                <span style={{ marginLeft: "auto", background: "#0B1957", color: "#9ECCFA", fontSize: 9, fontWeight: 900, padding: "2px 6px", minWidth: 18, textAlign: "center", border: "2px solid #0B1957" }}>{action.badge}</span>
+                <span style={{ marginLeft: "auto", background: "var(--nb-primary)", color: "var(--nb-accent)", fontSize: 9, fontWeight: 900, padding: "2px 6px", minWidth: 18, textAlign: "center", border: "2px solid var(--nb-primary)" }}>{action.badge}</span>
               )}
             </button>
           ))}
@@ -1044,14 +1107,14 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
 
       {/* ── Status Banner ───────────────────────────────────────────────────── */}
       <div ref={secStatus.ref} className={secStatus.className} style={secStatus.style}>
-        <div style={{ border: "4px solid #0B1957", background: "#0B1957", boxShadow: "8px 8px 0 #9ECCFA", padding: "24px 28px", display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-primary)", boxShadow: "8px 8px 0 var(--nb-accent)", padding: "24px 28px", display: "flex", flexDirection: "column", gap: 16 }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <IconBriefcase size={14} />
-              <p style={{ fontWeight: 900, fontSize: 9, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.25em", margin: 0 }}>Current Status</p>
+              <p style={{ fontWeight: 900, fontSize: 9, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.25em", margin: 0 }}>Current Status</p>
             </div>
-            <p style={{ fontWeight: 900, fontSize: 26, color: "#F8F3EA", textTransform: "uppercase", margin: 0 }}>
+            <p style={{ fontWeight: 900, fontSize: 26, color: "var(--nb-bg)", textTransform: "uppercase", margin: 0 }}>
               {availability?.status ?? "Open to Work"}
             </p>
             <p style={{ fontWeight: 600, fontSize: 12, color: "var(--nb-accent-light)", opacity: 0.65, margin: "6px 0 0" }}>
@@ -1067,15 +1130,15 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
               { label: "Live",     val: live,            icon: <IconRocket size={12} /> },
               { label: "Stacks",   val: stacks.length,   icon: <IconLayers size={12} /> },
             ].map((s, i) => (
-              <div key={i} style={{ border: "3px solid var(--nb-accent),0.4)", background: "var(--nb-accent),0.08)", padding: "10px 16px", textAlign: "center", boxShadow: "3px 3px 0 var(--nb-accent),0.25)" }}>
-                <div style={{ color: "#9ECCFA", display: "flex", justifyContent: "center", marginBottom: 4 }}>{s.icon}</div>
-                <p style={{ fontWeight: 900, fontSize: 22, color: "#9ECCFA", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
+              <div key={i} style={{ border: "3px solid var(--nb-accent)", background: "var(--nb-accent),0.08)", padding: "10px 16px", textAlign: "center", boxShadow: "3px 3px 0 var(--nb-accent)" }}>
+                <div style={{ color: "var(--nb-accent)", display: "flex", justifyContent: "center", marginBottom: 4 }}>{s.icon}</div>
+                <p style={{ fontWeight: 900, fontSize: 22, color: "var(--nb-accent)", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
                 <p style={{ fontWeight: 900, fontSize: 8, color: "var(--nb-accent-light)", opacity: 0.6, margin: "4px 0 0", textTransform: "uppercase", letterSpacing: "0.1em" }}>{s.label}</p>
               </div>
             ))}
-            <div style={{ border: "3px solid #9ECCFA", padding: "10px 16px", textAlign: "center" }}>
-              <p style={{ fontWeight: 900, fontSize: 9, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 4px", opacity: 0.6 }}>Timezone</p>
-              <p style={{ fontWeight: 900, fontSize: 13, color: "#F8F3EA", margin: 0 }}>{availability?.timezone ?? "WIB (UTC+7)"}</p>
+            <div style={{ border: "3px solid var(--nb-accent)", padding: "10px 16px", textAlign: "center" }}>
+              <p style={{ fontWeight: 900, fontSize: 9, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 4px", opacity: 0.6 }}>Timezone</p>
+              <p style={{ fontWeight: 900, fontSize: 13, color: "var(--nb-bg)", margin: 0 }}>{availability?.timezone ?? "WIB (UTC+7)"}</p>
             </div>
           </div>
         </div>
@@ -1499,53 +1562,53 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
 
         .home-btn-sidebar {
           display:flex; align-items:center; gap:8px; width:100%;
-          border:3px solid var(--nb-accent),0.4); padding:9px 14px;
+          border:3px solid var(--nb-accent); padding:9px 14px;
           background:transparent; font-weight:900; font-size:12px;
-          text-transform:uppercase; color:#9ECCFA; letter-spacing:0.08em;
+          text-transform:uppercase; color:var(--nb-accent); letter-spacing:0.08em;
           cursor:pointer; font-family:inherit; margin-bottom:8px;
-          box-shadow:2px 2px 0 var(--nb-accent),0.3);
+          box-shadow:2px 2px 0 var(--nb-accent);
           transition:background 0.1s ease, border-color 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .home-btn-sidebar:hover  { background:var(--nb-accent),0.1); border-color:#9ECCFA; transform:translate(-1px,-1px); }
+        .home-btn-sidebar:hover  { background:var(--nb-accent); border-color:var(--nb-accent); color:var(--nb-primary); transform:translate(-1px,-1px); }
         .home-btn-topbar {
           display:flex; align-items:center; gap:6px;
-          border:3px solid #0B1957; padding:7px 14px;
-          background:#F8F3EA; font-weight:900; font-size:12px;
-          text-transform:uppercase; color:#0B1957; letter-spacing:0.07em;
-          cursor:pointer; font-family:inherit; box-shadow:3px 3px 0 #0B1957;
+          border:3px solid var(--nb-primary); padding:7px 14px;
+          background:var(--nb-bg); font-weight:900; font-size:12px;
+          text-transform:uppercase; color:var(--nb-primary); letter-spacing:0.07em;
+          cursor:pointer; font-family:inherit; box-shadow:3px 3px 0 var(--nb-primary);
           transition:transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .home-btn-topbar:hover  { transform:translate(2px,2px); box-shadow:1px 1px 0 #0B1957; }
+        .home-btn-topbar:hover  { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--nb-primary); }
 
         .stack-tag {
-          border:2px solid #0B1957; background:var(--nb-accent-light); padding:3px 8px;
-          font-size:10px; font-weight:800; text-transform:uppercase; color:#0B1957; letter-spacing:0.05em;
+          border:2px solid var(--nb-primary); background:var(--nb-accent-light); padding:3px 8px;
+          font-size:10px; font-weight:800; text-transform:uppercase; color:var(--nb-primary); letter-spacing:0.05em;
           transition:background 0.1s ease, transform 0.08s ease;
         }
-        .stack-tag:hover { background:#9ECCFA; transform:translate(-1px,-1px); }
+        .stack-tag:hover { background:var(--nb-accent); transform:translate(-1px,-1px); }
 
         .logout-btn {
           display:flex; align-items:center; justify-content:center; gap:8px;
-          border:3px solid #9ECCFA; padding:8px 16px; background:transparent;
-          font-weight:900; font-size:12px; text-transform:uppercase; color:#9ECCFA;
+          border:3px solid var(--nb-accent); padding:8px 16px; background:transparent;
+          font-weight:900; font-size:12px; text-transform:uppercase; color:var(--nb-accent);
           letter-spacing:0.08em; cursor:pointer; font-family:inherit;
-          box-shadow:3px 3px 0 #9ECCFA;
+          box-shadow:3px 3px 0 var(--nb-accent);
           transition:background 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .logout-btn:hover  { background:var(--nb-accent),0.15); transform:translate(1px,1px); box-shadow:2px 2px 0 #9ECCFA; }
+        .logout-btn:hover  { background:var(--nb-accent); color:var(--nb-primary); transform:translate(1px,1px); box-shadow:2px 2px 0 var(--nb-accent); }
 
         .content-fade { animation:fadeIn 0.3s ease both; }
         .grid-bg-dark {
           position:absolute; inset:0; pointer-events:none;
           background-image:
-            repeating-linear-gradient(0deg,var(--nb-accent),0.08) 0,var(--nb-accent),0.08) 1px,transparent 1px,transparent 40px),
-            repeating-linear-gradient(90deg,var(--nb-accent),0.08) 0,var(--nb-accent),0.08) 1px,transparent 1px,transparent 40px);
+            repeating-linear-gradient(0deg, var(--nb-accent), 0.05 0, var(--nb-accent), 0.05 1px, transparent 1px, transparent 40px),
+            repeating-linear-gradient(90deg, var(--nb-accent), 0.05 0, var(--nb-accent), 0.05 1px, transparent 1px, transparent 40px);
         }
 
         .bottom-nav {
           display:none; position:fixed; bottom:0; left:0; right:0; z-index:50;
-          background:#F8F3EA; border-top:4px solid #0B1957;
-          box-shadow:0 -4px 0 rgba(11,25,87,0.15);
+          background:var(--nb-bg); border-top:4px solid var(--nb-primary);
+          box-shadow:0 -4px 0 rgba(0,0,0,0.15);
           align-items:stretch;
           animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
           padding-bottom:env(safe-area-inset-bottom,0px);
@@ -1555,17 +1618,18 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
         .bottom-nav-item {
           flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
           gap:3px; padding:8px 4px; cursor:pointer; position:relative;
-          border:none; background:transparent; border-right:2px solid rgba(11,25,87,0.1);
+          border:none; background:transparent; border-right:2px solid var(--nb-primary);
+          opacity: 0.2;
           min-height:58px; transition:background 0.1s ease;
         }
         .bottom-nav-item:last-child { border-right:none; }
-        .bottom-nav-item.active { background:#0B1957; }
-        .bottom-nav-item.active svg { stroke:#9ECCFA; }
-        .bottom-nav-item.active .bnl { color:#9ECCFA; }
-        .bnl { font-size:8px; font-weight:900; text-transform:uppercase; letter-spacing:0.05em; color:#0B1957; line-height:1; }
+        .bottom-nav-item.active { background:var(--nb-primary); opacity: 1; }
+        .bottom-nav-item.active svg { stroke:var(--nb-accent); }
+        .bottom-nav-item.active .bnl { color:var(--nb-accent); }
+        .bnl { font-size:8px; font-weight:900; text-transform:uppercase; letter-spacing:0.05em; color:var(--nb-primary); line-height:1; }
         .bn-badge {
           position:absolute; top:6px; right:calc(50% - 14px);
-          background:#9ECCFA; color:#0B1957; border:2px solid #0B1957;
+          background:var(--nb-accent); color:var(--nb-primary); border:2px solid var(--nb-primary);
           font-size:8px; font-weight:900; padding:0 4px; min-width:14px; text-align:center; line-height:14px; height:14px;
         }
 
@@ -1578,13 +1642,13 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
         @media (max-width:1023px) { .overview-bottom-grid { grid-template-columns: 1fr !important; } }
       `}</style>
 
-      <div className="min-h-screen bg-[var(--nb-accent-light)] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
+      <div className="min-h-screen bg-[var(--nb-bg)] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
 
         {/* SIDEBAR Desktop */}
-        <aside className="anim-sidebar hidden md:flex flex-col w-64 bg-[#0B1957] border-r-4 border-[#0B1957] relative min-h-screen flex-shrink-0">
+        <aside className="anim-sidebar hidden md:flex flex-col w-64 bg-[var(--nb-primary)] border-r-4 border-[var(--nb-primary)] relative min-h-screen flex-shrink-0">
           <div className="grid-bg-dark" />
-          <div className="border-b-4 border-[#9ECCFA] px-6 py-6 relative">
-            <div style={{ fontWeight: 900, fontSize: 20, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
+          <div className="border-b-4 border-[var(--nb-accent)] px-6 py-6 relative">
+            <div style={{ fontWeight: 900, fontSize: 20, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
             <div style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Dashboard</div>
           </div>
           <nav style={{ flex: 1, paddingTop: 16, paddingBottom: 16, position: "relative" }}>
@@ -1595,17 +1659,17 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
 
         {/* SIDEBAR Mobile Overlay */}
         {sidebarOpen && (
-          <div className="fixed inset-0 bg-[#0B1957] bg-opacity-60 z-30 md:hidden" style={{ backdropFilter: "blur(3px)", animation: "fadeIn 0.2s ease both" }} onClick={() => setSidebarOpen(false)} />
+          <div className="fixed inset-0 bg-[var(--nb-primary)] bg-opacity-60 z-30 md:hidden" style={{ backdropFilter: "blur(3px)", animation: "fadeIn 0.2s ease both" }} onClick={() => setSidebarOpen(false)} />
         )}
-        <aside className="fixed top-0 left-0 bottom-0 w-72 z-40 md:hidden bg-[#0B1957] border-r-4 border-[#0B1957] flex flex-col"
+        <aside className="fixed top-0 left-0 bottom-0 w-72 z-40 md:hidden bg-[var(--nb-primary)] border-r-4 border-[var(--nb-primary)] flex flex-col"
           style={{ transform: sidebarOpen ? "translateX(0)" : "translateX(-100%)", transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1)" }}>
           <div className="grid-bg-dark" />
-          <div style={{ borderBottom: "4px solid #9ECCFA", padding: "20px 24px", position: "relative", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ borderBottom: "4px solid var(--nb-accent)", padding: "20px 24px", position: "relative", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
-              <div style={{ fontWeight: 900, fontSize: 18, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
+              <div style={{ fontWeight: 900, fontSize: 18, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
               <div style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, textTransform: "uppercase" }}>Dashboard</div>
             </div>
-            <button style={{ border: "2px solid #9ECCFA", padding: 8, color: "#9ECCFA", background: "transparent", cursor: "pointer", display: "flex" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>
+            <button style={{ border: "2px solid var(--nb-accent)", padding: 8, color: "var(--nb-accent)", background: "transparent", cursor: "pointer", display: "flex" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>
           </div>
           <nav style={{ flex: 1, paddingTop: 12, paddingBottom: 12, position: "relative", zIndex: 10, overflowY: "auto" }}>
             <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} onClose={() => setSidebarOpen(false)} />
@@ -1617,33 +1681,34 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
         <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
 
           {/* TOPBAR */}
-          <header className="anim-topbar bg-[#F8F3EA] border-b-4 border-[#0B1957] shadow-[0_4px_0_#0B1957] px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between gap-3 flex-shrink-0 sticky top-0 z-20">
+          <header className="anim-topbar bg-[var(--nb-bg)] border-b-4 border-[var(--nb-primary)] shadow-[0_4px_0_var(--nb-primary)] px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between gap-3 flex-shrink-0 sticky top-0 z-[100]">
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <button className="md:hidden p-2 border-4 border-[#0B1957] shadow-[3px_3px_0_#0B1957] bg-[#F8F3EA]" onClick={() => setSidebarOpen(!sidebarOpen)}>
+              <button className="md:hidden p-2 border-4 border-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)]" onClick={() => setSidebarOpen(!sidebarOpen)}>
                 <IconMenu />
               </button>
               <div>
-                <p style={{ fontWeight: 900, fontSize: 9, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.25em", margin: 0 }}>{greeting()}</p>
-                <h2 style={{ fontWeight: 900, fontSize: 17, color: "#0B1957", textTransform: "uppercase", margin: 0, letterSpacing: "0.04em" }}>{user?.name ?? "Yusron"}</h2>
+                <p style={{ fontWeight: 900, fontSize: 9, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.25em", margin: 0 }}>{greeting()}</p>
+                <h2 style={{ fontWeight: 900, fontSize: 17, color: "var(--nb-primary)", textTransform: "uppercase", margin: 0, letterSpacing: "0.04em" }}>{user?.name ?? "Yusron"}</h2>
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               {unreadCount > 0 && (
                 <button onClick={() => handleNavClick("messages")}
-                  style={{ display: "flex", alignItems: "center", gap: 5, border: "3px solid #0B1957", background: "#FFE8A0", color: "#0B1957", padding: "6px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0 #0B1957", fontFamily: "inherit", animation: "pulse 2s ease infinite" }}>
+                  style={{ display: "flex", alignItems: "center", gap: 5, border: "3px solid var(--nb-primary)", background: "var(--nb-accent)", color: "var(--nb-primary)", padding: "6px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0 var(--nb-primary)", fontFamily: "inherit", animation: "pulse 2s ease infinite" }}>
                   <IconMail size={12} />
                   <span className="hidden xs:inline">{unreadCount} Baru</span>
                   <span className="xs:hidden">{unreadCount}</span>
                 </button>
               )}
+              <ThemeToggle />
               <button className="home-btn-topbar" onClick={handleHome}>
                 <IconHome size={12} /> <span className="hidden sm:inline">Home</span>
               </button>
               <div className="hidden sm:flex items-center gap-2">
                 <IconClock size={15} />
                 <div>
-                  <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-widest" style={{ margin: 0 }}>Live</p>
-                  <p className="font-black text-base text-[#0B1957] tabular-nums" style={{ margin: 0 }}>
+                  <p className="font-black text-xs text-var(--nb-accent) uppercase tracking-widest" style={{ margin: 0 }}>Live</p>
+                  <p className="font-black text-base text-[var(--nb-primary)] tabular-nums" style={{ margin: 0 }}>
                     {time.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                   </p>
                 </div>
