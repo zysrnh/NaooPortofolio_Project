@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\GuestbookController;
+use App\Http\Controllers\SupporterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 // ── Public ────────────────────────────────────────────────────────────────────
 // Contact form dari homepage
 Route::post('/messages', [MessageController::class, 'store']);
+
+// Guestbook (public)
+Route::get ('/guestbook', [GuestbookController::class, 'index']);
+Route::post('/guestbook', [GuestbookController::class, 'store']);
+
+Route::get ('/supporters', [SupporterController::class, 'index']);
 
 // ── Protected (harus login) ───────────────────────────────────────────────────
 Route::middleware(['auth'])->group(function () {

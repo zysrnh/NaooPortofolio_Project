@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import { useVisitorTracker } from "@/hooks/useVisitorTracker";`nimport GuestbookSection from "@/components/GuestbookSection";
+import { useVisitorTracker } from "@/hooks/useVisitorTracker";
 import { useEffect, useState, useRef } from "react";
 import { router, Head } from "@inertiajs/react";
 
@@ -84,10 +84,9 @@ interface Experience {
   highlights: string[];
 }
 interface CaseStudy  { id: number; title: string; short_story: string; }
-interface Availability {
-  status: string; freelance: boolean; remote: boolean;
-  collaboration: boolean; timezone: string;
-}
+interface Availability { status: string; freelance: boolean; remote: boolean; collaboration: boolean; timezone: string; }
+interface Supporter { id: number; name: string; role: string; description: string; image: string; }
+
 
 // ── Defaults (fallback jika API belum ada data) ───────────────────────────────
 const DEFAULT_HERO: HeroData = {
@@ -412,6 +411,36 @@ function TechStack() {
           ))}
         </div>
         <div className="h-2 bg-[var(--nb-accent)] border-t-4 border-[var(--nb-primary)]"/>
+      </div>
+    </section>
+  );
+}
+
+// ── Supporters ────────────────────────────────────────────────────────────────
+function SupportersSection() {
+  const [supporters, setSupporters] = useState<Supporter[]>([]);
+  useEffect(() => {
+    fetch("/api/supporters").then(r => r.json()).then(setSupporters);
+  }, []);
+
+  if (supporters.length === 0) return null;
+
+  return (
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Special Supporter</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {supporters.map(s => (
+          <div key={s.id} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] p-6 flex flex-col sm:flex-row gap-6 items-center sm:items-start group hover:bg-[var(--nb-accent-light)] transition-colors">
+            <div className="w-32 h-32 flex-shrink-0 border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-accent)] overflow-hidden">
+               {s.image ? <img src={s.image} className="w-full h-full object-cover" alt={s.name} /> : <div className="w-full h-full bg-gray-200" />}
+            </div>
+            <div className="flex-1 text-center sm:text-left">
+              <h3 className="font-black text-xl uppercase text-[var(--nb-primary)] mb-1">{s.name}</h3>
+              <p className="font-black text-[10px] uppercase tracking-widest text-[var(--nb-accent)] mb-3">{s.role}</p>
+              <p className="font-semibold text-sm text-[var(--nb-primary)] leading-relaxed opacity-80">{s.description}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -862,6 +891,9 @@ export default function About() {
         {/* CAPABILITIES */}
         <Capabilities/>
 
+        {/* SUPPORTERS */}
+        <SupportersSection />
+
         {/* STATS */}
         <Stats/>
 
@@ -878,7 +910,7 @@ export default function About() {
         <GitHubContributions username="zysrnh"/>
 
         {/* AVAILABILITY */}
-        <Availability/>`n        <GuestbookSection />
+        <Availability/>
 
         {/* FOOTER */}
         <footer className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] reveal">

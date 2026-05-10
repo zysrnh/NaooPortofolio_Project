@@ -12,6 +12,7 @@ use App\Http\Controllers\AboutProfileController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\GuestbookController;
+use App\Http\Controllers\SupporterController;
 
 // ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -145,6 +146,12 @@ Route::prefix('api')->group(function () {
         Route::get   ('/admin/guestbook',                [GuestbookController::class, 'adminIndex']);
         Route::patch ('/admin/guestbook/{guestbook}',    [GuestbookController::class, 'toggleVisibility']);
         Route::delete('/admin/guestbook/{guestbook}',    [GuestbookController::class, 'destroy']);
+
+        // Supporters (admin only)
+        Route::get   ('/admin/supporters',               [SupporterController::class, 'adminIndex']);
+        Route::post  ('/admin/supporters',               [SupporterController::class, 'store']);
+        Route::post  ('/admin/supporters/{supporter}',   [SupporterController::class, 'update']); // Use POST for multipart update
+        Route::delete('/admin/supporters/{supporter}',   [SupporterController::class, 'destroy']);
     });
 });
 

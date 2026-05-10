@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
 import ThemeToggle from "./ThemeToggle";
+import GuestbookWidget from "./GuestbookWidget";
 
 const navLinks = [
   { label: "Home",     href: "hero" },
@@ -216,6 +217,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+      <GuestbookWidget />
     </>
   );
 }

@@ -7,6 +7,7 @@ import AboutManager from "@/components/AboutManager";
 import ThemeToggle from "../components/ThemeToggle";
 import VisitorStats from "@/components/VisitorStats";
 import GuestbookManager from "@/components/GuestbookManager";
+import SupporterManager from "@/components/SupporterManager";
 
 // ── SVG Icons ─────────────────────────────────────────────────────────────────
 const IconFolder    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
@@ -79,6 +80,7 @@ const NAV_ITEMS = [
   { key: "messages",  label: "Messages",   icon: <IconMail size={18} /> },
   { key: "visitors",  label: "Visitors",   icon: <IconUsersNav size={18} /> },
   { key: "guestbook", label: "Guestbook",  icon: <IconMessage size={18} /> },
+  { key: "supporters", label: "Supporters", icon: <IconUsersNav size={18} /> },
   { key: "profile",   label: "Profile",    icon: <IconUser /> },
 ];
 
@@ -1776,6 +1778,12 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
             {activeNav === "guestbook" && (
               <div className="content-fade">
                 <GuestbookManager />
+              </div>
+            )}
+
+            {activeNav === "supporters" && (
+              <div className="content-fade">
+                <SupporterManager />
               </div>
             )}
 

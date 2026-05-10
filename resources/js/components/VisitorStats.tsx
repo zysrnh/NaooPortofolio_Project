@@ -187,7 +187,7 @@ export default function VisitorStats() {
                         {(['overview', 'recent'] as const).map(t => (
                             <button key={t} onClick={() => setTab(t)}
                                 style={{ padding: '6px 14px', fontSize: 9, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', cursor: 'pointer', border: 'none', borderBottom: tab === t ? '3px solid var(--nb-accent)' : '3px solid transparent', marginBottom: -3, background: 'transparent', color: tab === t ? 'var(--nb-primary)' : 'var(--nb-primary)', opacity: tab === t ? 1 : 0.45, fontFamily: 'inherit', transition: 'all 0.1s' }}>
-                                {t === 'overview' ? '📊 Overview' : '🕒 Recent Visits'}
+                                {t === 'overview' ? 'Overview' : 'Recent Visits'}
                             </button>
                         ))}
                     </div>
