@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { router } from "@inertiajs/react";
+import { router, Head } from "@inertiajs/react";
 
 // ── Scroll reveal hook ────────────────────────────────────────────────────────
 function useScrollReveal(ready: boolean) {
@@ -648,6 +648,7 @@ export default function Home() {
       <MobileBanner />
 
       <div className="min-h-screen relative" style={{opacity:visible?1:0,transition:"opacity 0.3s ease"}}>
+        <Head title="Home - Web Developer Portfolio" />
         <FloatingBlocks/>
         <div className="anim-navbar"><Navbar/></div>
 
@@ -661,7 +662,7 @@ export default function Home() {
               </div>
             </div>
             <div className="anim-hero-text md:w-3/5 p-6 sm:p-10 flex flex-col justify-center relative">
-              <span className="absolute top-4 right-6 text-6xl sm:text-8xl font-black text-[var(--nb-accent)] select-none leading-none" aria-hidden="true">"</span>
+              <span className="absolute top-4 right-6 text-6xl sm:text-8xl font-black text-[var(--nb-accent)] select-none leading-none pointer-events-none z-0" aria-hidden="true">"</span>
               {heroLoading?(
                 <div className="space-y-3">
                   <div className="hero-skeleton h-10 w-48 rounded"/><div className="hero-skeleton h-4 w-32 rounded"/>

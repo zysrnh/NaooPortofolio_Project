@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { useEffect, useState, useRef } from "react";
-import { router } from "@inertiajs/react";
+import { router, Head } from "@inertiajs/react";
 
 // ── Scroll Reveal ─────────────────────────────────────────────────────────────
 function useScrollReveal(ready: boolean) {
@@ -751,7 +751,7 @@ export default function About() {
         .photo-wrap img { position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center top; }
 
         .hero-skeleton  { background:linear-gradient(90deg,var(--nb-accent) 25%,var(--nb-accent-light) 50%,var(--nb-accent) 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite; }
-        .about-skeleton { background:linear-gradient(90deg,var(--nb-accent),0.3) 25%,var(--nb-accent),0.5) 50%,var(--nb-accent),0.3) 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite; }
+        .about-skeleton { background:linear-gradient(90deg,var(--nb-accent) 25%,var(--nb-accent-light) 50%,var(--nb-accent) 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite; }
         .skeleton-shimmer { background:linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite; }
 
         .tech-chip { display:inline-flex;align-items:center;gap:8px;border:3px solid var(--nb-primary);padding:7px 14px 7px 7px;background:var(--nb-bg);font-size:11px;font-weight:800;text-transform:uppercase;color:var(--nb-primary);letter-spacing:0.06em;transition:transform 0.12s ease,box-shadow 0.12s ease,background 0.12s ease;cursor:default;box-shadow:3px 3px 0 var(--nb-primary);flex:0 0 calc(25% - 15px);justify-content:flex-start;box-sizing:border-box; }
@@ -772,6 +772,7 @@ export default function About() {
       `}</style>
 
       <div className="min-h-screen relative" style={{opacity:visible?1:0,transition:"opacity 0.3s ease"}}>
+        <Head title="About Me" />
         <FloatingBlocks/>
         <div className="anim-navbar"><Navbar/></div>
 

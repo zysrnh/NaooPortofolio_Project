@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { router } from "@inertiajs/react";
+import { router, Head } from "@inertiajs/react";
 import Navbar from "@/components/Navbar"; 
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
@@ -609,6 +609,7 @@ export default function ProjectDetail({ projectId }: Props) {
       `}</style>
 
       <div className={`min-h-screen bg-[var(--nb-accent-light)] page-enter ${pageIn ? "visible" : ""}`}>
+        <Head title={project ? `${project.title} - Project Detail` : "Project Detail"} />
         <Navbar />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-20">
 

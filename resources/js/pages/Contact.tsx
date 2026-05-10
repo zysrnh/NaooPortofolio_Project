@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { useState, useEffect, useRef } from "react";
+import { Head } from "@inertiajs/react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type ContactPlatform = "whatsapp"|"email"|"github"|"linkedin"|"twitter"|"instagram"|"telegram"|"custom";
@@ -251,6 +252,7 @@ export default function Contact() {
       `}</style>
 
       <div className="min-h-screen relative" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}>
+        <Head title="Contact" />
         <FloatingBlocks />
         <div className="anim-navbar"><Navbar /></div>
 

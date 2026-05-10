@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { router } from "@inertiajs/react";
+import { router, Head } from "@inertiajs/react";
 import Navbar from "@/components/Navbar";
 
 interface Stack {
@@ -425,6 +425,7 @@ export default function Projects() {
       `}</style>
 
       <div className="min-h-screen bg-[var(--nb-accent-light)] page-wrapper">
+        <Head title="Projects - Portfolio" />
         <Navbar />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-20">

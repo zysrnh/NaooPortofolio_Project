@@ -70,6 +70,14 @@ export function initializeTheme(): void {
     currentAppearance = getStoredAppearance();
     applyTheme(currentAppearance);
 
+    // Restore multi-theme preference
+    const savedNBTheme = localStorage.getItem('nb-theme');
+    if (savedNBTheme) {
+        document.documentElement.setAttribute('data-theme', savedNBTheme);
+    } else {
+        document.documentElement.setAttribute('data-theme', 'naoo');
+    }
+
     // Set up system theme change listener
     mediaQuery()?.addEventListener('change', handleSystemThemeChange);
 }

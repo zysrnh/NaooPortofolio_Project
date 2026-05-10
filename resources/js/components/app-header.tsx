@@ -35,6 +35,7 @@ import type { BreadcrumbItem, NavItem } from '@/types';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 import { dashboard } from '@/routes';
+import ThemeToggle from './ThemeToggle';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];
@@ -177,6 +178,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                     </div>
 
                     <div className="ml-auto flex items-center space-x-2">
+                        <ThemeToggle />
                         <div className="relative flex items-center space-x-1">
                             <Button
                                 variant="ghost"

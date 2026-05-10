@@ -157,7 +157,7 @@ export default function Navbar() {
         .mobile-nav-link.active { border-left: 4px solid var(--nb-primary); }
       `}</style>
 
-      <div className="w-full border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] sticky top-0 z-50">
+      <div className="w-full border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] sticky top-0 z-[100]">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
           <div className="logo-hover font-black text-xl text-[var(--nb-primary)] cursor-pointer" onClick={() => router.visit("/")}>
@@ -173,7 +173,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="hidden md:flex gap-3">
+          <div className="hidden md:flex gap-3 items-center">
             <button onClick={handlePrimaryBtn}
               className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)]">
               {isLoggedIn ? "Dashboard" : "Login"}
@@ -182,6 +182,7 @@ export default function Navbar() {
               className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)]">
               Contact Me
             </button>
+            <ThemeToggle />
           </div>
 
           <button
@@ -200,19 +201,21 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
-          <div className="flex gap-3 p-4">
-            <button onClick={handlePrimaryBtn}
-              className="btn-nav flex-1 border-4 border-[var(--nb-primary)] py-3 font-black shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)] uppercase text-sm">
-              {isLoggedIn ? "Dashboard" : "Login"}
-            </button>
-            <button onClick={handleContactBtn}
-              className="btn-nav flex-1 border-4 border-[var(--nb-primary)] py-3 font-black shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)] uppercase text-sm">
-              Contact Me
-            </button>
+          <div className="flex gap-3 p-4 items-center">
+            <div className="flex-1 flex gap-3">
+              <button onClick={handlePrimaryBtn}
+                className="btn-nav flex-1 border-4 border-[var(--nb-primary)] py-3 font-black shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)] uppercase text-sm">
+                {isLoggedIn ? "Dashboard" : "Login"}
+              </button>
+              <button onClick={handleContactBtn}
+                className="btn-nav flex-1 border-4 border-[var(--nb-primary)] py-3 font-black shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)] uppercase text-sm">
+                Contact Me
+              </button>
+            </div>
+            <ThemeToggle />
           </div>
         </div>
       </div>
-      <ThemeToggle />
     </>
   );
 }
