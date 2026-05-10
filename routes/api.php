@@ -19,8 +19,6 @@ Route::post('/messages', [MessageController::class, 'store']);
 Route::get ('/guestbook', [GuestbookController::class, 'index']);
 Route::post('/guestbook', [GuestbookController::class, 'store']);
 
-Route::get ('/supporters', [SupporterController::class, 'index']);
-
 // ── Protected (harus login) ───────────────────────────────────────────────────
 Route::middleware(['auth'])->group(function () {
 

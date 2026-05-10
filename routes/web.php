@@ -35,6 +35,9 @@ Route::get('/about', function () {
     return Inertia::render('About');
 })->name('about');
 
+// Public API for Supporters
+Route::get('/api/supporters', [SupporterController::class, 'index']);
+
 // ── NEW: Contact Page ─────────────────────────────────────────────────────────
 Route::get('/contact', function () {
     return Inertia::render('Contact');
@@ -102,6 +105,7 @@ Route::prefix('api')->group(function () {
 
         // About — capabilities + featured stacks
         Route::put('/about', [AboutProfileController::class, 'update']);
+        
 
         // About — experiences CRUD
         Route::post  ('/about/experiences',        [AboutProfileController::class, 'storeExperience']);

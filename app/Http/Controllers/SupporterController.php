@@ -24,6 +24,7 @@ class SupporterController extends Controller
             'name' => 'required|string',
             'role' => 'required|string',
             'image_file' => 'nullable|image|max:2048',
+            'image_file2' => 'nullable|image|max:2048',
         ]);
 
         $data = $request->only(['name', 'role', 'description', 'is_visible']);
@@ -31,6 +32,11 @@ class SupporterController extends Controller
         if ($request->hasFile('image_file')) {
             $path = $request->file('image_file')->store('supporters', 'public');
             $data['image'] = Storage::url($path);
+        }
+        
+        if ($request->hasFile('image_file2')) {
+            $path2 = $request->file('image_file2')->store('supporters', 'public');
+            $data['photo2'] = Storage::url($path2);
         }
 
         $supporter = Supporter::create($data);
@@ -42,6 +48,7 @@ class SupporterController extends Controller
         $request->validate([
             'name' => 'required|string',
             'image_file' => 'nullable|image|max:2048',
+            'image_file2' => 'nullable|image|max:2048',
         ]);
 
         $data = $request->only(['name', 'role', 'description', 'is_visible']);
@@ -56,6 +63,15 @@ class SupporterController extends Controller
             $data['image'] = Storage::url($path);
         }
 
+        if ($request->hasFile('image_file2')) {
+            if ($supporter->photo2) {
+                $oldPath2 = str_replace('/storage/', '', $supporter->photo2);
+                Storage::disk('public')->delete($oldPath2);
+            }
+            $path2 = $request->file('image_file2')->store('supporters', 'public');
+            $data['photo2'] = Storage::url($path2);
+        }
+
         $supporter->update($data);
         return response()->json($supporter);
     }
@@ -65,6 +81,10 @@ class SupporterController extends Controller
         if ($supporter->image) {
             $oldPath = str_replace('/storage/', '', $supporter->image);
             Storage::disk('public')->delete($oldPath);
+        }
+        if ($supporter->photo2) {
+            $oldPath2 = str_replace('/storage/', '', $supporter->photo2);
+            Storage::disk('public')->delete($oldPath2);
         }
         $supporter->delete();
         return response()->json(['ok' => true]);

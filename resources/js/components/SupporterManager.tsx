@@ -6,6 +6,7 @@ interface Supporter {
     role: string;
     description: string;
     image: string | null;
+    photo2: string | null;
     is_visible: boolean;
 }
 
@@ -198,13 +199,16 @@ export default function SupporterManager() {
     const [loading, setLoading]       = useState(true);
     const [form, setForm]             = useState({ name: '', role: 'Special Supporter', description: '' });
     const [preview, setPreview]       = useState<string | null>(null);
-    const [cropSrc, setCropSrc]       = useState<string | null>(null);
+    const [preview2, setPreview2]     = useState<string | null>(null);
+    const [cropSrc, setCropSrc]       = useState<{src: string, isPhoto2: boolean} | null>(null);
     const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
+    const [croppedBlob2, setCroppedBlob2] = useState<Blob | null>(null);
     const [saving, setSaving]         = useState(false);
     const [deleting, setDeleting]     = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
     const [errorMsg, setErrorMsg]     = useState('');
     const fileRef = useRef<HTMLInputElement>(null);
+    const fileRef2 = useRef<HTMLInputElement>(null);
 
     const load = () => {
         setLoading(true);
@@ -221,21 +225,26 @@ export default function SupporterManager() {
 
     useEffect(() => { load(); }, []);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, isPhoto2: boolean) => {
         const file = e.target.files?.[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = ev => {
-            setCropSrc(ev.target?.result as string);
+            setCropSrc({ src: ev.target?.result as string, isPhoto2 });
         };
         reader.readAsDataURL(file);
-        // reset input so same file can be re-selected
         e.target.value = '';
     };
 
     const handleCropDone = (blob: Blob) => {
-        setCroppedBlob(blob);
-        setPreview(URL.createObjectURL(blob));
+        if (!cropSrc) return;
+        if (cropSrc.isPhoto2) {
+            setCroppedBlob2(blob);
+            setPreview2(URL.createObjectURL(blob));
+        } else {
+            setCroppedBlob(blob);
+            setPreview(URL.createObjectURL(blob));
+        }
         setCropSrc(null);
     };
 
@@ -251,6 +260,7 @@ export default function SupporterManager() {
         fd.append('description', form.description);
         fd.append('is_visible',  '1');
         if (croppedBlob) fd.append('image_file', croppedBlob, 'supporter.jpg');
+        if (croppedBlob2) fd.append('image_file2', croppedBlob2, 'supporter2.jpg');
 
         const url    = supporter ? `/api/admin/supporters/${supporter.id}` : '/api/admin/supporters';
         const res    = await fetch(url, {
@@ -281,10 +291,13 @@ export default function SupporterManager() {
         setSupporter(null);
         setForm({ name: '', role: 'Special Supporter', description: '' });
         setPreview(null);
+        setPreview2(null);
         setCroppedBlob(null);
+        setCroppedBlob2(null);
     };
 
     const displayImage = preview ?? supporter?.image ?? null;
+    const displayImage2 = preview2 ?? supporter?.photo2 ?? null;
 
     if (loading) return <div className="font-black uppercase text-sm opacity-40 p-6">Loading...</div>;
 
@@ -292,7 +305,7 @@ export default function SupporterManager() {
         <>
             {/* Crop Modal */}
             {cropSrc && (
-                <ImageCropper src={cropSrc} onCrop={handleCropDone} onCancel={() => setCropSrc(null)} />
+                <ImageCropper src={cropSrc.src} onCrop={handleCropDone} onCancel={() => setCropSrc(null)} />
             )}
 
             <div className="max-w-2xl mx-auto">
@@ -315,33 +328,65 @@ export default function SupporterManager() {
                 <form onSubmit={handleSave} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[8px_8px_0_var(--nb-primary)] overflow-hidden">
                     {/* Photo Area */}
                     <div className="bg-[var(--nb-primary)] p-6 flex flex-col sm:flex-row items-center gap-6">
-                        {/* Avatar Preview */}
-                        <div className="relative flex-shrink-0">
-                            <div className="w-36 h-36 border-4 border-[var(--nb-accent)] shadow-[6px_6px_0_var(--nb-accent)] overflow-hidden bg-gray-200">
-                                {displayImage
-                                    ? <img src={displayImage} className="w-full h-full object-cover" alt="Supporter" />
-                                    : (
-                                        <div className="w-full h-full flex items-center justify-center opacity-30">
-                                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--nb-accent)" strokeWidth="2">
-                                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                                                <circle cx="12" cy="7" r="4"/>
-                                            </svg>
-                                        </div>
-                                    )
-                                }
+                        
+                        <div className="flex gap-4 flex-shrink-0">
+                            {/* Avatar Preview */}
+                            <div className="relative flex-shrink-0">
+                                <label className="block font-black text-[9px] uppercase tracking-widest text-[var(--nb-accent)] mb-1">Primary Photo</label>
+                                <div className="w-24 h-32 sm:w-32 sm:h-40 border-4 border-[var(--nb-accent)] shadow-[4px_4px_0_var(--nb-accent)] overflow-hidden bg-gray-200">
+                                    {displayImage
+                                        ? <img src={displayImage} className="w-full h-full object-cover" alt="Supporter" />
+                                        : (
+                                            <div className="w-full h-full flex items-center justify-center opacity-30">
+                                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--nb-accent)" strokeWidth="2">
+                                                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                                                    <circle cx="12" cy="7" r="4"/>
+                                                </svg>
+                                            </div>
+                                        )
+                                    }
+                                </div>
+                                <button type="button" onClick={() => fileRef.current?.click()}
+                                    className="absolute -bottom-2 -right-2 bg-[var(--nb-accent)] border-3 border-[var(--nb-primary)] w-8 h-8 flex items-center justify-center shadow-[2px_2px_0_var(--nb-primary)] hover:shadow-none transition-all"
+                                    title="Ganti foto"
+                                    style={{ border: '3px solid var(--nb-primary)' }}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2.5">
+                                        <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                                        <circle cx="12" cy="13" r="4"/>
+                                    </svg>
+                                </button>
                             </div>
-                            {/* Change photo badge */}
-                            <button type="button" onClick={() => fileRef.current?.click()}
-                                className="absolute -bottom-2 -right-2 bg-[var(--nb-accent)] border-3 border-[var(--nb-primary)] w-8 h-8 flex items-center justify-center shadow-[2px_2px_0_var(--nb-primary)] hover:shadow-none transition-all"
-                                title="Ganti foto"
-                                style={{ border: '3px solid var(--nb-primary)' }}>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2.5">
-                                    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-                                    <circle cx="12" cy="13" r="4"/>
-                                </svg>
-                            </button>
+                            
+                            {/* Avatar 2 Preview */}
+                            <div className="relative flex-shrink-0">
+                                <label className="block font-black text-[9px] uppercase tracking-widest text-[var(--nb-accent)] mb-1">Decorative Photo</label>
+                                <div className="w-24 h-32 sm:w-32 sm:h-40 border-4 border-[var(--nb-accent)] shadow-[4px_4px_0_var(--nb-accent)] overflow-hidden bg-gray-200">
+                                    {displayImage2
+                                        ? <img src={displayImage2} className="w-full h-full object-cover" alt="Supporter Decorative" />
+                                        : (
+                                            <div className="w-full h-full flex items-center justify-center opacity-30">
+                                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--nb-accent)" strokeWidth="2">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                                    <polyline points="21 15 16 10 5 21"/>
+                                                </svg>
+                                            </div>
+                                        )
+                                    }
+                                </div>
+                                <button type="button" onClick={() => fileRef2.current?.click()}
+                                    className="absolute -bottom-2 -right-2 bg-[var(--nb-accent)] border-3 border-[var(--nb-primary)] w-8 h-8 flex items-center justify-center shadow-[2px_2px_0_var(--nb-primary)] hover:shadow-none transition-all"
+                                    title="Ganti foto 2"
+                                    style={{ border: '3px solid var(--nb-primary)' }}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2.5">
+                                        <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                                        <circle cx="12" cy="13" r="4"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => handleFileChange(e, false)} />
+                        <input ref={fileRef2} type="file" accept="image/*" className="hidden" onChange={e => handleFileChange(e, true)} />
 
                         {/* Name + Role inline */}
                         <div className="flex-1 w-full space-y-3">
@@ -386,6 +431,14 @@ export default function SupporterManager() {
                                 <div className="w-2 h-2 bg-green-500 rounded-full" />
                                 <p className="font-black text-[10px] uppercase text-green-600">Foto baru siap di-upload</p>
                                 <button type="button" onClick={() => fileRef.current?.click()}
+                                    className="font-black text-[10px] uppercase underline text-[var(--nb-accent)]">Ganti</button>
+                            </div>
+                        )}
+                        {croppedBlob2 && (
+                            <div className="mt-2 flex items-center gap-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full" />
+                                <p className="font-black text-[10px] uppercase text-green-600">Foto decorative baru siap di-upload</p>
+                                <button type="button" onClick={() => fileRef2.current?.click()}
                                     className="font-black text-[10px] uppercase underline text-[var(--nb-accent)]">Ganti</button>
                             </div>
                         )}

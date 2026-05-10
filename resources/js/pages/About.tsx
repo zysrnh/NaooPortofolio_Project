@@ -85,7 +85,7 @@ interface Experience {
 }
 interface CaseStudy  { id: number; title: string; short_story: string; }
 interface Availability { status: string; freelance: boolean; remote: boolean; collaboration: boolean; timezone: string; }
-interface Supporter { id: number; name: string; role: string; description: string; image: string; }
+interface Supporter { id: number; name: string; role: string; description: string; image: string; photo2?: string | null; }
 
 
 // ── Defaults (fallback jika API belum ada data) ───────────────────────────────
@@ -419,28 +419,109 @@ function TechStack() {
 // ── Supporters ────────────────────────────────────────────────────────────────
 function SupportersSection() {
   const [supporters, setSupporters] = useState<Supporter[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [swappedPhotos, setSwappedPhotos] = useState<Record<number, boolean>>({});
+
   useEffect(() => {
-    fetch("/api/supporters").then(r => r.json()).then(setSupporters);
+    fetch("/api/supporters")
+      .then(r => r.json())
+      .then(d => {
+        setSupporters(Array.isArray(d) ? d : []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
-  if (supporters.length === 0) return null;
+  const toggleSwap = (id: number) => {
+    setSwappedPhotos(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  if (loading || supporters.length === 0) return null;
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Special Supporter</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {supporters.map(s => (
-          <div key={s.id} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] p-6 flex flex-col sm:flex-row gap-6 items-center sm:items-start group hover:bg-[var(--nb-accent-light)] transition-colors">
-            <div className="w-32 h-32 flex-shrink-0 border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-accent)] overflow-hidden">
-               {s.image ? <img src={s.image} className="w-full h-full object-cover" alt={s.name} /> : <div className="w-full h-full bg-gray-200" />}
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-24 reveal active from-left mt-8">
+      <div className="flex items-center gap-4 mb-8 sm:mb-12">
+        <h2 className="text-3xl sm:text-5xl font-black uppercase text-[var(--nb-primary)] tracking-tight">
+          VIP Area
+        </h2>
+        <div className="flex-1 h-2 sm:h-3 bg-[var(--nb-primary)] mt-1 sm:mt-2"></div>
+        <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[var(--nb-accent)] border-4 border-[var(--nb-primary)] rounded-full hidden sm:block"></div>
+      </div>
+      
+      <div className="grid grid-cols-1 gap-6 relative">
+        {supporters.map(s => {
+          const isSwapped = swappedPhotos[s.id] || false;
+          const hasPhoto2 = !!s.photo2;
+          const frontPhoto = isSwapped && hasPhoto2 ? s.photo2 : s.image;
+          const backPhoto = isSwapped ? s.image : (hasPhoto2 ? s.photo2 : null);
+
+          return (
+          <div key={s.id} className="relative bg-[var(--nb-accent-light)] border-4 border-[var(--nb-primary)] shadow-[12px_12px_0_var(--nb-primary)] sm:shadow-[20px_20px_0_var(--nb-primary)] p-6 sm:p-12 flex flex-col lg:flex-row gap-10 sm:gap-20 items-center lg:items-start group">
+            
+            {/* Background Dot Pattern */}
+            <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: "radial-gradient(var(--nb-primary) 2px, transparent 2px)", backgroundSize: "24px 24px" }}></div>
+            
+            {/* Dual Polaroid Photo Frames */}
+            <div className="relative z-10 w-56 sm:w-72 flex-shrink-0 min-h-[250px] sm:min-h-[320px]">
+              {backPhoto && (
+                <div 
+                  onClick={() => toggleSwap(s.id)}
+                  className="absolute z-0 w-[85%] right-[-15%] top-[-10%] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-3 pb-12 shadow-[8px_8px_0_var(--nb-primary)] rotate-[10deg] hover:rotate-[15deg] hover:scale-105 hover:z-20 transition-all duration-300 cursor-pointer"
+                >
+                  <div className="absolute -top-3 right-4 w-12 h-6 bg-white/70 border-2 border-[var(--nb-primary)] -rotate-6 z-20 shadow-sm backdrop-blur-sm"></div>
+                  <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden">
+                    <img src={backPhoto} className="w-full h-full object-cover" alt="secondary" />
+                  </div>
+                </div>
+              )}
+
+              <div 
+                onClick={() => hasPhoto2 && toggleSwap(s.id)}
+                className={`absolute z-10 w-full bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-4 pb-12 sm:pb-16 shadow-[8px_8px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02] transition-all duration-400 ease-out ${hasPhoto2 ? 'cursor-pointer' : ''}`}
+              >
+                 {/* Tape Element */}
+                 <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-20 sm:w-24 h-8 sm:h-10 bg-white/70 border-2 border-[var(--nb-primary)] rotate-2 z-20 shadow-sm backdrop-blur-md"></div>
+                 
+                 <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)]">
+                   {frontPhoto ? (
+                     <img src={frontPhoto} className="w-full h-full object-cover" alt={s.name} />
+                   ) : (
+                     <div className="w-full h-full flex items-center justify-center font-black text-[var(--nb-bg)] opacity-50">NO PIC</div>
+                   )}
+                 </div>
+                 
+                 {/* Polaroid Caption */}
+                 <div className="absolute bottom-3 sm:bottom-4 left-0 right-0 text-center font-black text-xs sm:text-sm uppercase text-[var(--nb-primary)] opacity-90 tracking-[0.2em] px-2 truncate">
+                   #1 Supporter
+                 </div>
+              </div>
             </div>
-            <div className="flex-1 text-center sm:text-left">
-              <h3 className="font-black text-xl uppercase text-[var(--nb-primary)] mb-1">{s.name}</h3>
-              <p className="font-black text-[10px] uppercase tracking-widest text-[var(--nb-accent)] mb-3">{s.role}</p>
-              <p className="font-semibold text-sm text-[var(--nb-primary)] leading-relaxed opacity-80">{s.description}</p>
+
+            
+            <div className="flex-1 text-center lg:text-left pt-2 lg:pt-8 z-10 w-full">
+              {/* Massive Name */}
+              <h3 className="font-black text-4xl sm:text-6xl lg:text-7xl uppercase text-[var(--nb-primary)] mb-6 leading-[0.9]" style={{ textShadow: "3px 3px 0 var(--nb-bg), 6px 6px 0 var(--nb-accent)" }}>
+                {s.name}
+              </h3>
+              
+              {/* Role Badge */}
+              <div className="inline-block bg-[var(--nb-primary)] text-[var(--nb-bg)] px-6 py-3 border-2 sm:border-4 border-[var(--nb-primary)] font-black text-xs sm:text-sm uppercase tracking-widest mb-10 shadow-[6px_6px_0_var(--nb-accent)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all cursor-default">
+                {s.role}
+              </div>
+              
+              {/* Quotation Box */}
+              <div className="relative bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 sm:p-10 shadow-[8px_8px_0_var(--nb-primary)] mx-4 sm:mx-0 lg:mr-10">
+                <span className="absolute -top-8 -left-4 sm:-left-6 text-7xl sm:text-8xl text-[var(--nb-accent)] font-serif leading-none select-none" style={{ textShadow: "3px 3px 0 var(--nb-primary)" }}>&ldquo;</span>
+                <p className="font-bold text-base sm:text-xl text-[var(--nb-primary)] leading-relaxed relative z-10">
+                  {s.description}
+                </p>
+                <span className="absolute -bottom-14 -right-4 sm:-right-6 text-7xl sm:text-8xl text-[var(--nb-accent)] font-serif leading-none select-none" style={{ textShadow: "3px 3px 0 var(--nb-primary)" }}>&rdquo;</span>
+              </div>
             </div>
+            
           </div>
-        ))}
+        );
+        })}
       </div>
     </section>
   );
@@ -723,6 +804,7 @@ export default function About() {
   const [showTop,     setShowTop]     = useState(false);
   const [hero,        setHero]        = useState<HeroData>(DEFAULT_HERO);
   const [heroLoading, setHeroLoading] = useState(true);
+  const [heroSwapped, setHeroSwapped] = useState(false);
   const [about,       setAbout]       = useState<{ highlights: string[]; extra_bio: string }>({ highlights:[], extra_bio:"" });
 
   useEffect(() => { setTimeout(() => setVisible(true), 60); }, []);
@@ -862,37 +944,49 @@ export default function About() {
             </div>
 
             {/* Photo RIGHT — Dual photo layout */}
-            <div className="anim-hero-img md:w-2/5 relative bg-[var(--nb-accent)] border-b-4 md:border-b-0 md:border-l-4 border-[var(--nb-primary)] flex items-center justify-center py-10 px-8 min-h-[300px] sm:min-h-[360px] order-1 md:order-2">
-              {/* Grid bg */}
-              <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 32px)"}}/>
+            <div className="anim-hero-img md:w-2/5 relative bg-[var(--nb-accent-light)] border-b-4 md:border-b-0 md:border-l-4 border-[var(--nb-primary)] flex items-center justify-center py-16 px-8 min-h-[350px] sm:min-h-[420px] order-1 md:order-2 overflow-hidden">
+              {/* Bold Grid bg */}
+              <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px)"}}/>
 
-              {/* Primary photo — front, larger */}
-              <div className="photo-wrap relative z-10" style={{width:"min(165px,48vw)",height:"min(210px,60vw)"}}>
-                {heroLoading
-                  ? <div className="hero-skeleton absolute inset-0"/>
-                  : <img src={hero.photo!} alt={hero.name}
-                      onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
-                }
-              </div>
-
-              {/* Secondary photo — behind, offset, rotated */}
+              {/* Secondary photo — behind */}
               {!heroLoading && hero.photo2 && (
-                <div className="photo2-frame"
-                  style={{width:"min(120px,34vw)",height:"min(152px,43vw)"}}>
-                  <img src={hero.photo2} alt="secondary"
-                    onError={e=>{(e.currentTarget.parentElement as HTMLElement).style.display="none";}}/>
+                <div 
+                  onClick={() => setHeroSwapped(!heroSwapped)}
+                  className="absolute z-0 w-[55%] max-w-[220px] right-[10%] top-[10%] sm:top-[15%] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[8deg] hover:rotate-[12deg] hover:scale-105 hover:z-20 transition-all duration-300 cursor-pointer"
+                >
+                  <div className="absolute -top-3 right-4 w-12 h-6 bg-white/70 border-2 border-[var(--nb-primary)] -rotate-6 z-20 shadow-sm backdrop-blur-sm"></div>
+                  <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden">
+                    <img src={heroSwapped ? hero.photo! : hero.photo2} alt="secondary" className="w-full h-full object-cover" onError={e=>{(e.currentTarget.parentElement as HTMLElement).style.display="none";}}/>
+                  </div>
                 </div>
               )}
+
+              {/* Primary photo — front */}
+              <div 
+                onClick={() => hero.photo2 && setHeroSwapped(!heroSwapped)}
+                className={`relative z-10 w-[65%] max-w-[260px] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-3 pb-12 shadow-[12px_12px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-300 mt-8 sm:mt-16 mr-8 sm:mr-16 group ${hero.photo2 ? 'cursor-pointer' : ''}`}
+              >
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/80 border-2 border-[var(--nb-primary)] rotate-2 z-20 shadow-sm backdrop-blur-md"></div>
+                <div className="w-full aspect-[4/5] border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)] relative">
+                  {heroLoading
+                    ? <div className="hero-skeleton absolute inset-0"/>
+                    : <img src={heroSwapped && hero.photo2 ? hero.photo2 : hero.photo!} alt={hero.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
+                  }
+                </div>
+                <div className="absolute bottom-3 left-0 right-0 text-center font-black text-sm uppercase text-[var(--nb-primary)] tracking-widest px-2 opacity-80">
+                  {hero.name}
+                </div>
+              </div>
             </div>
 
           </div>
         </section>
 
-        {/* CAPABILITIES */}
-        <Capabilities/>
-
         {/* SUPPORTERS */}
         <SupportersSection />
+
+        {/* CAPABILITIES */}
+        <Capabilities/>
 
         {/* STATS */}
         <Stats/>

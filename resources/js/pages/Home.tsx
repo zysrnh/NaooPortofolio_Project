@@ -657,10 +657,20 @@ export default function Home() {
         {/* HERO */}
         <section id="hero" className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-20">
           <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0px_0px_var(--nb-primary)] flex flex-col md:flex-row overflow-hidden">
-            <div className="anim-hero-img md:w-2/5 relative bg-[var(--nb-accent)] border-b-4 md:border-b-0 md:border-r-4 border-[var(--nb-primary)] flex items-center justify-center py-8 sm:py-10 px-6 sm:px-8 min-h-[260px] sm:min-h-[320px]">
-              <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 32px)"}}/>
-              <div className="photo-wrap" style={{width:"min(180px,60vw)",height:"min(220px,75vw)"}}>
-                {heroLoading?<div className="hero-skeleton absolute inset-0"/>:<img src={heroPhoto!} alt={hero.name} onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>}
+            <div className="anim-hero-img md:w-2/5 relative bg-[var(--nb-accent-light)] border-b-4 md:border-b-0 md:border-r-4 border-[var(--nb-primary)] flex items-center justify-center py-12 px-6 min-h-[320px] sm:min-h-[400px] overflow-hidden">
+              <div className="absolute inset-0 opacity-30" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px)"}}/>
+              
+              <div className="relative z-10 w-[70%] max-w-[240px] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-3 pb-12 shadow-[12px_12px_0_var(--nb-primary)] rotate-3 hover:-rotate-1 hover:scale-105 transition-all duration-300 group">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/80 border-2 border-[var(--nb-primary)] -rotate-3 z-20 shadow-sm backdrop-blur-md"></div>
+                <div className="w-full aspect-[4/5] border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)] relative">
+                  {heroLoading
+                    ? <div className="hero-skeleton absolute inset-0"/>
+                    : <img src={heroPhoto!} alt={hero.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
+                  }
+                </div>
+                <div className="absolute bottom-3 left-0 right-0 text-center font-black text-xs sm:text-sm uppercase text-[var(--nb-primary)] tracking-widest px-2 opacity-80 truncate">
+                  {hero.name}
+                </div>
               </div>
             </div>
             <div className="anim-hero-text md:w-3/5 p-6 sm:p-10 flex flex-col justify-center relative">
@@ -858,10 +868,20 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="md:w-2/5 relative bg-[var(--nb-accent)] border-t-4 md:border-t-0 md:border-l-4 border-[var(--nb-accent)] flex items-center justify-center py-10 px-8 min-h-[280px]">
-              <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 32px)"}}/>
-              <div className="photo-wrap" style={{width:"min(260px,70vw)",height:"min(320px,85vw)"}}>
-                {heroLoading?<div className="hero-skeleton absolute inset-0"/>:<img src={heroPhoto!} alt={hero.name} onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>}
+            <div className="md:w-2/5 relative bg-[var(--nb-accent-light)] border-t-4 md:border-t-0 md:border-l-4 border-[var(--nb-primary)] flex items-center justify-center py-12 px-6 min-h-[320px] overflow-hidden">
+              <div className="absolute inset-0 opacity-30" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px)"}}/>
+              
+              <div className="relative z-10 w-[75%] max-w-[260px] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-3 pb-12 shadow-[12px_12px_0_var(--nb-primary)] -rotate-3 hover:rotate-1 hover:scale-105 transition-all duration-300 group">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/80 border-2 border-[var(--nb-primary)] rotate-3 z-20 shadow-sm backdrop-blur-md"></div>
+                <div className="w-full aspect-[4/5] border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)] relative">
+                  {heroLoading
+                    ? <div className="hero-skeleton absolute inset-0"/>
+                    : <img src={heroPhoto!} alt={hero.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
+                  }
+                </div>
+                <div className="absolute bottom-3 left-0 right-0 text-center font-black text-xs sm:text-sm uppercase text-[var(--nb-primary)] tracking-widest px-2 opacity-80 truncate">
+                  Me, myself & I
+                </div>
               </div>
             </div>
           </div>
