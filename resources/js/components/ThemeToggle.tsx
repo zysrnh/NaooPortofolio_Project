@@ -16,7 +16,7 @@ export default function ThemeToggle() {
     }, [theme]);
 
     const themes: { id: Theme; label: string; colors: string[] }[] = [
-        { id: 'naoo', label: 'Naoo', colors: ['#0B1957', '#F8F3EA', '#9ECCFA'] },
+        { id: 'naoo', label: 'Naoo', colors: ['var(--nb-primary)', 'var(--nb-bg)', 'var(--nb-accent)'] },
         { id: 'gold', label: 'Gold', colors: ['#000000', '#FCA311', '#E5E5E5'] },
         { id: 'fiery', label: 'Fiery', colors: ['#780000', '#003049', '#FDF0D5'] },
     ];

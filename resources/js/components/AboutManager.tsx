@@ -54,7 +54,7 @@ const GLOBAL_CSS = `
   @keyframes am-rowIn      { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
   @keyframes am-cardIn     { from{opacity:0;transform:translateY(10px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
   @keyframes am-tagPop     { from{opacity:0;transform:scale(0.6)} to{opacity:1;transform:scale(1)} }
-  @keyframes am-headerPulse{ 0%,100%{background:#0B1957} 50%{background:#122372} }
+  @keyframes am-headerPulse{ 0%,100%{background:var(--nb-primary)} 50%{background:#122372} }
 
   .am-btn {
     transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease, color 0.1s ease !important;
@@ -67,7 +67,7 @@ const GLOBAL_CSS = `
   }
   .am-card:hover {
     transform: translate(-2px,-2px) !important;
-    box-shadow: 6px 6px 0 #0B1957 !important;
+    box-shadow: 6px 6px 0 var(--nb-primary) !important;
   }
 
   .am-input {
@@ -75,7 +75,7 @@ const GLOBAL_CSS = `
   }
   .am-input:focus {
     outline: none !important;
-    border-color: #9ECCFA !important;
+    border-color: var(--nb-accent) !important;
     box-shadow: 0 0 0 3px rgba(158,204,250,0.25) !important;
   }
 
@@ -111,7 +111,7 @@ const GLOBAL_CSS = `
     display: inline-block;
     width: 12px; height: 12px;
     border: 2px solid rgba(158,204,250,0.4);
-    border-top-color: #9ECCFA;
+    border-top-color: var(--nb-accent);
     border-radius: 50%;
     animation: am-spin 0.6s linear infinite;
   }
@@ -132,19 +132,19 @@ function Toast({ msg, type, onDone }: { msg: string; type: "ok"|"err"; onDone: (
   return (
     <div style={{
       position:"fixed", bottom:28, right:28, zIndex:9999,
-      background: type==="ok" ? "#0B1957" : "#7f1d1d",
-      border:`3px solid ${type==="ok"?"#9ECCFA":"#fca5a5"}`,
-      boxShadow:`6px 6px 0 ${type==="ok"?"#9ECCFA":"#fca5a5"}`,
+      background: type==="ok" ? "var(--nb-primary)" : "#7f1d1d",
+      border:`3px solid ${type==="ok"?"var(--nb-accent)":"#fca5a5"}`,
+      boxShadow:`6px 6px 0 ${type==="ok"?"var(--nb-accent)":"#fca5a5"}`,
       padding:"14px 22px",
       display:"flex", alignItems:"center", gap:12, minWidth:220,
       animation: leaving ? "am-toastOut 0.4s ease forwards" : "am-toastIn 0.4s cubic-bezier(0.16,1,0.3,1)",
     }}>
       <div style={{position:"relative",width:10,height:10,flexShrink:0}}>
-        <div style={{width:10,height:10,background:type==="ok"?"#9ECCFA":"#fca5a5"}} />
-        <div style={{position:"absolute",inset:0,background:type==="ok"?"#9ECCFA":"#fca5a5",
+        <div style={{width:10,height:10,background:type==="ok"?"var(--nb-accent)":"#fca5a5"}} />
+        <div style={{position:"absolute",inset:0,background:type==="ok"?"var(--nb-accent)":"#fca5a5",
           animation:"am-ping 1s ease infinite"}} />
       </div>
-      <span style={{color:type==="ok"?"#9ECCFA":"#fca5a5",fontWeight:900,fontSize:13,
+      <span style={{color:type==="ok"?"var(--nb-accent)":"#fca5a5",fontWeight:900,fontSize:13,
         textTransform:"uppercase",letterSpacing:"0.08em"}}>
         {msg}
       </span>
@@ -159,12 +159,12 @@ const Input = ({ label, value, onChange, placeholder, type="text" }: {
 }) => (
   <div style={{marginBottom:12}}>
     {label && <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",
-      letterSpacing:"0.1em",color:"#0B1957",marginBottom:5,
+      letterSpacing:"0.1em",color:"var(--nb-primary)",marginBottom:5,
       animation:"am-slideLeft 0.3s cubic-bezier(0.16,1,0.3,1) both"}}>{label}</label>}
     <input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder}
       className="am-input"
-      style={{width:"100%",border:"3px solid #0B1957",padding:"9px 12px",fontWeight:700,fontSize:13,
-        background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit",boxSizing:"border-box"}} />
+      style={{width:"100%",border:"3px solid var(--nb-primary)",padding:"9px 12px",fontWeight:700,fontSize:13,
+        background:"var(--nb-bg)",color:"var(--nb-primary)",fontFamily:"inherit",boxSizing:"border-box"}} />
   </div>
 );
 
@@ -173,11 +173,11 @@ const Textarea = ({ label, value, onChange, rows=3 }: {
 }) => (
   <div style={{marginBottom:12}}>
     {label && <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",
-      letterSpacing:"0.1em",color:"#0B1957",marginBottom:5}}>{label}</label>}
+      letterSpacing:"0.1em",color:"var(--nb-primary)",marginBottom:5}}>{label}</label>}
     <textarea value={value} onChange={e=>onChange(e.target.value)} rows={rows}
       className="am-input"
-      style={{width:"100%",border:"3px solid #0B1957",padding:"9px 12px",fontWeight:700,fontSize:13,
-        background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit",resize:"vertical",boxSizing:"border-box"}} />
+      style={{width:"100%",border:"3px solid var(--nb-primary)",padding:"9px 12px",fontWeight:700,fontSize:13,
+        background:"var(--nb-bg)",color:"var(--nb-primary)",fontFamily:"inherit",resize:"vertical",boxSizing:"border-box"}} />
   </div>
 );
 
@@ -186,11 +186,11 @@ const BtnPrimary = ({ onClick, children, disabled=false }: {
   onClick:()=>void; children:React.ReactNode; disabled?:boolean;
 }) => (
   <button onClick={onClick} disabled={disabled} className="am-btn"
-    style={{display:"flex",alignItems:"center",gap:7,border:"3px solid #0B1957",padding:"9px 18px",
-      background:disabled?"#ccc":"#0B1957",color:disabled?"#999":"#9ECCFA",
+    style={{display:"flex",alignItems:"center",gap:7,border:"3px solid var(--nb-primary)",padding:"9px 18px",
+      background:disabled?"#ccc":"var(--nb-primary)",color:disabled?"#999":"var(--nb-accent)",
       fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",
       cursor:disabled?"not-allowed":"pointer",fontFamily:"inherit",
-      boxShadow:disabled?"none":"4px 4px 0 #9ECCFA"}}>
+      boxShadow:disabled?"none":"4px 4px 0 var(--nb-accent)"}}>
     {disabled ? <span className="am-saving-spinner"/> : null}
     {children}
   </button>
@@ -198,10 +198,10 @@ const BtnPrimary = ({ onClick, children, disabled=false }: {
 
 const BtnSecondary = ({ onClick, children }: { onClick:()=>void; children:React.ReactNode }) => (
   <button onClick={onClick} className="am-btn"
-    style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",padding:"8px 16px",
-      background:"#F8F3EA",color:"#0B1957",fontWeight:900,fontSize:11,textTransform:"uppercase",
+    style={{display:"flex",alignItems:"center",gap:6,border:"3px solid var(--nb-primary)",padding:"8px 16px",
+      background:"var(--nb-bg)",color:"var(--nb-primary)",fontWeight:900,fontSize:11,textTransform:"uppercase",
       letterSpacing:"0.08em",cursor:"pointer",fontFamily:"inherit",
-      boxShadow:"3px 3px 0 #0B1957"}}>
+      boxShadow:"3px 3px 0 var(--nb-primary)"}}>
     {children}
   </button>
 );
@@ -220,15 +220,15 @@ const SectionBox = ({ title, children, delay=0 }: {
   title: string; children: React.ReactNode; delay?: number;
 }) => (
   <div className="am-section-enter"
-    style={{border:"4px solid #0B1957",background:"#F8F3EA",
-      boxShadow:"8px 8px 0 #0B1957",marginBottom:24,overflow:"hidden",
+    style={{border:"4px solid var(--nb-primary)",background:"var(--nb-bg)",
+      boxShadow:"8px 8px 0 var(--nb-primary)",marginBottom:24,overflow:"hidden",
       animationDelay:`${delay}ms`}}>
-    <div style={{background:"#0B1957",padding:"14px 20px",display:"flex",alignItems:"center",gap:10,
+    <div style={{background:"var(--nb-primary)",padding:"14px 20px",display:"flex",alignItems:"center",gap:10,
       position:"relative",overflow:"hidden"}}>
-      <div style={{position:"absolute",bottom:0,left:0,height:2,background:"#9ECCFA",
+      <div style={{position:"absolute",bottom:0,left:0,height:2,background:"var(--nb-accent)",
         animation:"am-slideRight 0.6s cubic-bezier(0.16,1,0.3,1) both",width:"100%",opacity:0.4}} />
       <span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.12em",
-        color:"#9ECCFA",animation:"am-slideLeft 0.35s cubic-bezier(0.16,1,0.3,1) both"}}>
+        color:"var(--nb-accent)",animation:"am-slideLeft 0.35s cubic-bezier(0.16,1,0.3,1) both"}}>
         {title}
       </span>
     </div>
@@ -318,19 +318,19 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
   }) => (
     <div style={{animation:"am-slideUp 0.4s cubic-bezier(0.16,1,0.3,1) both"}}>
       <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",
-        letterSpacing:"0.1em",color:"#0B1957",marginBottom:8}}>{label}</label>
+        letterSpacing:"0.1em",color:"var(--nb-primary)",marginBottom:8}}>{label}</label>
       <div style={{display:"flex",alignItems:"flex-start",gap:14}}>
-        <div style={{width:90,height:112,border:"4px solid #0B1957",boxShadow:"4px 4px 0 #0B1957",
+        <div style={{width:90,height:112,border:"4px solid var(--nb-primary)",boxShadow:"4px 4px 0 var(--nb-primary)",
           overflow:"hidden",flexShrink:0,background:"var(--nb-accent-light)",position:"relative",cursor:"pointer",
           transition:"transform 0.15s ease,box-shadow 0.15s ease"}}
           onClick={()=>fileRef.current?.click()}
           onMouseOver={e=>{
             e.currentTarget.style.transform="translate(-2px,-2px)";
-            e.currentTarget.style.boxShadow="6px 6px 0 #0B1957";
+            e.currentTarget.style.boxShadow="6px 6px 0 var(--nb-primary)";
           }}
           onMouseOut={e=>{
             e.currentTarget.style.transform="";
-            e.currentTarget.style.boxShadow="4px 4px 0 #0B1957";
+            e.currentTarget.style.boxShadow="4px 4px 0 var(--nb-primary)";
           }}>
           {preview
             ? <img src={preview} alt="" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top",
@@ -338,7 +338,7 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
                 onMouseOver={e=>{e.currentTarget.style.transform="scale(1.05)";}}
                 onMouseOut={e=>{e.currentTarget.style.transform="";}} />
             : <div style={{width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",
-                justifyContent:"center",gap:6,color:"#0B1957",opacity:0.4}}>
+                justifyContent:"center",gap:6,color:"var(--nb-primary)",opacity:0.4}}>
                 <IconImage />
                 <span style={{fontSize:9,fontWeight:900,textTransform:"uppercase",textAlign:"center",padding:"0 8px"}}>
                   Click to upload
@@ -354,9 +354,9 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         <div>
           <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}} onChange={onPick} />
           <button onClick={()=>fileRef.current?.click()} className="am-btn"
-            style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",padding:"8px 14px",
+            style={{display:"flex",alignItems:"center",gap:6,border:"3px solid var(--nb-primary)",padding:"8px 14px",
               background:"var(--nb-accent-light)",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.08em",
-              color:"#0B1957",cursor:"pointer",fontFamily:"inherit",boxShadow:"3px 3px 0 #0B1957",marginBottom:8}}>
+              color:"var(--nb-primary)",cursor:"pointer",fontFamily:"inherit",boxShadow:"3px 3px 0 var(--nb-primary)",marginBottom:8}}>
             <IconImage /> Choose Photo
           </button>
           {preview && (
@@ -367,7 +367,7 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               <IconClose /> Remove
             </button>
           )}
-          <p style={{fontSize:11,color:"#0B1957",opacity:0.5,fontWeight:700,lineHeight:1.5}}>{hint}</p>
+          <p style={{fontSize:11,color:"var(--nb-primary)",opacity:0.5,fontWeight:700,lineHeight:1.5}}>{hint}</p>
         </div>
       </div>
     </div>
@@ -482,27 +482,27 @@ function CapabilitiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               animationDelay:`${i*50}ms`,flexWrap:"wrap"}}>
             <input value={card.label} onChange={e=>updateCard(i,"label",e.target.value)}
               placeholder="Label" className="am-input"
-              style={{flex:"0 0 120px",minWidth:80,border:"2px solid #0B1957",padding:"7px 10px",
-                fontWeight:800,fontSize:12,background:"#F8F3EA",color:"#0B1957",
+              style={{flex:"0 0 120px",minWidth:80,border:"2px solid var(--nb-primary)",padding:"7px 10px",
+                fontWeight:800,fontSize:12,background:"var(--nb-bg)",color:"var(--nb-primary)",
                 fontFamily:"inherit",textTransform:"uppercase"}} />
             <input value={card.value} onChange={e=>updateCard(i,"value",e.target.value)}
               placeholder="Value" className="am-input"
-              style={{flex:1,minWidth:100,border:"2px solid #0B1957",padding:"7px 10px",
-                fontWeight:700,fontSize:13,background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit"}} />
+              style={{flex:1,minWidth:100,border:"2px solid var(--nb-primary)",padding:"7px 10px",
+                fontWeight:700,fontSize:13,background:"var(--nb-bg)",color:"var(--nb-primary)",fontFamily:"inherit"}} />
             <button onClick={()=>moveCard(i,-1)} className="am-btn"
-              style={{border:"2px solid #0B1957",padding:"6px 8px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
+              style={{border:"2px solid var(--nb-primary)",padding:"6px 8px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
               <IconUp />
             </button>
             <button onClick={()=>moveCard(i,1)} className="am-btn"
-              style={{border:"2px solid #0B1957",padding:"6px 8px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
+              style={{border:"2px solid var(--nb-primary)",padding:"6px 8px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
               <IconDown />
             </button>
             <BtnDanger onClick={()=>removeCard(i)}><IconTrash /></BtnDanger>
           </div>
         ))}
         <button onClick={addCard} className="am-btn"
-          style={{display:"flex",alignItems:"center",gap:6,border:"2px dashed #0B1957",padding:"7px 14px",
-            background:"transparent",fontWeight:900,fontSize:11,color:"#0B1957",textTransform:"uppercase",
+          style={{display:"flex",alignItems:"center",gap:6,border:"2px dashed var(--nb-primary)",padding:"7px 14px",
+            background:"transparent",fontWeight:900,fontSize:11,color:"var(--nb-primary)",textTransform:"uppercase",
             letterSpacing:"0.08em",cursor:"pointer",fontFamily:"inherit",marginTop:4}}>
           <IconPlus /> Add Card
         </button>
@@ -512,10 +512,10 @@ function CapabilitiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:12,minHeight:32}}>
           {highlights.map((h,i)=>(
             <div key={`${h}-${i}`} style={{display:"flex",alignItems:"center",gap:4,
-              border:"2px solid #0B1957",padding:"5px 10px",background:"var(--nb-accent-light)",
+              border:"2px solid var(--nb-primary)",padding:"5px 10px",background:"var(--nb-accent-light)",
               animation:"am-tagPop 0.25s cubic-bezier(0.34,1.56,0.64,1) both",
               animationDelay:`${i*40}ms`}}>
-              <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",color:"#0B1957"}}>{h}</span>
+              <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",color:"var(--nb-primary)"}}>{h}</span>
               <button onClick={()=>removeHL(i)}
                 style={{border:"none",background:"transparent",cursor:"pointer",display:"flex",
                   color:"#b91c1c",padding:0,marginLeft:2,transition:"transform 0.1s ease"}}
@@ -530,23 +530,23 @@ function CapabilitiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
           <input value={newHL} onChange={e=>setNewHL(e.target.value)}
             onKeyDown={e=>e.key==="Enter"&&addHL()} placeholder="New highlight tag…"
             className="am-input"
-            style={{flex:1,border:"3px solid #0B1957",padding:"8px 12px",fontWeight:700,fontSize:13,
-              background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit"}} />
+            style={{flex:1,border:"3px solid var(--nb-primary)",padding:"8px 12px",fontWeight:700,fontSize:13,
+              background:"var(--nb-bg)",color:"var(--nb-primary)",fontFamily:"inherit"}} />
           <button onClick={addHL} className="am-btn"
-            style={{border:"3px solid #0B1957",padding:"8px 14px",background:"#0B1957",color:"#9ECCFA",
+            style={{border:"3px solid var(--nb-primary)",padding:"8px 14px",background:"var(--nb-primary)",color:"var(--nb-accent)",
               fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit",
-              display:"flex",alignItems:"center",gap:5,boxShadow:"3px 3px 0 #9ECCFA"}}>
+              display:"flex",alignItems:"center",gap:5,boxShadow:"3px 3px 0 var(--nb-accent)"}}>
             <IconPlus /> Add
           </button>
         </div>
       </SectionBox>
 
       <SectionBox title="Featured Tech Stack" delay={180}>
-        <p style={{fontSize:12,fontWeight:700,color:"#0B1957",opacity:0.6,marginBottom:12}}>
+        <p style={{fontSize:12,fontWeight:700,color:"var(--nb-primary)",opacity:0.6,marginBottom:12}}>
           Pilih tech stack yang tampil di Capabilities section dengan icon.
         </p>
         {stacks.length===0 && (
-          <p style={{fontSize:12,fontWeight:700,color:"#0B1957",opacity:0.4,fontStyle:"italic"}}>
+          <p style={{fontSize:12,fontWeight:700,color:"var(--nb-primary)",opacity:0.4,fontStyle:"italic"}}>
             Belum ada tech stack visible.
           </p>
         )}
@@ -556,22 +556,22 @@ function CapabilitiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
             return (
               <button key={s.id} onClick={()=>toggleStack(s.id)}
                 style={{display:"flex",alignItems:"center",gap:8,
-                  border:`3px solid ${active?"#0B1957":"#9ECCFA"}`,
+                  border:`3px solid ${active?"var(--nb-primary)":"var(--nb-accent)"}`,
                   padding:"6px 12px 6px 6px",
-                  background:active?"#0B1957":"#F8F3EA",
+                  background:active?"var(--nb-primary)":"var(--nb-bg)",
                   cursor:"pointer",fontFamily:"inherit",
-                  boxShadow:active?"4px 4px 0 #9ECCFA":"2px 2px 0 rgba(158,204,250,0.5)",
+                  boxShadow:active?"4px 4px 0 var(--nb-accent)":"2px 2px 0 rgba(158,204,250,0.5)",
                   transition:"all 0.15s cubic-bezier(0.16,1,0.3,1)",
                   transform:active?"translate(-1px,-1px)":"none",
                   animation:`am-cardIn 0.3s cubic-bezier(0.16,1,0.3,1) ${i*30}ms both`}}>
                 <img src={s.icon} alt={s.name}
                   onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}}
-                  style={{width:22,height:22,objectFit:"cover",border:`2px solid ${active?"#9ECCFA":"#0B1957"}`,flexShrink:0,
+                  style={{width:22,height:22,objectFit:"cover",border:`2px solid ${active?"var(--nb-accent)":"var(--nb-primary)"}`,flexShrink:0,
                     transition:"border-color 0.15s ease"}} />
                 <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",
-                  color:active?"#9ECCFA":"#0B1957",letterSpacing:"0.06em",
+                  color:active?"var(--nb-accent)":"var(--nb-primary)",letterSpacing:"0.06em",
                   transition:"color 0.15s ease"}}>{s.name}</span>
-                <span style={{marginLeft:2,color:"#9ECCFA",
+                <span style={{marginLeft:2,color:"var(--nb-accent)",
                   transition:"opacity 0.15s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1)",
                   opacity:active?1:0, transform:active?"scale(1)":"scale(0)"}}>
                   <IconCheck />
@@ -600,12 +600,12 @@ const EMPTY_EXP: Omit<Experience,"id"> = {
 };
 
 const TYPE_COLORS: Record<string,{bg:string;text:string;border:string}> = {
-  internship:{bg:"#0B1957",text:"#9ECCFA",border:"#9ECCFA"},
-  freelance: {bg:"#9ECCFA",text:"#0B1957",border:"#0B1957"},
-  learning:  {bg:"#F8F3EA",text:"#0B1957",border:"#0B1957"},
-  project:   {bg:"var(--nb-accent-light)",text:"#0B1957",border:"#0B1957"},
-  fulltime:  {bg:"#0B1957",text:"#9ECCFA",border:"#9ECCFA"},
-  parttime:  {bg:"#FFE8A0",text:"#0B1957",border:"#0B1957"},
+  internship:{bg:"var(--nb-primary)",text:"var(--nb-accent)",border:"var(--nb-accent)"},
+  freelance: {bg:"var(--nb-accent)",text:"var(--nb-primary)",border:"var(--nb-primary)"},
+  learning:  {bg:"var(--nb-bg)",text:"var(--nb-primary)",border:"var(--nb-primary)"},
+  project:   {bg:"var(--nb-accent-light)",text:"var(--nb-primary)",border:"var(--nb-primary)"},
+  fulltime:  {bg:"var(--nb-primary)",text:"var(--nb-accent)",border:"var(--nb-accent)"},
+  parttime:  {bg:"var(--nb-secondary)",text:"var(--nb-primary)",border:"var(--nb-primary)"},
 };
 
 function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
@@ -683,20 +683,20 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
           background:"rgba(11,25,87,0.55)",
           animation:modalVisible?"am-overlayIn 0.2s ease":"am-overlayIn 0.2s ease reverse"}}
           onClick={e=>e.target===e.currentTarget&&closeModal()}>
-          <div style={{background:"#F8F3EA",border:"4px solid #0B1957",
-            boxShadow:"12px 12px 0 #0B1957",width:"100%",maxWidth:580,maxHeight:"90vh",overflow:"auto",
+          <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",
+            boxShadow:"12px 12px 0 var(--nb-primary)",width:"100%",maxWidth:580,maxHeight:"90vh",overflow:"auto",
             animation:modalVisible?"am-modalIn 0.35s cubic-bezier(0.16,1,0.3,1)":"am-modalIn 0.25s ease reverse"}}>
-            <div style={{background:"#0B1957",padding:"14px 20px",
+            <div style={{background:"var(--nb-primary)",padding:"14px 20px",
               display:"flex",justifyContent:"space-between",alignItems:"center",
               position:"sticky",top:0,zIndex:10}}>
               <span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",
-                letterSpacing:"0.1em",color:"#9ECCFA",animation:"am-slideLeft 0.3s ease both"}}>
+                letterSpacing:"0.1em",color:"var(--nb-accent)",animation:"am-slideLeft 0.3s ease both"}}>
                 {editing.id===0?"✦ Add Experience":"✦ Edit Experience"}
               </span>
               <button onClick={closeModal} className="am-btn"
-                style={{border:"2px solid #9ECCFA",padding:7,background:"transparent",
-                  cursor:"pointer",color:"#9ECCFA",display:"flex",
-                  boxShadow:"2px 2px 0 #9ECCFA"}}>
+                style={{border:"2px solid var(--nb-accent)",padding:7,background:"transparent",
+                  cursor:"pointer",color:"var(--nb-accent)",display:"flex",
+                  boxShadow:"2px 2px 0 var(--nb-accent)"}}>
                 <IconClose />
               </button>
             </div>
@@ -705,11 +705,11 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
                 <Input label="Job Title" value={editing.title} onChange={v=>setEditing({...editing,title:v})} />
                 <div style={{marginBottom:12}}>
                   <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",
-                    letterSpacing:"0.1em",color:"#0B1957",marginBottom:5}}>Type</label>
+                    letterSpacing:"0.1em",color:"var(--nb-primary)",marginBottom:5}}>Type</label>
                   <select value={editing.type} onChange={e=>setEditing({...editing,type:e.target.value})}
                     className="am-input"
-                    style={{width:"100%",border:"3px solid #0B1957",padding:"9px 12px",fontWeight:700,
-                      fontSize:13,background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit"}}>
+                    style={{width:"100%",border:"3px solid var(--nb-primary)",padding:"9px 12px",fontWeight:700,
+                      fontSize:13,background:"var(--nb-bg)",color:"var(--nb-primary)",fontFamily:"inherit"}}>
                     {TYPE_OPTS.map(t=><option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
@@ -718,25 +718,25 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
                 <Input label="Start Date" value={editing.start_date} onChange={v=>setEditing({...editing,start_date:v})} placeholder="2024-01" type="month" />
                 <div style={{marginBottom:12}}>
                   <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",
-                    letterSpacing:"0.1em",color:"#0B1957",marginBottom:5}}>End Date</label>
+                    letterSpacing:"0.1em",color:"var(--nb-primary)",marginBottom:5}}>End Date</label>
                   <input type="month" value={editing.end_date||""} onChange={e=>setEditing({...editing,end_date:e.target.value||null})}
                     className="am-input"
-                    style={{width:"100%",border:"3px solid #0B1957",padding:"9px 12px",fontWeight:700,
-                      fontSize:13,background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit",boxSizing:"border-box"}} />
-                  <p style={{fontSize:10,fontWeight:700,color:"#0B1957",opacity:0.5,marginTop:4}}>Leave empty = Present</p>
+                    style={{width:"100%",border:"3px solid var(--nb-primary)",padding:"9px 12px",fontWeight:700,
+                      fontSize:13,background:"var(--nb-bg)",color:"var(--nb-primary)",fontFamily:"inherit",boxSizing:"border-box"}} />
+                  <p style={{fontSize:10,fontWeight:700,color:"var(--nb-primary)",opacity:0.5,marginTop:4}}>Leave empty = Present</p>
                 </div>
               </div>
               <Textarea label="Description" value={editing.description} onChange={v=>setEditing({...editing,description:v})} rows={3} />
 
               <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",
-                letterSpacing:"0.1em",color:"#0B1957",marginBottom:8}}>Highlights / Tags</label>
+                letterSpacing:"0.1em",color:"var(--nb-primary)",marginBottom:8}}>Highlights / Tags</label>
               <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8,minHeight:28}}>
                 {editing.highlights.map((h,i)=>(
                   <div key={i} style={{display:"flex",alignItems:"center",gap:4,
-                    border:"2px solid #0B1957",padding:"3px 10px",background:"var(--nb-accent-light)",
+                    border:"2px solid var(--nb-primary)",padding:"3px 10px",background:"var(--nb-accent-light)",
                     animation:"am-tagPop 0.2s cubic-bezier(0.34,1.56,0.64,1) both",
                     animationDelay:`${i*30}ms`}}>
-                    <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",color:"#0B1957"}}>{h}</span>
+                    <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",color:"var(--nb-primary)"}}>{h}</span>
                     <button onClick={()=>removeHL(i)}
                       style={{border:"none",background:"transparent",cursor:"pointer",
                         display:"flex",color:"#b91c1c",padding:0,marginLeft:2}}><IconClose /></button>
@@ -746,12 +746,12 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               <div style={{display:"flex",gap:8,marginBottom:20}}>
                 <input value={newHL} onChange={e=>setNewHL(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addHL()}
                   placeholder="React, Laravel…" className="am-input"
-                  style={{flex:1,border:"3px solid #0B1957",padding:"7px 12px",fontWeight:700,fontSize:12,
-                    background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit"}} />
+                  style={{flex:1,border:"3px solid var(--nb-primary)",padding:"7px 12px",fontWeight:700,fontSize:12,
+                    background:"var(--nb-bg)",color:"var(--nb-primary)",fontFamily:"inherit"}} />
                 <button onClick={addHL} className="am-btn"
-                  style={{border:"3px solid #0B1957",padding:"7px 12px",background:"#0B1957",color:"#9ECCFA",
+                  style={{border:"3px solid var(--nb-primary)",padding:"7px 12px",background:"var(--nb-primary)",color:"var(--nb-accent)",
                     fontWeight:900,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",
-                    gap:5,fontSize:11,textTransform:"uppercase",boxShadow:"3px 3px 0 #9ECCFA"}}>
+                    gap:5,fontSize:11,textTransform:"uppercase",boxShadow:"3px 3px 0 var(--nb-accent)"}}>
                   <IconPlus/> Add
                 </button>
               </div>
@@ -767,20 +767,20 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
       <div style={{marginTop:16,display:"flex",flexDirection:"column",gap:10}}>
         {!loaded && [0,1,2].map(i=><SkeletonRow key={i} delay={i*80}/>)}
         {loaded && exps.length===0 && (
-          <p style={{fontSize:12,fontWeight:700,color:"#0B1957",opacity:0.4,fontStyle:"italic",
+          <p style={{fontSize:12,fontWeight:700,color:"var(--nb-primary)",opacity:0.4,fontStyle:"italic",
             animation:"am-fadeIn 0.5s ease both"}}>No experiences yet. Add one!</p>
         )}
         {loaded && exps.map((exp,i)=>{
-          const tc = TYPE_COLORS[exp.type]??{bg:"var(--nb-accent-light)",text:"#0B1957",border:"#0B1957"};
+          const tc = TYPE_COLORS[exp.type]??{bg:"var(--nb-accent-light)",text:"var(--nb-primary)",border:"var(--nb-primary)"};
           return (
             <div key={exp.id} className="am-card"
-              style={{border:"3px solid #0B1957",background:"#fff",boxShadow:"4px 4px 0 #0B1957",
+              style={{border:"3px solid var(--nb-primary)",background:"#fff",boxShadow:"4px 4px 0 var(--nb-primary)",
                 padding:"14px 16px",
                 animation:`am-rowIn 0.35s cubic-bezier(0.16,1,0.3,1) ${i*60}ms both`}}>
               <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8,flexWrap:"wrap"}}>
                 <div>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
-                    <span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",color:"#0B1957"}}>{exp.title}</span>
+                    <span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",color:"var(--nb-primary)"}}>{exp.title}</span>
                     <span style={{border:`2px solid ${tc.border}`,padding:"2px 8px",fontSize:10,fontWeight:900,
                       textTransform:"uppercase",background:tc.bg,color:tc.text,
                       boxShadow:`1px 1px 0 ${tc.border}`}}>{exp.type}</span>
@@ -790,16 +790,16 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
                         animation:"am-pulse 2s ease infinite"}}>● Active</span>
                     )}
                   </div>
-                  <p style={{fontSize:12,fontWeight:700,color:"#0B1957",opacity:0.55}}>{exp.company}</p>
-                  <p style={{fontSize:11,fontWeight:700,color:"#0B1957",opacity:0.4,marginTop:2}}>
+                  <p style={{fontSize:12,fontWeight:700,color:"var(--nb-primary)",opacity:0.55}}>{exp.company}</p>
+                  <p style={{fontSize:11,fontWeight:700,color:"var(--nb-primary)",opacity:0.4,marginTop:2}}>
                     {fmtDate(exp.start_date)} → {fmtDate(exp.end_date)}
                   </p>
                 </div>
                 <div style={{display:"flex",gap:6}}>
                   <button onClick={()=>openEdit(exp)} className="am-btn"
-                    style={{border:"2px solid #0B1957",padding:"5px 10px",background:"var(--nb-accent-light)",cursor:"pointer",
+                    style={{border:"2px solid var(--nb-primary)",padding:"5px 10px",background:"var(--nb-accent-light)",cursor:"pointer",
                       display:"flex",alignItems:"center",gap:5,fontWeight:900,fontSize:11,
-                      textTransform:"uppercase",fontFamily:"inherit",boxShadow:"2px 2px 0 #0B1957"}}>
+                      textTransform:"uppercase",fontFamily:"inherit",boxShadow:"2px 2px 0 var(--nb-primary)"}}>
                     <IconEdit /> Edit
                   </button>
                   <BtnDanger onClick={()=>del(exp.id)}><IconTrash /> Del</BtnDanger>
@@ -881,18 +881,18 @@ function CaseStudiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
           background:"rgba(11,25,87,0.55)",
           animation:modalVisible?"am-overlayIn 0.2s ease":"am-overlayIn 0.2s ease reverse"}}
           onClick={e=>e.target===e.currentTarget&&closeModal()}>
-          <div style={{background:"#F8F3EA",border:"4px solid #0B1957",
-            boxShadow:"12px 12px 0 #0B1957",width:"100%",maxWidth:500,
+          <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",
+            boxShadow:"12px 12px 0 var(--nb-primary)",width:"100%",maxWidth:500,
             animation:modalVisible?"am-modalIn 0.35s cubic-bezier(0.16,1,0.3,1)":"am-modalIn 0.25s ease reverse"}}>
-            <div style={{background:"#0B1957",padding:"14px 20px",
+            <div style={{background:"var(--nb-primary)",padding:"14px 20px",
               display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",
-                letterSpacing:"0.1em",color:"#9ECCFA"}}>
+                letterSpacing:"0.1em",color:"var(--nb-accent)"}}>
                 {editing.id===0?"✦ Add":"✦ Edit"} Case Study
               </span>
               <button onClick={closeModal} className="am-btn"
-                style={{border:"2px solid #9ECCFA",padding:7,background:"transparent",
-                  cursor:"pointer",color:"#9ECCFA",display:"flex",boxShadow:"2px 2px 0 #9ECCFA"}}>
+                style={{border:"2px solid var(--nb-accent)",padding:7,background:"transparent",
+                  cursor:"pointer",color:"var(--nb-accent)",display:"flex",boxShadow:"2px 2px 0 var(--nb-accent)"}}>
                 <IconClose />
               </button>
             </div>
@@ -913,16 +913,16 @@ function CaseStudiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
           <div key={i} className="am-skeleton" style={{height:110,animationDelay:`${i*60}ms`}}/>
         ))}
         {loaded && cases.length===0 && (
-          <p style={{fontSize:12,fontWeight:700,color:"#0B1957",opacity:0.4,fontStyle:"italic",
+          <p style={{fontSize:12,fontWeight:700,color:"var(--nb-primary)",opacity:0.4,fontStyle:"italic",
             animation:"am-fadeIn 0.5s ease both"}}>No case studies yet.</p>
         )}
         {loaded && cases.map((cs,i)=>(
           <div key={cs.id} className="am-card"
-            style={{border:"3px solid #0B1957",background:"#fff",boxShadow:"4px 4px 0 #0B1957",padding:"14px",
+            style={{border:"3px solid var(--nb-primary)",background:"#fff",boxShadow:"4px 4px 0 var(--nb-primary)",padding:"14px",
               animation:`am-cardIn 0.35s cubic-bezier(0.16,1,0.3,1) ${i*60}ms both`}}>
             <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-              <div style={{width:26,height:26,background:"#0B1957",color:"#9ECCFA",
-                border:"2px solid #9ECCFA",boxShadow:"2px 2px 0 #9ECCFA",
+              <div style={{width:26,height:26,background:"var(--nb-primary)",color:"var(--nb-accent)",
+                border:"2px solid var(--nb-accent)",boxShadow:"2px 2px 0 var(--nb-accent)",
                 display:"flex",alignItems:"center",justifyContent:"center",
                 fontWeight:900,fontSize:11,flexShrink:0,
                 transition:"transform 0.15s cubic-bezier(0.34,1.56,0.64,1)"}}
@@ -930,16 +930,16 @@ function CaseStudiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
                 onMouseOut={e=>{e.currentTarget.style.transform="";}}>
                 {String(i+1).padStart(2,"0")}
               </div>
-              <span style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"#0B1957"}}>{cs.title}</span>
+              <span style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"var(--nb-primary)"}}>{cs.title}</span>
             </div>
-            <p style={{fontSize:12,fontWeight:600,color:"#0B1957",opacity:0.7,marginBottom:10,lineHeight:1.5}}>
+            <p style={{fontSize:12,fontWeight:600,color:"var(--nb-primary)",opacity:0.7,marginBottom:10,lineHeight:1.5}}>
               {cs.short_story}
             </p>
             <div style={{display:"flex",gap:6}}>
               <button onClick={()=>openEdit(cs)} className="am-btn"
-                style={{border:"2px solid #0B1957",padding:"5px 10px",background:"var(--nb-accent-light)",cursor:"pointer",
+                style={{border:"2px solid var(--nb-primary)",padding:"5px 10px",background:"var(--nb-accent-light)",cursor:"pointer",
                   display:"flex",alignItems:"center",gap:4,fontWeight:900,fontSize:11,
-                  textTransform:"uppercase",fontFamily:"inherit",boxShadow:"2px 2px 0 #0B1957"}}>
+                  textTransform:"uppercase",fontFamily:"inherit",boxShadow:"2px 2px 0 var(--nb-primary)"}}>
                 <IconEdit /> Edit
               </button>
               <BtnDanger onClick={()=>del(cs.id)}><IconTrash /></BtnDanger>
@@ -995,26 +995,26 @@ function AvailabilityTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     <div onClick={()=>onChange(!val)}
       className="am-toggle"
       style={{display:"flex",alignItems:"center",justifyContent:"space-between",
-        border:`3px solid ${val?"#9ECCFA":"#0B1957"}`,padding:"14px 18px",
-        background:val?"#0B1957":"#F8F3EA",cursor:"pointer",marginBottom:10,
-        boxShadow:val?"4px 4px 0 #9ECCFA":"2px 2px 0 #0B1957",
+        border:`3px solid ${val?"var(--nb-accent)":"var(--nb-primary)"}`,padding:"14px 18px",
+        background:val?"var(--nb-primary)":"var(--nb-bg)",cursor:"pointer",marginBottom:10,
+        boxShadow:val?"4px 4px 0 var(--nb-accent)":"2px 2px 0 var(--nb-primary)",
         transform:val?"translate(-1px,-1px)":"none",
         animation:`am-slideRight 0.35s cubic-bezier(0.16,1,0.3,1) ${delay}ms both`}}>
       <div style={{display:"flex",alignItems:"center",gap:10}}>
         <div style={{position:"relative",width:10,height:10,flexShrink:0}}>
-          <div style={{width:10,height:10,background:val?"#9ECCFA":"#0B1957",opacity:val?1:0.3,
+          <div style={{width:10,height:10,background:val?"var(--nb-accent)":"var(--nb-primary)",opacity:val?1:0.3,
             transition:"all 0.2s ease"}} />
-          {val && <div style={{position:"absolute",inset:0,background:"#9ECCFA",
+          {val && <div style={{position:"absolute",inset:0,background:"var(--nb-accent)",
             animation:"am-ping 1.5s ease infinite"}} />}
         </div>
         <span style={{fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.08em",
-          color:val?"#9ECCFA":"#0B1957",transition:"color 0.2s ease"}}>{label}</span>
+          color:val?"var(--nb-accent)":"var(--nb-primary)",transition:"color 0.2s ease"}}>{label}</span>
       </div>
-      <div style={{width:44,height:24,border:`3px solid ${val?"#9ECCFA":"#0B1957"}`,
+      <div style={{width:44,height:24,border:`3px solid ${val?"var(--nb-accent)":"var(--nb-primary)"}`,
         background:val?"rgba(158,204,250,0.2)":"transparent",
         display:"flex",alignItems:"center",padding:2,position:"relative",flexShrink:0}}>
         <div className="am-toggle-dot"
-          style={{width:12,height:12,background:val?"#9ECCFA":"#0B1957",
+          style={{width:12,height:12,background:val?"var(--nb-accent)":"var(--nb-primary)",
             transform:val?"translateX(20px)":"translateX(0)",opacity:val?1:0.5}} />
       </div>
     </div>
@@ -1029,7 +1029,7 @@ function AvailabilityTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
   return (
     <SectionBox title="Availability Status">
       <div style={{
-        background:"#0B1957",border:"3px solid #9ECCFA",boxShadow:"4px 4px 0 #9ECCFA",
+        background:"var(--nb-primary)",border:"3px solid var(--nb-accent)",boxShadow:"4px 4px 0 var(--nb-accent)",
         padding:"16px 20px",marginBottom:20,
         display:"flex",alignItems:"center",gap:12,
         animation:"am-scaleIn 0.4s cubic-bezier(0.16,1,0.3,1) both"}}>
@@ -1038,9 +1038,9 @@ function AvailabilityTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
           <div style={{position:"absolute",inset:0,background:"#4ade80",animation:"am-ping 1.4s ease infinite"}} />
         </div>
         <div>
-          <p style={{fontSize:10,fontWeight:900,color:"#9ECCFA",textTransform:"uppercase",
+          <p style={{fontSize:10,fontWeight:900,color:"var(--nb-accent)",textTransform:"uppercase",
             letterSpacing:"0.2em",marginBottom:2}}>Current Status</p>
-          <p style={{fontSize:18,fontWeight:900,color:"#F8F3EA",textTransform:"uppercase"}}>
+          <p style={{fontSize:18,fontWeight:900,color:"var(--nb-bg)",textTransform:"uppercase"}}>
             {status || "Open to Work"}
           </p>
         </div>
@@ -1159,7 +1159,7 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
 
   return (
     <SectionBox title="By the Numbers">
-      <p style={{fontSize:12,fontWeight:700,color:"#0B1957",opacity:0.6,marginBottom:16,
+      <p style={{fontSize:12,fontWeight:700,color:"var(--nb-primary)",opacity:0.6,marginBottom:16,
         animation:"am-slideDown 0.3s cubic-bezier(0.16,1,0.3,1) both"}}>
         Tambah, edit, hapus, dan urutkan stat cards yang tampil di About page. Max 10 items.
       </p>
@@ -1169,8 +1169,8 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
           <div key={i}
             style={{
               display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",
-              border:"3px solid #0B1957",padding:"10px 12px",background:"#fff",
-              boxShadow:"3px 3px 0 #0B1957",
+              border:"3px solid var(--nb-primary)",padding:"10px 12px",background:"#fff",
+              boxShadow:"3px 3px 0 var(--nb-primary)",
               animation: i===justAdded
                 ? "am-popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both"
                 : `am-rowIn 0.35s cubic-bezier(0.16,1,0.3,1) ${i*50}ms both`,
@@ -1178,22 +1178,22 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
             }}
             onMouseOver={e=>{
               e.currentTarget.style.transform="translate(-1px,-1px)";
-              e.currentTarget.style.boxShadow="5px 5px 0 #0B1957";
+              e.currentTarget.style.boxShadow="5px 5px 0 var(--nb-primary)";
             }}
             onMouseOut={e=>{
               e.currentTarget.style.transform="";
-              e.currentTarget.style.boxShadow="3px 3px 0 #0B1957";
+              e.currentTarget.style.boxShadow="3px 3px 0 var(--nb-primary)";
             }}>
 
             <div style={{position:"relative",flexShrink:0}}>
               <button onClick={()=>setIconPicker(iconPicker===i?null:i)}
                 title="Pilih icon" className="am-btn"
-                style={{width:42,height:42,border:"3px solid #0B1957",
-                  background:iconPicker===i?"#0B1957":"var(--nb-accent-light)",
-                  color:iconPicker===i?"#9ECCFA":"#0B1957",
+                style={{width:42,height:42,border:"3px solid var(--nb-primary)",
+                  background:iconPicker===i?"var(--nb-primary)":"var(--nb-accent-light)",
+                  color:iconPicker===i?"var(--nb-accent)":"var(--nb-primary)",
                   display:"flex",alignItems:"center",justifyContent:"center",
                   cursor:"pointer",flexShrink:0,
-                  boxShadow:iconPicker===i?"3px 3px 0 #9ECCFA":"2px 2px 0 #0B1957",
+                  boxShadow:iconPicker===i?"3px 3px 0 var(--nb-accent)":"2px 2px 0 var(--nb-primary)",
                   transition:"all 0.15s ease"}}>
                 <span style={{transition:"transform 0.2s cubic-bezier(0.34,1.56,0.64,1)",
                   transform:iconPicker===i?"scale(1.2)":"scale(1)"}}>
@@ -1204,15 +1204,15 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
               {iconPicker===i && (
                 <div style={{
                   position:"absolute",top:50,left:0,zIndex:200,
-                  background:"#F8F3EA",border:"3px solid #0B1957",
-                  boxShadow:"8px 8px 0 #0B1957",
+                  background:"var(--nb-bg)",border:"3px solid var(--nb-primary)",
+                  boxShadow:"8px 8px 0 var(--nb-primary)",
                   display:"grid",gridTemplateColumns:"repeat(6,38px)",
                   gap:4,padding:8,
                   animation:"am-scaleIn 0.2s cubic-bezier(0.16,1,0.3,1) both",
                   transformOrigin:"top left",
                 }}>
                   <div style={{gridColumn:"1/-1",fontWeight:900,fontSize:9,textTransform:"uppercase",
-                    color:"#0B1957",opacity:0.4,letterSpacing:"0.1em",marginBottom:2}}>
+                    color:"var(--nb-primary)",opacity:0.4,letterSpacing:"0.1em",marginBottom:2}}>
                     Pilih Icon
                   </div>
                   {ICON_PRESETS.map((preset,pi)=>{
@@ -1220,12 +1220,12 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
                     return (
                       <button key={preset.key} title={preset.label}
                         onClick={()=>{ updateStat(i,"icon_key",preset.key); setIconPicker(null); }}
-                        style={{width:38,height:38,border:"2px solid #0B1957",
-                          background:isActive?"#0B1957":"#F8F3EA",
-                          color:isActive?"#9ECCFA":"#0B1957",
+                        style={{width:38,height:38,border:"2px solid var(--nb-primary)",
+                          background:isActive?"var(--nb-primary)":"var(--nb-bg)",
+                          color:isActive?"var(--nb-accent)":"var(--nb-primary)",
                           display:"flex",alignItems:"center",justifyContent:"center",
                           cursor:"pointer",padding:0,
-                          boxShadow:isActive?"2px 2px 0 #9ECCFA":"none",
+                          boxShadow:isActive?"2px 2px 0 var(--nb-accent)":"none",
                           transition:"all 0.12s ease",
                           animation:`am-popIn 0.2s cubic-bezier(0.16,1,0.3,1) ${pi*20}ms both`}}>
                         {preset.svg}
@@ -1238,23 +1238,23 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
 
             <input value={stat.value} onChange={e=>updateStat(i,"value",e.target.value)}
               placeholder="3+" className="am-input"
-              style={{width:64,flexShrink:0,border:"2px solid #0B1957",padding:"7px 8px",
+              style={{width:64,flexShrink:0,border:"2px solid var(--nb-primary)",padding:"7px 8px",
                 fontWeight:900,fontSize:18,textAlign:"center",
-                background:"#F8F3EA",color:"#0B1957",fontFamily:"inherit"}} />
+                background:"var(--nb-bg)",color:"var(--nb-primary)",fontFamily:"inherit"}} />
 
             <input value={stat.label} onChange={e=>updateStat(i,"label",e.target.value)}
               placeholder="Years Coding" className="am-input"
-              style={{flex:1,minWidth:100,border:"2px solid #0B1957",padding:"7px 10px",
-                fontWeight:700,fontSize:13,background:"#F8F3EA",color:"#0B1957",
+              style={{flex:1,minWidth:100,border:"2px solid var(--nb-primary)",padding:"7px 10px",
+                fontWeight:700,fontSize:13,background:"var(--nb-bg)",color:"var(--nb-primary)",
                 fontFamily:"inherit",textTransform:"uppercase"}} />
 
             <div style={{display:"flex",gap:4,flexShrink:0}}>
               <button onClick={()=>moveStat(i,-1)} className="am-btn"
-                style={{border:"2px solid #0B1957",padding:"5px 7px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
+                style={{border:"2px solid var(--nb-primary)",padding:"5px 7px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
                 <IconUp />
               </button>
               <button onClick={()=>moveStat(i,1)} className="am-btn"
-                style={{border:"2px solid #0B1957",padding:"5px 7px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
+                style={{border:"2px solid var(--nb-primary)",padding:"5px 7px",background:"var(--nb-accent-light)",cursor:"pointer",display:"flex"}}>
                 <IconDown />
               </button>
               <button onClick={()=>removeStat(i)} className="am-btn"
@@ -1271,9 +1271,9 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         {stats.length<10 && (
           <button onClick={addStat} className="am-btn"
             style={{display:"flex",alignItems:"center",gap:6,
-              border:"2px dashed #0B1957",padding:"8px 16px",
+              border:"2px dashed var(--nb-primary)",padding:"8px 16px",
               background:"transparent",fontWeight:900,fontSize:11,
-              color:"#0B1957",textTransform:"uppercase",letterSpacing:"0.08em",
+              color:"var(--nb-primary)",textTransform:"uppercase",letterSpacing:"0.08em",
               cursor:"pointer",fontFamily:"inherit",transition:"border-style 0.15s ease,background 0.15s ease"}}
             onMouseOver={e=>{
               e.currentTarget.style.borderStyle="solid";
@@ -1289,36 +1289,36 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         <BtnPrimary onClick={save} disabled={saving}>
           <IconSave /> {saving?"Saving...":"Save Stats"}
         </BtnPrimary>
-        <span style={{fontSize:11,fontWeight:700,color:"#0B1957",opacity:0.4}}>
+        <span style={{fontSize:11,fontWeight:700,color:"var(--nb-primary)",opacity:0.4}}>
           {stats.length}/10 items
         </span>
       </div>
 
       {stats.length>0 && (
-        <div style={{borderTop:"3px solid #0B1957",paddingTop:16,
+        <div style={{borderTop:"3px solid var(--nb-primary)",paddingTop:16,
           animation:"am-slideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.2s both"}}>
           <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",
-            letterSpacing:"0.1em",color:"#0B1957",opacity:0.5,marginBottom:12}}>
+            letterSpacing:"0.1em",color:"var(--nb-primary)",opacity:0.5,marginBottom:12}}>
             ↓ Preview (seperti tampilan di About page)
           </p>
           <div style={{display:"grid",gridTemplateColumns:`repeat(${Math.min(stats.length,5)},1fr)`,gap:8}}>
             {stats.map((stat,i)=>(
               <div key={i} className="am-card"
-                style={{border:"3px solid #0B1957",background:"#F8F3EA",
-                  boxShadow:"4px 4px 0 #0B1957",padding:"14px 10px",
+                style={{border:"3px solid var(--nb-primary)",background:"var(--nb-bg)",
+                  boxShadow:"4px 4px 0 var(--nb-primary)",padding:"14px 10px",
                   display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",
                   animation:`am-cardIn 0.3s cubic-bezier(0.16,1,0.3,1) ${i*50}ms both`}}>
-                <div style={{color:"#0B1957",marginBottom:6,
+                <div style={{color:"var(--nb-primary)",marginBottom:6,
                   transition:"transform 0.2s cubic-bezier(0.34,1.56,0.64,1)"}}
                   onMouseOver={e=>{e.currentTarget.style.transform="scale(1.25)";}}
                   onMouseOut={e=>{e.currentTarget.style.transform="";}}>
                   {getIconNode(stat.icon_key)}
                 </div>
-                <span style={{fontWeight:900,fontSize:20,color:"#0B1957",lineHeight:1,marginBottom:4}}>
+                <span style={{fontWeight:900,fontSize:20,color:"var(--nb-primary)",lineHeight:1,marginBottom:4}}>
                   {stat.value||"–"}
                 </span>
                 <span style={{fontWeight:800,fontSize:9,textTransform:"uppercase",
-                  letterSpacing:"0.1em",color:"#0B1957",opacity:0.6}}>
+                  letterSpacing:"0.1em",color:"var(--nb-primary)",opacity:0.6}}>
                   {stat.label||"Label"}
                 </span>
               </div>
@@ -1380,12 +1380,12 @@ export default function AboutManager() {
           opacity:headerReady?1:0, transform:headerReady?"translateY(0)":"translateY(-12px)",
           transition:"opacity 0.4s ease, transform 0.4s ease"}}>
           <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.25em",
-            color:"#9ECCFA",marginBottom:4}}>Dashboard</p>
-          <h2 style={{fontWeight:900,fontSize:26,textTransform:"uppercase",color:"#0B1957",
+            color:"var(--nb-accent)",marginBottom:4}}>Dashboard</p>
+          <h2 style={{fontWeight:900,fontSize:26,textTransform:"uppercase",color:"var(--nb-primary)",
             letterSpacing:"0.05em",lineHeight:1}}>
             About Page Manager
           </h2>
-          <div style={{height:4,background:"#0B1957",marginTop:8,width:headerReady?"100%":"0%",
+          <div style={{height:4,background:"var(--nb-primary)",marginTop:8,width:headerReady?"100%":"0%",
             transition:"width 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s"}} />
         </div>
 
@@ -1394,9 +1394,9 @@ export default function AboutManager() {
           ref={tabbarRef}
           className="am-tabbar"
           style={{
-            background:"#F8F3EA",
-            border:"4px solid #0B1957",
-            boxShadow:"6px 6px 0 #0B1957",
+            background:"var(--nb-bg)",
+            border:"4px solid var(--nb-primary)",
+            boxShadow:"6px 6px 0 var(--nb-primary)",
             marginBottom:28,
             overflowX:"auto",
             overflowY:"hidden",
@@ -1421,10 +1421,10 @@ export default function AboutManager() {
                     fontWeight:900,fontSize:10,textTransform:"uppercase",
                     letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit",
                     border:"none",
-                    borderRight:i<TABS.length-1?"3px solid #0B1957":"none",
-                    borderBottom:isActive?"4px solid #9ECCFA":"4px solid transparent",
-                    background: isActive?"#0B1957":"#F8F3EA",
-                    color: isActive?"#9ECCFA":"#0B1957",
+                    borderRight:i<TABS.length-1?"3px solid var(--nb-primary)":"none",
+                    borderBottom:isActive?"4px solid var(--nb-accent)":"4px solid transparent",
+                    background: isActive?"var(--nb-primary)":"var(--nb-bg)",
+                    color: isActive?"var(--nb-accent)":"var(--nb-primary)",
                     display:"flex",flexDirection:"column",alignItems:"center",gap:4,
                     position:"relative",
                     animation:`am-slideDown 0.35s cubic-bezier(0.16,1,0.3,1) ${i*40+100}ms both`,
@@ -1432,7 +1432,7 @@ export default function AboutManager() {
                   }}>
                   {isActive && (
                     <div style={{position:"absolute",top:6,right:6,width:6,height:6,
-                      background:"#9ECCFA",animation:"am-popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both"}} />
+                      background:"var(--nb-accent)",animation:"am-popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both"}} />
                   )}
                   <span style={{fontSize:14,lineHeight:1,opacity:isActive?1:0.5,
                     transition:"opacity 0.15s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1)",

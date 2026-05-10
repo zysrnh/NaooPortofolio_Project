@@ -288,7 +288,7 @@ function StackDistribution({ stacks }: { stacks: { category?: string }[] }) {
             <span style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", color: "#9ECCFA", letterSpacing: "0.1em" }}>{cat}</span>
             <span style={{ fontWeight: 900, fontSize: 9, color: "var(--nb-accent-light)", opacity: 0.7 }}>{count}</span>
           </div>
-          <div style={{ height: 14, background: "rgba(158,204,250,0.12)", border: "2px solid rgba(158,204,250,0.3)" }}>
+          <div style={{ height: 14, background: "var(--nb-accent),0.12)", border: "2px solid var(--nb-accent),0.3)" }}>
             <div style={{
               height: "100%",
               width: `${(count / total) * 100}%`,
@@ -493,7 +493,7 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
           })}
           <path d={areaD} fill="url(#pushGrad)" />
           <path d={pathD} fill="none" stroke="#9ECCFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-            style={{ filter: "drop-shadow(0 2px 6px rgba(158,204,250,0.6))" }} />
+            style={{ filter: "drop-shadow(0 2px 6px var(--nb-accent),0.6))" }} />
           {pts.map((p, i) => (
             <g key={i}>
               <rect
@@ -526,7 +526,7 @@ function PushActivityChart({ contributions }: { contributions: ContribDay[] }) {
                 stroke="#0B1957" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.4" />
               <g transform={`translate(${Math.min(hov.x + 8, W - 120)}, ${Math.max(hov.y - 48, PAD.top)})`}>
                 <rect x={0} y={0} width={110} height={38} fill="#0B1957" stroke="#9ECCFA" strokeWidth="2" />
-                <rect x={2} y={2} width={110} height={38} fill="none" stroke="rgba(158,204,250,0.15)" strokeWidth="1" />
+                <rect x={2} y={2} width={110} height={38} fill="none" stroke="var(--nb-accent),0.15)" strokeWidth="1" />
                 <text x={8} y={14} style={{ fontSize: 8, fill: "#9ECCFA", fontWeight: 900, fontFamily: "inherit", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   {hov.d.count} commit{hov.d.count !== 1 ? "s" : ""}
                 </text>
@@ -619,7 +619,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
             { val: loading ? "…" : streak,        label: "Streak"  },
             { val: loading ? "…" : maxDay,        label: "Best Day" },
           ].map((s, i) => (
-            <div key={i} style={{ border: "2px solid #9ECCFA", background: "rgba(158,204,250,0.08)", padding: "6px 12px", textAlign: "center", boxShadow: "2px 2px 0 #9ECCFA" }}>
+            <div key={i} style={{ border: "2px solid #9ECCFA", background: "var(--nb-accent),0.08)", padding: "6px 12px", textAlign: "center", boxShadow: "2px 2px 0 #9ECCFA" }}>
               <p style={{ fontWeight: 900, fontSize: 18, color: "#9ECCFA", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
               <p style={{ fontWeight: 900, fontSize: 8, color: "var(--nb-accent-light)", margin: 0, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.7 }}>{s.label}</p>
             </div>
@@ -943,7 +943,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
               <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "#9ECCFA", margin: 0 }}>Stack Categories</p>
             </div>
             {loading
-              ? <div style={{ height: 80, background: "linear-gradient(90deg,rgba(158,204,250,0.2) 25%,rgba(158,204,250,0.35) 50%,rgba(158,204,250,0.2) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }} />
+              ? <div style={{ height: 80, background: "linear-gradient(90deg,var(--nb-accent),0.2) 25%,var(--nb-accent),0.35) 50%,var(--nb-accent),0.2) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s ease infinite" }} />
               : <StackDistribution stacks={stacks} />
             }
           </div>
@@ -1067,7 +1067,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
               { label: "Live",     val: live,            icon: <IconRocket size={12} /> },
               { label: "Stacks",   val: stacks.length,   icon: <IconLayers size={12} /> },
             ].map((s, i) => (
-              <div key={i} style={{ border: "3px solid rgba(158,204,250,0.4)", background: "rgba(158,204,250,0.08)", padding: "10px 16px", textAlign: "center", boxShadow: "3px 3px 0 rgba(158,204,250,0.25)" }}>
+              <div key={i} style={{ border: "3px solid var(--nb-accent),0.4)", background: "var(--nb-accent),0.08)", padding: "10px 16px", textAlign: "center", boxShadow: "3px 3px 0 var(--nb-accent),0.25)" }}>
                 <div style={{ color: "#9ECCFA", display: "flex", justifyContent: "center", marginBottom: 4 }}>{s.icon}</div>
                 <p style={{ fontWeight: 900, fontSize: 22, color: "#9ECCFA", margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{s.val}</p>
                 <p style={{ fontWeight: 900, fontSize: 8, color: "var(--nb-accent-light)", opacity: 0.6, margin: "4px 0 0", textTransform: "uppercase", letterSpacing: "0.1em" }}>{s.label}</p>
@@ -1080,12 +1080,12 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
           </div>
         </div>
         {stacks.filter(s => s.is_visible).length > 0 && (
-          <div style={{ borderTop: "2px solid rgba(158,204,250,0.2)", paddingTop: 14, display: "flex", flexWrap: "wrap", gap: 6 }}>
+          <div style={{ borderTop: "2px solid var(--nb-accent),0.2)", paddingTop: 14, display: "flex", flexWrap: "wrap", gap: 6 }}>
             {stacks.filter(s => s.is_visible).slice(0, 14).map((s, i) => (
               <div key={i} title={s.name}
-                style={{ width: 32, height: 32, border: "2px solid rgba(158,204,250,0.3)", background: "rgba(158,204,250,0.08)", display: "flex", alignItems: "center", justifyContent: "center", transition: "border-color 0.1s, background 0.1s" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#9ECCFA"; (e.currentTarget as HTMLElement).style.background = "rgba(158,204,250,0.2)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(158,204,250,0.3)"; (e.currentTarget as HTMLElement).style.background = "rgba(158,204,250,0.08)"; }}>
+                style={{ width: 32, height: 32, border: "2px solid var(--nb-accent),0.3)", background: "var(--nb-accent),0.08)", display: "flex", alignItems: "center", justifyContent: "center", transition: "border-color 0.1s, background 0.1s" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#9ECCFA"; (e.currentTarget as HTMLElement).style.background = "var(--nb-accent),0.2)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--nb-accent),0.3)"; (e.currentTarget as HTMLElement).style.background = "var(--nb-accent),0.08)"; }}>
                 <DbIcon src={s.icon} size={18} />
               </div>
             ))}
@@ -1336,7 +1336,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
           <button key={key} onClick={() => setFilterTab(key)}
             style={{ flex: 1, padding: "10px 6px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", borderRight: key !== "read" ? "4px solid #0B1957" : "none", borderLeft: "none", borderTop: "none", borderBottom: "none", background: filterTab === key ? "#0B1957" : "#F8F3EA", color: filterTab === key ? "#9ECCFA" : "#0B1957", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }}>
             {label}
-            <span style={{ background: filterTab === key ? "rgba(158,204,250,0.2)" : "var(--nb-accent-light)", color: filterTab === key ? "#9ECCFA" : "#0B1957", border: `2px solid ${filterTab === key ? "#9ECCFA" : "#0B1957"}`, fontSize: 9, fontWeight: 900, padding: "1px 5px", minWidth: 18, textAlign: "center" }}>{count}</span>
+            <span style={{ background: filterTab === key ? "var(--nb-accent),0.2)" : "var(--nb-accent-light)", color: filterTab === key ? "#9ECCFA" : "#0B1957", border: `2px solid ${filterTab === key ? "#9ECCFA" : "#0B1957"}`, fontSize: 9, fontWeight: 900, padding: "1px 5px", minWidth: 18, textAlign: "center" }}>{count}</span>
           </button>
         ))}
       </div>
@@ -1494,19 +1494,19 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
           transition:background 0.12s ease, color 0.12s ease, border-color 0.12s ease, padding-left 0.15s ease;
           animation: slideLeft 0.4s cubic-bezier(0.16,1,0.3,1) both;
         }
-        .nav-item:hover  { background:rgba(158,204,250,0.1); color:#F8F3EA; padding-left:22px; }
-        .nav-item.active { background:rgba(158,204,250,0.15); color:#F8F3EA; border-left-color:#9ECCFA; padding-left:22px; }
+        .nav-item:hover  { background:var(--nb-accent),0.1); color:#F8F3EA; padding-left:22px; }
+        .nav-item.active { background:var(--nb-accent),0.15); color:#F8F3EA; border-left-color:#9ECCFA; padding-left:22px; }
 
         .home-btn-sidebar {
           display:flex; align-items:center; gap:8px; width:100%;
-          border:3px solid rgba(158,204,250,0.4); padding:9px 14px;
+          border:3px solid var(--nb-accent),0.4); padding:9px 14px;
           background:transparent; font-weight:900; font-size:12px;
           text-transform:uppercase; color:#9ECCFA; letter-spacing:0.08em;
           cursor:pointer; font-family:inherit; margin-bottom:8px;
-          box-shadow:2px 2px 0 rgba(158,204,250,0.3);
+          box-shadow:2px 2px 0 var(--nb-accent),0.3);
           transition:background 0.1s ease, border-color 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .home-btn-sidebar:hover  { background:rgba(158,204,250,0.1); border-color:#9ECCFA; transform:translate(-1px,-1px); }
+        .home-btn-sidebar:hover  { background:var(--nb-accent),0.1); border-color:#9ECCFA; transform:translate(-1px,-1px); }
         .home-btn-topbar {
           display:flex; align-items:center; gap:6px;
           border:3px solid #0B1957; padding:7px 14px;
@@ -1532,14 +1532,14 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
           box-shadow:3px 3px 0 #9ECCFA;
           transition:background 0.1s ease, transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .logout-btn:hover  { background:rgba(158,204,250,0.15); transform:translate(1px,1px); box-shadow:2px 2px 0 #9ECCFA; }
+        .logout-btn:hover  { background:var(--nb-accent),0.15); transform:translate(1px,1px); box-shadow:2px 2px 0 #9ECCFA; }
 
         .content-fade { animation:fadeIn 0.3s ease both; }
         .grid-bg-dark {
           position:absolute; inset:0; pointer-events:none;
           background-image:
-            repeating-linear-gradient(0deg,rgba(158,204,250,0.08) 0,rgba(158,204,250,0.08) 1px,transparent 1px,transparent 40px),
-            repeating-linear-gradient(90deg,rgba(158,204,250,0.08) 0,rgba(158,204,250,0.08) 1px,transparent 1px,transparent 40px);
+            repeating-linear-gradient(0deg,var(--nb-accent),0.08) 0,var(--nb-accent),0.08) 1px,transparent 1px,transparent 40px),
+            repeating-linear-gradient(90deg,var(--nb-accent),0.08) 0,var(--nb-accent),0.08) 1px,transparent 1px,transparent 40px);
         }
 
         .bottom-nav {

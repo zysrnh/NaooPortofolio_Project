@@ -312,7 +312,7 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
           <div style={{display:"flex",alignItems:"center",gap:12,color:"var(--nb-accent)"}}><IconCrop /><span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.15em"}}>Crop Foto Project</span></div>
           <button style={{color:"var(--nb-accent)",background:"transparent",border:"none",cursor:"pointer"}} onClick={onCancel}><IconClose /></button>
         </div>
-        <div style={{position:"relative",display:"flex",justifyContent:"center",background:"#040d3a",borderBottom:"4px solid var(--nb-accent)",overflow:"hidden"}}>
+        <div style={{position:"relative",display:"flex",justifyContent:"center",background:"var(--nb-primary)",borderBottom:"4px solid var(--nb-accent)",overflow:"hidden"}}>
           <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{display:"block",cursor:"grab",width:"100%",maxWidth:CANVAS_W,userSelect:"none",touchAction:"none"}} onMouseDown={onMouseDown} onWheel={e=>{e.preventDefault();zoom(e.deltaY<0?0.07:-0.07);}} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} />
         </div>
         <div style={{padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"4px solid var(--nb-accent)"}}>

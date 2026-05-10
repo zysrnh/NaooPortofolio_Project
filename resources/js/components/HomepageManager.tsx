@@ -48,18 +48,18 @@ interface ContactItem {
 const PLATFORM_PRESETS: Record<ContactPlatform, { label: string; color: string; placeholder_value: string; placeholder_url: string; url_prefix?: string }> = {
   whatsapp:  { label: "WhatsApp",  color: "#25D366", placeholder_value: "6283861669565",  placeholder_url: "https://wa.me/6283861669565",      url_prefix: "https://wa.me/" },
   email:     { label: "Email",     color: "#EA4335", placeholder_value: "nama@email.com", placeholder_url: "mailto:nama@email.com",            url_prefix: "mailto:" },
-  github:    { label: "GitHub",    color: "#0B1957", placeholder_value: "username",       placeholder_url: "https://github.com/username",     url_prefix: "https://github.com/" },
+  github:    { label: "GitHub",    color: "var(--nb-primary)", placeholder_value: "username",       placeholder_url: "https://github.com/username",     url_prefix: "https://github.com/" },
   linkedin:  { label: "LinkedIn",  color: "#0A66C2", placeholder_value: "username",       placeholder_url: "https://linkedin.com/in/username", url_prefix: "https://linkedin.com/in/" },
   twitter:   { label: "Twitter/X", color: "#000000", placeholder_value: "@username",      placeholder_url: "https://twitter.com/username",    url_prefix: "https://twitter.com/" },
   instagram: { label: "Instagram", color: "#E1306C", placeholder_value: "@username",      placeholder_url: "https://instagram.com/username",  url_prefix: "https://instagram.com/" },
   telegram:  { label: "Telegram",  color: "#2AABEE", placeholder_value: "@username",      placeholder_url: "https://t.me/username",           url_prefix: "https://t.me/" },
-  custom:    { label: "Custom",    color: "#9ECCFA", placeholder_value: "Nama kontak",    placeholder_url: "https://...",                     url_prefix: "" },
+  custom:    { label: "Custom",    color: "var(--nb-accent)", placeholder_value: "Nama kontak",    placeholder_url: "https://...",                     url_prefix: "" },
 };
 
 const PLATFORM_ICONS: Record<ContactPlatform, JSX.Element> = {
   whatsapp:  <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>,
   email:     <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>,
-  github:    <svg width="20" height="20" viewBox="0 0 24 24" fill="#9ECCFA"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>,
+  github:    <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--nb-accent)"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>,
   linkedin:  <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>,
   twitter:   <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.638L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>,
   instagram: <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>,
@@ -110,7 +110,7 @@ const GLOBAL_STYLES = `
   @keyframes hmPulse     { 0%,100%{opacity:1} 50%{opacity:.4} }
   @keyframes hmShimmer   { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
   @keyframes hmBounce    { 0%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} 60%{transform:translateY(-2px)} }
-  @keyframes hmGlow      { 0%,100%{box-shadow:4px 4px 0 #0B1957} 50%{box-shadow:4px 4px 0 #9ECCFA,6px 6px 0 #0B1957} }
+  @keyframes hmGlow      { 0%,100%{box-shadow:4px 4px 0 var(--nb-primary)} 50%{box-shadow:4px 4px 0 var(--nb-accent),6px 6px 0 var(--nb-primary)} }
   @keyframes hmCardIn    { from{opacity:0;transform:translateY(28px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
 
   /* ── Prevent horizontal overflow on mobile ── */
@@ -120,27 +120,27 @@ const GLOBAL_STYLES = `
     background: linear-gradient(90deg, var(--nb-accent-light) 25%, var(--nb-accent) 50%, var(--nb-accent-light) 75%);
     background-size: 200% 100%;
     animation: hmShimmer 1.5s ease infinite, hmPulse 1.5s ease infinite;
-    border: 3px solid #0B1957;
+    border: 3px solid var(--nb-primary);
   }
 
   /* ── Project card ── */
   .hm-proj-card {
-    border: 4px solid #0B1957;
-    background: #F8F3EA;
-    box-shadow: 5px 5px 0 #0B1957;
+    border: 4px solid var(--nb-primary);
+    background: var(--nb-bg);
+    box-shadow: 5px 5px 0 var(--nb-primary);
     transition: transform 0.22s cubic-bezier(0.16,1,0.3,1), box-shadow 0.22s cubic-bezier(0.16,1,0.3,1), opacity 0.2s ease;
   }
   .hm-proj-card:hover {
     transform: translate(-3px,-3px);
-    box-shadow: 8px 8px 0 #9ECCFA, 10px 10px 0 #0B1957;
+    box-shadow: 8px 8px 0 var(--nb-accent), 10px 10px 0 var(--nb-primary);
   }
   .hm-proj-card.hm-proj-hidden {
     opacity: 0.48;
-    box-shadow: 3px 3px 0 #0B1957;
+    box-shadow: 3px 3px 0 var(--nb-primary);
   }
   .hm-proj-card.hm-proj-hidden:hover {
     transform: translate(-2px,-2px);
-    box-shadow: 5px 5px 0 #0B1957;
+    box-shadow: 5px 5px 0 var(--nb-primary);
     opacity: 0.65;
   }
 
@@ -148,7 +148,7 @@ const GLOBAL_STYLES = `
   .hm-proj-thumb {
     overflow: hidden;
     position: relative;
-    border-right: 4px solid #0B1957;
+    border-right: 4px solid var(--nb-primary);
     flex-shrink: 0;
   }
   .hm-proj-thumb img {
@@ -168,20 +168,20 @@ const GLOBAL_STYLES = `
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    border: 2px solid #0B1957;
+    border: 2px solid var(--nb-primary);
     padding: 3px 8px;
     background: var(--nb-accent-light);
     font-weight: 800;
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #0B1957;
+    color: var(--nb-primary);
     transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
   }
   .hm-stack-chip:hover {
     transform: translate(-1px,-1px);
-    box-shadow: 2px 2px 0 #0B1957;
-    background: #9ECCFA;
+    box-shadow: 2px 2px 0 var(--nb-primary);
+    background: var(--nb-accent);
   }
 
   /* ── Section nav buttons ── */
@@ -190,12 +190,12 @@ const GLOBAL_STYLES = `
     align-items: flex-start;
     gap: 12px;
     padding: 14px 16px;
-    border: 3px solid #0B1957;
-    background: #F8F3EA;
+    border: 3px solid var(--nb-primary);
+    background: var(--nb-bg);
     cursor: pointer;
     font-family: inherit;
     text-align: left;
-    box-shadow: 3px 3px 0 #0B1957;
+    box-shadow: 3px 3px 0 var(--nb-primary);
     width: 100%;
     transition: transform 0.15s cubic-bezier(0.16,1,0.3,1), box-shadow 0.15s cubic-bezier(0.16,1,0.3,1), background 0.12s ease;
     position: relative;
@@ -211,8 +211,8 @@ const GLOBAL_STYLES = `
     transition: opacity 0.2s;
   }
   .hm-section-btn:hover:not(:disabled)::after { opacity: 1; animation: hmShimmer 0.5s ease; }
-  .hm-section-btn:hover:not(:disabled) { background: var(--nb-accent-light); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #0B1957; }
-  .hm-section-btn.active { background: #0B1957; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #9ECCFA; }
+  .hm-section-btn:hover:not(:disabled) { background: var(--nb-accent-light); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--nb-primary); }
+  .hm-section-btn.active { background: var(--nb-primary); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--nb-accent); }
   .hm-section-btn:disabled { cursor: not-allowed; opacity: 0.55; }
 
   /* ── Mobile section nav tabs ── */
@@ -227,9 +227,9 @@ const GLOBAL_STYLES = `
     gap: 4px;
     padding: 10px 8px;
     border: none;
-    border-right: 3px solid #0B1957;
-    background: #F8F3EA;
-    color: #0B1957;
+    border-right: 3px solid var(--nb-primary);
+    background: var(--nb-bg);
+    color: var(--nb-primary);
     cursor: pointer;
     font-family: inherit;
     font-weight: 900;
@@ -242,7 +242,7 @@ const GLOBAL_STYLES = `
     transition: background 0.12s ease, color 0.12s ease;
   }
   .hm-mobile-nav-tab:last-child { border-right: none; }
-  .hm-mobile-nav-tab.active { background: #0B1957; color: #9ECCFA; }
+  .hm-mobile-nav-tab.active { background: var(--nb-primary); color: var(--nb-accent); }
   .hm-mobile-nav-tab:not(.active):hover { background: var(--nb-accent-light); }
 
   /* ── Filter tab ── */
@@ -254,7 +254,7 @@ const GLOBAL_STYLES = `
     text-transform: uppercase;
     letter-spacing: 0.1em;
     border: none;
-    border-right: 4px solid #0B1957;
+    border-right: 4px solid var(--nb-primary);
     cursor: pointer;
     font-family: inherit;
     display: flex;
@@ -264,8 +264,8 @@ const GLOBAL_STYLES = `
     transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
   }
   .hm-filter-tab:last-child { border-right: none; }
-  .hm-filter-tab.active { background: #0B1957; color: #9ECCFA; }
-  .hm-filter-tab:not(.active) { background: #F8F3EA; color: #0B1957; }
+  .hm-filter-tab.active { background: var(--nb-primary); color: var(--nb-accent); }
+  .hm-filter-tab:not(.active) { background: var(--nb-bg); color: var(--nb-primary); }
   .hm-filter-tab:not(.active):hover { background: var(--nb-accent-light); }
 
   /* ── Toggle button ── */
@@ -497,10 +497,10 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
     const ctx = canvas.getContext("2d")!;
     const { scale, offsetX, offsetY } = stateRef.current;
     ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
-    ctx.fillStyle = "#0B1957"; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    ctx.fillStyle = "var(--nb-primary)"; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
     ctx.drawImage(img, offsetX, offsetY, img.naturalWidth * scale, img.naturalHeight * scale);
     ctx.save();
-    ctx.strokeStyle = "#9ECCFA"; ctx.lineWidth = 3; ctx.strokeRect(2, 2, CANVAS_W - 4, CANVAS_H - 4);
+    ctx.strokeStyle = "var(--nb-accent)"; ctx.lineWidth = 3; ctx.strokeRect(2, 2, CANVAS_W - 4, CANVAS_H - 4);
     ctx.strokeStyle = "rgba(158,204,250,0.25)"; ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(CANVAS_W/3,0);ctx.lineTo(CANVAS_W/3,CANVAS_H);
@@ -508,7 +508,7 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
     ctx.moveTo(0,CANVAS_H/3);ctx.lineTo(CANVAS_W,CANVAS_H/3);
     ctx.moveTo(0,CANVAS_H*2/3);ctx.lineTo(CANVAS_W,CANVAS_H*2/3);
     ctx.stroke();
-    const BL = 24; ctx.strokeStyle = "#9ECCFA"; ctx.lineWidth = 4;
+    const BL = 24; ctx.strokeStyle = "var(--nb-accent)"; ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.moveTo(2,2+BL);ctx.lineTo(2,2);ctx.lineTo(2+BL,2);
     ctx.moveTo(CANVAS_W-2-BL,2);ctx.lineTo(CANVAS_W-2,2);ctx.lineTo(CANVAS_W-2,2+BL);
@@ -572,12 +572,12 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center px-4" style={{background:"rgba(11,25,87,0.85)",backdropFilter:"blur(6px)",animation:"hmFadeIn 0.2s ease"}}>
-      <div className="hm-modal-inner bg-[#0B1957] border-4 border-[#9ECCFA] shadow-[16px_16px_0_#9ECCFA] w-full max-w-lg flex flex-col" style={{animation:"hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)"}}>
-        <div className="border-b-4 border-[#9ECCFA] px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 text-[#9ECCFA]"><IconCrop /><span className="font-black uppercase text-sm tracking-widest">Crop Foto</span></div>
-          <button className="text-[#9ECCFA] hover:text-white" onClick={onCancel}><IconClose /></button>
+      <div className="hm-modal-inner bg-[var(--nb-primary)] border-4 border-[var(--nb-accent)] shadow-[16px_16px_0_var(--nb-accent)] w-full max-w-lg flex flex-col" style={{animation:"hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)"}}>
+        <div className="border-b-4 border-[var(--nb-accent)] px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 text-[var(--nb-accent)]"><IconCrop /><span className="font-black uppercase text-sm tracking-widest">Crop Foto</span></div>
+          <button className="text-[var(--nb-accent)] hover:text-white" onClick={onCancel}><IconClose /></button>
         </div>
-        <div className="relative flex justify-center bg-[#040d3a] border-b-4 border-[#9ECCFA]">
+        <div className="relative flex justify-center bg-[var(--nb-primary)] border-b-4 border-[var(--nb-accent)]">
           <canvas
             ref={canvasRef}
             width={CANVAS_W}
@@ -590,16 +590,16 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
             onTouchEnd={onTouchEnd}
           />
         </div>
-        <div className="px-6 py-4 flex items-center justify-between border-b-4 border-[#9ECCFA]">
+        <div className="px-6 py-4 flex items-center justify-between border-b-4 border-[var(--nb-accent)]">
           <div className="flex items-center gap-2">
-            <button onClick={()=>zoom(-0.15)} style={{border:"2px solid #9ECCFA",background:"transparent",color:"#9ECCFA",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit"}}><IconZoomOut /></button>
-            <button onClick={()=>zoom(0.15)}  style={{border:"2px solid #9ECCFA",background:"transparent",color:"#9ECCFA",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit"}}><IconZoomIn /></button>
+            <button onClick={()=>zoom(-0.15)} style={{border:"2px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit"}}><IconZoomOut /></button>
+            <button onClick={()=>zoom(0.15)}  style={{border:"2px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit"}}><IconZoomIn /></button>
           </div>
-          <button onClick={()=>{const img=imgRef.current;if(!img)return;const sc=Math.max(CANVAS_W/img.naturalWidth,CANVAS_H/img.naturalHeight);stateRef.current={scale:sc,offsetX:(CANVAS_W-img.naturalWidth*sc)/2,offsetY:(CANVAS_H-img.naturalHeight*sc)/2};requestDraw();}} style={{display:"flex",alignItems:"center",gap:6,border:"2px solid #9ECCFA",background:"transparent",color:"#9ECCFA",padding:"6px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit"}}><IconRefresh /> Reset</button>
+          <button onClick={()=>{const img=imgRef.current;if(!img)return;const sc=Math.max(CANVAS_W/img.naturalWidth,CANVAS_H/img.naturalHeight);stateRef.current={scale:sc,offsetX:(CANVAS_W-img.naturalWidth*sc)/2,offsetY:(CANVAS_H-img.naturalHeight*sc)/2};requestDraw();}} style={{display:"flex",alignItems:"center",gap:6,border:"2px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",padding:"6px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit"}}><IconRefresh /> Reset</button>
         </div>
         <div className="px-6 py-4 flex items-center justify-between">
-          <button onClick={onCancel} style={{border:"4px solid #9ECCFA",background:"transparent",color:"#9ECCFA",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit"}}>Batal</button>
-          <button onClick={handleConfirm} style={{display:"flex",alignItems:"center",gap:8,border:"4px solid #9ECCFA",background:"#9ECCFA",color:"#0B1957",padding:"10px 24px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",boxShadow:"4px 4px 0 rgba(158,204,250,0.3)",fontFamily:"inherit"}}><IconCheck /> Gunakan Foto Ini</button>
+          <button onClick={onCancel} style={{border:"4px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit"}}>Batal</button>
+          <button onClick={handleConfirm} style={{display:"flex",alignItems:"center",gap:8,border:"4px solid var(--nb-accent)",background:"var(--nb-accent)",color:"var(--nb-primary)",padding:"10px 24px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",boxShadow:"4px 4px 0 rgba(158,204,250,0.3)",fontFamily:"inherit"}}><IconCheck /> Gunakan Foto Ini</button>
         </div>
       </div>
     </div>
@@ -615,39 +615,39 @@ function AddStackModal({ hiddenStacks, adding, onAdd, onClose }: {
   const grouped  = filtered.reduce((acc,s) => { if(!acc[s.category])acc[s.category]=[]; acc[s.category].push(s); return acc; }, {} as Record<string,TSItem[]>);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{background:"rgba(11,25,87,0.75)",backdropFilter:"blur(4px)",animation:"hmFadeIn 0.2s ease"}}>
-      <div className="hm-modal-inner bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[12px_12px_0_#0B1957] w-full max-w-lg max-h-[85vh] flex flex-col" style={{animation:"hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)"}}>
-        <div className="bg-[#0B1957] border-b-4 border-[#0B1957] px-6 py-4 flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center gap-3 text-[#9ECCFA]"><IconPlus /><span className="font-black uppercase text-sm tracking-widest">Tambah ke Homepage</span></div>
-          <button className="text-[#9ECCFA] hover:text-white" onClick={onClose}><IconClose /></button>
+      <div className="hm-modal-inner bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[12px_12px_0_var(--nb-primary)] w-full max-w-lg max-h-[85vh] flex flex-col" style={{animation:"hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)"}}>
+        <div className="bg-[var(--nb-primary)] border-b-4 border-[var(--nb-primary)] px-6 py-4 flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-3 text-[var(--nb-accent)]"><IconPlus /><span className="font-black uppercase text-sm tracking-widest">Tambah ke Homepage</span></div>
+          <button className="text-[var(--nb-accent)] hover:text-white" onClick={onClose}><IconClose /></button>
         </div>
         <div className="px-5 pt-4 pb-2 flex-shrink-0">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0B1957] opacity-40 pointer-events-none"><IconSearch /></span>
-            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Cari nama atau kategori..." className="w-full border-4 border-[#0B1957] bg-white pl-9 pr-4 py-2.5 font-bold text-sm text-[#0B1957] placeholder-[#0B1957] placeholder-opacity-30 focus:outline-none" />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--nb-primary)] opacity-40 pointer-events-none"><IconSearch /></span>
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Cari nama atau kategori..." className="w-full border-4 border-[var(--nb-primary)] bg-white pl-9 pr-4 py-2.5 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none" />
           </div>
         </div>
         <div className="flex-1 overflow-y-auto px-5 pb-5">
-          {filtered.length===0 ? <div className="py-12 text-center"><p className="font-black text-sm uppercase text-[#0B1957] opacity-40 tracking-widest">{hiddenStacks.length===0?"Semua stack sudah tampil":"Tidak ditemukan"}</p></div>
+          {filtered.length===0 ? <div className="py-12 text-center"><p className="font-black text-sm uppercase text-[var(--nb-primary)] opacity-40 tracking-widest">{hiddenStacks.length===0?"Semua stack sudah tampil":"Tidak ditemukan"}</p></div>
           : Object.entries(grouped).map(([cat,items])=>(
             <div key={cat} className="mb-4">
-              <p className="font-black text-[10px] uppercase tracking-[0.25em] text-[#0B1957] opacity-40 mb-2 mt-3">{cat}</p>
+              <p className="font-black text-[10px] uppercase tracking-[0.25em] text-[var(--nb-primary)] opacity-40 mb-2 mt-3">{cat}</p>
               <div className="flex flex-col gap-2">
                 {items.map((stack,si) => (
                   <button key={stack.id} disabled={adding===stack.id} onClick={()=>onAdd(stack)}
                     className="flex items-center gap-3 p-3 bg-white hover:bg-[var(--nb-accent-light)] transition-all text-left w-full"
-                    style={{border:"3px solid #0B1957",boxShadow:"3px 3px 0 #0B1957",opacity:adding===stack.id?0.6:1,cursor:adding===stack.id?"wait":"pointer",animation:`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${si*0.04}s both`}}>
-                    <img src={stack.icon} alt={stack.name} style={{width:32,height:32,objectFit:"cover",border:"2px solid #0B1957",flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}} />
-                    <div className="flex-1 min-w-0"><p className="font-black text-xs uppercase text-[#0B1957]">{stack.name}</p><p className="font-semibold text-[10px] text-[#0B1957] opacity-40 uppercase tracking-widest">{stack.category}</p></div>
-                    <div className="flex-shrink-0 text-[#0B1957] opacity-60">{adding===stack.id?<span style={{animation:"hmSpin 0.6s linear infinite",display:"inline-block"}}>⟳</span>:<IconPlus />}</div>
+                    style={{border:"3px solid var(--nb-primary)",boxShadow:"3px 3px 0 var(--nb-primary)",opacity:adding===stack.id?0.6:1,cursor:adding===stack.id?"wait":"pointer",animation:`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${si*0.04}s both`}}>
+                    <img src={stack.icon} alt={stack.name} style={{width:32,height:32,objectFit:"cover",border:"2px solid var(--nb-primary)",flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}} />
+                    <div className="flex-1 min-w-0"><p className="font-black text-xs uppercase text-[var(--nb-primary)]">{stack.name}</p><p className="font-semibold text-[10px] text-[var(--nb-primary)] opacity-40 uppercase tracking-widest">{stack.category}</p></div>
+                    <div className="flex-shrink-0 text-[var(--nb-primary)] opacity-60">{adding===stack.id?<span style={{animation:"hmSpin 0.6s linear infinite",display:"inline-block"}}>⟳</span>:<IconPlus />}</div>
                   </button>
                 ))}
               </div>
             </div>
           ))}
         </div>
-        <div className="border-t-4 border-[#0B1957] bg-[#0B1957] px-6 py-3 flex items-center justify-between flex-shrink-0">
-          <span className="font-black text-[10px] text-[#9ECCFA] opacity-60 uppercase tracking-widest">{hiddenStacks.length} stack belum ditampilkan</span>
-          <button onClick={onClose} className="border-2 border-[#9ECCFA] px-4 py-1.5 font-black text-xs uppercase text-[#9ECCFA] hover:bg-[#9ECCFA] hover:text-[#0B1957] transition-colors">Tutup</button>
+        <div className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-primary)] px-6 py-3 flex items-center justify-between flex-shrink-0">
+          <span className="font-black text-[10px] text-[var(--nb-accent)] opacity-60 uppercase tracking-widest">{hiddenStacks.length} stack belum ditampilkan</span>
+          <button onClick={onClose} className="border-2 border-[var(--nb-accent)] px-4 py-1.5 font-black text-xs uppercase text-[var(--nb-accent)] hover:bg-[var(--nb-accent)] hover:text-[var(--nb-primary)] transition-colors">Tutup</button>
         </div>
       </div>
     </div>
@@ -729,27 +729,27 @@ function TechStackVisibility() {
       {/* Top bar */}
       <div className="hm-ts-topbar" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:12}}>
         <div style={{display:"flex",alignItems:"center",gap:12,animation:"hmSlideRight 0.4s cubic-bezier(0.16,1,0.3,1) 0.05s both"}}>
-          <span style={{border:"4px solid #0B1957",background:"#9ECCFA",color:"#0B1957",fontWeight:900,fontSize:12,padding:"6px 14px",textTransform:"uppercase",letterSpacing:"0.1em",boxShadow:"3px 3px 0 #0B1957"}}>{visibleStacks.length} Tampil</span>
-          <span style={{border:"4px solid #0B1957",background:"#F8F3EA",color:"#0B1957",fontWeight:900,fontSize:12,padding:"6px 14px",textTransform:"uppercase",letterSpacing:"0.1em",boxShadow:"3px 3px 0 #0B1957"}}>{hiddenStacks.length} Disembunyikan</span>
+          <span style={{border:"4px solid var(--nb-primary)",background:"var(--nb-accent)",color:"var(--nb-primary)",fontWeight:900,fontSize:12,padding:"6px 14px",textTransform:"uppercase",letterSpacing:"0.1em",boxShadow:"3px 3px 0 var(--nb-primary)"}}>{visibleStacks.length} Tampil</span>
+          <span style={{border:"4px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",fontWeight:900,fontSize:12,padding:"6px 14px",textTransform:"uppercase",letterSpacing:"0.1em",boxShadow:"3px 3px 0 var(--nb-primary)"}}>{hiddenStacks.length} Disembunyikan</span>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:10,animation:"hmSlideLeft 0.4s cubic-bezier(0.16,1,0.3,1) 0.1s both"}}>
           <button onClick={()=>setShowModal(true)} disabled={loading||hiddenStacks.length===0}
-            style={{display:"flex",alignItems:"center",gap:6,border:"4px solid #0B1957",background:hiddenStacks.length===0?"var(--nb-accent-light)":"#0B1957",color:hiddenStacks.length===0?"#0B1957":"#9ECCFA",padding:"8px 16px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(loading||hiddenStacks.length===0)?"not-allowed":"pointer",boxShadow:"4px 4px 0 #9ECCFA",opacity:(loading||hiddenStacks.length===0)?0.5:1,fontFamily:"inherit",transition:"transform 0.1s ease, box-shadow 0.1s ease"}}
-            onMouseEnter={e=>{if(!loading&&hiddenStacks.length>0){(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="6px 6px 0 #9ECCFA";}}}
-            onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="translate(0,0)";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 #9ECCFA";}}>
+            style={{display:"flex",alignItems:"center",gap:6,border:"4px solid var(--nb-primary)",background:hiddenStacks.length===0?"var(--nb-accent-light)":"var(--nb-primary)",color:hiddenStacks.length===0?"var(--nb-primary)":"var(--nb-accent)",padding:"8px 16px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(loading||hiddenStacks.length===0)?"not-allowed":"pointer",boxShadow:"4px 4px 0 var(--nb-accent)",opacity:(loading||hiddenStacks.length===0)?0.5:1,fontFamily:"inherit",transition:"transform 0.1s ease, box-shadow 0.1s ease"}}
+            onMouseEnter={e=>{if(!loading&&hiddenStacks.length>0){(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="6px 6px 0 var(--nb-accent)";}}}
+            onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="translate(0,0)";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 var(--nb-accent)";}}>
             <IconPlus /> Tambah Stack
-            {hiddenStacks.length>0&&<span style={{background:"#9ECCFA",color:"#0B1957",border:"2px solid #9ECCFA",fontSize:10,fontWeight:900,padding:"1px 6px",marginLeft:2}}>{hiddenStacks.length}</span>}
+            {hiddenStacks.length>0&&<span style={{background:"var(--nb-accent)",color:"var(--nb-primary)",border:"2px solid var(--nb-accent)",fontSize:10,fontWeight:900,padding:"1px 6px",marginLeft:2}}>{hiddenStacks.length}</span>}
           </button>
         </div>
       </div>
 
       {/* Main panel */}
-      <div style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"8px 8px 0 #0B1957",overflow:"hidden",animation:"hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both"}}>
+      <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",boxShadow:"8px 8px 0 var(--nb-primary)",overflow:"hidden",animation:"hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both"}}>
         {!loading&&categories.length>0&&(
-          <div style={{display:"flex",borderBottom:"4px solid #0B1957",overflowX:"auto"}}>
+          <div style={{display:"flex",borderBottom:"4px solid var(--nb-primary)",overflowX:"auto"}}>
             {categories.map((cat,i)=>(
               <button key={cat} onClick={()=>switchTab(i)}
-                style={{flexShrink:0,flex:1,padding:"12px 16px",fontWeight:900,textTransform:"uppercase",fontSize:12,letterSpacing:"0.08em",borderRight:"4px solid #0B1957",borderLeft:"none",borderTop:"none",borderBottom:"none",background:activeTab===i?"#0B1957":"#F8F3EA",color:activeTab===i?"#9ECCFA":"#0B1957",cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap",transition:"background 0.15s ease, color 0.15s ease",animation:`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${0.2+i*0.06}s both`}}>
+                style={{flexShrink:0,flex:1,padding:"12px 16px",fontWeight:900,textTransform:"uppercase",fontSize:12,letterSpacing:"0.08em",borderRight:"4px solid var(--nb-primary)",borderLeft:"none",borderTop:"none",borderBottom:"none",background:activeTab===i?"var(--nb-primary)":"var(--nb-bg)",color:activeTab===i?"var(--nb-accent)":"var(--nb-primary)",cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap",transition:"background 0.15s ease, color 0.15s ease",animation:`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${0.2+i*0.06}s both`}}>
                 {cat}
                 <span style={{marginLeft:8,fontSize:10,fontWeight:900,opacity:0.7}}>{visibleStacks.filter(s=>s.category===cat).length}</span>
               </button>
@@ -759,32 +759,32 @@ function TechStackVisibility() {
 
         <div style={{padding:"24px 28px",minHeight:160,display:"flex",flexWrap:"wrap",gap:10,alignItems:"flex-start",alignContent:"flex-start",opacity:animating?0:1,transform:animating?"translateY(8px)":"translateY(0)",transition:"opacity 0.15s ease, transform 0.15s ease"}}>
           {loading&&Array.from({length:5}).map((_,i)=>(
-            <div key={i} style={{display:"inline-flex",alignItems:"center",gap:8,border:"3px solid #0B1957",padding:"7px 12px 7px 7px",animation:`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.08}s both`}}>
+            <div key={i} style={{display:"inline-flex",alignItems:"center",gap:8,border:"3px solid var(--nb-primary)",padding:"7px 12px 7px 7px",animation:`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.08}s both`}}>
               <div className="hm-skeleton" style={{width:26,height:26,border:"none"}}/>
               <div className="hm-skeleton" style={{width:60,height:12,border:"none"}}/>
             </div>
           ))}
           {!loading&&visibleStacks.length===0&&(
             <div style={{width:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 0",gap:8,animation:"hmFadeIn 0.4s ease"}}>
-              <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"#0B1957",opacity:0.4,letterSpacing:"0.15em"}}>Belum ada stack yang ditampilkan</p>
+              <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"var(--nb-primary)",opacity:0.4,letterSpacing:"0.15em"}}>Belum ada stack yang ditampilkan</p>
             </div>
           )}
           {!loading&&currentTechs.map((tech,i)=>(
             <button key={tech.id} onClick={()=>!toggling&&handleToggle(tech)} disabled={toggling===tech.id}
-              style={{display:"inline-flex",alignItems:"center",gap:8,border:"3px solid #0B1957",padding:"7px 12px 7px 7px",background:"#F8F3EA",opacity:toggling===tech.id?0.5:1,boxShadow:"3px 3px 0 #0B1957",cursor:toggling===tech.id?"wait":"pointer",fontFamily:"inherit",fontWeight:800,fontSize:11,textTransform:"uppercase",letterSpacing:"0.06em",color:"#0B1957",transition:"transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease",animation:mounted?`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`:"none"}}
-              onMouseEnter={e=>{if(toggling!==tech.id){(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 #0B1957";(e.currentTarget as HTMLElement).style.background="var(--nb-accent-light)";}}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="translate(0,0)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 #0B1957";(e.currentTarget as HTMLElement).style.background="#F8F3EA";}}>
-              <img src={tech.icon} alt={tech.name} style={{width:26,height:26,objectFit:"cover",border:"2px solid #0B1957",flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}}/>
+              style={{display:"inline-flex",alignItems:"center",gap:8,border:"3px solid var(--nb-primary)",padding:"7px 12px 7px 7px",background:"var(--nb-bg)",opacity:toggling===tech.id?0.5:1,boxShadow:"3px 3px 0 var(--nb-primary)",cursor:toggling===tech.id?"wait":"pointer",fontFamily:"inherit",fontWeight:800,fontSize:11,textTransform:"uppercase",letterSpacing:"0.06em",color:"var(--nb-primary)",transition:"transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease",animation:mounted?`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`:"none"}}
+              onMouseEnter={e=>{if(toggling!==tech.id){(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 var(--nb-primary)";(e.currentTarget as HTMLElement).style.background="var(--nb-accent-light)";}}}
+              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="translate(0,0)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 var(--nb-primary)";(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";}}>
+              <img src={tech.icon} alt={tech.name} style={{width:26,height:26,objectFit:"cover",border:"2px solid var(--nb-primary)",flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}}/>
               <span>{tech.name}</span>
               <span style={{display:"flex",alignItems:"center",marginLeft:2,opacity:0.5}}>{toggling===tech.id?<span style={{animation:"hmSpin 0.6s linear infinite",display:"inline-block"}}>⟳</span>:<IconEye />}</span>
             </button>
           ))}
         </div>
 
-        <div style={{borderTop:"4px solid #0B1957",background:"#0B1957",padding:"12px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+        <div style={{borderTop:"4px solid var(--nb-primary)",background:"var(--nb-primary)",padding:"12px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
           <div style={{display:"flex",alignItems:"center",gap:20,flexWrap:"wrap"}}>
-            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"#9ECCFA"}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em"}}>Tampil di homepage</span></div>
-            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"transparent"}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em",opacity:0.5}}>Disembunyikan</span></div>
+            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid var(--nb-accent)",background:"var(--nb-accent)"}}/><span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.12em"}}>Tampil di homepage</span></div>
+            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid var(--nb-accent)",background:"transparent"}}/><span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.12em",opacity:0.5}}>Disembunyikan</span></div>
           </div>
           <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.1em"}}>Perubahan langsung tersimpan</span>
         </div>
@@ -799,7 +799,7 @@ function TechStackVisibility() {
 // ── Toast ─────────────────────────────────────────────────────────────────────
 function Toast({ msg, ok }: { msg: string; ok: boolean }) {
   return (
-    <div style={{position:"fixed",bottom:28,left:"50%",transform:"translateX(-50%)",zIndex:999,display:"flex",alignItems:"center",gap:10,border:"4px solid #0B1957",background:ok?"#9ECCFA":"#ef4444",color:ok?"#0B1957":"white",padding:"12px 22px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",boxShadow:"6px 6px 0 #0B1957",whiteSpace:"nowrap",animation:"hmSlideUp 0.35s cubic-bezier(0.16,1,0.3,1) both",maxWidth:"calc(100vw - 32px)"}}>
+    <div style={{position:"fixed",bottom:28,left:"50%",transform:"translateX(-50%)",zIndex:999,display:"flex",alignItems:"center",gap:10,border:"4px solid var(--nb-primary)",background:ok?"var(--nb-accent)":"#ef4444",color:ok?"var(--nb-primary)":"white",padding:"12px 22px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",boxShadow:"6px 6px 0 var(--nb-primary)",whiteSpace:"nowrap",animation:"hmSlideUp 0.35s cubic-bezier(0.16,1,0.3,1) both",maxWidth:"calc(100vw - 32px)"}}>
       {ok ? <IconCheck/> : null}{msg}
     </div>
   );
@@ -862,15 +862,15 @@ function HeroSection() {
 
   if(loading) return (
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
-      <div style={{background:"#0B1957",border:"4px solid #0B1957",boxShadow:"6px 6px 0 #9ECCFA",padding:20,display:"flex",gap:20,animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) both"}}>
-        <div className="hm-skeleton" style={{width:64,height:80,border:"3px solid #9ECCFA",flexShrink:0}}/>
+      <div style={{background:"var(--nb-primary)",border:"4px solid var(--nb-primary)",boxShadow:"6px 6px 0 var(--nb-accent)",padding:20,display:"flex",gap:20,animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) both"}}>
+        <div className="hm-skeleton" style={{width:64,height:80,border:"3px solid var(--nb-accent)",flexShrink:0}}/>
         <div style={{flex:1,display:"flex",flexDirection:"column",gap:8}}>
           <div className="hm-skeleton" style={{height:12,width:"40%"}}/>
           <div className="hm-skeleton" style={{height:20,width:"60%"}}/>
           <div className="hm-skeleton" style={{height:12,width:"50%"}}/>
         </div>
       </div>
-      <div style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"8px 8px 0 #0B1957",padding:28,display:"flex",flexDirection:"column",gap:16}}>
+      <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",boxShadow:"8px 8px 0 var(--nb-primary)",padding:28,display:"flex",flexDirection:"column",gap:16}}>
         {[1,2,3,4].map(i=><div key={i} className="hm-skeleton" style={{height:48,width:`${100-i*5}%`,animation:`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.08}s both`}}/>)}
       </div>
     </div>
@@ -879,35 +879,35 @@ function HeroSection() {
   return (
     <div>
       {/* Preview bar */}
-      <div className="hm-hero-preview" style={{marginBottom:16,background:"#0B1957",border:"4px solid #0B1957",boxShadow:"6px 6px 0 #9ECCFA",padding:20,display:"flex",alignItems:"center",gap:20,animation:"hmSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.05s both"}}>
-        <div style={{width:64,height:80,border:"3px solid #9ECCFA",overflow:"hidden",position:"relative",background:"#1a2f7a",flexShrink:0}}>
+      <div className="hm-hero-preview" style={{marginBottom:16,background:"var(--nb-primary)",border:"4px solid var(--nb-primary)",boxShadow:"6px 6px 0 var(--nb-accent)",padding:20,display:"flex",alignItems:"center",gap:20,animation:"hmSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.05s both"}}>
+        <div style={{width:64,height:80,border:"3px solid var(--nb-accent)",overflow:"hidden",position:"relative",background:"var(--nb-primary)",flexShrink:0}}>
           <img src={preview??FALLBACK_PHOTO} alt="preview" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_PHOTO;}}/>
         </div>
         <div style={{minWidth:0,flex:1}}>
-          <p style={{fontWeight:900,fontSize:11,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.2em",marginBottom:4}}>Preview Hero</p>
-          <p style={{fontWeight:900,fontSize:22,color:"#F8F3EA",textTransform:"uppercase",lineHeight:1.1,marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{form.name||"—"}</p>
-          <p style={{fontWeight:800,fontSize:12,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:4}}>{form.title||"—"}</p>
+          <p style={{fontWeight:900,fontSize:11,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.2em",marginBottom:4}}>Preview Hero</p>
+          <p style={{fontWeight:900,fontSize:22,color:"var(--nb-bg)",textTransform:"uppercase",lineHeight:1.1,marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{form.name||"—"}</p>
+          <p style={{fontWeight:800,fontSize:12,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:4}}>{form.title||"—"}</p>
           <p style={{fontWeight:600,fontSize:12,color:"var(--nb-accent-light)",opacity:0.7,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{form.bio||"—"}</p>
         </div>
       </div>
 
       {/* Form */}
-      <div style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"8px 8px 0 #0B1957",overflow:"hidden",animation:"hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both"}}>
+      <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",boxShadow:"8px 8px 0 var(--nb-primary)",overflow:"hidden",animation:"hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both"}}>
         <div style={{padding:"24px 28px",display:"flex",flexDirection:"column",gap:18}}>
           {/* Name + Title — 2 col on desktop, 1 col on mobile */}
           <div className="hm-hero-grid-2" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.2s both"}}>
             <div>
-              <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:6}}>Nama <span style={{color:"#e53e3e"}}>*</span></label>
+              <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:6}}>Nama <span style={{color:"#e53e3e"}}>*</span></label>
               <input value={form.name} onChange={e=>handleChange("name",e.target.value)} placeholder="Yusron"
-                style={{width:"100%",border:"4px solid #0B1957",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"#0B1957",outline:"none",boxSizing:"border-box",transition:"box-shadow 0.15s ease, transform 0.12s ease"}}
-                onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 #9ECCFA";(e.target as HTMLInputElement).style.transform="translate(-1px,-1px)";}}
+                style={{width:"100%",border:"4px solid var(--nb-primary)",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box",transition:"box-shadow 0.15s ease, transform 0.12s ease"}}
+                onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 var(--nb-accent)";(e.target as HTMLInputElement).style.transform="translate(-1px,-1px)";}}
                 onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";(e.target as HTMLInputElement).style.transform="translate(0,0)";}}/>
             </div>
             <div>
-              <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:6}}>Title / Role <span style={{color:"#e53e3e"}}>*</span></label>
+              <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:6}}>Title / Role <span style={{color:"#e53e3e"}}>*</span></label>
               <input value={form.title} onChange={e=>handleChange("title",e.target.value)} placeholder="IT Programmer"
-                style={{width:"100%",border:"4px solid #0B1957",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"#0B1957",outline:"none",boxSizing:"border-box",transition:"box-shadow 0.15s ease, transform 0.12s ease"}}
-                onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 #9ECCFA";(e.target as HTMLInputElement).style.transform="translate(-1px,-1px)";}}
+                style={{width:"100%",border:"4px solid var(--nb-primary)",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box",transition:"box-shadow 0.15s ease, transform 0.12s ease"}}
+                onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 var(--nb-accent)";(e.target as HTMLInputElement).style.transform="translate(-1px,-1px)";}}
                 onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";(e.target as HTMLInputElement).style.transform="translate(0,0)";}}/>
             </div>
           </div>
@@ -915,43 +915,43 @@ function HeroSection() {
           {/* Bio */}
           <div style={{animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.28s both"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-              <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957"}}>Bio</label>
-              <span style={{fontWeight:700,fontSize:11,color:"#0B1957",opacity:0.4}}>{form.bio.length}/500</span>
+              <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)"}}>Bio</label>
+              <span style={{fontWeight:700,fontSize:11,color:"var(--nb-primary)",opacity:0.4}}>{form.bio.length}/500</span>
             </div>
             <textarea value={form.bio} onChange={e=>handleChange("bio",e.target.value)} rows={3} maxLength={500} placeholder="Saya membangun aplikasi web modern..."
-              style={{width:"100%",border:"4px solid #0B1957",background:"white",padding:"10px 14px",fontWeight:600,fontSize:13,color:"#0B1957",outline:"none",boxSizing:"border-box",resize:"vertical",fontFamily:"inherit",transition:"box-shadow 0.15s ease, transform 0.12s ease"}}
-              onFocus={e=>{(e.target as HTMLTextAreaElement).style.boxShadow="4px 4px 0 #9ECCFA";(e.target as HTMLTextAreaElement).style.transform="translate(-1px,-1px)";}}
+              style={{width:"100%",border:"4px solid var(--nb-primary)",background:"white",padding:"10px 14px",fontWeight:600,fontSize:13,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box",resize:"vertical",fontFamily:"inherit",transition:"box-shadow 0.15s ease, transform 0.12s ease"}}
+              onFocus={e=>{(e.target as HTMLTextAreaElement).style.boxShadow="4px 4px 0 var(--nb-accent)";(e.target as HTMLTextAreaElement).style.transform="translate(-1px,-1px)";}}
               onBlur={e=>{(e.target as HTMLTextAreaElement).style.boxShadow="none";(e.target as HTMLTextAreaElement).style.transform="translate(0,0)";}}/>
           </div>
 
           {/* Photo */}
           <div style={{animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.34s both"}}>
-            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:8}}>
+            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:8}}>
               Foto Profil
               <span style={{marginLeft:8,fontWeight:600,fontSize:10,opacity:0.4,textTransform:"none",letterSpacing:0}}>— akan di-crop otomatis 4:5</span>
             </label>
             <div className="hm-hero-photo-row" style={{display:"flex",gap:16,alignItems:"flex-start"}}>
               <div style={{flexShrink:0,display:"flex",flexDirection:"column",gap:8,alignItems:"center"}}>
-                <div style={{width:96,height:112,border:"4px solid #0B1957",overflow:"hidden",boxShadow:"4px 4px 0 #0B1957",background:"var(--nb-accent-light)",position:"relative"}}>
+                <div style={{width:96,height:112,border:"4px solid var(--nb-primary)",overflow:"hidden",boxShadow:"4px 4px 0 var(--nb-primary)",background:"var(--nb-accent-light)",position:"relative"}}>
                   <img src={preview??FALLBACK_PHOTO} alt="foto" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_PHOTO;}}/>
                 </div>
-                {preview&&preview!==FALLBACK_PHOTO&&<button onClick={()=>setCropSrc(preview!)} style={{display:"flex",alignItems:"center",gap:4,border:"2px solid #0B1957",background:"transparent",color:"#0B1957",padding:"5px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit"}}><IconCrop/>Re-crop</button>}
+                {preview&&preview!==FALLBACK_PHOTO&&<button onClick={()=>setCropSrc(preview!)} style={{display:"flex",alignItems:"center",gap:4,border:"2px solid var(--nb-primary)",background:"transparent",color:"var(--nb-primary)",padding:"5px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",fontFamily:"inherit"}}><IconCrop/>Re-crop</button>}
               </div>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{border:`4px dashed ${dragging?"#9ECCFA":"#0B1957"}`,background:dragging?"var(--nb-accent-light)":"white",padding:"20px",display:"flex",flexDirection:"column",alignItems:"center",gap:8,cursor:"pointer",transition:"all 0.15s ease"}}
+                <div style={{border:`4px dashed ${dragging?"var(--nb-accent)":"var(--nb-primary)"}`,background:dragging?"var(--nb-accent-light)":"white",padding:"20px",display:"flex",flexDirection:"column",alignItems:"center",gap:8,cursor:"pointer",transition:"all 0.15s ease"}}
                   onClick={()=>fileRef.current?.click()}
                   onDragOver={e=>{e.preventDefault();setDragging(true);}}
                   onDragLeave={()=>setDragging(false)}
                   onDrop={e=>{e.preventDefault();setDragging(false);const f=e.dataTransfer.files[0];if(f)handleFile(f);}}>
-                  <div style={{color:"#0B1957",opacity:0.4}}><IconUpload/></div>
-                  <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"#0B1957",letterSpacing:"0.08em",textAlign:"center"}}>Drop foto di sini</p>
-                  <p style={{fontWeight:600,fontSize:11,color:"#0B1957",opacity:0.5}}>atau klik untuk pilih</p>
+                  <div style={{color:"var(--nb-primary)",opacity:0.4}}><IconUpload/></div>
+                  <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"var(--nb-primary)",letterSpacing:"0.08em",textAlign:"center"}}>Drop foto di sini</p>
+                  <p style={{fontWeight:600,fontSize:11,color:"var(--nb-primary)",opacity:0.5}}>atau klik untuk pilih</p>
                 </div>
                 <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f)handleFile(f);e.target.value="";}}/>
                 <div style={{marginTop:10}}>
                   <input value={form.photo?.startsWith("data:")?"":(form.photo??"")} onChange={e=>handleUrlChange(e.target.value)} placeholder="atau masukkan URL foto..."
-                    style={{width:"100%",border:"4px solid #0B1957",background:"white",padding:"10px 14px",fontWeight:600,fontSize:12,color:"#0B1957",outline:"none",boxSizing:"border-box",transition:"box-shadow 0.15s ease"}}
-                    onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 #9ECCFA";}}
+                    style={{width:"100%",border:"4px solid var(--nb-primary)",background:"white",padding:"10px 14px",fontWeight:600,fontSize:12,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box",transition:"box-shadow 0.15s ease"}}
+                    onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 var(--nb-accent)";}}
                     onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
                 </div>
               </div>
@@ -960,10 +960,10 @@ function HeroSection() {
         </div>
 
         {/* Footer */}
-        <div className="hm-footer-bar" style={{borderTop:"4px solid #0B1957",background:"#0B1957",padding:"16px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
+        <div className="hm-footer-bar" style={{borderTop:"4px solid var(--nb-primary)",background:"var(--nb-primary)",padding:"16px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
           <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.6,textTransform:"uppercase",letterSpacing:"0.1em"}}>{dirty?"⚠ Ada perubahan yang belum disimpan":"✓ Semua perubahan tersimpan"}</span>
           <button onClick={handleSave} disabled={saving||!dirty}
-            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid #9ECCFA",background:dirty?"#9ECCFA":"transparent",color:dirty?"#0B1957":"#9ECCFA",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(saving||!dirty)?"not-allowed":"pointer",boxShadow:dirty?"4px 4px 0 rgba(158,204,250,0.4)":"none",opacity:!dirty?0.5:1,fontFamily:"inherit",transition:"all 0.1s ease",whiteSpace:"nowrap"}}>
+            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid var(--nb-accent)",background:dirty?"var(--nb-accent)":"transparent",color:dirty?"var(--nb-primary)":"var(--nb-accent)",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(saving||!dirty)?"not-allowed":"pointer",boxShadow:dirty?"4px 4px 0 rgba(158,204,250,0.4)":"none",opacity:!dirty?0.5:1,fontFamily:"inherit",transition:"all 0.1s ease",whiteSpace:"nowrap"}}>
             {saving?<IconSpin/>:<IconSave/>}{saving?"Menyimpan...":"Simpan"}
           </button>
         </div>
@@ -1008,24 +1008,24 @@ function ContactFormModal({ item, onSave, onClose }: {
   return (
     <div style={{position:"fixed",inset:0,zIndex:50,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:"0",background:"rgba(11,25,87,0.75)",backdropFilter:"blur(4px)",animation:"hmFadeIn 0.2s ease"}}
       /* on desktop center it */ onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
-      <div className="hm-modal-inner" style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"0 -8px 0 #0B1957",width:"100%",maxWidth:520,display:"flex",flexDirection:"column",animation:"hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)",borderBottom:"none",maxHeight:"92vh"}}
+      <div className="hm-modal-inner" style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",boxShadow:"0 -8px 0 var(--nb-primary)",width:"100%",maxWidth:520,display:"flex",flexDirection:"column",animation:"hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)",borderBottom:"none",maxHeight:"92vh"}}
         onClick={e=>e.stopPropagation()}>
-        <div style={{background:"#0B1957",borderBottom:"4px solid #0B1957",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
-          <div style={{display:"flex",alignItems:"center",gap:10,color:"#9ECCFA"}}>
+        <div style={{background:"var(--nb-primary)",borderBottom:"4px solid var(--nb-primary)",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,color:"var(--nb-accent)"}}>
             <IconContact/>
             <span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.15em"}}>{isEdit?"Edit Kontak":"Tambah Kontak"}</span>
           </div>
-          <button style={{color:"#9ECCFA",background:"transparent",border:"none",cursor:"pointer",display:"flex",padding:4}} onClick={onClose}><IconClose/></button>
+          <button style={{color:"var(--nb-accent)",background:"transparent",border:"none",cursor:"pointer",display:"flex",padding:4}} onClick={onClose}><IconClose/></button>
         </div>
         <div style={{padding:24,display:"flex",flexDirection:"column",gap:16,overflowY:"auto",flex:1}}>
           {/* Platform */}
           <div style={{animation:"hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) 0.05s both"}}>
-            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:10}}>Platform</label>
+            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:10}}>Platform</label>
             <div className="hm-platform-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
               {(Object.keys(PLATFORM_PRESETS) as ContactPlatform[]).map((p,i)=>(
                 <button key={p} onClick={()=>handlePlatformChange(p)}
-                  style={{border:"3px solid #0B1957",background:platform===p?"#0B1957":"white",color:platform===p?"#9ECCFA":"#0B1957",padding:"8px 4px",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.05em",cursor:"pointer",fontFamily:"inherit",boxShadow:platform===p?"inset 0 0 0 0":"2px 2px 0 #0B1957",transition:"all 0.1s ease",display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-                  <div style={{width:32,height:32,background:PLATFORM_PRESETS[p].color,border:`2px solid ${platform===p?"#9ECCFA":"#0B1957"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  style={{border:"3px solid var(--nb-primary)",background:platform===p?"var(--nb-primary)":"white",color:platform===p?"var(--nb-accent)":"var(--nb-primary)",padding:"8px 4px",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.05em",cursor:"pointer",fontFamily:"inherit",boxShadow:platform===p?"inset 0 0 0 0":"2px 2px 0 var(--nb-primary)",transition:"all 0.1s ease",display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+                  <div style={{width:32,height:32,background:PLATFORM_PRESETS[p].color,border:`2px solid ${platform===p?"var(--nb-accent)":"var(--nb-primary)"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                     {PLATFORM_ICONS[p]}
                   </div>
                   <span style={{fontSize:9,lineHeight:1.2,textAlign:"center"}}>{PLATFORM_PRESETS[p].label}</span>
@@ -1035,49 +1035,49 @@ function ContactFormModal({ item, onSave, onClose }: {
           </div>
           {/* Label */}
           <div>
-            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:6}}>Label Tampil</label>
+            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:6}}>Label Tampil</label>
             <input value={label} onChange={e=>setLabel(e.target.value)} placeholder={PLATFORM_PRESETS[platform].label}
-              style={{width:"100%",border:"4px solid #0B1957",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"#0B1957",outline:"none",boxSizing:"border-box"}}
-              onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 #9ECCFA";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
+              style={{width:"100%",border:"4px solid var(--nb-primary)",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box"}}
+              onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 var(--nb-accent)";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
           </div>
           {/* Value */}
           <div>
-            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:6}}>
+            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:6}}>
               {platform==="whatsapp"?"Nomor HP":platform==="email"?"Alamat Email":"Username / ID"} <span style={{color:"#e53e3e"}}>*</span>
             </label>
             <input value={value} onChange={e=>handleValueChange(e.target.value)} placeholder={PLATFORM_PRESETS[platform].placeholder_value}
-              style={{width:"100%",border:"4px solid #0B1957",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"#0B1957",outline:"none",boxSizing:"border-box"}}
-              onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 #9ECCFA";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
+              style={{width:"100%",border:"4px solid var(--nb-primary)",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box"}}
+              onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 var(--nb-accent)";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
           </div>
           {/* URL */}
           <div>
-            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:6}}>
+            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:6}}>
               URL / Link <span style={{color:"#e53e3e"}}>*</span>
             </label>
             <input value={url} onChange={e=>setUrl(e.target.value)} placeholder={PLATFORM_PRESETS[platform].placeholder_url}
-              style={{width:"100%",border:"4px solid #0B1957",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"#0B1957",outline:"none",boxSizing:"border-box"}}
-              onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 #9ECCFA";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
+              style={{width:"100%",border:"4px solid var(--nb-primary)",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box"}}
+              onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 var(--nb-accent)";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
           </div>
           {/* Color */}
           <div style={{display:"flex",alignItems:"center",gap:16,flexWrap:"wrap"}}>
             <div>
-              <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:6}}>Warna Icon</label>
+              <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:6}}>Warna Icon</label>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
-                <div style={{width:40,height:40,background:color,border:"4px solid #0B1957",flexShrink:0}}/>
-                <input type="color" value={color} onChange={e=>setColor(e.target.value)} style={{border:"4px solid #0B1957",height:40,width:60,cursor:"pointer",background:"white",padding:"2px"}}/>
-                <button onClick={()=>setColor(PLATFORM_PRESETS[platform].color)} style={{border:"2px solid #0B1957",background:"transparent",color:"#0B1957",padding:"6px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit"}}>Reset</button>
+                <div style={{width:40,height:40,background:color,border:"4px solid var(--nb-primary)",flexShrink:0}}/>
+                <input type="color" value={color} onChange={e=>setColor(e.target.value)} style={{border:"4px solid var(--nb-primary)",height:40,width:60,cursor:"pointer",background:"white",padding:"2px"}}/>
+                <button onClick={()=>setColor(PLATFORM_PRESETS[platform].color)} style={{border:"2px solid var(--nb-primary)",background:"transparent",color:"var(--nb-primary)",padding:"6px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit"}}>Reset</button>
               </div>
             </div>
             <div>
-              <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",opacity:0.6,marginBottom:6}}>Preview</p>
-              <div style={{width:48,height:48,background:color,border:"4px solid #0B1957",boxShadow:"3px 3px 0 #0B1957",display:"flex",alignItems:"center",justifyContent:"center"}}>{PLATFORM_ICONS[platform]}</div>
+              <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",opacity:0.6,marginBottom:6}}>Preview</p>
+              <div style={{width:48,height:48,background:color,border:"4px solid var(--nb-primary)",boxShadow:"3px 3px 0 var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center"}}>{PLATFORM_ICONS[platform]}</div>
             </div>
           </div>
         </div>
-        <div style={{borderTop:"4px solid #0B1957",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"#F8F3EA",flexShrink:0,gap:10}}>
-          <button onClick={onClose} style={{border:"4px solid #0B1957",background:"transparent",color:"#0B1957",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit"}}>Batal</button>
+        <div style={{borderTop:"4px solid var(--nb-primary)",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"var(--nb-bg)",flexShrink:0,gap:10}}>
+          <button onClick={onClose} style={{border:"4px solid var(--nb-primary)",background:"transparent",color:"var(--nb-primary)",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit"}}>Batal</button>
           <button onClick={handleSubmit} disabled={!value.trim()||!url.trim()}
-            style={{display:"flex",alignItems:"center",gap:8,border:"4px solid #0B1957",background:(!value.trim()||!url.trim())?"var(--nb-accent-light)":"#0B1957",color:(!value.trim()||!url.trim())?"#0B1957":"#9ECCFA",padding:"10px 24px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:(!value.trim()||!url.trim())?"not-allowed":"pointer",boxShadow:"4px 4px 0 #9ECCFA",fontFamily:"inherit",opacity:(!value.trim()||!url.trim())?0.5:1}}>
+            style={{display:"flex",alignItems:"center",gap:8,border:"4px solid var(--nb-primary)",background:(!value.trim()||!url.trim())?"var(--nb-accent-light)":"var(--nb-primary)",color:(!value.trim()||!url.trim())?"var(--nb-primary)":"var(--nb-accent)",padding:"10px 24px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:(!value.trim()||!url.trim())?"not-allowed":"pointer",boxShadow:"4px 4px 0 var(--nb-accent)",fontFamily:"inherit",opacity:(!value.trim()||!url.trim())?0.5:1}}>
             <IconCheck/>{isEdit?"Simpan Perubahan":"Tambah Kontak"}
           </button>
         </div>
@@ -1151,7 +1151,7 @@ function ContactSection() {
   if (loading) return (
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
       {[0,1,2].map(i=>(
-        <div key={i} style={{border:"4px solid #0B1957",padding:"18px 22px",background:"#F8F3EA",boxShadow:"5px 5px 0 #0B1957",display:"flex",gap:16,alignItems:"center",animation:`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.08}s both`}}>
+        <div key={i} style={{border:"4px solid var(--nb-primary)",padding:"18px 22px",background:"var(--nb-bg)",boxShadow:"5px 5px 0 var(--nb-primary)",display:"flex",gap:16,alignItems:"center",animation:`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.08}s both`}}>
           <div className="hm-skeleton" style={{width:40,height:40,flexShrink:0}}/>
           <div style={{flex:1,display:"flex",flexDirection:"column",gap:6}}>
             <div className="hm-skeleton" style={{height:12,width:"30%"}}/>
@@ -1166,29 +1166,29 @@ function ContactSection() {
     <div>
       <div className="hm-contact-topbar" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:10}}>
         <div style={{display:"flex",gap:10,animation:"hmSlideRight 0.4s cubic-bezier(0.16,1,0.3,1) 0.05s both"}}>
-          <span style={{border:"4px solid #0B1957",background:"#9ECCFA",color:"#0B1957",fontWeight:900,fontSize:12,padding:"6px 14px",textTransform:"uppercase",letterSpacing:"0.1em",boxShadow:"3px 3px 0 #0B1957"}}>{visibleCount} Tampil</span>
-          <span style={{border:"4px solid #0B1957",background:"#F8F3EA",color:"#0B1957",fontWeight:900,fontSize:12,padding:"6px 14px",textTransform:"uppercase",letterSpacing:"0.1em",boxShadow:"3px 3px 0 #0B1957"}}>{contacts.length-visibleCount} Hidden</span>
+          <span style={{border:"4px solid var(--nb-primary)",background:"var(--nb-accent)",color:"var(--nb-primary)",fontWeight:900,fontSize:12,padding:"6px 14px",textTransform:"uppercase",letterSpacing:"0.1em",boxShadow:"3px 3px 0 var(--nb-primary)"}}>{visibleCount} Tampil</span>
+          <span style={{border:"4px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",fontWeight:900,fontSize:12,padding:"6px 14px",textTransform:"uppercase",letterSpacing:"0.1em",boxShadow:"3px 3px 0 var(--nb-primary)"}}>{contacts.length-visibleCount} Hidden</span>
         </div>
         <button onClick={()=>setModal({open:true,item:null})}
-          style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,border:"4px solid #0B1957",background:"#0B1957",color:"#9ECCFA",padding:"8px 18px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",boxShadow:"4px 4px 0 #9ECCFA",fontFamily:"inherit",animation:"hmSlideLeft 0.4s cubic-bezier(0.16,1,0.3,1) 0.1s both"}}>
+          style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,border:"4px solid var(--nb-primary)",background:"var(--nb-primary)",color:"var(--nb-accent)",padding:"8px 18px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",cursor:"pointer",boxShadow:"4px 4px 0 var(--nb-accent)",fontFamily:"inherit",animation:"hmSlideLeft 0.4s cubic-bezier(0.16,1,0.3,1) 0.1s both"}}>
           <IconPlus/> Tambah Kontak
         </button>
       </div>
 
       {/* Preview bar */}
-      <div style={{marginBottom:14,background:"#0B1957",border:"4px solid #0B1957",boxShadow:"6px 6px 0 #9ECCFA",padding:"14px 20px",animation:"hmSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.15s both"}}>
-        <p style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.2em",marginBottom:10}}>Preview di Homepage</p>
+      <div style={{marginBottom:14,background:"var(--nb-primary)",border:"4px solid var(--nb-primary)",boxShadow:"6px 6px 0 var(--nb-accent)",padding:"14px 20px",animation:"hmSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.15s both"}}>
+        <p style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.2em",marginBottom:10}}>Preview di Homepage</p>
         <div style={{display:"flex",flexWrap:"wrap",gap:10}}>
           {contacts.filter(c=>c.is_visible).length===0
             ? <p style={{fontWeight:700,fontSize:12,textTransform:"uppercase",color:"var(--nb-accent-light)",opacity:0.4,letterSpacing:"0.1em"}}>Belum ada kontak yang ditampilkan</p>
             : contacts.filter(c=>c.is_visible).map((c,i)=>(
-              <div key={c.id} style={{display:"flex",alignItems:"center",gap:8,border:"2px solid #9ECCFA",padding:"6px 12px 6px 6px",background:"rgba(158,204,250,0.1)",animation:`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`}}>
-                <div style={{width:28,height:28,background:c.icon_color,border:"2px solid #9ECCFA",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <div key={c.id} style={{display:"flex",alignItems:"center",gap:8,border:"2px solid var(--nb-accent)",padding:"6px 12px 6px 6px",background:"rgba(158,204,250,0.1)",animation:`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`}}>
+                <div style={{width:28,height:28,background:c.icon_color,border:"2px solid var(--nb-accent)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                   {PLATFORM_ICONS[c.platform]}
                 </div>
                 <div>
-                  <p style={{fontWeight:900,fontSize:9,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.15em"}}>{c.label}</p>
-                  <p className="hm-contact-value-text" style={{fontWeight:700,fontSize:10,color:"#F8F3EA",opacity:0.8}}>{c.value}</p>
+                  <p style={{fontWeight:900,fontSize:9,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.15em"}}>{c.label}</p>
+                  <p className="hm-contact-value-text" style={{fontWeight:700,fontSize:10,color:"var(--nb-bg)",opacity:0.8}}>{c.value}</p>
                 </div>
               </div>
             ))
@@ -1197,65 +1197,65 @@ function ContactSection() {
       </div>
 
       {/* Contact list */}
-      <div style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"8px 8px 0 #0B1957",overflow:"hidden",animation:"hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s both"}}>
+      <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",boxShadow:"8px 8px 0 var(--nb-primary)",overflow:"hidden",animation:"hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s both"}}>
         {contacts.length===0 ? (
           <div style={{padding:"48px 24px",display:"flex",flexDirection:"column",alignItems:"center",gap:12,animation:"hmFadeIn 0.4s ease"}}>
             <div style={{opacity:0.15}}><IconPhone/></div>
-            <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"#0B1957",opacity:0.4,letterSpacing:"0.15em"}}>Belum ada kontak</p>
+            <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"var(--nb-primary)",opacity:0.4,letterSpacing:"0.15em"}}>Belum ada kontak</p>
           </div>
         ) : (
           <div>
-            <div className="hm-contact-list-header" style={{borderBottom:"4px solid #0B1957",background:"#0B1957",padding:"10px 20px",display:"grid",gridTemplateColumns:"auto 1fr auto auto",alignItems:"center",gap:16}}>
-              <span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.6,width:32,textAlign:"center"}}>№</span>
-              <span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.6}}>Kontak</span>
-              <span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.6}}>Tampil</span>
-              <span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.6}}>Aksi</span>
+            <div className="hm-contact-list-header" style={{borderBottom:"4px solid var(--nb-primary)",background:"var(--nb-primary)",padding:"10px 20px",display:"grid",gridTemplateColumns:"auto 1fr auto auto",alignItems:"center",gap:16}}>
+              <span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.6,width:32,textAlign:"center"}}>№</span>
+              <span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.6}}>Kontak</span>
+              <span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.6}}>Tampil</span>
+              <span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.6}}>Aksi</span>
             </div>
             {contacts.map((c,index)=>(
               <div key={c.id} className="hm-contact-list-row"
-                style={{display:"grid",gridTemplateColumns:"auto 1fr auto auto",alignItems:"center",gap:16,padding:"14px 20px",borderBottom:"4px solid #0B1957",background:c.is_visible?"#F8F3EA":"#ede8df",opacity:c.is_visible?1:0.55,transition:"background 0.15s ease, opacity 0.2s ease",animation:mounted?`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${index*0.06}s both`:"none"}}>
+                style={{display:"grid",gridTemplateColumns:"auto 1fr auto auto",alignItems:"center",gap:16,padding:"14px 20px",borderBottom:"4px solid var(--nb-primary)",background:c.is_visible?"var(--nb-bg)":"#ede8df",opacity:c.is_visible?1:0.55,transition:"background 0.15s ease, opacity 0.2s ease",animation:mounted?`hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${index*0.06}s both`:"none"}}>
                 <div style={{display:"flex",flexDirection:"column",gap:3,width:32,alignItems:"center"}}>
-                  <button onClick={()=>handleMoveUp(index)} disabled={index===0} style={{width:24,height:20,border:"2px solid #0B1957",background:"transparent",cursor:index===0?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:index===0?0.25:1,fontFamily:"inherit",fontSize:10,color:"#0B1957"}}>▲</button>
-                  <span style={{fontWeight:900,fontSize:11,color:"#0B1957",opacity:0.4}}>{index+1}</span>
-                  <button onClick={()=>handleMoveDown(index)} disabled={index===contacts.length-1} style={{width:24,height:20,border:"2px solid #0B1957",background:"transparent",cursor:index===contacts.length-1?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:index===contacts.length-1?0.25:1,fontFamily:"inherit",fontSize:10,color:"#0B1957"}}>▼</button>
+                  <button onClick={()=>handleMoveUp(index)} disabled={index===0} style={{width:24,height:20,border:"2px solid var(--nb-primary)",background:"transparent",cursor:index===0?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:index===0?0.25:1,fontFamily:"inherit",fontSize:10,color:"var(--nb-primary)"}}>▲</button>
+                  <span style={{fontWeight:900,fontSize:11,color:"var(--nb-primary)",opacity:0.4}}>{index+1}</span>
+                  <button onClick={()=>handleMoveDown(index)} disabled={index===contacts.length-1} style={{width:24,height:20,border:"2px solid var(--nb-primary)",background:"transparent",cursor:index===contacts.length-1?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:index===contacts.length-1?0.25:1,fontFamily:"inherit",fontSize:10,color:"var(--nb-primary)"}}>▼</button>
                 </div>
                 <div style={{display:"flex",alignItems:"center",gap:12,minWidth:0}}>
-                  <div style={{width:40,height:40,background:c.icon_color,border:"3px solid #0B1957",boxShadow:"2px 2px 0 #0B1957",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  <div style={{width:40,height:40,background:c.icon_color,border:"3px solid var(--nb-primary)",boxShadow:"2px 2px 0 var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                     {PLATFORM_ICONS[c.platform]}
                   </div>
                   <div style={{minWidth:0}}>
                     <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-                      <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"#0B1957",letterSpacing:"0.06em"}}>{c.label}</p>
-                      <span className="hm-contact-platform-badge" style={{border:"2px solid #0B1957",background:"var(--nb-accent-light)",fontSize:9,fontWeight:900,padding:"2px 6px",textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957"}}>{c.platform}</span>
+                      <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",color:"var(--nb-primary)",letterSpacing:"0.06em"}}>{c.label}</p>
+                      <span className="hm-contact-platform-badge" style={{border:"2px solid var(--nb-primary)",background:"var(--nb-accent-light)",fontSize:9,fontWeight:900,padding:"2px 6px",textTransform:"uppercase",letterSpacing:"0.1em",color:"var(--nb-primary)"}}>{c.platform}</span>
                     </div>
-                    <p className="hm-contact-value-text" style={{fontWeight:600,fontSize:12,color:"#0B1957",opacity:0.6,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.value}</p>
-                    <a className="hm-contact-url" href={c.url} target="_blank" rel="noopener noreferrer" style={{fontWeight:600,fontSize:10,color:"#0B1957",opacity:0.4,display:"flex",alignItems:"center",gap:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",textDecoration:"none"}}>
+                    <p className="hm-contact-value-text" style={{fontWeight:600,fontSize:12,color:"var(--nb-primary)",opacity:0.6,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.value}</p>
+                    <a className="hm-contact-url" href={c.url} target="_blank" rel="noopener noreferrer" style={{fontWeight:600,fontSize:10,color:"var(--nb-primary)",opacity:0.4,display:"flex",alignItems:"center",gap:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",textDecoration:"none"}}>
                       <IconLink/>{c.url.length>40?c.url.slice(0,40)+"...":c.url}
                     </a>
                   </div>
                 </div>
                 <button onClick={()=>handleToggleVisibility(c.id)}
-                  style={{width:36,height:36,border:"3px solid #0B1957",background:c.is_visible?"#0B1957":"#F8F3EA",color:c.is_visible?"#9ECCFA":"#0B1957",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",flexShrink:0,transition:"all 0.12s ease"}}>
+                  style={{width:36,height:36,border:"3px solid var(--nb-primary)",background:c.is_visible?"var(--nb-primary)":"var(--nb-bg)",color:c.is_visible?"var(--nb-accent)":"var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",flexShrink:0,transition:"all 0.12s ease"}}>
                   {c.is_visible?<IconEye/>:<IconEyeOff/>}
                 </button>
                 <div style={{display:"flex",gap:6,flexShrink:0}}>
                   <button onClick={()=>setModal({open:true,item:c})}
-                    style={{width:32,height:32,border:"3px solid #0B1957",background:"#F8F3EA",color:"#0B1957",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",transition:"all 0.12s ease"}}
-                    onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#0B1957";(e.currentTarget as HTMLElement).style.color="#9ECCFA";}}
-                    onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#F8F3EA";(e.currentTarget as HTMLElement).style.color="#0B1957";}}><IconEdit/></button>
+                    style={{width:32,height:32,border:"3px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",transition:"all 0.12s ease"}}
+                    onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-primary)";(e.currentTarget as HTMLElement).style.color="var(--nb-accent)";}}
+                    onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.color="var(--nb-primary)";}}><IconEdit/></button>
                   <button onClick={()=>handleDelete(c.id)}
-                    style={{width:32,height:32,border:"3px solid #0B1957",background:"#F8F3EA",color:"#0B1957",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",transition:"all 0.12s ease"}}
+                    style={{width:32,height:32,border:"3px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",transition:"all 0.12s ease"}}
                     onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ef4444";(e.currentTarget as HTMLElement).style.color="white";(e.currentTarget as HTMLElement).style.borderColor="#ef4444";}}
-                    onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#F8F3EA";(e.currentTarget as HTMLElement).style.color="#0B1957";(e.currentTarget as HTMLElement).style.borderColor="#0B1957";}}><IconTrash/></button>
+                    onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.color="var(--nb-primary)";(e.currentTarget as HTMLElement).style.borderColor="var(--nb-primary)";}}><IconTrash/></button>
                 </div>
               </div>
             ))}
           </div>
         )}
-        <div className="hm-footer-bar" style={{borderTop:"4px solid #0B1957",background:"#0B1957",padding:"14px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
+        <div className="hm-footer-bar" style={{borderTop:"4px solid var(--nb-primary)",background:"var(--nb-primary)",padding:"14px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
           <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.6,textTransform:"uppercase",letterSpacing:"0.1em"}}>{dirty?"⚠ Ada perubahan yang belum disimpan":"✓ Semua perubahan tersimpan"}</span>
           <button onClick={handleSaveAll} disabled={saving||!dirty}
-            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid #9ECCFA",background:dirty?"#9ECCFA":"transparent",color:dirty?"#0B1957":"#9ECCFA",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(saving||!dirty)?"not-allowed":"pointer",boxShadow:dirty?"4px 4px 0 rgba(158,204,250,0.4)":"none",opacity:!dirty?0.5:1,fontFamily:"inherit",whiteSpace:"nowrap"}}>
+            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid var(--nb-accent)",background:dirty?"var(--nb-accent)":"transparent",color:dirty?"var(--nb-primary)":"var(--nb-accent)",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(saving||!dirty)?"not-allowed":"pointer",boxShadow:dirty?"4px 4px 0 rgba(158,204,250,0.4)":"none",opacity:!dirty?0.5:1,fontFamily:"inherit",whiteSpace:"nowrap"}}>
             {saving?<IconSpin/>:<IconSave/>}{saving?"Menyimpan...":"Simpan Semua"}
           </button>
         </div>
@@ -1276,9 +1276,9 @@ interface ProjectItem {
 }
 
 const STATUS_CFG: Record<string, { bg: string; fg: string }> = {
-  "Hosted":      { bg: "#9ECCFA", fg: "#0B1957" },
-  "In Progress": { bg: "#FFE8A0", fg: "#0B1957" },
-  "Planning":    { bg: "#F8F3EA", fg: "#0B1957" },
+  "Hosted":      { bg: "var(--nb-accent)", fg: "var(--nb-primary)" },
+  "In Progress": { bg: "var(--nb-secondary)", fg: "var(--nb-primary)" },
+  "Planning":    { bg: "var(--nb-bg)", fg: "var(--nb-primary)" },
 };
 
 function ProjectCard({ p, index, onToggle, toggling }: {
@@ -1299,11 +1299,11 @@ function ProjectCard({ p, index, onToggle, toggling }: {
 
         {/* Thumbnail */}
         {p.images?.[0] ? (
-          <div className="hm-proj-thumb hm-proj-thumb-wrap" style={{width:96,height:72,border:"3px solid #0B1957",boxShadow:"3px 3px 0 #0B1957",flexShrink:0}}>
+          <div className="hm-proj-thumb hm-proj-thumb-wrap" style={{width:96,height:72,border:"3px solid var(--nb-primary)",boxShadow:"3px 3px 0 var(--nb-primary)",flexShrink:0}}>
             <img src={p.images[0]} alt={p.title} style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top",display:"block",transition:"transform 0.45s cubic-bezier(0.16,1,0.3,1)"}}/>
           </div>
         ) : (
-          <div className="hm-proj-thumb-wrap" style={{width:96,height:72,flexShrink:0,border:"3px solid #0B1957",background:"var(--nb-accent-light)",boxShadow:"3px 3px 0 #0B1957",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div className="hm-proj-thumb-wrap" style={{width:96,height:72,flexShrink:0,border:"3px solid var(--nb-primary)",background:"var(--nb-accent-light)",boxShadow:"3px 3px 0 var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center"}}>
             <span style={{fontSize:24,opacity:0.2}}>🗂</span>
           </div>
         )}
@@ -1311,12 +1311,12 @@ function ProjectCard({ p, index, onToggle, toggling }: {
         {/* Info */}
         <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:4}}>
-            <span style={{fontWeight:900,fontSize:14,textTransform:"uppercase",color:"#0B1957",letterSpacing:"0.05em"}}>{p.title}</span>
-            <span style={{border:"2px solid #0B1957",background:sc.bg,color:sc.fg,padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.08em"}}>{p.status}</span>
-            {!p.visible&&<span style={{border:"2px solid #0B1957",background:"#F8F3EA",color:"#0B1957",padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.08em",opacity:0.45}}>Hidden</span>}
+            <span style={{fontWeight:900,fontSize:14,textTransform:"uppercase",color:"var(--nb-primary)",letterSpacing:"0.05em"}}>{p.title}</span>
+            <span style={{border:"2px solid var(--nb-primary)",background:sc.bg,color:sc.fg,padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.08em"}}>{p.status}</span>
+            {!p.visible&&<span style={{border:"2px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.08em",opacity:0.45}}>Hidden</span>}
           </div>
-          {p.subtitle&&<p style={{fontWeight:700,fontSize:11,color:"#0B1957",opacity:0.5,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>{p.subtitle}</p>}
-          <p style={{fontWeight:600,fontSize:12,color:"#0B1957",opacity:0.65,lineHeight:1.5,marginBottom:8,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.desc}</p>
+          {p.subtitle&&<p style={{fontWeight:700,fontSize:11,color:"var(--nb-primary)",opacity:0.5,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>{p.subtitle}</p>}
+          <p style={{fontWeight:600,fontSize:12,color:"var(--nb-primary)",opacity:0.65,lineHeight:1.5,marginBottom:8,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.desc}</p>
           <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
             {p.stacks?.slice(0,6).map((s,si)=>(
               <div key={s.id} className="hm-stack-chip" style={{animationDelay:`${(index*0.065)+(si*0.04)}s`}}>
@@ -1324,24 +1324,24 @@ function ProjectCard({ p, index, onToggle, toggling }: {
                 {s.label}
               </div>
             ))}
-            {p.stacks?.length>6&&<div style={{border:"2px solid #0B1957",padding:"3px 8px",background:"#0B1957",color:"#9ECCFA",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.06em"}}>+{p.stacks.length-6}</div>}
+            {p.stacks?.length>6&&<div style={{border:"2px solid var(--nb-primary)",padding:"3px 8px",background:"var(--nb-primary)",color:"var(--nb-accent)",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.06em"}}>+{p.stacks.length-6}</div>}
           </div>
         </div>
 
         {/* Meta — hidden on mobile */}
         <div className="hm-proj-meta" style={{textAlign:"right",flexShrink:0}}>
-          <p style={{fontWeight:800,fontSize:11,color:"#0B1957",opacity:0.45,textTransform:"uppercase",letterSpacing:"0.1em",margin:"0 0 2px"}}>{p.date}</p>
-          <p style={{fontWeight:800,fontSize:11,color:"#0B1957",opacity:0.45,textTransform:"uppercase",letterSpacing:"0.1em",margin:0}}>{p.duration}</p>
+          <p style={{fontWeight:800,fontSize:11,color:"var(--nb-primary)",opacity:0.45,textTransform:"uppercase",letterSpacing:"0.1em",margin:"0 0 2px"}}>{p.date}</p>
+          <p style={{fontWeight:800,fontSize:11,color:"var(--nb-primary)",opacity:0.45,textTransform:"uppercase",letterSpacing:"0.1em",margin:0}}>{p.duration}</p>
         </div>
 
         {/* Actions */}
         <div className="hm-proj-actions" style={{display:"flex",gap:8,flexShrink:0,alignItems:"center"}}>
           <button onClick={onToggle} disabled={toggling} title={p.visible?"Sembunyikan":"Tampilkan"}
-            style={{display:"inline-flex",alignItems:"center",justifyContent:"center",gap:5,border:"3px solid #0B1957",background:p.visible?"#F8F3EA":"#0B1957",color:p.visible?"#0B1957":"#9ECCFA",padding:"5px 10px",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.05em",cursor:toggling?"wait":"pointer",boxShadow:"2px 2px 0 #0B1957",fontFamily:"inherit",opacity:toggling?0.6:1,transition:"transform 0.1s ease, box-shadow 0.1s ease"}}>
+            style={{display:"inline-flex",alignItems:"center",justifyContent:"center",gap:5,border:"3px solid var(--nb-primary)",background:p.visible?"var(--nb-bg)":"var(--nb-primary)",color:p.visible?"var(--nb-primary)":"var(--nb-accent)",padding:"5px 10px",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.05em",cursor:toggling?"wait":"pointer",boxShadow:"2px 2px 0 var(--nb-primary)",fontFamily:"inherit",opacity:toggling?0.6:1,transition:"transform 0.1s ease, box-shadow 0.1s ease"}}>
             {toggling?<span style={{animation:"hmSpin 0.5s linear infinite",display:"inline-block"}}>⟳</span>:p.visible?<><IconEye/><span>Tampil</span></>:<><IconEyeOff/><span>Hidden</span></>}
           </button>
           <a href={`/projects/${p.slug}`} target="_blank" rel="noopener noreferrer"
-            style={{display:"inline-flex",alignItems:"center",gap:5,border:"3px solid #0B1957",background:"#F8F3EA",color:"#0B1957",padding:"5px 10px",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.05em",boxShadow:"2px 2px 0 #0B1957",textDecoration:"none"}}>
+            style={{display:"inline-flex",alignItems:"center",gap:5,border:"3px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",padding:"5px 10px",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.05em",boxShadow:"2px 2px 0 var(--nb-primary)",textDecoration:"none"}}>
             <IconExternal/><span>Lihat</span>
           </a>
         </div>
@@ -1403,7 +1403,7 @@ function ProjectsSection() {
       <div className="hm-skeleton" style={{height:48,marginBottom:14}}/>
       <div style={{display:"flex",flexDirection:"column",gap:14}}>
         {[0,1,2].map(i => (
-          <div key={i} style={{border:"4px solid #0B1957",background:"#F8F3EA",boxShadow:"5px 5px 0 #0B1957",padding:"18px 22px",animation:`hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${0.3+i*0.09}s both`}}>
+          <div key={i} style={{border:"4px solid var(--nb-primary)",background:"var(--nb-bg)",boxShadow:"5px 5px 0 var(--nb-primary)",padding:"18px 22px",animation:`hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${0.3+i*0.09}s both`}}>
             <div style={{display:"flex",gap:18,alignItems:"flex-start",flexWrap:"wrap"}}>
               <div className="hm-skeleton" style={{width:96,height:72,flexShrink:0}}/>
               <div style={{flex:1,minWidth:160,display:"flex",flexDirection:"column",gap:8}}>
@@ -1423,34 +1423,34 @@ function ProjectsSection() {
       {/* Header */}
       <div className="hm-proj-header" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:18,gap:12,flexWrap:"wrap",opacity:headerIn?1:0,transform:headerIn?"translateY(0)":"translateY(-14px)",transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1)"}}>
         <div className="hm-stats-row" style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-          {[{n:projects.length,label:"Total",bg:"#0B1957",fg:"#9ECCFA",delay:"0s"},{n:visibleCount,label:"Tampil",bg:"#9ECCFA",fg:"#0B1957",delay:"0.06s"},{n:hiddenCount,label:"Hidden",bg:"#F8F3EA",fg:"#0B1957",delay:"0.12s"}].map(c=>(
-            <div key={c.label} style={{border:"4px solid #0B1957",background:c.bg,color:c.fg,display:"flex",alignItems:"center",gap:6,padding:"6px 14px",boxShadow:"3px 3px 0 #0B1957"}}>
+          {[{n:projects.length,label:"Total",bg:"var(--nb-primary)",fg:"var(--nb-accent)",delay:"0s"},{n:visibleCount,label:"Tampil",bg:"var(--nb-accent)",fg:"var(--nb-primary)",delay:"0.06s"},{n:hiddenCount,label:"Hidden",bg:"var(--nb-bg)",fg:"var(--nb-primary)",delay:"0.12s"}].map(c=>(
+            <div key={c.label} style={{border:"4px solid var(--nb-primary)",background:c.bg,color:c.fg,display:"flex",alignItems:"center",gap:6,padding:"6px 14px",boxShadow:"3px 3px 0 var(--nb-primary)"}}>
               <span style={{fontWeight:900,fontSize:20,lineHeight:1}}>{c.n}</span>
               <span style={{fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",opacity:0.75}}>{c.label}</span>
             </div>
           ))}
         </div>
         <a href="/dashboard/projects"
-          style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid #0B1957",background:"#F8F3EA",color:"#0B1957",padding:"8px 18px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",textDecoration:"none",boxShadow:"4px 4px 0 #0B1957",whiteSpace:"nowrap"}}>
+          style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",padding:"8px 18px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",textDecoration:"none",boxShadow:"4px 4px 0 var(--nb-primary)",whiteSpace:"nowrap"}}>
           <IconFolder/> Kelola di Project Manager
         </a>
       </div>
 
       {/* Filter tabs */}
-      <div style={{display:"flex",border:"4px solid #0B1957",marginBottom:16,overflow:"hidden",boxShadow:"4px 4px 0 #0B1957",animation:"hmSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.18s both"}}>
+      <div style={{display:"flex",border:"4px solid var(--nb-primary)",marginBottom:16,overflow:"hidden",boxShadow:"4px 4px 0 var(--nb-primary)",animation:"hmSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.18s both"}}>
         {([["all","Semua",projects.length],["visible","Tampil",visibleCount],["hidden","Hidden",hiddenCount]] as const).map(([key,label,count])=>(
           <button key={key} onClick={()=>setFilterTab(key)} className={`hm-filter-tab${filterTab===key?" active":""}`}>
             {label}
-            <span style={{background:filterTab===key?"rgba(158,204,250,0.2)":"var(--nb-accent-light)",color:filterTab===key?"#9ECCFA":"#0B1957",border:`2px solid ${filterTab===key?"#9ECCFA":"#0B1957"}`,fontSize:10,fontWeight:900,padding:"1px 7px",minWidth:22,textAlign:"center"}}>{count}</span>
+            <span style={{background:filterTab===key?"rgba(158,204,250,0.2)":"var(--nb-accent-light)",color:filterTab===key?"var(--nb-accent)":"var(--nb-primary)",border:`2px solid ${filterTab===key?"var(--nb-accent)":"var(--nb-primary)"}`,fontSize:10,fontWeight:900,padding:"1px 7px",minWidth:22,textAlign:"center"}}>{count}</span>
           </button>
         ))}
       </div>
 
       {/* Empty state */}
       {filtered.length===0&&(
-        <div style={{border:"4px dashed #0B1957",background:"#F8F3EA",padding:"60px 24px",textAlign:"center",animation:"hmFadeIn 0.4s ease"}}>
+        <div style={{border:"4px dashed var(--nb-primary)",background:"var(--nb-bg)",padding:"60px 24px",textAlign:"center",animation:"hmFadeIn 0.4s ease"}}>
           <div style={{fontSize:40,marginBottom:12,opacity:0.12}}>📁</div>
-          <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.15em",color:"#0B1957",opacity:0.4}}>
+          <p style={{fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.15em",color:"var(--nb-primary)",opacity:0.4}}>
             {filterTab==="visible"?"Tidak ada project yang ditampilkan":filterTab==="hidden"?"Tidak ada project yang disembunyikan":"Belum ada project"}
           </p>
         </div>
@@ -1465,10 +1465,10 @@ function ProjectsSection() {
 
       {/* Footer legend */}
       {filtered.length>0&&(
-        <div style={{marginTop:14,background:"#0B1957",border:"4px solid #0B1957",boxShadow:"4px 4px 0 #9ECCFA",padding:"10px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8,animation:"hmFadeIn 0.5s ease 0.4s both"}}>
+        <div style={{marginTop:14,background:"var(--nb-primary)",border:"4px solid var(--nb-primary)",boxShadow:"4px 4px 0 var(--nb-accent)",padding:"10px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8,animation:"hmFadeIn 0.5s ease 0.4s both"}}>
           <div style={{display:"flex",alignItems:"center",gap:20,flexWrap:"wrap"}}>
-            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"#9ECCFA"}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em"}}>Tampil di homepage</span></div>
-            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid #9ECCFA",background:"transparent",opacity:0.5}}/><span style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em",opacity:0.5}}>Disembunyikan</span></div>
+            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid var(--nb-accent)",background:"var(--nb-accent)"}}/><span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.12em"}}>Tampil di homepage</span></div>
+            <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:12,height:12,border:"2px solid var(--nb-accent)",background:"transparent",opacity:0.5}}/><span style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.12em",opacity:0.5}}>Disembunyikan</span></div>
           </div>
           <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.1em"}}>{visibleCount}/{projects.length} aktif</span>
         </div>
@@ -1544,13 +1544,13 @@ function AboutSection() {
 
   if (loading) return (
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
-      <div style={{background:"#0B1957",border:"4px solid #0B1957",boxShadow:"6px 6px 0 #9ECCFA",padding:20,animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) both"}}>
+      <div style={{background:"var(--nb-primary)",border:"4px solid var(--nb-primary)",boxShadow:"6px 6px 0 var(--nb-accent)",padding:20,animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) both"}}>
         <div className="hm-skeleton" style={{height:12,width:"20%",marginBottom:14}}/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
           {[1,2,3,4].map(i=><div key={i} className="hm-skeleton" style={{height:48}}/>)}
         </div>
       </div>
-      <div style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"8px 8px 0 #0B1957",padding:28,display:"flex",flexDirection:"column",gap:16}}>
+      <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",boxShadow:"8px 8px 0 var(--nb-primary)",padding:28,display:"flex",flexDirection:"column",gap:16}}>
         {[1,2,3].map(i=><div key={i} className="hm-skeleton" style={{height:48,width:`${100-i*5}%`}}/>)}
       </div>
     </div>
@@ -1559,25 +1559,25 @@ function AboutSection() {
   return (
     <div>
       {/* Live Preview */}
-      <div style={{marginBottom:16,background:"#0B1957",border:"4px solid #0B1957",boxShadow:"6px 6px 0 #9ECCFA",padding:20,animation:"hmSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.05s both"}}>
-        <p style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.2em",marginBottom:12}}>Preview About</p>
+      <div style={{marginBottom:16,background:"var(--nb-primary)",border:"4px solid var(--nb-primary)",boxShadow:"6px 6px 0 var(--nb-accent)",padding:20,animation:"hmSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) 0.05s both"}}>
+        <p style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.2em",marginBottom:12}}>Preview About</p>
         <div style={{display:"flex",flexDirection:"column",gap:10}}>
           <div>
-            <p style={{fontWeight:900,fontSize:10,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.3em",marginBottom:2,opacity:0.7}}>{form.tagline||"Who am I"}</p>
-            <p style={{fontWeight:900,fontSize:18,color:"#F8F3EA",textTransform:"uppercase"}}>Nama dari Hero Section</p>
+            <p style={{fontWeight:900,fontSize:10,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.3em",marginBottom:2,opacity:0.7}}>{form.tagline||"Who am I"}</p>
+            <p style={{fontWeight:900,fontSize:18,color:"var(--nb-bg)",textTransform:"uppercase"}}>Nama dari Hero Section</p>
           </div>
           <div className="hm-about-preview-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
             {form.info_cards.slice(0,4).map((card,i)=>(
-              <div key={i} style={{border:"2px solid #9ECCFA",padding:"8px 10px",animation:mounted?`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i*0.06}s both`:"none"}}>
-                <p style={{fontWeight:900,fontSize:9,color:"#9ECCFA",textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:2}}>{card.label||"Label"}</p>
-                <p style={{fontWeight:700,fontSize:12,color:"#F8F3EA"}}>{card.value||"—"}</p>
+              <div key={i} style={{border:"2px solid var(--nb-accent)",padding:"8px 10px",animation:mounted?`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i*0.06}s both`:"none"}}>
+                <p style={{fontWeight:900,fontSize:9,color:"var(--nb-accent)",textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:2}}>{card.label||"Label"}</p>
+                <p style={{fontWeight:700,fontSize:12,color:"var(--nb-bg)"}}>{card.value||"—"}</p>
               </div>
             ))}
           </div>
           {form.highlights.filter(Boolean).length>0&&(
             <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:4}}>
               {form.highlights.filter(Boolean).map((h,i)=>(
-                <span key={i} style={{border:"2px solid #9ECCFA",background:"rgba(158,204,250,0.12)",color:"#9ECCFA",padding:"3px 10px",fontWeight:800,fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em"}}>{h}</span>
+                <span key={i} style={{border:"2px solid var(--nb-accent)",background:"rgba(158,204,250,0.12)",color:"var(--nb-accent)",padding:"3px 10px",fontWeight:800,fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em"}}>{h}</span>
               ))}
             </div>
           )}
@@ -1585,60 +1585,60 @@ function AboutSection() {
       </div>
 
       {/* Form */}
-      <div style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"8px 8px 0 #0B1957",overflow:"hidden",animation:"hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.12s both"}}>
+      <div style={{background:"var(--nb-bg)",border:"4px solid var(--nb-primary)",boxShadow:"8px 8px 0 var(--nb-primary)",overflow:"hidden",animation:"hmSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.12s both"}}>
         <div style={{padding:"24px 28px",display:"flex",flexDirection:"column",gap:22}}>
           {/* Tagline */}
           <div style={{animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.18s both"}}>
-            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",marginBottom:6}}>
+            <label style={{display:"block",fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",marginBottom:6}}>
               Tagline <span style={{fontWeight:600,fontSize:10,opacity:0.4,textTransform:"none",letterSpacing:0}}>— tampil di atas nama</span>
             </label>
             <input value={form.tagline} onChange={e=>{setForm(f=>({...f,tagline:e.target.value}));setDirty(true);}} placeholder="Who am I" maxLength={80}
-              style={{width:"100%",border:"4px solid #0B1957",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"#0B1957",outline:"none",boxSizing:"border-box"}}
-              onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 #9ECCFA";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
+              style={{width:"100%",border:"4px solid var(--nb-primary)",background:"white",padding:"10px 14px",fontWeight:700,fontSize:13,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box"}}
+              onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="4px 4px 0 var(--nb-accent)";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
           </div>
 
           {/* Extra Bio */}
           <div style={{animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.24s both"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-              <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957"}}>Bio Tambahan <span style={{fontWeight:600,fontSize:10,opacity:0.4,textTransform:"none",letterSpacing:0}}>— opsional</span></label>
-              <span style={{fontWeight:700,fontSize:11,color:"#0B1957",opacity:0.4}}>{form.extra_bio.length}/500</span>
+              <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)"}}>Bio Tambahan <span style={{fontWeight:600,fontSize:10,opacity:0.4,textTransform:"none",letterSpacing:0}}>— opsional</span></label>
+              <span style={{fontWeight:700,fontSize:11,color:"var(--nb-primary)",opacity:0.4}}>{form.extra_bio.length}/500</span>
             </div>
             <textarea value={form.extra_bio} onChange={e=>{setForm(f=>({...f,extra_bio:e.target.value}));setDirty(true);}} rows={3} maxLength={500} placeholder="Deskripsi tambahan..."
-              style={{width:"100%",border:"4px solid #0B1957",background:"white",padding:"10px 14px",fontWeight:600,fontSize:13,color:"#0B1957",outline:"none",boxSizing:"border-box",resize:"vertical",fontFamily:"inherit"}}
-              onFocus={e=>{(e.target as HTMLTextAreaElement).style.boxShadow="4px 4px 0 #9ECCFA";}} onBlur={e=>{(e.target as HTMLTextAreaElement).style.boxShadow="none";}}/>
+              style={{width:"100%",border:"4px solid var(--nb-primary)",background:"white",padding:"10px 14px",fontWeight:600,fontSize:13,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box",resize:"vertical",fontFamily:"inherit"}}
+              onFocus={e=>{(e.target as HTMLTextAreaElement).style.boxShadow="4px 4px 0 var(--nb-accent)";}} onBlur={e=>{(e.target as HTMLTextAreaElement).style.boxShadow="none";}}/>
           </div>
 
           {/* Info Cards */}
           <div style={{animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.30s both"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-              <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957"}}>
+              <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)"}}>
                 Info Cards <span style={{fontWeight:600,fontSize:10,opacity:0.4,textTransform:"none",letterSpacing:0}}>— maks 8</span>
               </label>
               <button onClick={addCard} disabled={form.info_cards.length>=8}
-                style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",background:form.info_cards.length>=8?"var(--nb-accent-light)":"#0B1957",color:form.info_cards.length>=8?"#0B1957":"#9ECCFA",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:form.info_cards.length>=8?"not-allowed":"pointer",boxShadow:"2px 2px 0 #9ECCFA",fontFamily:"inherit",opacity:form.info_cards.length>=8?0.5:1}}>
+                style={{display:"flex",alignItems:"center",gap:6,border:"3px solid var(--nb-primary)",background:form.info_cards.length>=8?"var(--nb-accent-light)":"var(--nb-primary)",color:form.info_cards.length>=8?"var(--nb-primary)":"var(--nb-accent)",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:form.info_cards.length>=8?"not-allowed":"pointer",boxShadow:"2px 2px 0 var(--nb-accent)",fontFamily:"inherit",opacity:form.info_cards.length>=8?0.5:1}}>
                 <IconPlus/> Tambah
               </button>
             </div>
             <div className="hm-about-cards-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
               {form.info_cards.map((card,i)=>(
-                <div key={i} style={{border:"3px solid #0B1957",background:"#F8F3EA",boxShadow:"3px 3px 0 #0B1957",padding:"12px 14px",display:"flex",flexDirection:"column",gap:8,position:"relative",animation:mounted?`hmSlideUp 0.35s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`:"none"}}>
-                  <div style={{position:"absolute",top:-2,left:-2,background:"#0B1957",color:"#9ECCFA",fontWeight:900,fontSize:9,padding:"2px 6px",letterSpacing:"0.08em"}}>#{i+1}</div>
+                <div key={i} style={{border:"3px solid var(--nb-primary)",background:"var(--nb-bg)",boxShadow:"3px 3px 0 var(--nb-primary)",padding:"12px 14px",display:"flex",flexDirection:"column",gap:8,position:"relative",animation:mounted?`hmSlideUp 0.35s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`:"none"}}>
+                  <div style={{position:"absolute",top:-2,left:-2,background:"var(--nb-primary)",color:"var(--nb-accent)",fontWeight:900,fontSize:9,padding:"2px 6px",letterSpacing:"0.08em"}}>#{i+1}</div>
                   <div style={{paddingTop:8}}>
-                    <label style={{display:"block",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957",opacity:0.5,marginBottom:4}}>Label</label>
+                    <label style={{display:"block",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",color:"var(--nb-primary)",opacity:0.5,marginBottom:4}}>Label</label>
                     <input value={card.label} onChange={e=>setCard(i,"label",e.target.value)} placeholder="Contoh: Role" maxLength={40}
-                      style={{width:"100%",border:"3px solid #0B1957",background:"white",padding:"7px 10px",fontWeight:800,fontSize:12,color:"#0B1957",outline:"none",boxSizing:"border-box"}}
-                      onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="3px 3px 0 #9ECCFA";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
+                      style={{width:"100%",border:"3px solid var(--nb-primary)",background:"white",padding:"7px 10px",fontWeight:800,fontSize:12,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box"}}
+                      onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="3px 3px 0 var(--nb-accent)";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
                   </div>
                   <div>
-                    <label style={{display:"block",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",color:"#0B1957",opacity:0.5,marginBottom:4}}>Value</label>
+                    <label style={{display:"block",fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",color:"var(--nb-primary)",opacity:0.5,marginBottom:4}}>Value</label>
                     <input value={card.value} onChange={e=>setCard(i,"value",e.target.value)} placeholder="Contoh: IT Programmer" maxLength={80}
-                      style={{width:"100%",border:"3px solid #0B1957",background:"white",padding:"7px 10px",fontWeight:700,fontSize:12,color:"#0B1957",outline:"none",boxSizing:"border-box"}}
-                      onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="3px 3px 0 #9ECCFA";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
+                      style={{width:"100%",border:"3px solid var(--nb-primary)",background:"white",padding:"7px 10px",fontWeight:700,fontSize:12,color:"var(--nb-primary)",outline:"none",boxSizing:"border-box"}}
+                      onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="3px 3px 0 var(--nb-accent)";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
                   </div>
                   <button onClick={()=>removeCard(i)}
-                    style={{alignSelf:"flex-end",display:"flex",alignItems:"center",gap:5,border:"2px solid #0B1957",background:"#F8F3EA",color:"#0B1957",padding:"4px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit",transition:"all 0.1s ease"}}
+                    style={{alignSelf:"flex-end",display:"flex",alignItems:"center",gap:5,border:"2px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",padding:"4px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit",transition:"all 0.1s ease"}}
                     onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ef4444";(e.currentTarget as HTMLElement).style.color="white";(e.currentTarget as HTMLElement).style.borderColor="#ef4444";}}
-                    onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#F8F3EA";(e.currentTarget as HTMLElement).style.color="#0B1957";(e.currentTarget as HTMLElement).style.borderColor="#0B1957";}}>
+                    onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.color="var(--nb-primary)";(e.currentTarget as HTMLElement).style.borderColor="var(--nb-primary)";}}>
                     <IconTrash/> Hapus
                   </button>
                 </div>
@@ -1649,30 +1649,30 @@ function AboutSection() {
           {/* Highlights */}
           <div style={{animation:"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.36s both"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-              <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957"}}>
+              <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)"}}>
                 Highlight Tags <span style={{fontWeight:600,fontSize:10,opacity:0.4,textTransform:"none",letterSpacing:0}}>— maks 10</span>
               </label>
               <button onClick={addHighlight} disabled={form.highlights.length>=10}
-                style={{display:"flex",alignItems:"center",gap:6,border:"3px solid #0B1957",background:form.highlights.length>=10?"var(--nb-accent-light)":"#0B1957",color:form.highlights.length>=10?"#0B1957":"#9ECCFA",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:form.highlights.length>=10?"not-allowed":"pointer",boxShadow:"2px 2px 0 #9ECCFA",fontFamily:"inherit",opacity:form.highlights.length>=10?0.5:1}}>
+                style={{display:"flex",alignItems:"center",gap:6,border:"3px solid var(--nb-primary)",background:form.highlights.length>=10?"var(--nb-accent-light)":"var(--nb-primary)",color:form.highlights.length>=10?"var(--nb-primary)":"var(--nb-accent)",padding:"5px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:form.highlights.length>=10?"not-allowed":"pointer",boxShadow:"2px 2px 0 var(--nb-accent)",fontFamily:"inherit",opacity:form.highlights.length>=10?0.5:1}}>
                 <IconPlus/> Tambah
               </button>
             </div>
             {form.highlights.length===0 ? (
-              <div style={{border:"3px dashed #0B1957",padding:"20px 16px",textAlign:"center",opacity:0.4}}>
-                <p style={{fontWeight:700,fontSize:12,textTransform:"uppercase",color:"#0B1957",letterSpacing:"0.1em"}}>Belum ada tag</p>
+              <div style={{border:"3px dashed var(--nb-primary)",padding:"20px 16px",textAlign:"center",opacity:0.4}}>
+                <p style={{fontWeight:700,fontSize:12,textTransform:"uppercase",color:"var(--nb-primary)",letterSpacing:"0.1em"}}>Belum ada tag</p>
               </div>
             ) : (
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
                 {form.highlights.map((hl,i)=>(
-                  <div key={i} style={{display:"flex",alignItems:"center",gap:8,border:"3px solid #0B1957",background:"#F8F3EA",boxShadow:"2px 2px 0 #0B1957",padding:"8px 12px",animation:mounted?`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`:"none"}}>
-                    <span style={{fontWeight:900,fontSize:10,color:"#0B1957",opacity:0.35,flexShrink:0,minWidth:20}}>#{i+1}</span>
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:8,border:"3px solid var(--nb-primary)",background:"var(--nb-bg)",boxShadow:"2px 2px 0 var(--nb-primary)",padding:"8px 12px",animation:mounted?`hmSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i*0.05}s both`:"none"}}>
+                    <span style={{fontWeight:900,fontSize:10,color:"var(--nb-primary)",opacity:0.35,flexShrink:0,minWidth:20}}>#{i+1}</span>
                     <input value={hl} onChange={e=>setHighlight(i,e.target.value)} placeholder="Contoh: Problem Solver..." maxLength={100}
-                      style={{flex:1,border:"2px solid #0B1957",background:"white",padding:"6px 10px",fontWeight:700,fontSize:12,color:"#0B1957",outline:"none",minWidth:0}}
-                      onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="2px 2px 0 #9ECCFA";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
+                      style={{flex:1,border:"2px solid var(--nb-primary)",background:"white",padding:"6px 10px",fontWeight:700,fontSize:12,color:"var(--nb-primary)",outline:"none",minWidth:0}}
+                      onFocus={e=>{(e.target as HTMLInputElement).style.boxShadow="2px 2px 0 var(--nb-accent)";}} onBlur={e=>{(e.target as HTMLInputElement).style.boxShadow="none";}}/>
                     <button onClick={()=>removeHighlight(i)}
-                      style={{flexShrink:0,width:30,height:30,border:"2px solid #0B1957",background:"#F8F3EA",color:"#0B1957",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",transition:"all 0.1s ease"}}
+                      style={{flexShrink:0,width:30,height:30,border:"2px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontFamily:"inherit",transition:"all 0.1s ease"}}
                       onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ef4444";(e.currentTarget as HTMLElement).style.color="white";(e.currentTarget as HTMLElement).style.borderColor="#ef4444";}}
-                      onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#F8F3EA";(e.currentTarget as HTMLElement).style.color="#0B1957";(e.currentTarget as HTMLElement).style.borderColor="#0B1957";}}>
+                      onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.color="var(--nb-primary)";(e.currentTarget as HTMLElement).style.borderColor="var(--nb-primary)";}}>
                       <IconTrash/>
                     </button>
                   </div>
@@ -1682,18 +1682,18 @@ function AboutSection() {
           </div>
 
           {/* Note */}
-          <div style={{background:"var(--nb-accent-light)",border:"3px solid #0B1957",padding:"12px 16px",display:"flex",gap:10,alignItems:"flex-start"}}>
-            <span style={{fontWeight:900,fontSize:14,flexShrink:0,color:"#0B1957"}}>ℹ</span>
-            <p style={{fontWeight:600,fontSize:12,color:"#0B1957",opacity:0.7,lineHeight:1.5}}>
+          <div style={{background:"var(--nb-accent-light)",border:"3px solid var(--nb-primary)",padding:"12px 16px",display:"flex",gap:10,alignItems:"flex-start"}}>
+            <span style={{fontWeight:900,fontSize:14,flexShrink:0,color:"var(--nb-primary)"}}>ℹ</span>
+            <p style={{fontWeight:600,fontSize:12,color:"var(--nb-primary)",opacity:0.7,lineHeight:1.5}}>
               Nama, foto, dan bio utama diambil dari <strong>Hero Section</strong>.
             </p>
           </div>
         </div>
 
-        <div className="hm-footer-bar" style={{borderTop:"4px solid #0B1957",background:"#0B1957",padding:"16px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
+        <div className="hm-footer-bar" style={{borderTop:"4px solid var(--nb-primary)",background:"var(--nb-primary)",padding:"16px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
           <span style={{fontWeight:700,fontSize:10,color:"var(--nb-accent-light)",opacity:0.6,textTransform:"uppercase",letterSpacing:"0.1em"}}>{dirty?"⚠ Ada perubahan belum disimpan":"✓ Tersimpan"}</span>
           <button onClick={handleSave} disabled={saving||!dirty}
-            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid #9ECCFA",background:dirty?"#9ECCFA":"transparent",color:dirty?"#0B1957":"#9ECCFA",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(saving||!dirty)?"not-allowed":"pointer",boxShadow:dirty?"4px 4px 0 rgba(158,204,250,0.4)":"none",opacity:!dirty?0.5:1,fontFamily:"inherit",whiteSpace:"nowrap"}}>
+            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,border:"4px solid var(--nb-accent)",background:dirty?"var(--nb-accent)":"transparent",color:dirty?"var(--nb-primary)":"var(--nb-accent)",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",cursor:(saving||!dirty)?"not-allowed":"pointer",boxShadow:dirty?"4px 4px 0 rgba(158,204,250,0.4)":"none",opacity:!dirty?0.5:1,fontFamily:"inherit",whiteSpace:"nowrap"}}>
             {saving?<IconSpin/>:<IconSave/>}{saving?"Menyimpan...":"Simpan About"}
           </button>
         </div>
@@ -1739,20 +1739,20 @@ export default function HomepageManager() {
       {/* ── Page Header ── */}
       <div className="hm-page-header" style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20,gap:16,flexWrap:"wrap",opacity:headerIn?1:0,transform:headerIn?"translateY(0)":"translateY(-18px)",transition:"opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)"}}>
         <div>
-          <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.3em",color:"#9ECCFA",margin:"0 0 4px"}}>Kelola</p>
-          <h2 className="hm-page-title" style={{fontWeight:900,fontSize:26,textTransform:"uppercase",color:"#0B1957",margin:"0 0 6px"}}>Homepage</h2>
-          <p style={{fontWeight:600,fontSize:12,color:"#0B1957",opacity:0.55,margin:0}}>Manage konten yang tampil di halaman utama portfolio</p>
+          <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.3em",color:"var(--nb-accent)",margin:"0 0 4px"}}>Kelola</p>
+          <h2 className="hm-page-title" style={{fontWeight:900,fontSize:26,textTransform:"uppercase",color:"var(--nb-primary)",margin:"0 0 6px"}}>Homepage</h2>
+          <p style={{fontWeight:600,fontSize:12,color:"var(--nb-primary)",opacity:0.55,margin:0}}>Manage konten yang tampil di halaman utama portfolio</p>
         </div>
         <a href="/" target="_blank" rel="noopener noreferrer" className="hm-preview-btn"
-          style={{display:"flex",alignItems:"center",gap:8,border:"4px solid #0B1957",background:"#F8F3EA",color:"#0B1957",padding:"10px 18px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",textDecoration:"none",boxShadow:"4px 4px 0 #0B1957",transition:"transform 0.1s ease, box-shadow 0.1s ease"}}
-          onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="6px 6px 0 #0B1957";}}
-          onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="translate(0,0)";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 #0B1957";}}>
+          style={{display:"flex",alignItems:"center",gap:8,border:"4px solid var(--nb-primary)",background:"var(--nb-bg)",color:"var(--nb-primary)",padding:"10px 18px",fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.07em",textDecoration:"none",boxShadow:"4px 4px 0 var(--nb-primary)",transition:"transform 0.1s ease, box-shadow 0.1s ease"}}
+          onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-2px,-2px)";(e.currentTarget as HTMLElement).style.boxShadow="6px 6px 0 var(--nb-primary)";}}
+          onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="translate(0,0)";(e.currentTarget as HTMLElement).style.boxShadow="4px 4px 0 var(--nb-primary)";}}>
           <IconExternal/> Preview Homepage
         </a>
       </div>
 
       {/* ── Mobile Navigation — horizontal scrollable tabs ── */}
-      <div className="hm-mobile-nav" style={{border:"4px solid #0B1957",boxShadow:"4px 4px 0 #0B1957",marginBottom:20,overflow:"hidden",animation:headerIn?"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.15s both":"none"}}>
+      <div className="hm-mobile-nav" style={{border:"4px solid var(--nb-primary)",boxShadow:"4px 4px 0 var(--nb-primary)",marginBottom:20,overflow:"hidden",animation:headerIn?"hmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.15s both":"none"}}>
         <div style={{display:"flex",overflowX:"auto",WebkitOverflowScrolling:"touch",scrollbarWidth:"none"}}>
           {SECTIONS.map(section => {
             const isActive = activeSection === section.key;
@@ -1773,7 +1773,7 @@ export default function HomepageManager() {
 
         {/* ── Sidebar nav — desktop only ── */}
         <div className="hm-sidebar" style={{width:"100%",maxWidth:224,flexShrink:0}}>
-          <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.2em",color:"#0B1957",marginBottom:10,paddingLeft:4,opacity:headerIn?0.45:0,transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s"}}>Sections</p>
+          <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",letterSpacing:"0.2em",color:"var(--nb-primary)",marginBottom:10,paddingLeft:4,opacity:headerIn?0.45:0,transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s"}}>Sections</p>
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {SECTIONS.map((section, i) => {
               const isActive = activeSection === section.key;
@@ -1783,13 +1783,13 @@ export default function HomepageManager() {
                   className={`hm-section-btn${isActive ? " active" : ""}`}
                   style={{opacity:headerIn?1:0,transform:headerIn?"translateX(0)":"translateX(-20px)",transition:`opacity 0.5s cubic-bezier(0.16,1,0.3,1) ${0.22+i*0.07}s, transform 0.5s cubic-bezier(0.16,1,0.3,1) ${0.22+i*0.07}s, background 0.12s ease, box-shadow 0.12s ease`}}
                   onClick={() => !isSoon && setActiveSection(section.key)}>
-                  <div style={{marginTop:2,flexShrink:0,color:isActive?"#9ECCFA":"#0B1957"}}>{section.icon}</div>
+                  <div style={{marginTop:2,flexShrink:0,color:isActive?"var(--nb-accent)":"var(--nb-primary)"}}>{section.icon}</div>
                   <div style={{minWidth:0}}>
                     <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-                      <span style={{fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.06em",lineHeight:1.2,color:isActive?"#9ECCFA":"#0B1957"}}>{section.label}</span>
-                      {isSoon&&<span style={{display:"inline-flex",alignItems:"center",gap:4,border:`1px solid ${isActive?"#9ECCFA":"#0B1957"}`,padding:"2px 6px",fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.08em",color:isActive?"#9ECCFA":"#0B1957",opacity:0.6}}><IconLock/>Soon</span>}
+                      <span style={{fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:"0.06em",lineHeight:1.2,color:isActive?"var(--nb-accent)":"var(--nb-primary)"}}>{section.label}</span>
+                      {isSoon&&<span style={{display:"inline-flex",alignItems:"center",gap:4,border:`1px solid ${isActive?"var(--nb-accent)":"var(--nb-primary)"}`,padding:"2px 6px",fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.08em",color:isActive?"var(--nb-accent)":"var(--nb-primary)",opacity:0.6}}><IconLock/>Soon</span>}
                     </div>
-                    <p style={{fontWeight:600,fontSize:10,lineHeight:1.4,marginTop:2,color:isActive?"var(--nb-accent-light)":"#0B1957",opacity:isActive?0.75:0.45}}>{section.description}</p>
+                    <p style={{fontWeight:600,fontSize:10,lineHeight:1.4,marginTop:2,color:isActive?"var(--nb-accent-light)":"var(--nb-primary)",opacity:isActive?0.75:0.45}}>{section.description}</p>
                   </div>
                 </button>
               );
@@ -1801,10 +1801,10 @@ export default function HomepageManager() {
         <div className="hm-content-area" style={{flex:1,minWidth:0}}>
           {/* Breadcrumb — desktop only */}
           <div className="hm-breadcrumb" style={{display:"flex",alignItems:"center",gap:6,marginBottom:18,opacity:headerIn?1:0,transform:headerIn?"translateY(0)":"translateY(-8px)",transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.35s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.35s"}}>
-            <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957",opacity:0.35}}>Homepage</span>
-            <span style={{fontWeight:900,fontSize:11,color:"#0B1957",opacity:0.25}}>/</span>
-            <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957"}}>{current.label}</span>
-            {current.status==="active"&&<span style={{marginLeft:4,border:"2px solid #0B1957",background:"#9ECCFA",padding:"2px 8px",fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.08em",color:"#0B1957"}}>Live</span>}
+            <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)",opacity:0.35}}>Homepage</span>
+            <span style={{fontWeight:900,fontSize:11,color:"var(--nb-primary)",opacity:0.25}}>/</span>
+            <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--nb-primary)"}}>{current.label}</span>
+            {current.status==="active"&&<span style={{marginLeft:4,border:"2px solid var(--nb-primary)",background:"var(--nb-accent)",padding:"2px 8px",fontWeight:900,fontSize:9,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--nb-primary)"}}>Live</span>}
           </div>
 
           {/* Section content */}

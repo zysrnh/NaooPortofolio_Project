@@ -25,17 +25,17 @@ interface TechStack {
 const PRESET_CATEGORIES = ["Frontend", "Backend", "Database", "DevOps", "Language", "Other"];
 
 const CATEGORY_STYLE: Record<string, { bg: string; text: string; border: string }> = {
-  Frontend: { bg: "bg-[#9ECCFA]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
-  Backend:  { bg: "bg-[#FFE8A0]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
-  Database: { bg: "bg-[var(--nb-accent-light)]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
-  DevOps:   { bg: "bg-[#F8F3EA]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
-  Language: { bg: "bg-[#0B1957]", text: "text-[#9ECCFA]", border: "border-[#9ECCFA]"  },
-  Other:    { bg: "bg-[#E8E8E8]", text: "text-[#0B1957]", border: "border-[#0B1957]" },
+  Frontend: { bg: "bg-[var(--nb-accent)]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" },
+  Backend:  { bg: "bg-[var(--nb-secondary)]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" },
+  Database: { bg: "bg-[var(--nb-accent-light)]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" },
+  DevOps:   { bg: "bg-[var(--nb-bg)]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" },
+  Language: { bg: "bg-[var(--nb-primary)]", text: "text-[var(--nb-accent)]", border: "border-[var(--nb-accent)]"  },
+  Other:    { bg: "bg-[#E8E8E8]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" },
 };
 
 // Fallback style untuk kategori custom
 const getCategoryStyle = (cat: string) =>
-  CATEGORY_STYLE[cat] ?? { bg: "bg-[#E8E8E8]", text: "text-[#0B1957]", border: "border-[#0B1957]" };
+  CATEGORY_STYLE[cat] ?? { bg: "bg-[#E8E8E8]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" };
 
 // ── CSRF Helper ──────────────────────────────────────────────────────────────
 function getCsrf(): string {
@@ -109,7 +109,7 @@ const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 function Toast({ message, type }: { message: string; type: "success" | "error" }) {
   return (
     <div
-      className={`fixed bottom-6 left-1/2 z-[999] flex items-center gap-3 border-4 border-[#0B1957] px-5 py-3 font-black uppercase text-sm tracking-wide shadow-[6px_6px_0_#0B1957] ${type === "success" ? "bg-[#9ECCFA] text-[#0B1957]" : "bg-[#FF4444] text-white"}`}
+      className={`fixed bottom-6 left-1/2 z-[999] flex items-center gap-3 border-4 border-[var(--nb-primary)] px-5 py-3 font-black uppercase text-sm tracking-wide shadow-[6px_6px_0_var(--nb-primary)] ${type === "success" ? "bg-[var(--nb-accent)] text-[var(--nb-primary)]" : "bg-[#FF4444] text-white"}`}
       style={{ transform: "translateX(-50%)", animation: "toastIn 0.3s cubic-bezier(0.16,1,0.3,1)" }}
     >
       {type === "success" ? <IconCheck /> : <IconAlert />}
@@ -123,25 +123,25 @@ function DeleteModal({ name, loading, onConfirm, onCancel }: {
   name: string; loading: boolean; onConfirm: () => void; onCancel: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B1957] bg-opacity-70 px-4" style={{ backdropFilter: "blur(3px)" }}>
-      <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[12px_12px_0_#0B1957] p-8 max-w-sm w-full" style={{ animation: "slideUp 0.3s cubic-bezier(0.16,1,0.3,1)" }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--nb-primary)] bg-opacity-70 px-4" style={{ backdropFilter: "blur(3px)" }}>
+      <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[12px_12px_0_var(--nb-primary)] p-8 max-w-sm w-full" style={{ animation: "slideUp 0.3s cubic-bezier(0.16,1,0.3,1)" }}>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-[#FF4444] border-2 border-[#0B1957] flex items-center justify-center text-white flex-shrink-0">
+          <div className="w-10 h-10 bg-[#FF4444] border-2 border-[var(--nb-primary)] flex items-center justify-center text-white flex-shrink-0">
             <IconAlert />
           </div>
-          <h3 className="font-black text-lg uppercase text-[#0B1957]">Hapus Stack?</h3>
+          <h3 className="font-black text-lg uppercase text-[var(--nb-primary)]">Hapus Stack?</h3>
         </div>
-        <p className="font-semibold text-sm text-[#0B1957] opacity-70 mb-6">
-          Yakin mau hapus <span className="font-black text-[#0B1957] opacity-100">"{name}"</span>? Aksi ini tidak bisa dibatalkan.
+        <p className="font-semibold text-sm text-[var(--nb-primary)] opacity-70 mb-6">
+          Yakin mau hapus <span className="font-black text-[var(--nb-primary)] opacity-100">"{name}"</span>? Aksi ini tidak bisa dibatalkan.
         </p>
         <div className="flex gap-3">
           <button disabled={loading}
-            className="flex-1 border-4 border-[#0B1957] py-3 font-black uppercase text-sm shadow-[4px_4px_0_#0B1957] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#0B1957] transition-all disabled:opacity-50"
+            className="flex-1 border-4 border-[var(--nb-primary)] py-3 font-black uppercase text-sm shadow-[4px_4px_0_var(--nb-primary)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--nb-primary)] transition-all disabled:opacity-50"
             onClick={onCancel}>
             Batal
           </button>
           <button disabled={loading}
-            className="flex-1 border-4 border-[#0B1957] py-3 font-black uppercase text-sm text-white bg-[#FF4444] shadow-[4px_4px_0_#0B1957] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#0B1957] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 border-4 border-[var(--nb-primary)] py-3 font-black uppercase text-sm text-white bg-[#FF4444] shadow-[4px_4px_0_var(--nb-primary)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--nb-primary)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             onClick={onConfirm}>
             {loading ? <IconSpin /> : <IconTrash />}
             {loading ? "Menghapus..." : "Hapus"}
@@ -208,39 +208,39 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B1957] bg-opacity-75 px-4" style={{ backdropFilter: "blur(4px)" }}>
-      <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[12px_12px_0_#0B1957] w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ animation: "slideUp 0.35s cubic-bezier(0.16,1,0.3,1)" }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--nb-primary)] bg-opacity-75 px-4" style={{ backdropFilter: "blur(4px)" }}>
+      <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[12px_12px_0_var(--nb-primary)] w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ animation: "slideUp 0.35s cubic-bezier(0.16,1,0.3,1)" }}>
 
         {/* Header */}
-        <div className="bg-[#0B1957] border-b-4 border-[#0B1957] px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-          <div className="flex items-center gap-3 text-[#9ECCFA]">
+        <div className="bg-[var(--nb-primary)] border-b-4 border-[var(--nb-primary)] px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+          <div className="flex items-center gap-3 text-[var(--nb-accent)]">
             <IconLayers />
             <span className="font-black uppercase text-sm tracking-widest">
               {mode === "add" ? "Tambah Tech Stack" : "Edit Tech Stack"}
             </span>
           </div>
-          <button className="text-[#9ECCFA] hover:text-white transition-colors" onClick={onClose}><IconClose /></button>
+          <button className="text-[var(--nb-accent)] hover:text-white transition-colors" onClick={onClose}><IconClose /></button>
         </div>
 
         <div className="p-6 space-y-5">
 
           {/* Nama */}
           <div>
-            <label className="block font-black text-xs uppercase tracking-widest text-[#0B1957] mb-2">
+            <label className="block font-black text-xs uppercase tracking-widest text-[var(--nb-primary)] mb-2">
               Nama <span className="text-red-500">*</span>
             </label>
             <input
               value={name}
               onChange={e => { setName(e.target.value); setNameErr(""); }}
               placeholder="Contoh: React, Laravel, Python..."
-              className={`w-full border-4 ${nameErr ? "border-red-500" : "border-[#0B1957]"} bg-white px-4 py-3 font-bold text-sm text-[#0B1957] placeholder-[#0B1957] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_#9ECCFA] transition-shadow`}
+              className={`w-full border-4 ${nameErr ? "border-red-500" : "border-[var(--nb-primary)]"} bg-white px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow`}
             />
             {nameErr && <p className="text-red-500 font-bold text-xs mt-1">{nameErr}</p>}
           </div>
 
           {/* Kategori */}
           <div>
-            <label className="block font-black text-xs uppercase tracking-widest text-[#0B1957] mb-2">Kategori</label>
+            <label className="block font-black text-xs uppercase tracking-widest text-[var(--nb-primary)] mb-2">Kategori</label>
             <div className="flex flex-wrap gap-2">
               {PRESET_CATEGORIES.map(cat => {
                 const s = getategoryStyle(cat);
@@ -249,7 +249,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
                   <button key={cat} type="button"
                     onClick={() => { setSelectedCat(cat); setCatErr(""); }}
                     className={`border-2 ${s.border} px-3 py-1.5 font-black text-xs uppercase tracking-wide transition-all
-                      ${active ? `${s.bg} ${s.text} shadow-[3px_3px_0_#0B1957]` : "bg-transparent text-[#0B1957] opacity-50 hover:opacity-100"}`}
+                      ${active ? `${s.bg} ${s.text} shadow-[3px_3px_0_var(--nb-primary)]` : "bg-transparent text-[var(--nb-primary)] opacity-50 hover:opacity-100"}`}
                   >
                     {cat}
                   </button>
@@ -260,7 +260,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
             {/* Input custom — muncul hanya kalau pilih Other */}
             {selectedCat === "Other" && (
               <div className="mt-3">
-                <label className="block font-black text-xs uppercase tracking-widest text-[#0B1957] mb-2">
+                <label className="block font-black text-xs uppercase tracking-widest text-[var(--nb-primary)] mb-2">
                   Nama Kategori Custom <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -268,14 +268,14 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
                   onChange={e => { setCustomCat(e.target.value); setCatErr(""); }}
                   placeholder="Contoh: Platform, Mobile, AI Tools..."
                   autoFocus
-                  className={`w-full border-4 ${catErr ? "border-red-500" : "border-[#0B1957]"} bg-white px-4 py-3 font-bold text-sm text-[#0B1957] placeholder-[#0B1957] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_#9ECCFA] transition-shadow`}
+                  className={`w-full border-4 ${catErr ? "border-red-500" : "border-[var(--nb-primary)]"} bg-white px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow`}
                 />
                 {catErr && <p className="text-red-500 font-bold text-xs mt-1">{catErr}</p>}
                 {/* Preview badge kategori */}
                 {customCat.trim() && (
                   <div className="mt-2 flex items-center gap-2">
-                    <span className="font-black text-[10px] text-[#0B1957] opacity-50 uppercase tracking-widest">Preview:</span>
-                    <span className="border-2 border-[#0B1957] bg-[#E8E8E8] px-2 py-0.5 font-black text-xs uppercase text-[#0B1957]">
+                    <span className="font-black text-[10px] text-[var(--nb-primary)] opacity-50 uppercase tracking-widest">Preview:</span>
+                    <span className="border-2 border-[var(--nb-primary)] bg-[#E8E8E8] px-2 py-0.5 font-black text-xs uppercase text-[var(--nb-primary)]">
                       {customCat.trim()}
                     </span>
                   </div>
@@ -286,11 +286,11 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
 
           {/* Upload Icon */}
           <div>
-            <label className="block font-black text-xs uppercase tracking-widest text-[#0B1957] mb-2">
+            <label className="block font-black text-xs uppercase tracking-widest text-[var(--nb-primary)] mb-2">
               Upload Icon <span className="text-red-500">*</span>
             </label>
             <div
-              className={`border-4 border-dashed ${dragging ? "border-[#9ECCFA] bg-[var(--nb-accent-light)]" : iconErr ? "border-red-500 bg-red-50" : "border-[#0B1957] bg-white"} p-6 flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-[var(--nb-accent-light)]`}
+              className={`border-4 border-dashed ${dragging ? "border-[var(--nb-accent)] bg-[var(--nb-accent-light)]" : iconErr ? "border-red-500 bg-red-50" : "border-[var(--nb-primary)] bg-white"} p-6 flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-[var(--nb-accent-light)]`}
               onClick={() => fileRef.current?.click()}
               onDragOver={e => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
@@ -298,20 +298,20 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
             >
               {iconPreview ? (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-20 h-20 border-4 border-[#0B1957] bg-[var(--nb-accent-light)] shadow-[4px_4px_0_#0B1957] overflow-hidden">
+                  <div className="w-20 h-20 border-4 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] shadow-[4px_4px_0_var(--nb-primary)] overflow-hidden">
                     <img src={iconPreview} alt="preview"
                       className="w-full h-full object-cover"
                       onError={e => { (e.target as HTMLImageElement).src = FALLBACK_ICON; }} />
                   </div>
-                  <span className="font-black text-xs text-[#0B1957] uppercase opacity-60">Klik untuk ganti</span>
+                  <span className="font-black text-xs text-[var(--nb-primary)] uppercase opacity-60">Klik untuk ganti</span>
                 </div>
               ) : (
                 <>
-                  <div className="text-[#0B1957] opacity-40"><IconUpload /></div>
+                  <div className="text-[var(--nb-primary)] opacity-40"><IconUpload /></div>
                   <div className="text-center">
-                    <p className="font-black text-xs uppercase text-[#0B1957] tracking-wide">Drop icon di sini</p>
-                    <p className="font-semibold text-xs text-[#0B1957] opacity-50 mt-1">atau klik untuk pilih file</p>
-                    <p className="font-bold text-xs text-[#0B1957] opacity-30 mt-1">PNG, JPG, SVG — Max 2MB</p>
+                    <p className="font-black text-xs uppercase text-[var(--nb-primary)] tracking-wide">Drop icon di sini</p>
+                    <p className="font-semibold text-xs text-[var(--nb-primary)] opacity-50 mt-1">atau klik untuk pilih file</p>
+                    <p className="font-bold text-xs text-[var(--nb-primary)] opacity-30 mt-1">PNG, JPG, SVG — Max 2MB</p>
                   </div>
                 </>
               )}
@@ -323,27 +323,27 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
 
           {/* URL Alternatif */}
           <div>
-            <label className="block font-black text-xs uppercase tracking-widest text-[#0B1957] mb-2">
+            <label className="block font-black text-xs uppercase tracking-widest text-[var(--nb-primary)] mb-2">
               atau URL Icon
             </label>
             <input
               value={icon.startsWith("data:") ? "" : icon}
               onChange={e => { setIcon(e.target.value); setIconPreview(e.target.value); setIconErr(""); }}
               placeholder="https://example.com/icon.png"
-              className="w-full border-4 border-[#0B1957] bg-white px-4 py-3 font-bold text-sm text-[#0B1957] placeholder-[#0B1957] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_#9ECCFA] transition-shadow"
+              className="w-full border-4 border-[var(--nb-primary)] bg-white px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow"
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="border-t-4 border-[#0B1957] px-6 py-4 flex gap-3 sticky bottom-0 bg-[#F8F3EA]">
+        <div className="border-t-4 border-[var(--nb-primary)] px-6 py-4 flex gap-3 sticky bottom-0 bg-[var(--nb-bg)]">
           <button disabled={loading}
-            className="flex-1 border-4 border-[#0B1957] py-3 font-black uppercase text-sm shadow-[4px_4px_0_#0B1957] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#0B1957] transition-all disabled:opacity-50"
+            className="flex-1 border-4 border-[var(--nb-primary)] py-3 font-black uppercase text-sm shadow-[4px_4px_0_var(--nb-primary)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--nb-primary)] transition-all disabled:opacity-50"
             onClick={onClose}>
             Batal
           </button>
           <button disabled={loading}
-            className="flex-1 border-4 border-[#0B1957] py-3 font-black uppercase text-sm text-[#F8F3EA] bg-[#0B1957] shadow-[4px_4px_0_#9ECCFA] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ECCFA] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 border-4 border-[var(--nb-primary)] py-3 font-black uppercase text-sm text-[var(--nb-bg)] bg-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-accent)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--nb-accent)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             onClick={() => {
               if (validate()) onSave({ name: name.trim(), icon, category: finalCategory });
             }}>
@@ -358,7 +358,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
 
 // Helper kecil biar gak typo di JSX
 function getategoryStyle(cat: string) {
-  return CATEGORY_STYLE[cat] ?? { bg: "bg-[#E8E8E8]", text: "text-[#0B1957]", border: "border-[#0B1957]" };
+  return CATEGORY_STYLE[cat] ?? { bg: "bg-[#E8E8E8]", text: "text-[var(--nb-primary)]", border: "border-[var(--nb-primary)]" };
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
@@ -458,65 +458,65 @@ export default function TechStackCRUD() {
         .anim-2 { animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.20s both; }
 
         .stack-card {
-          border: 4px solid #0B1957; background: #F8F3EA; box-shadow: 6px 6px 0 #0B1957;
+          border: 4px solid var(--nb-primary); background: var(--nb-bg); box-shadow: 6px 6px 0 var(--nb-primary);
           transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
-        .stack-card:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 #9ECCFA, 11px 11px 0 #0B1957; }
+        .stack-card:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 var(--nb-accent), 11px 11px 0 var(--nb-primary); }
 
         .icon-box {
-          width: 80px; height: 80px; border: 3px solid #0B1957; background: var(--nb-accent-light);
-          overflow: hidden; flex-shrink: 0; box-shadow: 3px 3px 0 #0B1957;
+          width: 80px; height: 80px; border: 3px solid var(--nb-primary); background: var(--nb-accent-light);
+          overflow: hidden; flex-shrink: 0; box-shadow: 3px 3px 0 var(--nb-primary);
           transition: transform 0.15s ease;
         }
         .stack-card:hover .icon-box { transform: rotate(-3deg) scale(1.05); }
         .icon-img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
 
         .search-input {
-          border: 4px solid #0B1957; background: #F8F3EA;
+          border: 4px solid var(--nb-primary); background: var(--nb-bg);
           padding: 10px 16px 10px 42px;
-          font-weight: 700; font-size: 13px; color: #0B1957; width: 100%;
+          font-weight: 700; font-size: 13px; color: var(--nb-primary); width: 100%;
           transition: box-shadow 0.15s ease;
         }
-        .search-input:focus { outline: none; box-shadow: 4px 4px 0 #9ECCFA; }
-        .search-input::placeholder { color: #0B1957; opacity: 0.35; }
+        .search-input:focus { outline: none; box-shadow: 4px 4px 0 var(--nb-accent); }
+        .search-input::placeholder { color: var(--nb-primary); opacity: 0.35; }
 
         .cat-filter {
-          border: 3px solid #0B1957; padding: 6px 14px;
+          border: 3px solid var(--nb-primary); padding: 6px 14px;
           font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
-          cursor: pointer; transition: all 0.1s ease; box-shadow: 3px 3px 0 #0B1957;
+          cursor: pointer; transition: all 0.1s ease; box-shadow: 3px 3px 0 var(--nb-primary);
         }
-        .cat-filter:hover { transform: translate(1px,1px); box-shadow: 2px 2px 0 #0B1957; }
-        .cat-filter.active { background: #0B1957; color: #9ECCFA; }
-        .cat-filter:not(.active) { background: #F8F3EA; color: #0B1957; }
+        .cat-filter:hover { transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--nb-primary); }
+        .cat-filter.active { background: var(--nb-primary); color: var(--nb-accent); }
+        .cat-filter:not(.active) { background: var(--nb-bg); color: var(--nb-primary); }
 
         .add-btn {
           display: flex; align-items: center; gap: 8px;
-          border: 4px solid #0B1957; background: #0B1957; color: #9ECCFA;
+          border: 4px solid var(--nb-primary); background: var(--nb-primary); color: var(--nb-accent);
           padding: 12px 22px; font-weight: 900; font-size: 13px;
           text-transform: uppercase; letter-spacing: 0.07em; cursor: pointer;
-          box-shadow: 5px 5px 0 #9ECCFA;
+          box-shadow: 5px 5px 0 var(--nb-accent);
           transition: transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .add-btn:hover  { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 #9ECCFA; }
-        .add-btn:active { transform: translate(2px,2px);  box-shadow: 2px 2px 0 #9ECCFA; }
+        .add-btn:hover  { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--nb-accent); }
+        .add-btn:active { transform: translate(2px,2px);  box-shadow: 2px 2px 0 var(--nb-accent); }
 
         .edit-btn {
-          border: 2px solid #0B1957; background: var(--nb-accent-light); padding: 6px 10px;
-          font-weight: 900; font-size: 11px; text-transform: uppercase; color: #0B1957;
-          cursor: pointer; box-shadow: 2px 2px 0 #0B1957;
+          border: 2px solid var(--nb-primary); background: var(--nb-accent-light); padding: 6px 10px;
+          font-weight: 900; font-size: 11px; text-transform: uppercase; color: var(--nb-primary);
+          cursor: pointer; box-shadow: 2px 2px 0 var(--nb-primary);
           display: flex; align-items: center; gap: 4px;
           transition: transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .edit-btn:hover { transform: translate(1px,1px); box-shadow: 1px 1px 0 #0B1957; }
+        .edit-btn:hover { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--nb-primary); }
 
         .del-btn {
-          border: 2px solid #0B1957; background: #FF4444; padding: 6px 10px;
+          border: 2px solid var(--nb-primary); background: #FF4444; padding: 6px 10px;
           font-weight: 900; font-size: 11px; text-transform: uppercase; color: white;
-          cursor: pointer; box-shadow: 2px 2px 0 #0B1957;
+          cursor: pointer; box-shadow: 2px 2px 0 var(--nb-primary);
           display: flex; align-items: center; gap: 4px;
           transition: transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .del-btn:hover { transform: translate(1px,1px); box-shadow: 1px 1px 0 #0B1957; }
+        .del-btn:hover { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--nb-primary); }
 
         .skeleton { background: var(--nb-accent-light); animation: pulse 1.2s ease infinite; }
       `}</style>
@@ -524,9 +524,9 @@ export default function TechStackCRUD() {
       {/* ── HEADER ── */}
       <div className="anim-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <p className="font-black text-xs text-[#9ECCFA] uppercase tracking-[0.3em] mb-1">Kelola</p>
-          <h2 className="font-black text-2xl uppercase text-[#0B1957]">Tech Stack</h2>
-          <p className="font-semibold text-xs text-[#0B1957] opacity-60 mt-1">{stacks.length} stack terdaftar</p>
+          <p className="font-black text-xs text-[var(--nb-accent)] uppercase tracking-[0.3em] mb-1">Kelola</p>
+          <h2 className="font-black text-2xl uppercase text-[var(--nb-primary)]">Tech Stack</h2>
+          <p className="font-semibold text-xs text-[var(--nb-primary)] opacity-60 mt-1">{stacks.length} stack terdaftar</p>
         </div>
         <button className="add-btn" onClick={() => { setEditTarget(null); setModal("add"); }}>
           <IconPlus /> Tambah Stack
@@ -538,7 +538,7 @@ export default function TechStackCRUD() {
         {allCategories.map(cat => {
           const s = getategoryStyle(cat);
           return (
-            <div key={cat} className={`border-2 border-[#0B1957] px-3 py-2 flex items-center gap-2 ${s.bg}`}>
+            <div key={cat} className={`border-2 border-[var(--nb-primary)] px-3 py-2 flex items-center gap-2 ${s.bg}`}>
               <span className={`font-black text-sm ${s.text}`}>{categoryCounts[cat]}</span>
               <span className={`font-black text-xs uppercase tracking-widest ${s.text} opacity-70`}>{cat}</span>
             </div>
@@ -549,7 +549,7 @@ export default function TechStackCRUD() {
       {/* ── SEARCH + FILTER ── */}
       <div className="anim-1 flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1 min-w-0">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0B1957] opacity-40 pointer-events-none"><IconSearch /></span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--nb-primary)] opacity-40 pointer-events-none"><IconSearch /></span>
           <input className="search-input" placeholder="Cari nama stack..."
             value={search} onChange={e => setSearch(e.target.value)} />
         </div>
@@ -570,7 +570,7 @@ export default function TechStackCRUD() {
         {loadingFetch && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="border-4 border-[#0B1957] p-4 flex flex-col items-center gap-3"
+              <div key={i} className="border-4 border-[var(--nb-primary)] p-4 flex flex-col items-center gap-3"
                 style={{ animation: `slideUp 0.4s both`, animationDelay: `${i * 0.05}s` }}>
                 <div className="skeleton w-20 h-20" />
                 <div className="skeleton h-4 w-24 rounded" />
@@ -581,12 +581,12 @@ export default function TechStackCRUD() {
         )}
 
         {!loadingFetch && filtered.length === 0 && (
-          <div className="border-4 border-dashed border-[#0B1957] bg-[#F8F3EA] p-12 text-center" style={{ animation: "fadeIn 0.4s ease" }}>
-            <div className="text-[#0B1957] opacity-20 flex justify-center mb-4 scale-150"><IconLayers /></div>
-            <p className="font-black uppercase text-lg text-[#0B1957] mb-2">
+          <div className="border-4 border-dashed border-[var(--nb-primary)] bg-[var(--nb-bg)] p-12 text-center" style={{ animation: "fadeIn 0.4s ease" }}>
+            <div className="text-[var(--nb-primary)] opacity-20 flex justify-center mb-4 scale-150"><IconLayers /></div>
+            <p className="font-black uppercase text-lg text-[var(--nb-primary)] mb-2">
               {search || filterCat !== "All" ? "Tidak Ditemukan" : "Belum Ada Stack"}
             </p>
-            <p className="font-semibold text-sm text-[#0B1957] opacity-50 mb-6">
+            <p className="font-semibold text-sm text-[var(--nb-primary)] opacity-50 mb-6">
               {search || filterCat !== "All" ? "Coba kata kunci atau filter lain" : "Tambahkan tech stack pertama!"}
             </p>
             {!search && filterCat === "All" && (
@@ -608,11 +608,11 @@ export default function TechStackCRUD() {
                     <img src={stack.icon} alt={stack.name} className="icon-img"
                       onError={e => { (e.target as HTMLImageElement).src = FALLBACK_ICON; }} />
                   </div>
-                  <p className="font-black uppercase text-sm text-[#0B1957] text-center leading-tight">{stack.name}</p>
+                  <p className="font-black uppercase text-sm text-[var(--nb-primary)] text-center leading-tight">{stack.name}</p>
                   <div className={`border-2 ${catStyle.border} ${catStyle.bg} px-2 py-0.5`}>
                     <span className={`font-black text-xs uppercase tracking-wide ${catStyle.text}`}>{stack.category}</span>
                   </div>
-                  <p className="font-bold text-xs text-[#0B1957] opacity-40">{formatDate(stack.created_at)}</p>
+                  <p className="font-bold text-xs text-[var(--nb-primary)] opacity-40">{formatDate(stack.created_at)}</p>
                   <div className="flex gap-2 w-full mt-auto">
                     <button className="edit-btn flex-1 justify-center"
                       onClick={() => { setEditTarget(stack); setModal("edit"); }}>

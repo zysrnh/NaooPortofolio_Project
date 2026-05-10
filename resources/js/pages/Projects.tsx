@@ -326,7 +326,7 @@ export default function Projects() {
           width: 320px; height: 320px;
           border-radius: 50%;
           transform: translate(-50%, -50%);
-          background: radial-gradient(circle at center, rgba(158,204,250,0.28) 0%, rgba(158,204,250,0.1) 40%, transparent 70%);
+          background: radial-gradient(circle at center, var(--nb-accent),0.28) 0%, var(--nb-accent),0.1) 40%, transparent 70%);
           pointer-events: none;
           z-index: 10;
           transition: opacity 0.35s ease;

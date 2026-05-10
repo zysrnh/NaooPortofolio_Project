@@ -142,6 +142,35 @@
     --nb-shadow: #0B1957;
     --nb-text: #0B1957;
     --nb-text-inv: #9ECCFA;
+
+    /* Global Mapping */
+    --background: var(--nb-accent-light);
+    --foreground: var(--nb-text);
+    --card: var(--nb-bg);
+    --card-foreground: var(--nb-text);
+    --popover: var(--nb-bg);
+    --popover-foreground: var(--nb-text);
+    --primary: var(--nb-primary);
+    --primary-foreground: var(--nb-accent);
+    --secondary: var(--nb-secondary);
+    --secondary-foreground: var(--nb-primary);
+    --muted: var(--nb-accent-light);
+    --muted-foreground: var(--nb-primary);
+    --accent: var(--nb-accent);
+    --accent-foreground: var(--nb-primary);
+    --border: var(--nb-primary);
+    --input: var(--nb-bg);
+    --ring: var(--nb-accent);
+
+    /* Sidebar Mapping */
+    --sidebar: var(--nb-bg);
+    --sidebar-foreground: var(--nb-text);
+    --sidebar-primary: var(--nb-primary);
+    --sidebar-primary-foreground: var(--nb-accent);
+    --sidebar-accent: var(--nb-accent-light);
+    --sidebar-accent-foreground: var(--nb-primary);
+    --sidebar-border: var(--nb-primary);
+    --sidebar-ring: var(--nb-accent);
 }
 
 [data-theme='gold'] {
@@ -153,6 +182,35 @@
     --nb-shadow: #000000;
     --nb-text: #000000;
     --nb-text-inv: #FCA311;
+
+    /* Global Mapping */
+    --background: var(--nb-accent-light);
+    --foreground: var(--nb-text);
+    --card: var(--nb-bg);
+    --card-foreground: var(--nb-text);
+    --popover: var(--nb-bg);
+    --popover-foreground: var(--nb-text);
+    --primary: var(--nb-primary);
+    --primary-foreground: var(--nb-accent);
+    --secondary: var(--nb-secondary);
+    --secondary-foreground: var(--nb-accent);
+    --muted: var(--nb-bg);
+    --muted-foreground: var(--nb-text);
+    --accent: var(--nb-accent);
+    --accent-foreground: var(--nb-primary);
+    --border: var(--nb-primary);
+    --input: var(--nb-bg);
+    --ring: var(--nb-accent);
+
+    /* Sidebar Mapping */
+    --sidebar: var(--nb-bg);
+    --sidebar-foreground: var(--nb-text);
+    --sidebar-primary: var(--nb-primary);
+    --sidebar-primary-foreground: var(--nb-accent);
+    --sidebar-accent: var(--nb-accent);
+    --sidebar-accent-foreground: var(--nb-primary);
+    --sidebar-border: var(--nb-primary);
+    --sidebar-ring: var(--nb-accent);
 }
 
 [data-theme='fiery'] {
@@ -164,6 +222,35 @@
     --nb-shadow: #003049;
     --nb-text: #003049;
     --nb-text-inv: #FDF0D5;
+
+    /* Global Mapping */
+    --background: var(--nb-accent-light);
+    --foreground: var(--nb-text);
+    --card: var(--nb-bg);
+    --card-foreground: var(--nb-text);
+    --popover: var(--nb-bg);
+    --popover-foreground: var(--nb-text);
+    --primary: var(--nb-primary);
+    --primary-foreground: var(--nb-accent);
+    --secondary: var(--nb-secondary);
+    --secondary-foreground: var(--nb-bg);
+    --muted: var(--nb-accent-light);
+    --muted-foreground: var(--nb-text);
+    --accent: var(--nb-accent);
+    --accent-foreground: var(--nb-primary);
+    --border: var(--nb-primary);
+    --input: var(--nb-bg);
+    --ring: var(--nb-accent);
+
+    /* Sidebar Mapping */
+    --sidebar: var(--nb-bg);
+    --sidebar-foreground: var(--nb-text);
+    --sidebar-primary: var(--nb-primary);
+    --sidebar-primary-foreground: var(--nb-accent);
+    --sidebar-accent: var(--nb-accent-light);
+    --sidebar-accent-foreground: var(--nb-primary);
+    --sidebar-border: var(--nb-primary);
+    --sidebar-ring: var(--nb-accent);
 }
 
 @layer base {
@@ -172,7 +259,7 @@
     }
 
     body {
-        background-color: var(--nb-bg);
+        background-color: var(--nb-accent-light);
         color: var(--nb-text);
         transition: background-color 0.3s ease, color 0.3s ease;
     }

@@ -321,7 +321,7 @@ function LoadingScreen({ progress }: { progress: number }) {
       {/* Scan line effect */}
       <div className="absolute inset-x-0 pointer-events-none" style={{
         top: `${scanLine}%`, height: "2px",
-        background: "linear-gradient(90deg, transparent, rgba(158,204,250,0.15), transparent)",
+        background: "linear-gradient(90deg, transparent, var(--nb-accent),0.15), transparent)",
         transition: "top 0.016s linear"
       }}/>
 
@@ -353,7 +353,7 @@ function LoadingScreen({ progress }: { progress: number }) {
               style={{
                 textShadow: glitchActive
                   ? "3px 0 var(--nb-accent), -3px 0 #F59E0B"
-                  : "4px 4px 0 rgba(158,204,250,0.3)",
+                  : "4px 4px 0 var(--nb-accent),0.3)",
                 transition: "text-shadow 0.05s ease",
                 letterSpacing: "-0.02em"
               }}
@@ -378,7 +378,7 @@ function LoadingScreen({ progress }: { progress: number }) {
                 <div
                   key={i}
                   className="flex-1 h-7 border-2 border-[var(--nb-accent)] relative overflow-hidden"
-                  style={{ borderColor: filled ? "var(--nb-accent)" : "rgba(158,204,250,0.2)" }}
+                  style={{ borderColor: filled ? "var(--nb-accent)" : "var(--nb-accent),0.2)" }}
                 >
                   {filled && (
                     <div className="absolute inset-0 bg-[var(--nb-accent)]"/>
@@ -617,7 +617,7 @@ export default function Home() {
         .card-img{transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);}
         .card-overlay{opacity:0;transition:opacity 0.2s ease;}
         .spotlight-card:hover .card-overlay{opacity:1;}
-        .spotlight-glow{position:absolute;width:300px;height:300px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at center,rgba(158,204,250,0.25) 0%,rgba(158,204,250,0.1) 40%,transparent 70%);pointer-events:none;z-index:10;transition:opacity 0.3s ease;mix-blend-mode:screen;}
+        .spotlight-glow{position:absolute;width:300px;height:300px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at center,var(--nb-accent),0.25) 0%,var(--nb-accent),0.1) 40%,transparent 70%);pointer-events:none;z-index:10;transition:opacity 0.3s ease;mix-blend-mode:screen;}
         .photo-wrap{position:relative;overflow:hidden;border:4px solid var(--nb-primary);box-shadow:10px 10px 0 var(--nb-primary);flex-shrink:0;transition:transform 0.15s ease,box-shadow 0.15s ease;}
         .photo-wrap:hover{transform:translate(-3px,-3px);box-shadow:13px 13px 0 var(--nb-primary);}
         .photo-wrap img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center center;}

@@ -549,7 +549,7 @@ export default function ProjectDetail({ projectId }: Props) {
         .spotlight-glow {
           position: absolute; width: 300px; height: 300px; border-radius: 50%;
           transform: translate(-50%,-50%);
-          background: radial-gradient(circle at center, rgba(158,204,250,0.25) 0%, rgba(158,204,250,0.1) 40%, transparent 70%);
+          background: radial-gradient(circle at center, var(--nb-accent),0.25) 0%, var(--nb-accent),0.1) 40%, transparent 70%);
           pointer-events: none; z-index: 10; transition: opacity 0.3s ease; mix-blend-mode: screen;
         }
 
@@ -585,7 +585,7 @@ export default function ProjectDetail({ projectId }: Props) {
         .back-to-top:active { transform: translate(2px,2px); box-shadow: 0 0 0 var(--nb-accent); }
 
         .info-row { transition: background 0.15s ease; }
-        .info-row:hover { background: rgba(158,204,250,0.08); }
+        .info-row:hover { background: var(--nb-accent),0.08); }
 
         .section-heading { position: relative; display: inline-block; }
         .section-heading::after {
@@ -602,7 +602,7 @@ export default function ProjectDetail({ projectId }: Props) {
           animation: shimmer 1.4s ease infinite, skeletonPulse 1.4s ease infinite;
         }
         .skeleton-shimmer-dark {
-          background: linear-gradient(90deg, rgba(158,204,250,0.2) 25%, rgba(158,204,250,0.4) 50%, rgba(158,204,250,0.2) 75%);
+          background: linear-gradient(90deg, var(--nb-accent),0.2) 25%, var(--nb-accent),0.4) 50%, var(--nb-accent),0.2) 75%);
           background-size: 200% 100%;
           animation: shimmer 1.4s ease infinite, skeletonPulse 1.4s ease infinite;
         }

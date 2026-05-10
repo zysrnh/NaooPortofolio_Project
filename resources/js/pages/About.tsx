@@ -194,7 +194,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
               { val: loading?"…":maxDay.toString(),        label:"Best Day"      },
             ].map((s, i) => (
               <div key={i} className="flex flex-col items-center px-4 py-3 min-w-[80px]"
-                style={{border:"3px solid var(--nb-accent)",boxShadow:"3px 3px 0 var(--nb-accent)",background:"rgba(158,204,250,0.08)"}}>
+                style={{border:"3px solid var(--nb-accent)",boxShadow:"3px 3px 0 var(--nb-accent)",background:"var(--nb-accent),0.08)"}}>
                 <span className="font-black tabular-nums text-[var(--nb-accent)]" style={{fontSize:"clamp(1.4rem,3vw,1.8rem)"}}>{s.val}</span>
                 <span className="font-black text-[var(--nb-accent-light)] uppercase tracking-widest mt-0.5" style={{fontSize:9}}>{s.label}</span>
               </div>
@@ -468,10 +468,10 @@ function Capabilities() {
                 {featStacks.map(stack => (
                   <div key={stack.id}
                     className="flex items-center gap-2 transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5"
-                    style={{border:"2px solid rgba(158,204,250,0.4)",padding:"5px 12px 5px 5px",background:"rgba(158,204,250,0.08)"}}>
+                    style={{border:"2px solid var(--nb-accent),0.4)",padding:"5px 12px 5px 5px",background:"var(--nb-accent),0.08)"}}>
                     <img src={stack.icon} alt={stack.name}
                       onError={e=>{(e.target as HTMLImageElement).src=FALLBACK_ICON;}}
-                      style={{width:20,height:20,objectFit:"cover",border:"2px solid rgba(158,204,250,0.5)",flexShrink:0}} />
+                      style={{width:20,height:20,objectFit:"cover",border:"2px solid var(--nb-accent),0.5)",flexShrink:0}} />
                     <span style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"var(--nb-accent)",letterSpacing:"0.06em"}}>{stack.name}</span>
                   </div>
                 ))}
@@ -483,7 +483,7 @@ function Capabilities() {
           <div className="flex flex-wrap gap-2">
             {highlights.map((tag, i) => (
               <span key={i} className="font-black text-xs uppercase px-4 py-2 tracking-widest transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5"
-                style={{border:"2px solid var(--nb-accent)",color:"var(--nb-accent)",background:"rgba(158,204,250,0.1)",
+                style={{border:"2px solid var(--nb-accent)",color:"var(--nb-accent)",background:"var(--nb-accent),0.1)",
                   animation:`statIn 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.06}s both`}}>
                 {tag}
               </span>
@@ -557,7 +557,7 @@ function ExperienceTimeline() {
                         </span>
                         {isCurrent && (
                           <span className="font-black text-xs uppercase tracking-widest px-2 py-0.5"
-                            style={{border:"2px solid var(--nb-accent)",background:"rgba(158,204,250,0.15)",color:"var(--nb-primary)",boxShadow:"1px 1px 0 var(--nb-accent)"}}>
+                            style={{border:"2px solid var(--nb-accent)",background:"var(--nb-accent),0.15)",color:"var(--nb-primary)",boxShadow:"1px 1px 0 var(--nb-accent)"}}>
                             ● Active
                           </span>
                         )}
@@ -568,7 +568,7 @@ function ExperienceTimeline() {
                       <div className="flex flex-wrap gap-2">
                         {exp.highlights.map((h, hi) => (
                           <span key={hi} className="font-black text-xs uppercase px-2 py-1"
-                            style={{border:"2px solid var(--nb-accent)",color:"var(--nb-primary)",background:"rgba(158,204,250,0.1)"}}>
+                            style={{border:"2px solid var(--nb-accent)",color:"var(--nb-primary)",background:"var(--nb-accent),0.1)"}}>
                             {h}
                           </span>
                         ))}
@@ -665,18 +665,18 @@ function Availability() {
         <div className="flex flex-wrap gap-3">
           {badges.map((b, i) => (
             <div key={i} style={{
-              border:`3px solid ${b.active?"var(--nb-accent)":"rgba(158,204,250,0.2)"}`,
-              background:b.active?"rgba(158,204,250,0.15)":"transparent",
+              border:`3px solid ${b.active?"var(--nb-accent)":"var(--nb-accent),0.2)"}`,
+              background:b.active?"var(--nb-accent),0.15)":"transparent",
               padding:"8px 18px",
               boxShadow:b.active?"3px 3px 0 var(--nb-accent)":"none",
             }}>
-              <p className="font-black text-xs uppercase tracking-widest" style={{color:b.active?"var(--nb-accent)":"rgba(158,204,250,0.35)"}}>
+              <p className="font-black text-xs uppercase tracking-widest" style={{color:b.active?"var(--nb-accent)":"var(--nb-accent),0.35)"}}>
                 {b.active ? "✓" : "✗"} {b.label}
               </p>
             </div>
           ))}
           {avail.timezone && (
-            <div style={{border:"3px solid rgba(158,204,250,0.4)",padding:"8px 18px"}}>
+            <div style={{border:"3px solid var(--nb-accent),0.4)",padding:"8px 18px"}}>
               <p className="font-black text-xs uppercase tracking-widest text-[var(--nb-accent)] opacity-70">WIB · {avail.timezone}</p>
             </div>
           )}
@@ -751,7 +751,7 @@ export default function About() {
         .photo-wrap img { position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center top; }
 
         .hero-skeleton  { background:linear-gradient(90deg,var(--nb-accent) 25%,var(--nb-accent-light) 50%,var(--nb-accent) 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite; }
-        .about-skeleton { background:linear-gradient(90deg,rgba(158,204,250,0.3) 25%,rgba(158,204,250,0.5) 50%,rgba(158,204,250,0.3) 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite; }
+        .about-skeleton { background:linear-gradient(90deg,var(--nb-accent),0.3) 25%,var(--nb-accent),0.5) 50%,var(--nb-accent),0.3) 75%);background-size:200% 100%;animation:shimmer 1.2s ease infinite; }
         .skeleton-shimmer { background:linear-gradient(90deg,var(--nb-accent-light) 25%,var(--nb-accent) 50%,var(--nb-accent-light) 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite; }
 
         .tech-chip { display:inline-flex;align-items:center;gap:8px;border:3px solid var(--nb-primary);padding:7px 14px 7px 7px;background:var(--nb-bg);font-size:11px;font-weight:800;text-transform:uppercase;color:var(--nb-primary);letter-spacing:0.06em;transition:transform 0.12s ease,box-shadow 0.12s ease,background 0.12s ease;cursor:default;box-shadow:3px 3px 0 var(--nb-primary);flex:0 0 calc(25% - 15px);justify-content:flex-start;box-sizing:border-box; }
@@ -820,7 +820,7 @@ export default function About() {
                 <div className="flex flex-wrap gap-2 mt-6">
                   {about.highlights.filter(Boolean).map((tag, i) => (
                     <span key={i} className="font-black text-xs uppercase px-3 py-1.5 tracking-widest"
-                      style={{border:"2px solid var(--nb-accent)",color:"var(--nb-accent)",background:"rgba(158,204,250,0.1)",
+                      style={{border:"2px solid var(--nb-accent)",color:"var(--nb-accent)",background:"var(--nb-accent),0.1)",
                         animation:`statIn 0.4s cubic-bezier(0.16,1,0.3,1) ${i*0.06}s both`}}>
                       {tag}
                     </span>
