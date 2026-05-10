@@ -10,6 +10,10 @@ const IconClose   = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="
 const IconImg     = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>;
 const IconSave    = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>;
 const IconCheck   = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>;
+const IconCrop    = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="6 2 6 8 2 8"/><polyline points="18 22 18 16 22 16"/><path d="M2 14h14V2"/><path d="M10 22H22V10"/></svg>;
+const IconZoomIn  = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>;
+const IconZoomOut = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>;
+const IconRefresh = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>;
 const IconExternal= () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>;
 const IconFolder  = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
 const IconSpin    = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{animation:"pcSpin 0.7s linear infinite"}}><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>;
@@ -47,6 +51,27 @@ const STATUS_CFG: Record<string,{bg:string;fg:string}> = {
 };
 
 const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
+
+const CROP_ASPECT_W = 16;
+const CROP_ASPECT_H = 9;
+
+function toBase64(file: File): Promise<string> {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result as string);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function base64ToBlob(b64: string): Blob {
+  const [header, data] = b64.split(",");
+  const mime = header.match(/:(.*?);/)?.[1] || "image/jpeg";
+  const binary = atob(data);
+  const array = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) array[i] = binary.charCodeAt(i);
+  return new Blob([array], { type: mime });
+}
 
 const getCsrf = (): string => {
   const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
@@ -184,6 +209,115 @@ function Toast({ msg, ok, onDone }: { msg:string; ok:boolean; onDone:()=>void })
   return (
     <div style={{position:"fixed",bottom:28,right:28,zIndex:999,display:"flex",alignItems:"center",gap:10,border:"4px solid #0B1957",background:ok?"#9ECCFA":"#ef4444",color:ok?"#0B1957":"white",padding:"12px 20px",fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.07em",boxShadow:"6px 6px 0 #0B1957",maxWidth:320,animation:"pcToastIn 0.35s cubic-bezier(0.16,1,0.3,1)"}}>
       {ok?<IconCheck/>:null}{msg}
+    </div>
+  );
+}
+
+// ── ImageCropModal ────────────────────────────────────────────────────────────
+interface CropState { scale: number; offsetX: number; offsetY: number; }
+
+function ImageCropModal({ src, onConfirm, onCancel }: {
+  src: string; onConfirm: (croppedBase64: string) => void; onCancel: () => void;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imgRef    = useRef<HTMLImageElement | null>(null);
+  const stateRef  = useRef<CropState>({ scale: 1, offsetX: 0, offsetY: 0 });
+  const dragRef   = useRef<{ active: boolean; startX: number; startY: number; ox: number; oy: number }>({ active: false, startX: 0, startY: 0, ox: 0, oy: 0 });
+  const rafRef    = useRef<number | null>(null);
+  const CANVAS_W  = 500;
+  const CANVAS_H  = Math.round(CANVAS_W * CROP_ASPECT_H / CROP_ASPECT_W);
+
+  const draw = useCallback(() => {
+    const canvas = canvasRef.current; const img = imgRef.current;
+    if (!canvas || !img) return;
+    const ctx = canvas.getContext("2d")!;
+    const { scale, offsetX, offsetY } = stateRef.current;
+    ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+    ctx.fillStyle = "#0B1957"; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    ctx.drawImage(img, offsetX, offsetY, img.naturalWidth * scale, img.naturalHeight * scale);
+    ctx.save();
+    ctx.strokeStyle = "#9ECCFA"; ctx.lineWidth = 3; ctx.strokeRect(2, 2, CANVAS_W - 4, CANVAS_H - 4);
+    ctx.strokeStyle = "rgba(158,204,250,0.25)"; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(CANVAS_W/3,0);ctx.lineTo(CANVAS_W/3,CANVAS_H);
+    ctx.moveTo(CANVAS_W*2/3,0);ctx.lineTo(CANVAS_W*2/3,CANVAS_H);
+    ctx.moveTo(0,CANVAS_H/3);ctx.lineTo(CANVAS_W,CANVAS_H/3);
+    ctx.moveTo(0,CANVAS_H*2/3);ctx.lineTo(CANVAS_W,CANVAS_H*2/3);
+    ctx.stroke();
+    const BL = 24; ctx.strokeStyle = "#9ECCFA"; ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(2,2+BL);ctx.lineTo(2,2);ctx.lineTo(2+BL,2);
+    ctx.moveTo(CANVAS_W-2-BL,2);ctx.lineTo(CANVAS_W-2,2);ctx.lineTo(CANVAS_W-2,2+BL);
+    ctx.moveTo(2,CANVAS_H-2-BL);ctx.lineTo(2,CANVAS_H-2);ctx.lineTo(2+BL,CANVAS_H-2);
+    ctx.moveTo(CANVAS_W-2-BL,CANVAS_H-2);ctx.lineTo(CANVAS_W-2,CANVAS_H-2);ctx.lineTo(CANVAS_W-2,CANVAS_H-2-BL);
+    ctx.stroke(); ctx.restore();
+  }, []);
+
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => {
+      imgRef.current = img;
+      const scale = Math.max(CANVAS_W/img.naturalWidth, CANVAS_H/img.naturalHeight);
+      stateRef.current = { scale, offsetX:(CANVAS_W-img.naturalWidth*scale)/2, offsetY:(CANVAS_H-img.naturalHeight*scale)/2 };
+      draw();
+    };
+    img.crossOrigin = "anonymous"; img.src = src;
+  }, [src, draw]);
+
+  const clamp = (s: CropState): CropState => {
+    const img = imgRef.current; if (!img) return s;
+    const drawW = img.naturalWidth*s.scale, drawH = img.naturalHeight*s.scale;
+    return { scale:s.scale, offsetX:Math.max(Math.min(0,CANVAS_W-drawW),Math.min(0,s.offsetX)), offsetY:Math.max(Math.min(0,CANVAS_H-drawH),Math.min(0,s.offsetY)) };
+  };
+  const requestDraw = useCallback(() => { if(rafRef.current)cancelAnimationFrame(rafRef.current); rafRef.current=requestAnimationFrame(draw); }, [draw]);
+  const zoom = (delta: number) => {
+    const img = imgRef.current; if(!img) return;
+    const minScale = Math.max(CANVAS_W/img.naturalWidth, CANVAS_H/img.naturalHeight);
+    const newScale = Math.max(minScale, Math.min(5, stateRef.current.scale+delta*stateRef.current.scale));
+    const ratio = newScale/stateRef.current.scale;
+    stateRef.current = clamp({ scale:newScale, offsetX:CANVAS_W/2-(CANVAS_W/2-stateRef.current.offsetX)*ratio, offsetY:CANVAS_H/2-(CANVAS_H/2-stateRef.current.offsetY)*ratio });
+    requestDraw();
+  };
+
+  const touchStartRef = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => { const t = e.touches[0]; touchStartRef.current = { x: t.clientX, y: t.clientY, ox: stateRef.current.offsetX, oy: stateRef.current.offsetY }; };
+  const onTouchMove = (e: React.TouchEvent) => { if (!touchStartRef.current) return; e.preventDefault(); const t = e.touches[0]; stateRef.current = clamp({ ...stateRef.current, offsetX: touchStartRef.current.ox + t.clientX - touchStartRef.current.x, offsetY: touchStartRef.current.oy + t.clientY - touchStartRef.current.y }); requestDraw(); };
+  const onTouchEnd = () => { touchStartRef.current = null; };
+
+  const onMouseDown = (e: React.MouseEvent) => { e.preventDefault(); dragRef.current={active:true,startX:e.clientX,startY:e.clientY,ox:stateRef.current.offsetX,oy:stateRef.current.offsetY}; };
+  const onMouseMove = useCallback((e: MouseEvent) => { const d=dragRef.current; if(!d.active)return; stateRef.current=clamp({...stateRef.current,offsetX:d.ox+e.clientX-d.startX,offsetY:d.oy+e.clientY-d.startY}); requestDraw(); }, [requestDraw]);
+  const onMouseUp = useCallback(() => { dragRef.current.active=false; }, []);
+  useEffect(() => { window.addEventListener("mousemove",onMouseMove); window.addEventListener("mouseup",onMouseUp); return()=>{window.removeEventListener("mousemove",onMouseMove);window.removeEventListener("mouseup",onMouseUp);}; }, [onMouseMove,onMouseUp]);
+
+  const handleConfirm = () => {
+    const img = imgRef.current; if(!img) return;
+    const ec = document.createElement("canvas"); ec.width=CANVAS_W*2; ec.height=CANVAS_H*2;
+    ec.getContext("2d")!.drawImage(img, stateRef.current.offsetX*2, stateRef.current.offsetY*2, img.naturalWidth*stateRef.current.scale*2, img.naturalHeight*stateRef.current.scale*2);
+    onConfirm(ec.toDataURL("image/jpeg",0.92));
+  };
+
+  return (
+    <div style={{position:"fixed",inset:0,zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(11,25,87,0.85)",backdropFilter:"blur(6px)",padding:16}}>
+      <div style={{background:"#0B1957",border:"4px solid #9ECCFA",boxShadow:"16px 16px 0 #9ECCFA",width:"100%",maxWidth:540,display:"flex",flexDirection:"column"}}>
+        <div style={{borderBottom:"4px solid #9ECCFA",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:12,color:"#9ECCFA"}}><IconCrop /><span style={{fontWeight:900,fontSize:13,textTransform:"uppercase",letterSpacing:"0.15em"}}>Crop Foto Project</span></div>
+          <button style={{color:"#9ECCFA",background:"transparent",border:"none",cursor:"pointer"}} onClick={onCancel}><IconClose /></button>
+        </div>
+        <div style={{position:"relative",display:"flex",justifyContent:"center",background:"#040d3a",borderBottom:"4px solid #9ECCFA",overflow:"hidden"}}>
+          <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{display:"block",cursor:"grab",width:"100%",maxWidth:CANVAS_W,userSelect:"none",touchAction:"none"}} onMouseDown={onMouseDown} onWheel={e=>{e.preventDefault();zoom(e.deltaY<0?0.07:-0.07);}} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} />
+        </div>
+        <div style={{padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"4px solid #9ECCFA"}}>
+          <div style={{display:"flex",gap:8}}>
+            <button onClick={()=>zoom(-0.15)} style={{border:"2px solid #9ECCFA",background:"transparent",color:"#9ECCFA",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}><IconZoomOut /></button>
+            <button onClick={()=>zoom(0.15)}  style={{border:"2px solid #9ECCFA",background:"transparent",color:"#9ECCFA",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}><IconZoomIn /></button>
+          </div>
+          <button onClick={()=>{const img=imgRef.current;if(!img)return;const sc=Math.max(CANVAS_W/img.naturalWidth,CANVAS_H/img.naturalHeight);stateRef.current={scale:sc,offsetX:(CANVAS_W-img.naturalWidth*sc)/2,offsetY:(CANVAS_H-img.naturalWidth*sc)/2};requestDraw();}} style={{display:"flex",alignItems:"center",gap:6,border:"2px solid #9ECCFA",background:"transparent",color:"#9ECCFA",padding:"6px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer"}}><IconRefresh /> Reset</button>
+        </div>
+        <div style={{padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"#0B1957"}}>
+          <button onClick={onCancel} style={{border:"4px solid #9ECCFA",background:"transparent",color:"#9ECCFA",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer"}}>Batal</button>
+          <button onClick={handleConfirm} style={{display:"flex",alignItems:"center",gap:8,border:"4px solid #9ECCFA",background:"#9ECCFA",color:"#0B1957",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",cursor:"pointer"}}><IconCheck /> Selesai Crop</button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -341,6 +475,7 @@ export default function ProjectCRUD() {
   const [saving,     setSaving]     = useState(false);
   const [uploading,  setUploading]  = useState(false);
   const [deleteId,   setDeleteId]   = useState<number|null>(null);
+  const [cropSrc,    setCropSrc]    = useState<string|null>(null);
   const [toast,      setToast]      = useState<{msg:string;ok:boolean}|null>(null);
   const [errors,     setErrors]     = useState<Record<string,string>>({});
   const [headerIn,   setHeaderIn]   = useState(false);
@@ -377,8 +512,15 @@ export default function ProjectCRUD() {
 
   const handleUpload = async (e:React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if(!file) return;
+    if(!file.type.startsWith("image/")){showToast("File harus gambar!",false);return;}
+    setCropSrc(await toBase64(file));
+  };
+
+  const handleCropConfirm = async (b64:string) => {
+    setCropSrc(null);
     setUploading(true);
-    const fd = new FormData(); fd.append("image",file);
+    const blob = base64ToBlob(b64);
+    const fd = new FormData(); fd.append("image", blob, "project.jpg");
     try {
       const r = await fetch("/api/admin/projects/upload-image",{method:"POST",headers:{"X-CSRF-TOKEN":getCsrf()},body:fd});
       const d = await r.json();
@@ -456,6 +598,7 @@ export default function ProjectCRUD() {
   const filtered     = projects.filter(p=>filterTab==="visible"?p.visible:filterTab==="hidden"?!p.visible:true);
 
   return (
+    <>
       <style>{STYLES}</style>
 
       {/* ── Page Header ── */}
@@ -760,6 +903,8 @@ export default function ProjectCRUD() {
           </div>
         </div>
       )}
+      {/* ── Crop Modal ── */}
+      {cropSrc&&<ImageCropModal src={cropSrc} onConfirm={handleCropConfirm} onCancel={()=>setCropSrc(null)}/>}
     </>
   );
 }
