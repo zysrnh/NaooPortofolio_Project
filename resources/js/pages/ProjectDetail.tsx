@@ -243,6 +243,40 @@ function SkeletonGallery() {
 }
 
 // ── CollaboratorPopup ────────────────────────────────────────────────────────
+// ── SocialIcon Component ─────────────────────────────────────────────────────
+function SocialIcon({ platform }: { platform: string }) {
+  const p = platform.toLowerCase();
+  const [error, setError] = useState(false);
+
+  // Mapping platform to public SVG files
+  const svgMap: Record<string, string> = {
+    instagram: "/SVG/instagram-svgrepo-com.svg",
+    linkedin:  "/SVG/linkedin-svgrepo-com.svg",
+    twitter:   "/SVG/twitter-svgrepo-com.svg",
+    github:    "/SVG/github-svgrepo-com.svg",
+    web:       "/SVG/globe-svgrepo-com.svg",
+  };
+
+  // If error loading image or platform not in map, use embedded fallback
+  if (error || !svgMap[p]) {
+    if (p === "instagram") return <IconInstagram />;
+    if (p === "linkedin")  return <IconLinkedin />;
+    if (p === "twitter")   return <IconTwitter />;
+    if (p === "github")    return <IconGithubSmall />;
+    return <IconGlobe />;
+  }
+
+  return (
+    <img 
+      src={svgMap[p]} 
+      alt={platform} 
+      className="w-7 h-7 object-contain group-hover:scale-110 transition-transform" 
+      onError={() => setError(true)} 
+    />
+  );
+}
+
+// ── CollaboratorPopup ────────────────────────────────────────────────────────
 function CollaboratorPopup({ collab, onClose }: { collab: Collaborator; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-[#0B1957]/30 backdrop-blur-sm" onClick={onClose}>
@@ -258,69 +292,60 @@ function CollaboratorPopup({ collab, onClose }: { collab: Collaborator; onClose:
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#9ECCFA]/10 -rotate-12 translate-x-12 -translate-y-12" />
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#FFE8A0]/20 rotate-45 -translate-x-12 translate-y-12" />
         
-        <div className="bg-[#0B1957] p-4 flex items-center justify-between border-b-4 border-[#0B1957] relative z-10">
+        <div className="bg-[#0B1957] p-4 flex items-center justify-between border-b-4 border-[#0B1957] relative z-20">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-[#9ECCFA] animate-pulse" />
-            <span className="font-black text-[10px] uppercase text-[#9ECCFA] tracking-[0.3em]">Collaborator Profile</span>
+            <span className="font-black text-[10px] uppercase text-[#9ECCFA] tracking-[0.3em]">Detail Kolaborator</span>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center text-[#9ECCFA] hover:bg-[#9ECCFA] hover:text-[#0B1957] transition-all border-2 border-transparent hover:border-[#0B1957]"><IconClose /></button>
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center text-[#9ECCFA] hover:bg-[#9ECCFA] hover:text-[#0B1957] transition-all"><IconClose /></button>
         </div>
 
         <div className="p-8 flex flex-col items-center relative z-10 collab-grid">
-          {/* Profile Section with Branded Frame */}
+          {/* Profile Photo with Neobrutalist Frame */}
           <div className="relative mb-8">
              <div className="absolute inset-0 bg-[#0B1957] translate-x-2 translate-y-2" />
-             <div className="relative w-28 h-28 border-4 border-[#0B1957] bg-white overflow-hidden">
-                {collab.photo ? <img src={collab.photo} className="w-full h-full object-cover transition-transform hover:scale-110 duration-500" /> : <div className="w-full h-full flex items-center justify-center text-4xl bg-[#D1E8FF]">👤</div>}
+             <div className="relative w-28 h-28 border-4 border-[#0B1957] bg-white overflow-hidden rotate-2">
+                {collab.photo ? <img src={collab.photo} className="w-full h-full object-cover -rotate-2 scale-110" /> : <div className="w-full h-full flex items-center justify-center text-4xl bg-[#D1E8FF]">👤</div>}
              </div>
              <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#9ECCFA] border-4 border-[#0B1957] flex items-center justify-center text-[#0B1957]">
                 <IconCheck />
              </div>
-             <div className="absolute -bottom-2 -right-6 bg-[#0B1957] border-2 border-[#9ECCFA] px-2 py-0.5 rotate-6">
-                <span className="font-black text-[8px] text-[#9ECCFA] uppercase tracking-tighter">Verified Team</span>
-             </div>
           </div>
           
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-black uppercase text-[#0B1957] mb-1 tracking-tighter leading-none">{collab.name}</h3>
-            <div className="inline-block bg-[#0B1957] px-3 py-1 mt-2">
-               <p className="font-black text-[10px] text-[#9ECCFA] uppercase tracking-widest">{collab.role}</p>
-            </div>
-            {collab.origin && (
-              <p className="font-bold text-[10px] text-[#0B1957] opacity-60 mt-2 uppercase tracking-wide">From {collab.origin}</p>
-            )}
+          {/* Structured Data Box */}
+          <div className="w-full space-y-4 mb-8 bg-white border-4 border-[#0B1957] p-5 shadow-[6px_6px_0_#0B1957] relative">
+             <div className="absolute -top-3 right-4 bg-[#0B1957] px-2 py-0.5">
+                <span className="font-black text-[7px] text-[#9ECCFA] uppercase tracking-[0.2em]">Profile Info</span>
+             </div>
+             <div className="flex flex-col gap-0.5">
+                <span className="font-black text-[9px] uppercase text-[#0B1957] opacity-40 tracking-widest">Nama :</span>
+                <span className="font-black text-base uppercase text-[#0B1957] leading-tight">{collab.name}</span>
+             </div>
+             <div className="flex flex-col gap-0.5">
+                <span className="font-black text-[9px] uppercase text-[#0B1957] opacity-40 tracking-widest">Peran / Role :</span>
+                <span className="font-black text-sm uppercase text-[#0B1957] leading-tight">{collab.role}</span>
+             </div>
+             {collab.origin && (
+               <div className="flex flex-col gap-0.5">
+                  <span className="font-black text-[9px] uppercase text-[#0B1957] opacity-40 tracking-widest">Asal / Instansi :</span>
+                  <span className="font-black text-sm uppercase text-[#0B1957] leading-tight">{collab.origin}</span>
+               </div>
+             )}
           </div>
 
-          {/* Socials Divider */}
-          <div className="w-full flex items-center gap-3 mb-6">
-            <div className="flex-1 h-[2px] bg-[#0B1957] opacity-10" />
-            <span className="font-black text-[9px] text-[#0B1957] opacity-30 uppercase tracking-[0.3em]">Social Links</span>
-            <div className="flex-1 h-[2px] bg-[#0B1957] opacity-10" />
-          </div>
-
-          <div className="w-full space-y-3">
+          {/* Social Icons Row */}
+          <div className="w-full flex items-center justify-center gap-4">
             {collab.socials && collab.socials.length > 0 ? (
               collab.socials.map((s, i) => (
                 <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" 
-                  className="flex items-center gap-4 border-[4px] border-[#0B1957] p-3 bg-white hover:bg-[#FFE8A0] transition-all group shadow-[5px_5px_0_#0B1957] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
-                  <div className="w-9 h-9 bg-[#0B1957] flex items-center justify-center text-[#9ECCFA] group-hover:scale-110 transition-transform flex-shrink-0 shadow-[2px_2px_0_#9ECCFA]">
-                    {s.platform === "instagram" && <IconInstagram />}
-                    {s.platform === "github" && <IconGithubSmall />}
-                    {s.platform === "linkedin" && <IconLinkedin />}
-                    {s.platform === "twitter" && <IconTwitter />}
-                    {s.platform === "web" && <IconGlobe />}
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-black uppercase text-[10px] text-[#0B1957] tracking-wider leading-none mb-1">{s.platform}</span>
-                    <span className="font-bold text-[9px] text-[#0B1957] opacity-40 truncate">Visit Profile →</span>
-                  </div>
+                  className="w-12 h-12 border-4 border-[#0B1957] bg-white hover:bg-[#FFE8A0] flex items-center justify-center transition-all shadow-[4px_4px_0_#0B1957] hover:translate-x-1 hover:translate-y-1 hover:shadow-none group"
+                  title={s.platform}>
+                  <SocialIcon platform={s.platform} />
                 </a>
               ))
             ) : (
-              <div className="py-6 border-4 border-dashed border-[#0B1957]/10 bg-[#0B1957]/5 text-center w-full group overflow-hidden relative">
-                 <div className="absolute top-0 left-0 w-full h-1 bg-[#0B1957] opacity-10 -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
-                 <p className="text-[10px] font-black uppercase text-[#0B1957] opacity-30 tracking-[0.4em]">No Social Links Provided</p>
-                 <div className="absolute bottom-0 left-0 w-full h-1 bg-[#0B1957] opacity-10 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+              <div className="py-4 border-2 border-dashed border-[#0B1957]/20 w-full text-center">
+                 <p className="text-[10px] font-black uppercase text-[#0B1957] opacity-20 tracking-[0.3em]">No Social Links</p>
               </div>
             )}
           </div>
@@ -330,7 +355,7 @@ function CollaboratorPopup({ collab, onClose }: { collab: Collaborator; onClose:
                className="font-black text-[10px] uppercase text-white bg-[#0B1957] px-8 py-2 border-2 border-[#0B1957] shadow-[4px_4px_0_#9ECCFA] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all tracking-[0.2em]">
                Close Details
              </button>
-             <p className="text-[8px] font-bold uppercase text-[#0B1957] opacity-20">Naoo Portfolio System v2.0</p>
+             <p className="text-[8px] font-bold uppercase text-[#0B1957] opacity-20 tracking-widest">Naoo Portfolio v2.0</p>
           </div>
         </div>
 

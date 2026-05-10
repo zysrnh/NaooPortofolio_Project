@@ -375,27 +375,40 @@ function CollaboratorModal({ item, index, onSave, onCancel, onUpload }: {
             </Field>
           </div>
 
-          <div style={{border:"3px solid #0B1957",padding:12,background:"white"}}>
-            <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"#0B1957",marginBottom:10,opacity:0.5}}>Link Sosmed / Portfolio</p>
-            <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:12}}>
-              {form.socials.map((s,i)=>(
-                <div key={i} style={{display:"flex",alignItems:"center",gap:8,background:"#F8F3EA",border:"2px solid #0B1957",padding:"4px 10px"}}>
-                  <span style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"#0B1957",width:70}}>{s.platform}</span>
-                  <span style={{flex:1,fontSize:11,color:"#0B1957",opacity:0.6,truncate:true,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.url}</span>
-                  <button onClick={()=>removeSocial(i)} style={{background:"transparent",border:"none",color:"#e53e3e",cursor:"pointer",fontWeight:900}}>✕</button>
+          <div className="border-4 border-[#0B1957] p-5 bg-white shadow-[6px_6px_0_#0B1957]">
+            <p className="font-black text-[10px] uppercase text-[#0B1957] mb-4 opacity-50 tracking-[0.2em]">Added Social Links</p>
+            <div className="space-y-2 mb-6">
+              {form.socials.length > 0 ? (
+                form.socials.map((s, i) => (
+                  <div key={i} className="flex items-center gap-3 border-2 border-[#0B1957] p-2 bg-[#F8F3EA] group">
+                    <div className="w-6 h-6 bg-[#0B1957] text-[#9ECCFA] flex items-center justify-center text-[10px] font-black uppercase">
+                       {s.platform.charAt(0)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                       <p className="font-black text-[10px] uppercase text-[#0B1957] leading-none mb-0.5">{s.platform}</p>
+                       <p className="font-bold text-[9px] text-[#0B1957] opacity-40 truncate">{s.url}</p>
+                    </div>
+                    <button onClick={() => removeSocial(i)} className="text-[#e53e3e] hover:scale-125 transition-transform font-black px-2 text-sm">✕</button>
+                  </div>
+                ))
+              ) : (
+                <div className="py-4 border-2 border-dashed border-[#0B1957]/10 text-center">
+                   <p className="text-[9px] font-black uppercase text-[#0B1957] opacity-20 tracking-widest">No links added yet</p>
                 </div>
-              ))}
+              )}
             </div>
-            <div style={{display:"flex",gap:6}}>
-              <select className="pc2-input" style={{width:100,padding:4,fontSize:11}} value={newLink.platform} onChange={e=>setNewLink(l=>({...l,platform:e.target.value}))}>
+
+            <p className="font-black text-[10px] uppercase text-[#0B1957] mb-2 opacity-50 tracking-[0.2em]">Add New Link</p>
+            <div className="flex gap-2">
+              <select className="pc2-input !w-28 !py-2 !text-[10px] !font-black uppercase" value={newLink.platform} onChange={e=>setNewLink(l=>({...l,platform:e.target.value}))}>
                 <option value="instagram">Instagram</option>
                 <option value="github">GitHub</option>
                 <option value="linkedin">LinkedIn</option>
                 <option value="twitter">Twitter</option>
                 <option value="web">Website</option>
               </select>
-              <input className="pc2-input" style={{flex:1,padding:4,fontSize:11}} value={newLink.url} onChange={e=>setNewLink(l=>({...l,url:e.target.value}))} placeholder="URL Link..."/>
-              <button onClick={addSocial} style={{background:"#0B1957",color:"white",border:"none",padding:"0 12px",fontWeight:900,cursor:"pointer"}}>+</button>
+              <input className="pc2-input !flex-1 !py-2 !text-[10px] !font-bold" value={newLink.url} onChange={e=>setNewLink(l=>({...l,url:e.target.value}))} placeholder="Paste URL here..."/>
+              <button onClick={addSocial} className="bg-[#0B1957] text-[#9ECCFA] border-2 border-[#0B1957] px-4 font-black hover:bg-[#9ECCFA] hover:text-[#0B1957] transition-all shadow-[3px_3px_0_#0B1957] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">+</button>
             </div>
           </div>
         </div>
