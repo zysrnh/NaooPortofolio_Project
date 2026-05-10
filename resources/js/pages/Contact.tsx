@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import { useVisitorTracker } from "@/hooks/useVisitorTracker";
 import { useState, useEffect, useRef } from "react";
 import { Head } from "@inertiajs/react";
 
@@ -84,6 +85,7 @@ function getCsrfToken(): string {
 
 // ── Main Contact Page ─────────────────────────────────────────────────────────
 export default function Contact() {
+  useVisitorTracker('/contact');
   const [form, setForm] = useState<FormState>({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Partial<FormState>>({});

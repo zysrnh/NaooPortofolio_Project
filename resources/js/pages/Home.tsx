@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { router, Head } from "@inertiajs/react";
+import { useVisitorTracker } from "@/hooks/useVisitorTracker";
 
 // ── Scroll reveal hook ────────────────────────────────────────────────────────
 function useScrollReveal(ready: boolean) {
@@ -525,6 +526,7 @@ function MobileBanner() {
 // ── Main Home ──────────────────────────────────────────────────────────────────
 export default function Home() {
   const hasLoaded=typeof window!=="undefined"&&sessionStorage.getItem("hasLoaded")==="true";
+  useVisitorTracker('/');  // 🔍 track homepage visits
   const [loading,setLoading]=useState(!hasLoaded);
   const [progress,setProgress]=useState(hasLoaded?100:0);
   const [visible,setVisible]=useState(hasLoaded);

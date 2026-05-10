@@ -5,6 +5,8 @@ import HomepageManager from "@/components/HomepageManager";
 import ProjectCRUD from "@/components/ProjectCRUD";
 import AboutManager from "@/components/AboutManager";
 import ThemeToggle from "../components/ThemeToggle";
+import VisitorStats from "@/components/VisitorStats";
+import GuestbookManager from "@/components/GuestbookManager";
 
 // ── SVG Icons ─────────────────────────────────────────────────────────────────
 const IconFolder    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
@@ -26,9 +28,11 @@ const IconInfo      = ({ size = 18 }: { size?: number }) => <svg width={size} he
 const IconMail      = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>;
 const IconTrash     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>;
 const IconCheck     = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
+const IconMessage   = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>;
 const IconRefresh   = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>;
 const IconTrend     = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
 const IconActivity  = ({ size = 16 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
+const IconUsersNav  = ({ size = 18 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>;
 const IconGithub    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>;
 const IconCode      = ({ size = 14 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
 
@@ -42,7 +46,7 @@ const DbIcon = ({ src, size = 16, alt = "" }: { src: string; size?: number; alt?
 );
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-type Theme = 'naoo' | 'retro';
+type Theme = 'naoo' | 'retro' | 'christmas' | 'luxe' | 'euro' | 'cold';
 interface ProjectItem {
   id: number; slug: string; title: string; desc: string; status: string;
   stacks: { id: number; label: string; icon: string }[];
@@ -73,6 +77,8 @@ const NAV_ITEMS = [
   { key: "homepage",  label: "Homepage",   icon: <IconGlobe size={18} /> },
   { key: "about",     label: "About Page", icon: <IconInfo size={18} /> },
   { key: "messages",  label: "Messages",   icon: <IconMail size={18} /> },
+  { key: "visitors",  label: "Visitors",   icon: <IconUsersNav size={18} /> },
+  { key: "guestbook", label: "Guestbook",  icon: <IconMessage size={18} /> },
   { key: "profile",   label: "Profile",    icon: <IconUser /> },
 ];
 
@@ -324,8 +330,12 @@ function getActivityMeta(status: string): { icon: React.ReactNode; color: string
 
 // ── THEME SELECTOR CARD ──────────────────────────────────────────────────────
 const THEME_OPTIONS = [
-  { id: 'naoo',  label: 'Naoo',  desc: 'Classic Blue',      bg: '#F8F3EA', primary: '#0B1957', accent: '#9ECCFA' },
-  { id: 'retro', label: 'Retro', desc: 'American Vintage',  bg: '#e8d8c9', primary: '#4b607f', accent: '#f3701e' },
+  { id: 'naoo',      label: 'Naoo',  desc: 'Classic Blue',     bg: '#F8F3EA', primary: '#0B1957', accent: '#9ECCFA' },
+  { id: 'retro',     label: 'Retro', desc: 'American Vintage', bg: '#e8d8c9', primary: '#4b607f', accent: '#f3701e' },
+  { id: 'christmas', label: 'Xmas',  desc: 'Christmas Color',  bg: '#F6E8DD', primary: '#193564', accent: '#DC3C24' },
+  { id: 'luxe',      label: 'Luxe',  desc: 'Caramel & Black',  bg: '#f7ece6', primary: '#0d0d0f', accent: '#caa07d' },
+  { id: 'euro',      label: 'Euro',  desc: 'European Retro',   bg: '#f4e5b2', primary: '#253054', accent: '#dc3c24' },
+  { id: 'cold',      label: 'Cold',  desc: 'Cold Color Match', bg: '#EBEDE0', primary: '#31394C', accent: '#7A7F84' },
 ];
 
 function ThemeSelectorCard() {
@@ -339,42 +349,56 @@ function ThemeSelectorCard() {
   };
 
   return (
-    <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-bg)", boxShadow: "6px 6px 0 var(--nb-primary)", padding: "18px 20px", animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.4s both" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+    <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-bg)", boxShadow: "6px 6px 0 var(--nb-primary)", padding: "16px 18px", animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.4s both" }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
         <div style={{ color: "var(--nb-primary)" }}><IconPalette size={14} /></div>
         <p style={{ fontWeight: 900, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--nb-primary)", margin: 0 }}>Global UI Theme</p>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+
+      {/* Swatch grid — matching dashboard screenshot style */}
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
         {THEME_OPTIONS.map(t => {
           const isActive = current === t.id;
           return (
             <button key={t.id} onClick={() => applyTheme(t.id)}
+              title={t.label}
               style={{
-                border: isActive ? `3px solid ${t.primary}` : '2px solid rgba(0,0,0,0.15)',
+                flex: '1 1 calc(20% - 6px)', minWidth: 70,
+                border: isActive ? `3px solid ${t.primary}` : `2px solid ${t.primary}44`,
                 background: t.bg,
-                padding: "10px 12px",
-                cursor: "pointer",
-                display: "flex", alignItems: "center", gap: 10,
-                boxShadow: isActive ? `4px 4px 0 ${t.primary}` : '2px 2px 0 rgba(0,0,0,0.1)',
+                boxShadow: isActive ? `4px 4px 0 ${t.primary}` : '2px 2px 0 rgba(0,0,0,0.08)',
                 transform: isActive ? 'translate(-2px,-2px)' : 'none',
-                transition: "all 0.1s ease",
-                position: "relative",
-                textAlign: 'left',
+                transition: "all 0.12s ease",
+                cursor: "pointer", outline: "none", padding: 0,
+                position: "relative", overflow: "hidden",
+                height: 52,
               }}>
-              {/* Palette blocks */}
-              <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
-                <div style={{ width: 10, height: 28, background: t.primary }} />
-                <div style={{ width: 10, height: 28, background: t.bg, border: '1px solid rgba(0,0,0,0.1)' }} />
-                <div style={{ width: 10, height: 28, background: t.accent }} />
+              {/* Color block — top primary, bottom accent */}
+              <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <div style={{ flex: 1.2, background: t.primary }} />
+                <div style={{ flex: 0.8, background: t.accent !== t.primary ? t.accent : t.bg }} />
               </div>
-              {/* Labels */}
-              <div>
-                <div style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", color: t.primary, letterSpacing: '0.07em' }}>{t.label}</div>
-                <div style={{ fontSize: 8, color: t.primary, opacity: 0.6, letterSpacing: '0.04em', marginTop: 2 }}>{t.desc}</div>
+              {/* Label overlay at bottom */}
+              <div style={{
+                position: 'absolute', bottom: 0, left: 0, right: 0,
+                background: `${t.primary}cc`,
+                padding: '2px 4px',
+              }}>
+                <span style={{ fontWeight: 900, fontSize: 7, textTransform: "uppercase", color: '#ffffff', letterSpacing: '0.06em' }}>
+                  {t.label}
+                </span>
               </div>
+              {/* Active checkmark */}
               {isActive && (
-                <div style={{ position: "absolute", top: -6, right: -6, background: t.primary, color: t.bg, width: 16, height: 16, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%", border: `2px solid ${t.bg}` }}>
-                  <IconCheck size={10} />
+                <div style={{
+                  position: "absolute", top: 4, right: 4,
+                  background: '#ffffff', color: t.primary,
+                  width: 14, height: 14, borderRadius: '50%',
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  border: `2px solid ${t.primary}`,
+                }}>
+                  <IconCheck size={8} />
                 </div>
               )}
             </button>
@@ -1563,8 +1587,8 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
           transition:background 0.12s ease, color 0.12s ease, border-color 0.12s ease, padding-left 0.15s ease;
           animation: slideLeft 0.4s cubic-bezier(0.16,1,0.3,1) both;
         }
-        .nav-item:hover  { background:var(--nb-accent),0.1); color:var(--nb-primary); padding-left:22px; }
-        .nav-item.active { background:var(--nb-accent),0.15); color:var(--nb-primary); border-left-color:var(--nb-accent); padding-left:22px; }
+        .nav-item:hover  { background: rgba(255,255,255,0.1); color: var(--nb-accent); border-left-color: var(--nb-accent); padding-left:22px; }
+        .nav-item.active { background: rgba(255,255,255,0.15); color: var(--nb-accent); border-left-color:var(--nb-accent); padding-left:22px; }
 
         .home-btn-sidebar {
           display:flex; align-items:center; gap:8px; width:100%;
@@ -1739,6 +1763,19 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
             {activeNav === "messages" && (
               <div className="content-fade">
                 <MessagesManager onUnreadChange={setUnreadCount} />
+              </div>
+            )}
+
+            {activeNav === "visitors" && (
+              <div className="content-fade">
+                <h2 className="font-black text-2xl uppercase text-[var(--nb-primary)] mb-6">Visitor Analytics</h2>
+                <VisitorStats />
+              </div>
+            )}
+
+            {activeNav === "guestbook" && (
+              <div className="content-fade">
+                <GuestbookManager />
               </div>
             )}
 

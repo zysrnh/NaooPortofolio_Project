@@ -10,6 +10,8 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AboutProfileController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\GuestbookController;
 
 // ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -77,6 +79,13 @@ Route::prefix('api')->group(function () {
     // ── NEW: Messages (public — kirim pesan) ──────────────────────────────────
     Route::post('/messages', [MessageController::class, 'store']);
 
+    // ── Visitor Tracking (public — called from frontend) ─────────────────────
+    Route::post('/track', [VisitorController::class, 'track']);
+
+    // ── Guestbook (public) ────────────────────────────────────────────────────
+    Route::get ('/guestbook', [GuestbookController::class, 'index']);
+    Route::post('/guestbook', [GuestbookController::class, 'store']);
+
     // ── Protected ─────────────────────────────────────────────────────────────
     Route::middleware(['auth'])->group(function () {
 
@@ -127,6 +136,15 @@ Route::prefix('api')->group(function () {
         Route::put   ('/admin/projects/{project}',        [ProjectController::class, 'update']);
         Route::delete('/admin/projects/{project}',        [ProjectController::class, 'destroy']);
         Route::patch ('/admin/projects/{project}/toggle', [ProjectController::class, 'toggleVisibility']);
+
+        // Visitors (admin only)
+        Route::get   ('/visitors/stats',  [VisitorController::class, 'stats']);
+        Route::delete('/visitors/clear',  [VisitorController::class, 'clear']);
+
+        // Guestbook (admin only)
+        Route::get   ('/admin/guestbook',                [GuestbookController::class, 'adminIndex']);
+        Route::patch ('/admin/guestbook/{guestbook}',    [GuestbookController::class, 'toggleVisibility']);
+        Route::delete('/admin/guestbook/{guestbook}',    [GuestbookController::class, 'destroy']);
     });
 });
 

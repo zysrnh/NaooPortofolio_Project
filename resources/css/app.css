@@ -217,14 +217,113 @@
     --sidebar-ring: var(--nb-accent);
 }
 
+/* ── CHRISTMAS — #193564 · #F6E8DD · #DC3C24 ── */
+[data-theme='christmas'] {
+    --nb-bg: #F6E8DD; --nb-primary: #193564; --nb-accent: #DC3C24;
+    --nb-accent-light: #E6BF98; --nb-secondary: #5182BC;
+    --nb-shadow: #193564; --nb-text: #193564; --nb-text-inv: #F6E8DD;
+    --background: var(--nb-bg); --foreground: var(--nb-text);
+    --card: #fff5ec; --card-foreground: var(--nb-text);
+    --popover: #fff5ec; --popover-foreground: var(--nb-text);
+    --primary: var(--nb-primary); --primary-foreground: #ffffff;
+    --secondary: var(--nb-secondary); --secondary-foreground: #ffffff;
+    --muted: var(--nb-accent-light); --muted-foreground: var(--nb-text);
+    --accent: var(--nb-accent); --accent-foreground: #ffffff;
+    --border: var(--nb-primary); --input: #fff5ec; --ring: var(--nb-accent);
+    --sidebar: #193564; --sidebar-foreground: #F6E8DD;
+    --sidebar-primary: #DC3C24; --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #5182BC; --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #DC3C24; --sidebar-ring: #DC3C24;
+}
+
+/* ── LUXE — #f7ece6 · #0d0d0f · #caa07d ── */
+[data-theme='luxe'] {
+    --nb-bg: #f7ece6; --nb-primary: #0d0d0f; --nb-accent: #caa07d;
+    --nb-accent-light: #edddd3; --nb-secondary: #9c7a57;
+    --nb-shadow: #0d0d0f; --nb-text: #0d0d0f; --nb-text-inv: #f7ece6;
+    --background: var(--nb-bg); --foreground: var(--nb-text);
+    --card: #fdf5f0; --card-foreground: var(--nb-text);
+    --popover: #fdf5f0; --popover-foreground: var(--nb-text);
+    --primary: var(--nb-primary); --primary-foreground: #f7ece6;
+    --secondary: var(--nb-secondary); --secondary-foreground: #f7ece6;
+    --muted: var(--nb-accent-light); --muted-foreground: var(--nb-text);
+    --accent: var(--nb-accent); --accent-foreground: #ffffff;
+    --border: var(--nb-primary); --input: #fdf5f0; --ring: var(--nb-accent);
+    --sidebar: #0d0d0f; --sidebar-foreground: #f7ece6;
+    --sidebar-primary: #caa07d; --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #caa07d; --sidebar-accent-foreground: #0d0d0f;
+    --sidebar-border: #caa07d; --sidebar-ring: #caa07d;
+}
+
+/* ── EURO — #253054 · #f4e5b2 · #dc3c24 ── */
+[data-theme='euro'] {
+    --nb-bg: #f4e5b2; --nb-primary: #253054; --nb-accent: #dc3c24;
+    --nb-accent-light: #f9eecc; --nb-secondary: #dc3c24;
+    --nb-shadow: #253054; --nb-text: #253054; --nb-text-inv: #f4e5b2;
+    --background: var(--nb-bg); --foreground: var(--nb-text);
+    --card: #faf0cb; --card-foreground: var(--nb-text);
+    --popover: #faf0cb; --popover-foreground: var(--nb-text);
+    --primary: var(--nb-primary); --primary-foreground: #f4e5b2;
+    --secondary: var(--nb-secondary); --secondary-foreground: #ffffff;
+    --muted: var(--nb-accent-light); --muted-foreground: var(--nb-text);
+    --accent: var(--nb-accent); --accent-foreground: #ffffff;
+    --border: var(--nb-primary); --input: #faf0cb; --ring: var(--nb-accent);
+    --sidebar: #253054; --sidebar-foreground: #f4e5b2;
+    --sidebar-primary: #dc3c24; --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #dc3c24; --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #dc3c24; --sidebar-ring: #dc3c24;
+}
+
+/* ── COLD — #EBEDE0 · #31394C · #7A7F84 ── */
+[data-theme='cold'] {
+    --nb-bg: #EBEDE0; --nb-primary: #31394C; --nb-accent: #7A7F84;
+    --nb-accent-light: #d8dbd0; --nb-secondary: #5a6170;
+    --nb-shadow: #31394C; --nb-text: #31394C; --nb-text-inv: #EBEDE0;
+    --background: var(--nb-bg); --foreground: var(--nb-text);
+    --card: #f4f5ee; --card-foreground: var(--nb-text);
+    --popover: #f4f5ee; --popover-foreground: var(--nb-text);
+    --primary: var(--nb-primary); --primary-foreground: #EBEDE0;
+    --secondary: var(--nb-secondary); --secondary-foreground: #EBEDE0;
+    --muted: var(--nb-accent-light); --muted-foreground: var(--nb-text);
+    --accent: var(--nb-accent); --accent-foreground: #ffffff;
+    --border: var(--nb-primary); --input: #f4f5ee; --ring: var(--nb-accent);
+    --sidebar: #31394C; --sidebar-foreground: #EBEDE0;
+    --sidebar-primary: #7A7F84; --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #5a6170; --sidebar-accent-foreground: #EBEDE0;
+    --sidebar-border: #7A7F84; --sidebar-ring: #7A7F84;
+}
+
 @layer base {
     * {
         @apply border-border;
     }
 
+    /* Global theme transition — all color-related properties animate on theme change */
+    *, *::before, *::after {
+        transition:
+            background-color 0.3s ease,
+            border-color 0.3s ease,
+            color 0.3s ease,
+            box-shadow 0.3s ease,
+            fill 0.3s ease,
+            stroke 0.3s ease;
+    }
+
+    /* Exempt motion-sensitive elements from color transition override */
+    .btn-brutal, .btn-nav, .nb-tog,
+    [style*="animation"], [style*="transition"] {
+        transition-property: background-color, border-color, color, box-shadow, fill, stroke, transform, opacity !important;
+        transition-duration: 0.3s, 0.3s, 0.3s, 0.3s, 0.3s, 0.3s, 0.08s, 0.08s !important;
+    }
+
     body {
         background-color: var(--nb-bg);
         color: var(--nb-text);
-        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Ensure all bordered elements pick up theme border color */
+    [class*="border-[var(--nb-primary)]"],
+    [class*="border-[var(--nb"] {
+        border-color: var(--nb-primary);
     }
 }

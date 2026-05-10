@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import { useVisitorTracker } from "@/hooks/useVisitorTracker";`nimport GuestbookSection from "@/components/GuestbookSection";
 import { useEffect, useState, useRef } from "react";
 import { router, Head } from "@inertiajs/react";
 
@@ -688,6 +689,7 @@ function Availability() {
 
 // ── Main About ────────────────────────────────────────────────────────────────
 export default function About() {
+  useVisitorTracker('/about');
   const [visible,     setVisible]     = useState(false);
   const [showTop,     setShowTop]     = useState(false);
   const [hero,        setHero]        = useState<HeroData>(DEFAULT_HERO);
@@ -876,7 +878,7 @@ export default function About() {
         <GitHubContributions username="zysrnh"/>
 
         {/* AVAILABILITY */}
-        <Availability/>
+        <Availability/>`n        <GuestbookSection />
 
         {/* FOOTER */}
         <footer className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] reveal">

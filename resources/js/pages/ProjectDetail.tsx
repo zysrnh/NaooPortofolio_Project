@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { router, Head } from "@inertiajs/react";
-import Navbar from "@/components/Navbar"; 
+import Navbar from "@/components/Navbar";
+import { useVisitorTracker } from "@/hooks/useVisitorTracker"; 
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 const IconArrowLeft = () => (
@@ -392,6 +393,7 @@ export default function ProjectDetail({ projectId }: Props) {
   const [activeCollab,  setActiveCollab]  = useState<Collaborator | null>(null);
   const [showTop,       setShowTop]       = useState(false);
   const [heroOffset,    setHeroOffset]    = useState(0);
+  useVisitorTracker(`/projects/${projectId}`);
 
   useEffect(() => { const t = setTimeout(() => setPageIn(true), 40); return () => clearTimeout(t); }, []);
 

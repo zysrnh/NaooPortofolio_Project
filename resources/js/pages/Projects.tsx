@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { router, Head } from "@inertiajs/react";
 import Navbar from "@/components/Navbar";
+import { useVisitorTracker } from "@/hooks/useVisitorTracker";
 
 interface Stack {
   id: number;
@@ -160,6 +161,7 @@ function SkeletonCard({ delay = 0 }: { delay?: number }) {
 }
 
 export default function Projects() {
+  useVisitorTracker('/projects');
   const [projects, setProjects]   = useState<Project[]>([]);
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState(false);
