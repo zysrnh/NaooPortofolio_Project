@@ -93,7 +93,7 @@ function SpotlightCard({children,className="",onClick}:{children:React.ReactNode
 interface Stack { id:number; label:string; icon:string; }
 interface Project { id:number; slug:string; title:string; desc:string; images:string[]; status:"Hosted"|"In Progress"|"Planning"; date:string; stacks:Stack[]; workType:"Solo"|"Collaboration"; soloRole:string; }
 interface TechStackItem { id:number; name:string; icon:string; category:string; }
-interface HeroProfile { name:string; title:string; bio:string; photo:string|null; }
+interface HeroProfile { name:string; title:string; bio:string; photo:string|null; photo2?:string|null; }
 
 type ContactPlatform = "whatsapp"|"email"|"github"|"linkedin"|"twitter"|"instagram"|"telegram"|"custom";
 interface ContactItem {
@@ -108,9 +108,10 @@ interface ContactItem {
 }
 
 const DEFAULT_HERO:HeroProfile = {
-  name:"Yusron", title:"IT Programmer",
-  bio:"Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.",
-  photo:"/profile/Mboy.jpeg",
+  name: "Yusron", title: "IT Programmer", 
+  bio: "Saya membangun aplikasi web modern, dashboard, dan tools internal dengan fokus pada UI yang rapi, performa, dan pengalaman pengguna.", 
+  photo: "/profile/Mboy.jpeg", 
+  photo2: null
 };
 const FALLBACK_ICON="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3C/svg%3E";
 const STATUS_DOT:Record<string,string> = {"Hosted":"#22c55e","In Progress":"#F59E0B","Planning":"var(--nb-accent)"};
@@ -541,13 +542,14 @@ export default function Home() {
 
   const [hero,setHero]=useState<HeroProfile>(DEFAULT_HERO);
   const [heroLoading,setHeroLoading]=useState(true);
+  const [heroSwapped,setHeroSwapped]=useState(false);
 
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [contactsLoading, setContactsLoading] = useState(true);
 
   useEffect(()=>{
     fetch("/api/hero").then(r=>r.json())
-      .then((d:HeroProfile)=>setHero({name:d.name||DEFAULT_HERO.name,title:d.title||DEFAULT_HERO.title,bio:d.bio||DEFAULT_HERO.bio,photo:d.photo||DEFAULT_HERO.photo}))
+      .then((d:HeroProfile)=>setHero({name:d.name||DEFAULT_HERO.name,title:d.title||DEFAULT_HERO.title,bio:d.bio||DEFAULT_HERO.bio,photo:d.photo||DEFAULT_HERO.photo,photo2:d.photo2||null}))
       .catch(()=>{}).finally(()=>setHeroLoading(false));
   },[]);
 
@@ -660,16 +662,43 @@ export default function Home() {
             <div className="anim-hero-img md:w-2/5 relative bg-[var(--nb-accent-light)] border-b-4 md:border-b-0 md:border-r-4 border-[var(--nb-primary)] flex items-center justify-center py-12 px-6 min-h-[320px] sm:min-h-[400px] overflow-hidden">
               <div className="absolute inset-0 opacity-30" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px)"}}/>
               
-              <div className="relative z-10 w-[70%] max-w-[240px] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-3 pb-12 shadow-[12px_12px_0_var(--nb-primary)] rotate-3 hover:-rotate-1 hover:scale-105 transition-all duration-300 group">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/80 border-2 border-[var(--nb-primary)] -rotate-3 z-20 shadow-sm backdrop-blur-md"></div>
-                <div className="w-full aspect-[4/5] border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)] relative">
-                  {heroLoading
-                    ? <div className="hero-skeleton absolute inset-0"/>
-                    : <img src={heroPhoto!} alt={hero.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
-                  }
-                </div>
-                <div className="absolute bottom-3 left-0 right-0 text-center font-black text-xs sm:text-sm uppercase text-[var(--nb-primary)] tracking-widest px-2 opacity-80 truncate">
-                  {hero.name}
+              <div className="relative w-full max-w-[240px] aspect-[4/5] flex items-center justify-center">
+                {/* Secondary photo */}
+                {!heroLoading && hero.photo2 && (
+                  <div 
+                    onClick={() => setHeroSwapped(!heroSwapped)}
+                    className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
+                      heroSwapped
+                      ? "z-20 w-full left-[0%] bottom-[0%] p-3 pb-12 shadow-[12px_12px_0_var(--nb-primary)] rotate-3 hover:-rotate-1 hover:scale-105"
+                      : "z-0 w-[85%] right-[-15%] top-[-5%] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[10deg] hover:rotate-[15deg] hover:scale-105"
+                    }`}
+                  >
+                    <div className="absolute -top-3 right-4 w-12 h-6 bg-white/70 border-2 border-[var(--nb-primary)] -rotate-6 z-30 shadow-sm backdrop-blur-sm"></div>
+                    <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden">
+                      <img src={hero.photo2} alt="secondary" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Primary photo */}
+                <div 
+                  onClick={() => hero.photo2 && setHeroSwapped(!heroSwapped)}
+                  className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${hero.photo2 ? 'cursor-pointer' : ''} bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
+                    heroSwapped && hero.photo2
+                    ? "z-0 w-[85%] right-[-15%] top-[-5%] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[10deg] hover:rotate-[15deg] hover:scale-105"
+                    : "z-10 w-full left-[0%] bottom-[0%] p-3 pb-12 shadow-[12px_12px_0_var(--nb-primary)] rotate-3 hover:-rotate-1 hover:scale-105"
+                  }`}
+                >
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/80 border-2 border-[var(--nb-primary)] -rotate-3 z-30 shadow-sm backdrop-blur-md"></div>
+                  <div className="w-full aspect-[4/5] border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)] relative">
+                    {heroLoading
+                      ? <div className="hero-skeleton absolute inset-0"/>
+                      : <img src={heroPhoto!} alt={hero.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
+                    }
+                  </div>
+                  <div className="absolute bottom-3 left-0 right-0 text-center font-black text-xs sm:text-sm uppercase text-[var(--nb-primary)] tracking-widest px-2 opacity-80 truncate">
+                    {hero.name}
+                  </div>
                 </div>
               </div>
             </div>

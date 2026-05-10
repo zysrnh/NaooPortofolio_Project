@@ -462,29 +462,37 @@ function SupportersSection() {
             <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: "radial-gradient(var(--nb-primary) 2px, transparent 2px)", backgroundSize: "24px 24px" }}></div>
             
             {/* Dual Polaroid Photo Frames */}
-            <div className="relative z-10 w-56 sm:w-72 flex-shrink-0 min-h-[250px] sm:min-h-[320px]">
-              {backPhoto && (
+            <div className="relative z-10 w-56 sm:w-72 flex-shrink-0 min-h-[250px] sm:min-h-[320px] aspect-square mx-auto lg:mx-0">
+              {hasPhoto2 && (
                 <div 
                   onClick={() => toggleSwap(s.id)}
-                  className="absolute z-0 w-[85%] right-[-15%] top-[-10%] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-3 pb-12 shadow-[8px_8px_0_var(--nb-primary)] rotate-[10deg] hover:rotate-[15deg] hover:scale-105 hover:z-20 transition-all duration-300 cursor-pointer"
+                  className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
+                    isSwapped 
+                    ? "z-20 w-full left-0 top-0 p-4 pb-12 sm:pb-16 shadow-[8px_8px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
+                    : "z-0 w-[85%] right-[-15%] top-[-10%] p-3 pb-12 shadow-[8px_8px_0_var(--nb-primary)] rotate-[10deg] hover:rotate-[15deg] hover:scale-105"
+                  }`}
                 >
-                  <div className="absolute -top-3 right-4 w-12 h-6 bg-white/70 border-2 border-[var(--nb-primary)] -rotate-6 z-20 shadow-sm backdrop-blur-sm"></div>
+                  <div className="absolute -top-3 right-4 w-12 h-6 bg-white/70 border-2 border-[var(--nb-primary)] -rotate-6 z-30 shadow-sm backdrop-blur-sm"></div>
                   <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden">
-                    <img src={backPhoto} className="w-full h-full object-cover" alt="secondary" />
+                    <img src={s.photo2!} className="w-full h-full object-cover" alt="secondary" />
                   </div>
                 </div>
               )}
 
               <div 
                 onClick={() => hasPhoto2 && toggleSwap(s.id)}
-                className={`absolute z-10 w-full bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-4 pb-12 sm:pb-16 shadow-[8px_8px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02] transition-all duration-400 ease-out ${hasPhoto2 ? 'cursor-pointer' : ''}`}
+                className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${hasPhoto2 ? 'cursor-pointer' : ''} bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
+                  isSwapped && hasPhoto2
+                  ? "z-0 w-[85%] right-[-15%] top-[-10%] p-3 pb-12 shadow-[8px_8px_0_var(--nb-primary)] rotate-[10deg] hover:rotate-[15deg] hover:scale-105"
+                  : "z-10 w-full left-0 top-0 p-4 pb-12 sm:pb-16 shadow-[8px_8px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
+                }`}
               >
                  {/* Tape Element */}
-                 <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-20 sm:w-24 h-8 sm:h-10 bg-white/70 border-2 border-[var(--nb-primary)] rotate-2 z-20 shadow-sm backdrop-blur-md"></div>
+                 <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-20 sm:w-24 h-8 sm:h-10 bg-white/70 border-2 border-[var(--nb-primary)] rotate-2 z-30 shadow-sm backdrop-blur-md"></div>
                  
                  <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)]">
-                   {frontPhoto ? (
-                     <img src={frontPhoto} className="w-full h-full object-cover" alt={s.name} />
+                   {s.image ? (
+                     <img src={s.image} className="w-full h-full object-cover" alt={s.name} />
                    ) : (
                      <div className="w-full h-full flex items-center justify-center font-black text-[var(--nb-bg)] opacity-50">NO PIC</div>
                    )}
@@ -948,33 +956,43 @@ export default function About() {
               {/* Bold Grid bg */}
               <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px)"}}/>
 
-              {/* Secondary photo — behind */}
-              {!heroLoading && hero.photo2 && (
-                <div 
-                  onClick={() => setHeroSwapped(!heroSwapped)}
-                  className="absolute z-0 w-[55%] max-w-[220px] right-[10%] top-[10%] sm:top-[15%] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[8deg] hover:rotate-[12deg] hover:scale-105 hover:z-20 transition-all duration-300 cursor-pointer"
-                >
-                  <div className="absolute -top-3 right-4 w-12 h-6 bg-white/70 border-2 border-[var(--nb-primary)] -rotate-6 z-20 shadow-sm backdrop-blur-sm"></div>
-                  <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden">
-                    <img src={heroSwapped ? hero.photo! : hero.photo2} alt="secondary" className="w-full h-full object-cover" onError={e=>{(e.currentTarget.parentElement as HTMLElement).style.display="none";}}/>
+              <div className="relative w-full max-w-[260px] aspect-[4/5] flex items-center justify-center">
+                {/* Secondary photo */}
+                {!heroLoading && hero.photo2 && (
+                  <div 
+                    onClick={() => setHeroSwapped(!heroSwapped)}
+                    className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
+                      heroSwapped
+                      ? "z-20 w-full left-[-5%] bottom-[-5%] p-3 pb-12 shadow-[12px_12px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
+                      : "z-0 w-[85%] right-[-15%] top-[-5%] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[8deg] hover:rotate-[12deg] hover:scale-105"
+                    }`}
+                  >
+                    <div className="absolute -top-3 right-4 w-12 h-6 bg-white/70 border-2 border-[var(--nb-primary)] -rotate-6 z-30 shadow-sm backdrop-blur-sm"></div>
+                    <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden">
+                      <img src={hero.photo2} alt="secondary" className="w-full h-full object-cover" />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Primary photo — front */}
-              <div 
-                onClick={() => hero.photo2 && setHeroSwapped(!heroSwapped)}
-                className={`relative z-10 w-[65%] max-w-[260px] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-3 pb-12 shadow-[12px_12px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-300 mt-8 sm:mt-16 mr-8 sm:mr-16 group ${hero.photo2 ? 'cursor-pointer' : ''}`}
-              >
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/80 border-2 border-[var(--nb-primary)] rotate-2 z-20 shadow-sm backdrop-blur-md"></div>
-                <div className="w-full aspect-[4/5] border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)] relative">
-                  {heroLoading
-                    ? <div className="hero-skeleton absolute inset-0"/>
-                    : <img src={heroSwapped && hero.photo2 ? hero.photo2 : hero.photo!} alt={hero.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
-                  }
-                </div>
-                <div className="absolute bottom-3 left-0 right-0 text-center font-black text-sm uppercase text-[var(--nb-primary)] tracking-widest px-2 opacity-80">
-                  {hero.name}
+                {/* Primary photo */}
+                <div 
+                  onClick={() => hero.photo2 && setHeroSwapped(!heroSwapped)}
+                  className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${hero.photo2 ? 'cursor-pointer' : ''} bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
+                    heroSwapped && hero.photo2
+                    ? "z-0 w-[85%] right-[-15%] top-[-5%] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[8deg] hover:rotate-[12deg] hover:scale-105"
+                    : "z-10 w-full left-[-5%] bottom-[-5%] p-3 pb-12 shadow-[12px_12px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
+                  }`}
+                >
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/80 border-2 border-[var(--nb-primary)] rotate-2 z-30 shadow-sm backdrop-blur-md"></div>
+                  <div className="w-full aspect-[4/5] border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)] relative">
+                    {heroLoading
+                      ? <div className="hero-skeleton absolute inset-0"/>
+                      : <img src={hero.photo!} alt={hero.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" onError={e=>{(e.target as HTMLImageElement).src="/profile/Mboy.jpeg";}}/>
+                    }
+                  </div>
+                  <div className="absolute bottom-3 left-0 right-0 text-center font-black text-sm uppercase text-[var(--nb-primary)] tracking-widest px-2 opacity-80">
+                    {hero.name}
+                  </div>
                 </div>
               </div>
             </div>

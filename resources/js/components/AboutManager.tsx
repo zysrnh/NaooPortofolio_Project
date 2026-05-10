@@ -280,7 +280,7 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
       const rText = await fetch("/api/hero", {
         method:"PUT",
         headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
-        body:JSON.stringify({name,title,bio}),
+        body:JSON.stringify({name,title,bio,remove_photo2: !prev2 && !photo2}),
       });
       if (!rText.ok) {
         const d = await rText.json();
