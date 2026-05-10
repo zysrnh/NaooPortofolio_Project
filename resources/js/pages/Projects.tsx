@@ -24,6 +24,8 @@ interface Project {
   githubUrl: string | null; 
   order: number;
   visible: boolean; 
+  workType: "Solo" | "Collaboration";
+  soloRole: string;
 }
 
 const STATUS_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
@@ -577,6 +579,11 @@ export default function Projects() {
                       <div className={`absolute top-3 left-3 inline-flex items-center gap-1.5 border-2 border-[#0B1957] px-3 py-1 ${st.bg} z-20`}>
                         <div className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
                         <span className={`font-black uppercase text-xs tracking-wide ${st.text}`}>{p.status}</span>
+                      </div>
+                      <div className="absolute top-3 right-3 z-20 bg-[#0B1957] border-2 border-[#9ECCFA] px-2 py-0.5">
+                        <span className="font-black text-[9px] text-[#9ECCFA] uppercase tracking-tighter">
+                          {p.workType === "Solo" ? (p.soloRole || "Solo") : "Collab"}
+                        </span>
                       </div>
                     </div>
 

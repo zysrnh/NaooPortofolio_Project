@@ -59,6 +59,14 @@ class ProjectController extends Controller
             'github_url'         => 'nullable|string|max:500',
             'order'              => 'nullable|integer',
             'visible'            => 'nullable|boolean',
+            'work_type'          => 'nullable|string|in:Solo,Collaboration',
+            'solo_role'          => 'nullable|string|max:255',
+            'collaborators'      => 'nullable|array',
+            'collaborators.*.name' => 'required_with:collaborators|string|max:255',
+            'collaborators.*.role' => 'required_with:collaborators|string|max:255',
+            'collaborators.*.origin' => 'nullable|string|max:255',
+            'collaborators.*.socials' => 'nullable|array',
+            'collaborators.*.photo'  => 'nullable|string',
         ]);
 
         $slug = $this->uniqueSlug(Str::slug($data['title']));
@@ -94,6 +102,14 @@ class ProjectController extends Controller
             'github_url'         => 'nullable|string|max:500',
             'order'              => 'nullable|integer',
             'visible'            => 'nullable|boolean',
+            'work_type'          => 'nullable|string|in:Solo,Collaboration',
+            'solo_role'          => 'nullable|string|max:255',
+            'collaborators'      => 'nullable|array',
+            'collaborators.*.name' => 'required_with:collaborators|string|max:255',
+            'collaborators.*.role' => 'required_with:collaborators|string|max:255',
+            'collaborators.*.origin' => 'nullable|string|max:255',
+            'collaborators.*.socials' => 'nullable|array',
+            'collaborators.*.photo'  => 'nullable|string',
         ]);
 
         if (isset($data['title'])) {
@@ -172,6 +188,9 @@ class ProjectController extends Controller
             'githubUrl'      => $p->github_url,
             'order'          => $p->order,
             'visible'        => $p->visible,
+            'workType'       => $p->work_type,
+            'soloRole'       => $p->solo_role,
+            'collaborators'  => $p->collaborators ?? [],
         ];
     }
 }

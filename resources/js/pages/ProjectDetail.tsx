@@ -55,6 +55,9 @@ interface Stack {
   icon: string;
 }
 
+interface SocialLink     { platform: string; url: string; }
+interface Collaborator   { name: string; role: string; origin: string; socials: SocialLink[]; photo: string; }
+
 interface ProjectData {
   id: number;
   slug: string;
@@ -73,6 +76,9 @@ interface ProjectData {
   githubUrl: string | null;
   order: number;
   visible: boolean;
+  workType: "Solo" | "Collaboration";
+  soloRole: string;
+  collaborators: Collaborator[];
 }
 
 const STATUS_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
@@ -236,6 +242,110 @@ function SkeletonGallery() {
   );
 }
 
+// ── CollaboratorPopup ────────────────────────────────────────────────────────
+function CollaboratorPopup({ collab, onClose }: { collab: Collaborator; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-[#0B1957]/30 backdrop-blur-sm" onClick={onClose}>
+      <style>{`
+        @keyframes pcFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pcScaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .collab-grid { background-image: radial-gradient(#0B1957 1px, transparent 1px); background-size: 12px 12px; }
+      `}</style>
+      <div className="bg-[#F8F3EA] border-4 border-[#0B1957] shadow-[12px_12px_0_#0B1957] w-full max-w-[360px] relative overflow-hidden" 
+        style={{animation:"pcScaleIn 0.3s cubic-bezier(0.16,1,0.3,1), pcFadeIn 0.2s ease"}} onClick={e=>e.stopPropagation()}>
+        
+        {/* Background Accents */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[#9ECCFA]/10 -rotate-12 translate-x-12 -translate-y-12" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#FFE8A0]/20 rotate-45 -translate-x-12 translate-y-12" />
+        
+        <div className="bg-[#0B1957] p-4 flex items-center justify-between border-b-4 border-[#0B1957] relative z-10">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#9ECCFA] animate-pulse" />
+            <span className="font-black text-[10px] uppercase text-[#9ECCFA] tracking-[0.3em]">Collaborator Profile</span>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center text-[#9ECCFA] hover:bg-[#9ECCFA] hover:text-[#0B1957] transition-all border-2 border-transparent hover:border-[#0B1957]"><IconClose /></button>
+        </div>
+
+        <div className="p-8 flex flex-col items-center relative z-10 collab-grid">
+          {/* Profile Section with Branded Frame */}
+          <div className="relative mb-8">
+             <div className="absolute inset-0 bg-[#0B1957] translate-x-2 translate-y-2" />
+             <div className="relative w-28 h-28 border-4 border-[#0B1957] bg-white overflow-hidden">
+                {collab.photo ? <img src={collab.photo} className="w-full h-full object-cover transition-transform hover:scale-110 duration-500" /> : <div className="w-full h-full flex items-center justify-center text-4xl bg-[#D1E8FF]">👤</div>}
+             </div>
+             <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#9ECCFA] border-4 border-[#0B1957] flex items-center justify-center text-[#0B1957]">
+                <IconCheck />
+             </div>
+             <div className="absolute -bottom-2 -right-6 bg-[#0B1957] border-2 border-[#9ECCFA] px-2 py-0.5 rotate-6">
+                <span className="font-black text-[8px] text-[#9ECCFA] uppercase tracking-tighter">Verified Team</span>
+             </div>
+          </div>
+          
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-black uppercase text-[#0B1957] mb-1 tracking-tighter leading-none">{collab.name}</h3>
+            <div className="inline-block bg-[#0B1957] px-3 py-1 mt-2">
+               <p className="font-black text-[10px] text-[#9ECCFA] uppercase tracking-widest">{collab.role}</p>
+            </div>
+            {collab.origin && (
+              <p className="font-bold text-[10px] text-[#0B1957] opacity-60 mt-2 uppercase tracking-wide">From {collab.origin}</p>
+            )}
+          </div>
+
+          {/* Socials Divider */}
+          <div className="w-full flex items-center gap-3 mb-6">
+            <div className="flex-1 h-[2px] bg-[#0B1957] opacity-10" />
+            <span className="font-black text-[9px] text-[#0B1957] opacity-30 uppercase tracking-[0.3em]">Social Links</span>
+            <div className="flex-1 h-[2px] bg-[#0B1957] opacity-10" />
+          </div>
+
+          <div className="w-full space-y-3">
+            {collab.socials && collab.socials.length > 0 ? (
+              collab.socials.map((s, i) => (
+                <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" 
+                  className="flex items-center gap-4 border-[4px] border-[#0B1957] p-3 bg-white hover:bg-[#FFE8A0] transition-all group shadow-[5px_5px_0_#0B1957] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
+                  <div className="w-9 h-9 bg-[#0B1957] flex items-center justify-center text-[#9ECCFA] group-hover:scale-110 transition-transform flex-shrink-0 shadow-[2px_2px_0_#9ECCFA]">
+                    {s.platform === "instagram" && <IconInstagram />}
+                    {s.platform === "github" && <IconGithubSmall />}
+                    {s.platform === "linkedin" && <IconLinkedin />}
+                    {s.platform === "twitter" && <IconTwitter />}
+                    {s.platform === "web" && <IconGlobe />}
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-black uppercase text-[10px] text-[#0B1957] tracking-wider leading-none mb-1">{s.platform}</span>
+                    <span className="font-bold text-[9px] text-[#0B1957] opacity-40 truncate">Visit Profile →</span>
+                  </div>
+                </a>
+              ))
+            ) : (
+              <div className="py-6 border-4 border-dashed border-[#0B1957]/10 bg-[#0B1957]/5 text-center w-full group overflow-hidden relative">
+                 <div className="absolute top-0 left-0 w-full h-1 bg-[#0B1957] opacity-10 -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+                 <p className="text-[10px] font-black uppercase text-[#0B1957] opacity-30 tracking-[0.4em]">No Social Links Provided</p>
+                 <div className="absolute bottom-0 left-0 w-full h-1 bg-[#0B1957] opacity-10 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+              </div>
+            )}
+          </div>
+          
+          <div className="mt-10 flex flex-col items-center gap-3">
+             <button onClick={onClose} 
+               className="font-black text-[10px] uppercase text-white bg-[#0B1957] px-8 py-2 border-2 border-[#0B1957] shadow-[4px_4px_0_#9ECCFA] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all tracking-[0.2em]">
+               Close Details
+             </button>
+             <p className="text-[8px] font-bold uppercase text-[#0B1957] opacity-20">Naoo Portfolio System v2.0</p>
+          </div>
+        </div>
+
+        {/* Decorative Corner Block */}
+        <div className="absolute bottom-0 right-0 w-8 h-8 bg-[#0B1957] flex items-center justify-center translate-x-4 translate-y-4 rotate-45 z-20" />
+      </div>
+    </div>
+  );
+}
+
+const IconInstagram = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>;
+const IconLinkedin  = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>;
+const IconTwitter   = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>;
+const IconGithubSmall = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>;
+
 // ── Props ──────────────────────────────────────────────────────────────────────
 interface Props { projectId: string; }
 
@@ -247,6 +357,7 @@ export default function ProjectDetail({ projectId }: Props) {
   const [pageIn,        setPageIn]        = useState(false);
   const [activeImg,     setActiveImg]     = useState(0);
   const [lightbox,      setLightbox]      = useState<number | null>(null);
+  const [activeCollab,  setActiveCollab]  = useState<Collaborator | null>(null);
   const [showTop,       setShowTop]       = useState(false);
   const [heroOffset,    setHeroOffset]    = useState(0);
 
@@ -616,6 +727,34 @@ export default function ProjectDetail({ projectId }: Props) {
                     </div>
                   </AnimBlock>
                 )}
+
+                {/* COLLABORATORS */}
+                {project.workType === "Collaboration" && project.collaborators?.length > 0 && (
+                  <AnimBlock from="bottom" delay={100}>
+                    <SectionHeading>Kolaborator Project</SectionHeading>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {project.collaborators.map((c, i) => (
+                        <div key={i} onClick={()=>setActiveCollab(c)}
+                          className="bg-[#F8F3EA] border-4 border-[#0B1957] p-5 shadow-[6px_6px_0_#0B1957] flex items-center gap-5 group hover:bg-[#D1E8FF] transition-colors duration-300 cursor-pointer hover:-translate-y-1">
+                          <div className="flex-shrink-0 w-16 h-16 border-4 border-[#0B1957] bg-[#D1E8FF] overflow-hidden group-hover:scale-110 transition-transform duration-300">
+                            {c.photo ? (
+                              <img src={c.photo} alt={c.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-2xl">👤</div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-black text-sm uppercase text-[#0B1957] tracking-wider mb-1 truncate">{c.name}</p>
+                            <p className="font-bold text-xs text-[#0B1957] opacity-60 mb-2 truncate">{c.role} {c.origin && `· ${c.origin}`}</p>
+                            <div className="inline-flex items-center gap-1.5 font-black text-[10px] uppercase text-[#9ECCFA] bg-[#0B1957] px-3 py-1 group-hover:bg-[#9ECCFA] group-hover:text-[#0B1957] transition-all">
+                               PROFILE
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </AnimBlock>
+                )}
               </div>
 
               {/* SIDEBAR */}
@@ -679,6 +818,7 @@ export default function ProjectDetail({ projectId }: Props) {
                       { label: "Status",  value: project.status },
                       { label: "Tanggal", value: project.date },
                       { label: "Durasi",  value: project.duration },
+                      { label: "Pengerjaan", value: project.workType === "Solo" ? (project.soloRole || "Mandiri") : "Kolaborasi Tim" },
                       { label: "Stack",   value: project.stacks?.map(s => s.label).join(", ") || "-" },
                     ].map((item, i) => (
                       <div
@@ -784,6 +924,11 @@ export default function ProjectDetail({ projectId }: Props) {
               </span>
             </div>
           </div>
+        )}
+
+        {/* COLLAB POPUP */}
+        {activeCollab && (
+          <CollaboratorPopup collab={activeCollab} onClose={()=>setActiveCollab(null)} />
         )}
 
         {/* BACK TO TOP */}

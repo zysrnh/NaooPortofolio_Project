@@ -90,7 +90,7 @@ function SpotlightCard({children,className="",onClick}:{children:React.ReactNode
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 interface Stack { id:number; label:string; icon:string; }
-interface Project { id:number; slug:string; title:string; desc:string; images:string[]; status:"Hosted"|"In Progress"|"Planning"; date:string; stacks:Stack[]; }
+interface Project { id:number; slug:string; title:string; desc:string; images:string[]; status:"Hosted"|"In Progress"|"Planning"; date:string; stacks:Stack[]; workType:"Solo"|"Collaboration"; soloRole:string; }
 interface TechStackItem { id:number; name:string; icon:string; category:string; }
 interface HeroProfile { name:string; title:string; bio:string; photo:string|null; }
 
@@ -786,6 +786,11 @@ export default function Home() {
                             <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#F8F3EA] border-2 border-[#0B1957] px-2 py-1 z-20">
                               <div className="w-1.5 h-1.5 rounded-full" style={{background:STATUS_DOT[p.status]??"#9ECCFA"}}/>
                               <span className="font-black uppercase text-xs text-[#0B1957]">{p.status}</span>
+                            </div>
+                            <div className="absolute top-3 right-3 z-20 bg-[#0B1957] border-2 border-[#9ECCFA] px-2 py-0.5">
+                              <span className="font-black text-[9px] text-[#9ECCFA] uppercase tracking-tighter">
+                                {p.workType === "Solo" ? (p.soloRole || "Solo") : "Collab"}
+                              </span>
                             </div>
                           </div>
                           <div className="p-4 sm:p-5 relative z-20">

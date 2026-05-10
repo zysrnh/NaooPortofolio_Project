@@ -21,12 +21,17 @@ const IconSpin    = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface TechStackOption { id: number; name: string; icon: string; category: string; }
 interface Feature         { title: string; desc: string; }
+interface SocialLink     { platform: string; url: string; }
+interface Collaborator   { name: string; role: string; origin: string; socials: SocialLink[]; photo: string; }
 interface ProjectData {
   title: string; subtitle: string; desc: string; long_desc: string;
   status: "Hosted" | "In Progress" | "Planning";
   date: string; duration: string; images: string[];
   tech_stack_ids: number[]; features: Feature[];
   demo_url: string; github_url: string; order: number; visible: boolean;
+  work_type: "Solo" | "Collaboration";
+  solo_role: string;
+  collaborators: Collaborator[];
 }
 interface ProjectRow {
   id: number; slug: string; title: string; subtitle: string; desc: string;
@@ -35,6 +40,9 @@ interface ProjectRow {
   tech_stack_ids: number[]; features: Feature[];
   demoUrl: string | null; githubUrl: string | null;
   order: number; visible: boolean;
+  workType: "Solo" | "Collaboration";
+  soloRole: string;
+  collaborators: Collaborator[];
 }
 
 const EMPTY_FORM: ProjectData = {
@@ -42,6 +50,7 @@ const EMPTY_FORM: ProjectData = {
   status:"Planning", date:"", duration:"",
   images:[], tech_stack_ids:[], features:[],
   demo_url:"", github_url:"", order:0, visible:true,
+  work_type:"Solo", solo_role:"Fullstack Developer", collaborators:[],
 };
 const STATUS_OPTS = ["Hosted","In Progress","Planning"] as const;
 const STATUS_CFG: Record<string,{bg:string;fg:string}> = {
@@ -322,6 +331,93 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
   );
 }
 
+// ── CollaboratorModal ────────────────────────────────────────────────────────
+function CollaboratorModal({ item, index, onSave, onCancel, onUpload }: {
+  item: Collaborator | null; index: number | null;
+  onSave: (c: Collaborator) => void; onCancel: () => void; onUpload: () => void;
+}) {
+  const [form, setForm] = useState<Collaborator>(item ?? { name: "", role: "", origin: "", socials: [], photo: "" });
+  const [newLink, setNewLink] = useState<SocialLink>({ platform: "instagram", url: "" });
+
+  const addSocial = () => {
+    if(!newLink.url) return;
+    setForm(f => ({...f, socials: [...f.socials, newLink]}));
+    setNewLink({ platform: "instagram", url: "" });
+  };
+
+  const removeSocial = (idx: number) => {
+    setForm(f => ({...f, socials: f.socials.filter((_,i) => i !== idx)}));
+  };
+
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(11,25,87,0.8)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",backdropFilter:"blur(8px)",animation:"pcOverlay 0.2s ease"}}>
+      <div style={{background:"#F8F3EA",border:"4px solid #0B1957",boxShadow:"12px 12px 0 #0B1957",width:"100%",maxWidth:450,maxHeight:"90vh",overflowY:"auto",animation:"pcModalIn 0.3s cubic-bezier(0.16,1,0.3,1)"}}>
+        <div style={{background:"#0B1957",padding:"14px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
+          <span style={{fontWeight:900,fontSize:11,textTransform:"uppercase",color:"#9ECCFA",letterSpacing:"0.1em"}}>{index!==null?"Edit Kolaborator":"Tambah Kolaborator"}</span>
+          <button onClick={onCancel} style={{background:"transparent",border:"none",color:"#9ECCFA",cursor:"pointer"}}><IconClose/></button>
+        </div>
+        <div style={{padding:20,display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{display:"flex",justifyContent:"center",marginBottom:10}}>
+            <div style={{position:"relative",width:80,height:80,border:"3px solid #0B1957",boxShadow:"4px 4px 0 #0B1957",background:"#D1E8FF"}}>
+              {form.photo ? <img src={form.photo} style={{width:"100%",height:"100%",objectFit:"cover"}}/> : <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",fontSize:24}}>👤</div>}
+              <button onClick={onUpload} style={{position:"absolute",bottom:-8,right:-8,width:28,height:28,background:"#0B1957",color:"#9ECCFA",border:"2px solid #9ECCFA",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}><IconImg/></button>
+            </div>
+          </div>
+          <Field label="Nama Kolaborator">
+            <input className="pc2-input" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="Contoh: Andi Wijaya"/>
+          </Field>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+            <Field label="Peran / Role">
+              <input className="pc2-input" value={form.role} onChange={e=>setForm(f=>({...f,role:e.target.value}))} placeholder="Contoh: UI Designer"/>
+            </Field>
+            <Field label="Asal / Instansi">
+              <input className="pc2-input" value={form.origin} onChange={e=>setForm(f=>({...f,origin:e.target.value}))} placeholder="Contoh: UGM"/>
+            </Field>
+          </div>
+
+          <div style={{border:"3px solid #0B1957",padding:12,background:"white"}}>
+            <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"#0B1957",marginBottom:10,opacity:0.5}}>Link Sosmed / Portfolio</p>
+            <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:12}}>
+              {form.socials.map((s,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:8,background:"#F8F3EA",border:"2px solid #0B1957",padding:"4px 10px"}}>
+                  <span style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"#0B1957",width:70}}>{s.platform}</span>
+                  <span style={{flex:1,fontSize:11,color:"#0B1957",opacity:0.6,truncate:true,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.url}</span>
+                  <button onClick={()=>removeSocial(i)} style={{background:"transparent",border:"none",color:"#e53e3e",cursor:"pointer",fontWeight:900}}>✕</button>
+                </div>
+              ))}
+            </div>
+            <div style={{display:"flex",gap:6}}>
+              <select className="pc2-input" style={{width:100,padding:4,fontSize:11}} value={newLink.platform} onChange={e=>setNewLink(l=>({...l,platform:e.target.value}))}>
+                <option value="instagram">Instagram</option>
+                <option value="github">GitHub</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="twitter">Twitter</option>
+                <option value="web">Website</option>
+              </select>
+              <input className="pc2-input" style={{flex:1,padding:4,fontSize:11}} value={newLink.url} onChange={e=>setNewLink(l=>({...l,url:e.target.value}))} placeholder="URL Link..."/>
+              <button onClick={addSocial} style={{background:"#0B1957",color:"white",border:"none",padding:"0 12px",fontWeight:900,cursor:"pointer"}}>+</button>
+            </div>
+          </div>
+        </div>
+        <div style={{padding:"14px 20px",borderTop:"4px solid #0B1957",display:"flex",gap:10,position:"sticky",bottom:0,background:"#F8F3EA"}}>
+          <button onClick={onCancel}
+            style={{flex:1,border:"3px solid #0B1957",background:"transparent",color:"#0B1957",padding:10,fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer",transition:"background 0.15s ease"}}
+            onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#D1E8FF";}}
+            onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="transparent";}}>
+            Batal
+          </button>
+          <button onClick={()=>onSave(form)} disabled={!form.name||!form.role}
+            style={{flex:1,border:"3px solid #0B1957",background:"#0B1957",color:"#9ECCFA",padding:10,fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer",opacity:(!form.name||!form.role)?0.5:1,transition:"transform 0.1s ease"}}
+            onMouseEnter={e=>{if(form.name&&form.role)(e.currentTarget as HTMLElement).style.transform="scale(1.02)";}}
+            onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";}}>
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── ConfirmModal ──────────────────────────────────────────────────────────────
 function ConfirmModal({ msg, onConfirm, onCancel }: { msg:string; onConfirm:()=>void; onCancel:()=>void }) {
   return (
@@ -402,8 +498,14 @@ function ProjectCard({ p, index, onToggle, onEdit, onDelete }: {
             <p style={{fontWeight:700,fontSize:11,color:"#0B1957",opacity:0.5,textTransform:"uppercase",letterSpacing:"0.06em",margin:"0 0 4px"}}>{p.subtitle}</p>
           )}
 
-          {/* Date + Duration */}
-          <p style={{fontWeight:800,fontSize:11,color:"#0B1957",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.08em",margin:"0 0 8px"}}>{p.date}{p.duration&&` · ${p.duration}`}</p>
+          {/* Date + Duration + Work Type */}
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+            <p style={{fontWeight:800,fontSize:11,color:"#0B1957",opacity:0.4,textTransform:"uppercase",letterSpacing:"0.08em",margin:0}}>{p.date}{p.duration&&` · ${p.duration}`}</p>
+            <span style={{width:4,height:4,background:"#0B1957",opacity:0.2,borderRadius:"50%"}}/>
+            <span style={{fontWeight:900,fontSize:10,color:p.workType==="Solo"?"#0B1957":"#9ECCFA",background:p.workType==="Solo"?"transparent":"#0B1957",border:p.workType==="Solo"?"2px solid #0B1957":"none",padding:"1px 6px",textTransform:"uppercase",letterSpacing:"0.05em"}}>
+              {p.workType==="Solo" ? p.soloRole || "Solo" : `${p.collaborators?.length || 0} Kolaborator`}
+            </span>
+          </div>
 
           {/* Desc */}
           <p style={{fontWeight:600,fontSize:12,color:"#0B1957",opacity:0.65,lineHeight:1.55,marginBottom:10,display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden",flex:1}}>{p.desc}</p>
@@ -476,6 +578,8 @@ export default function ProjectCRUD() {
   const [uploading,  setUploading]  = useState(false);
   const [deleteId,   setDeleteId]   = useState<number|null>(null);
   const [cropSrc,    setCropSrc]    = useState<string|null>(null);
+  const [cropTarget, setCropTarget] = useState<"project"|"collab">("project");
+  const [collabModal, setCollabModal] = useState<{ open: boolean; index: number | null; item: Collaborator | null }>({ open: false, index: null, item: null });
   const [toast,      setToast]      = useState<{msg:string;ok:boolean}|null>(null);
   const [errors,     setErrors]     = useState<Record<string,string>>({});
   const [headerIn,   setHeaderIn]   = useState(false);
@@ -505,10 +609,21 @@ export default function ProjectCRUD() {
   const openAdd  = () => { setEditTarget(null); setForm(EMPTY_FORM); setErrors({}); setModalOpen(true); };
   const openEdit = (p:ProjectRow) => {
     setEditTarget(p);
-    setForm({title:p.title,subtitle:p.subtitle,desc:p.desc,long_desc:p.longDesc,status:p.status as ProjectData["status"],date:p.date,duration:p.duration,images:p.images??[],tech_stack_ids:p.tech_stack_ids??[],features:p.features??[],demo_url:p.demoUrl??"",github_url:p.githubUrl??"",order:p.order,visible:p.visible});
+    setForm({
+      title:p.title, subtitle:p.subtitle, desc:p.desc, long_desc:p.longDesc,
+      status:p.status as ProjectData["status"], date:p.date, duration:p.duration,
+      images:p.images??[], tech_stack_ids:p.tech_stack_ids??[], features:p.features??[],
+      demo_url:p.demoUrl??"", github_url:p.githubUrl??"", order:p.order, visible:p.visible,
+      work_type:p.workType as any, solo_role:p.soloRole, collaborators:p.collaborators??[],
+    });
     setErrors({}); setModalOpen(true);
   };
   const closeModal = () => { setModalOpen(false); setEditTarget(null); };
+
+  const triggerUpload = (target:"project"|"collab") => {
+    setCropTarget(target);
+    setTimeout(() => fileRef.current?.click(), 10);
+  };
 
   const handleUpload = async (e:React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if(!file) return;
@@ -520,11 +635,15 @@ export default function ProjectCRUD() {
     setCropSrc(null);
     setUploading(true);
     const blob = base64ToBlob(b64);
-    const fd = new FormData(); fd.append("image", blob, "project.jpg");
+    const fd = new FormData(); fd.append("image", blob, "upload.jpg");
     try {
       const r = await fetch("/api/admin/projects/upload-image",{method:"POST",headers:{"X-CSRF-TOKEN":getCsrf()},body:fd});
       const d = await r.json();
-      if(d.url){setForm(f=>({...f,images:[...f.images,d.url]}));showToast("Gambar diupload!");}
+      if(d.url){
+        if(cropTarget==="project") setForm(f=>({...f,images:[...f.images,d.url]}));
+        else if(collabModal.open) setCollabModal(prev=>({...prev, item: prev.item ? {...prev.item, photo: d.url} : {name:"", role:"", origin:"", social:"", photo:d.url}}));
+        showToast("Gambar diupload!");
+      }
       else showToast("Upload gagal",false);
     } catch { showToast("Upload gagal",false); }
     finally { setUploading(false); if(fileRef.current) fileRef.current.value=""; }
@@ -776,6 +895,54 @@ export default function ProjectCRUD() {
                 </Field>
               </div>
 
+              {/* Collaboration Section */}
+              <div style={{background:"#F8F3EA",border:"4px solid #0B1957",padding:20,boxShadow:"6px 6px 0 #0B1957",animation:"pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.28s both",display:"flex",flexDirection:"column",gap:16}}>
+                <p style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.15em",color:"#0B1957",margin:0}}>Tipe Pengerjaan</p>
+                <div style={{display:"flex",gap:10}}>
+                  {["Solo","Collaboration"].map(t=>(
+                    <button key={t} onClick={()=>setForm(f=>({...f,work_type:t as any}))}
+                      style={{flex:1,padding:"10px",border:"3px solid #0B1957",background:form.work_type===t?"#0B1957":"white",color:form.work_type===t?"#9ECCFA":"#0B1957",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer",transition:"all 0.15s ease"}}>
+                      {t==="Solo"?"Pengerjaan Mandiri":"Kolaborasi Tim"}
+                    </button>
+                  ))}
+                </div>
+
+                {form.work_type==="Solo" ? (
+                  <div style={{animation:"pcSlideUp 0.3s ease"}}>
+                    <Field label="Peran Anda (Solo Role)">
+                      <input className="pc2-input" placeholder="Contoh: Fullstack Developer" value={form.solo_role} onChange={e=>setForm(f=>({...f,solo_role:e.target.value}))}/>
+                    </Field>
+                  </div>
+                ) : (
+                  <div style={{animation:"pcSlideUp 0.3s ease",display:"flex",flexDirection:"column",gap:12}}>
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                      <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"#0B1957",opacity:0.6,margin:0}}>Daftar Kolaborator</p>
+                      <button onClick={()=>setCollabModal({open:true,index:null,item:null})}
+                        style={{border:"2px solid #0B1957",background:"#0B1957",color:"#9ECCFA",padding:"4px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",cursor:"pointer"}}>+ Tambah</button>
+                    </div>
+                    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                      {form.collaborators.length===0 ? (
+                        <p style={{fontSize:11,fontWeight:700,opacity:0.4,textAlign:"center",padding:"10px",border:"2px dashed #0B1957"}}>Belum ada kolaborator</p>
+                      ) : form.collaborators.map((c,i)=>(
+                        <div key={i} style={{display:"flex",alignItems:"center",gap:10,background:"white",border:"2px solid #0B1957",padding:8}}>
+                          <div style={{width:32,height:32,border:"2px solid #0B1957",background:"#D1E8FF",flexShrink:0}}>
+                            {c.photo ? <img src={c.photo} style={{width:"100%",height:"100%",objectFit:"cover"}}/> : <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",fontSize:14}}>👤</div>}
+                          </div>
+                          <div style={{flex:1,minWidth:0}}>
+                            <p style={{fontWeight:900,fontSize:11,color:"#0B1957",margin:0}}>{c.name}</p>
+                            <p style={{fontWeight:700,fontSize:9,color:"#0B1957",opacity:0.5,margin:0}}>{c.role}</p>
+                          </div>
+                          <div style={{display:"flex",gap:4}}>
+                            <button onClick={()=>setCollabModal({open:true,index:i,item:c})} style={{width:24,height:24,border:"2px solid #0B1957",background:"#D1E8FF",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><IconEdit/></button>
+                            <button onClick={()=>setForm(f=>({...f,collaborators:f.collaborators.filter((_,j)=>j!==i)}))} style={{width:24,height:24,border:"2px solid #0B1957",background:"#ef4444",color:"white",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Order + Visible */}
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,alignItems:"center",animation:"pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.3s both"}}>
                 <Field label="Order (urutan)">
@@ -838,7 +1005,7 @@ export default function ProjectCRUD() {
                       <div className="pc2-thumb-del" onClick={()=>setForm(f=>({...f,images:f.images.filter((_,i)=>i!==idx)}))}>✕</div>
                     </div>
                   ))}
-                  <div className="pc2-upload" style={{opacity:uploading?0.5:1}} onClick={()=>!uploading&&fileRef.current?.click()}>
+                  <div className="pc2-upload" style={{opacity:uploading?0.5:1}} onClick={()=>!uploading&&triggerUpload("project")}>
                     {uploading?<IconSpin/>:<IconImg/>}
                     <span style={{fontWeight:900,fontSize:9,textTransform:"uppercase",color:"#0B1957",letterSpacing:"0.08em"}}>{uploading?"Upload...":"+ Upload"}</span>
                   </div>
@@ -905,6 +1072,21 @@ export default function ProjectCRUD() {
       )}
       {/* ── Crop Modal ── */}
       {cropSrc&&<ImageCropModal src={cropSrc} onConfirm={handleCropConfirm} onCancel={()=>setCropSrc(null)}/>}
+
+      {/* ── Collaborator Modal ── */}
+      {collabModal.open&&(
+        <CollaboratorModal
+          item={collabModal.item}
+          index={collabModal.index}
+          onSave={(c)=>{
+            if(collabModal.index!==null) setForm(f=>({...f, collaborators: f.collaborators.map((x,i)=>i===collabModal.index?c:x)}));
+            else setForm(f=>({...f, collaborators: [...f.collaborators, c]}));
+            setCollabModal({open:false,index:null,item:null});
+          }}
+          onCancel={()=>setCollabModal({open:false,index:null,item:null})}
+          onUpload={()=>triggerUpload("collab")}
+        />
+      )}
     </>
   );
 }

@@ -23,6 +23,9 @@ class Project extends Model
         'github_url',
         'order',
         'visible',
+        'work_type',
+        'solo_role',
+        'collaborators',
     ];
 
     protected $casts = [
@@ -30,6 +33,7 @@ class Project extends Model
         'tech_stack_ids' => 'array',
         'features'       => 'array',
         'visible'        => 'boolean',
+        'collaborators'  => 'array',
     ];
 
     public function techStacks()
