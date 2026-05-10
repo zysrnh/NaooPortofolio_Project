@@ -681,13 +681,47 @@ function TechStackVisibility() {
   const switchTab = (i:number) => { if(i===activeTab)return; setAnimating(true); setTimeout(()=>{setActiveTab(i);setAnimating(false);},150); };
   const handleToggle = async (stack: TSItem) => {
     setToggling(stack.id);
-    try { const res=await fetch(`/api/tech-stacks/${stack.id}/toggle`,{method:"PATCH",headers:{"X-CSRF-TOKEN":getCsrfToken()}}); const u=await res.json(); if(u?.id){setStacks(p=>p.map(s=>s.id===stack.id?u:s));showToast(`"${stack.name}" ${u.is_visible?"ditampilkan":"disembunyikan"}`);} } catch{showToast("Gagal update!",false);}
-    finally{setToggling(null);}
+    try {
+      const res = await fetch(`/api/tech-stacks/${stack.id}/toggle`, {
+        method:"PATCH",
+        headers:{"X-CSRF-TOKEN":getCsrfToken(), "Accept":"application/json"}
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.message || "Gagal update");
+      }
+      const u = await res.json();
+      if(u?.id){
+        setStacks(p=>p.map(s=>s.id===stack.id?u:s));
+        showToast(`"${stack.name}" ${u.is_visible?"ditampilkan":"disembunyikan"}`);
+      }
+    } catch (err: any) {
+      showToast(err.message || "Gagal update!", false);
+    } finally {
+      setToggling(null);
+    }
   };
   const handleAdd = async (stack: TSItem) => {
     setAdding(stack.id);
-    try { const res=await fetch(`/api/tech-stacks/${stack.id}/toggle`,{method:"PATCH",headers:{"X-CSRF-TOKEN":getCsrfToken()}}); const u=await res.json(); if(u?.id){setStacks(p=>p.map(s=>s.id===stack.id?u:s));showToast(`"${stack.name}" ditambahkan!`);} } catch{showToast("Gagal menambahkan!",false);}
-    finally{setAdding(null);}
+    try {
+      const res = await fetch(`/api/tech-stacks/${stack.id}/toggle`, {
+        method:"PATCH",
+        headers:{"X-CSRF-TOKEN":getCsrfToken(), "Accept":"application/json"}
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.message || "Gagal menambahkan");
+      }
+      const u = await res.json();
+      if(u?.id){
+        setStacks(p=>p.map(s=>s.id===stack.id?u:s));
+        showToast(`"${stack.name}" ditambahkan!`);
+      }
+    } catch (err: any) {
+      showToast(err.message || "Gagal menambahkan!", false);
+    } finally {
+      setAdding(null);
+    }
   };
 
   return (
@@ -802,12 +836,28 @@ function HeroSection() {
     if(!form.title.trim()){showToast("Title wajib diisi!",false);return;}
     setSaving(true);
     try{
-      const res=await fetch("/api/hero",{method:"PUT",headers:{"Content-Type":"application/json","X-CSRF-TOKEN":getCsrfToken()},body:JSON.stringify(form)});
+      const res=await fetch("/api/hero", {
+        method:"PUT",
+        headers:{"Content-Type":"application/json","X-CSRF-TOKEN":getCsrfToken(), "Accept":"application/json"},
+        body:JSON.stringify(form)
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.message || "Gagal menyimpan");
+      }
       const u=await res.json();
-      if(u?.id||u?.name){setForm({name:u.name,title:u.title,bio:u.bio??"",photo:u.photo});setPreview(u.photo);setDirty(false);showToast("Hero section berhasil disimpan!");}
+      if(u?.id||u?.name){
+        setForm({name:u.name,title:u.title,bio:u.bio??"",photo:u.photo});
+        setPreview(u.photo);
+        setDirty(false);
+        showToast("Hero section berhasil disimpan!");
+      }
       else showToast("Gagal menyimpan!",false);
-    }catch{showToast("Terjadi kesalahan!",false);}
-    finally{setSaving(false);}
+    } catch (err: any) {
+      showToast(err.message || "Terjadi kesalahan!", false);
+    } finally {
+      setSaving(false);
+    }
   };
 
   if(loading) return (
@@ -1073,12 +1123,27 @@ function ContactSection() {
   const handleSaveAll = async () => {
     setSaving(true);
     try {
-      const res = await fetch("/api/contact", { method:"PUT", headers:{"Content-Type":"application/json","X-CSRF-TOKEN":getCsrfToken()}, body:JSON.stringify(contacts.map((c,i)=>({...c,sort_order:i}))) });
+      const res = await fetch("/api/contact", {
+        method:"PUT",
+        headers:{"Content-Type":"application/json","X-CSRF-TOKEN":getCsrfToken(), "Accept":"application/json"},
+        body:JSON.stringify(contacts.map((c,i)=>({...c,sort_order:i})))
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.message || "Gagal menyimpan");
+      }
       const updated = await res.json();
-      if (Array.isArray(updated)) { setContacts(updated); setDirty(false); showToast("Kontak berhasil disimpan!"); }
+      if (Array.isArray(updated)) {
+        setContacts(updated);
+        setDirty(false);
+        showToast("Kontak berhasil disimpan!");
+      }
       else showToast("Gagal menyimpan!", false);
-    } catch { showToast("Terjadi kesalahan!", false); }
-    finally { setSaving(false); }
+    } catch (err: any) {
+      showToast(err.message || "Terjadi kesalahan!", false);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const visibleCount = contacts.filter(c=>c.is_visible).length;
@@ -1303,11 +1368,24 @@ function ProjectsSection() {
   const handleToggle = async (p: ProjectItem) => {
     setToggling(p.id);
     try {
-      const res = await fetch(`/api/admin/projects/${p.id}/toggle`, { method: "PATCH", headers: { "X-CSRF-TOKEN": getCsrfToken() } });
+      const res = await fetch(`/api/admin/projects/${p.id}/toggle`, {
+        method: "PATCH",
+        headers: { "X-CSRF-TOKEN": getCsrfToken(), "Accept": "application/json" }
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.message || "Gagal update");
+      }
       const updated = await res.json();
-      if (updated?.id) { setProjects(prev => prev.map(x => x.id === p.id ? { ...x, visible: updated.visible } : x)); showToast(`"${p.title}" ${updated.visible ? "✓ ditampilkan" : "✗ disembunyikan"}`); }
-    } catch { showToast("Gagal update!", false); }
-    finally { setToggling(null); }
+      if (updated?.id) {
+        setProjects(prev => prev.map(x => x.id === p.id ? { ...x, visible: updated.visible } : x));
+        showToast(`"${p.title}" ${updated.visible ? "✓ ditampilkan" : "✗ disembunyikan"}`);
+      }
+    } catch (err: any) {
+      showToast(err.message || "Gagal update!", false);
+    } finally {
+      setToggling(null);
+    }
   };
 
   const visibleCount = projects.filter(p => p.visible).length;

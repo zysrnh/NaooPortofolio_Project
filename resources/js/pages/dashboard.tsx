@@ -1426,35 +1426,35 @@ export default function Dashboard() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const NavItems = ({ onClose }: { onClose?: () => void }) => (
-    <>
-      {NAV_ITEMS.map((item, idx) => (
-        <div key={item.key}
-          className={`nav-item ${activeNav === item.key ? "active" : ""}`}
-          style={{ animationDelay: `${idx * 0.04}s` }}
-          onClick={() => { handleNavClick(item.key); onClose?.(); }}>
-          {item.icon}
-          {item.label}
-          {item.key === "messages" && unreadCount > 0 ? (
-            <span style={{ marginLeft: "auto", background: "#9ECCFA", color: "#0B1957", border: "2px solid #9ECCFA", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
-          ) : activeNav === item.key ? (
-            <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "#9ECCFA", display: "inline-block", flexShrink: 0 }} />
-          ) : null}
-        </div>
-      ))}
-    </>
-  );
-
-  const SidebarBottom = () => (
-    <div style={{ borderTop: "4px solid #9ECCFA", padding: "20px", position: "relative", zIndex: 10 }}>
-      <div style={{ marginBottom: 12 }}>
-        <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
-        <p style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", opacity: 0.6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: "2px 0 0" }}>{user?.email ?? "yusron@dev.com"}</p>
+const NavItems = ({ activeNav, unreadCount, onNavClick, onClose }: { activeNav: string; unreadCount: number; onNavClick: (key: string) => void; onClose?: () => void }) => (
+  <>
+    {NAV_ITEMS.map((item, idx) => (
+      <div key={item.key}
+        className={`nav-item ${activeNav === item.key ? "active" : ""}`}
+        style={{ animationDelay: `${idx * 0.04}s` }}
+        onClick={() => { onNavClick(item.key); onClose?.(); }}>
+        {item.icon}
+        {item.label}
+        {item.key === "messages" && unreadCount > 0 ? (
+          <span style={{ marginLeft: "auto", background: "#9ECCFA", color: "#0B1957", border: "2px solid #9ECCFA", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
+        ) : activeNav === item.key ? (
+          <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "#9ECCFA", display: "inline-block", flexShrink: 0 }} />
+        ) : null}
       </div>
-      <button className="home-btn-sidebar" onClick={handleHome}><IconHome size={13} /> Homepage</button>
-      <button className="logout-btn" style={{ width: "100%" }} onClick={handleLogout}><IconLogOut /> Logout</button>
+    ))}
+  </>
+);
+
+const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => void; onLogout: () => void }) => (
+  <div style={{ borderTop: "4px solid #9ECCFA", padding: "20px", position: "relative", zIndex: 10 }}>
+    <div style={{ marginBottom: 12 }}>
+      <p style={{ fontWeight: 900, fontSize: 11, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
+      <p style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", opacity: 0.6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: "2px 0 0" }}>{user?.email ?? "yusron@dev.com"}</p>
     </div>
-  );
+    <button className="home-btn-sidebar" onClick={onHome}><IconHome size={13} /> Homepage</button>
+    <button className="logout-btn" style={{ width: "100%" }} onClick={onLogout}><IconLogOut /> Logout</button>
+  </div>
+);
 
   const BOTTOM_NAV = [
     { key: "overview",  label: "Home",     icon: <IconGrid size={18} /> },
@@ -1587,8 +1587,10 @@ export default function Dashboard() {
             <div style={{ fontWeight: 900, fontSize: 20, color: "#9ECCFA", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
             <div style={{ fontWeight: 600, fontSize: 10, color: "#D1E8FF", opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Dashboard</div>
           </div>
-          <nav style={{ flex: 1, paddingTop: 16, paddingBottom: 16, position: "relative" }}><NavItems /></nav>
-          <SidebarBottom />
+          <nav style={{ flex: 1, paddingTop: 16, paddingBottom: 16, position: "relative" }}>
+            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} />
+          </nav>
+          <SidebarBottom user={user} onHome={handleHome} onLogout={handleLogout} />
         </aside>
 
         {/* SIDEBAR Mobile Overlay */}
@@ -1606,9 +1608,9 @@ export default function Dashboard() {
             <button style={{ border: "2px solid #9ECCFA", padding: 8, color: "#9ECCFA", background: "transparent", cursor: "pointer", display: "flex" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>
           </div>
           <nav style={{ flex: 1, paddingTop: 12, paddingBottom: 12, position: "relative", zIndex: 10, overflowY: "auto" }}>
-            <NavItems onClose={() => setSidebarOpen(false)} />
+            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} onClose={() => setSidebarOpen(false)} />
           </nav>
-          <SidebarBottom />
+          <SidebarBottom user={user} onHome={handleHome} onLogout={handleLogout} />
         </aside>
 
         {/* MAIN */}

@@ -24,7 +24,12 @@ interface StatItem   { label: string; value: string; icon_key: string; }
 
 type TabKey = "hero" | "capabilities" | "experience" | "casestudies" | "availability" | "stats";
 
-const CSRF = () => (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? "";
+const CSRF = () => {
+  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
+  if (meta?.content) return meta.content;
+  const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : "";
+};
 const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3C/svg%3E";
 const TYPE_OPTS = ["internship","freelance","learning","project","fulltime","parttime"];
 
@@ -272,21 +277,34 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
   const save = async () => {
     setSaving(true);
     try {
-      const rText = await fetch("/api/hero",{
-        method:"PUT", headers:{"Content-Type":"application/json","X-CSRF-TOKEN":CSRF()},
+      const rText = await fetch("/api/hero", {
+        method:"PUT",
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
         body:JSON.stringify({name,title,bio}),
       });
-      if(!rText.ok) throw new Error();
+      if (!rText.ok) {
+        const d = await rText.json();
+        throw new Error(d.message || "Gagal menyimpan text");
+      }
 
       if(photo || photo2){
         const fd = new FormData();
         if(photo)  fd.append("photo",  photo);
         if(photo2) fd.append("photo2", photo2);
-        const rPhoto = await fetch("/api/hero/photo",{method:"POST",headers:{"X-CSRF-TOKEN":CSRF()},body:fd});
-        if(!rPhoto.ok) throw new Error();
+        const rPhoto = await fetch("/api/hero/photo", {
+          method:"POST",
+          headers:{"X-CSRF-TOKEN":CSRF(), "Accept":"application/json"},
+          body:fd
+        });
+        if (!rPhoto.ok) {
+          const d = await rPhoto.json();
+          throw new Error(d.message || "Gagal menyimpan foto");
+        }
       }
       toast("Hero saved!","ok");
-    } catch { toast("Failed to save hero","err"); }
+    } catch (err: any) {
+      toast(err.message || "Failed to save hero","err");
+    }
     setSaving(false);
   };
 
@@ -429,13 +447,19 @@ function CapabilitiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
   const save = async () => {
     setSaving(true);
     try {
-      const r = await fetch("/api/about",{
-        method:"PUT",headers:{"Content-Type":"application/json","X-CSRF-TOKEN":CSRF()},
+      const r = await fetch("/api/about", {
+        method:"PUT",
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
         body:JSON.stringify({bio,info_cards:infoCards,highlights,featured_stack_ids:selected}),
       });
-      if(!r.ok) throw new Error();
+      if (!r.ok) {
+        const d = await r.json();
+        throw new Error(d.message || "Gagal menyimpan");
+      }
       toast("Capabilities saved!","ok");
-    } catch { toast("Failed to save","err"); }
+    } catch (err: any) {
+      toast(err.message || "Failed to save","err");
+    }
     setSaving(false);
   };
 
@@ -604,24 +628,38 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     if(!editing) return; setSaving(true);
     try {
       const isNew = editing.id===0;
-      const r = await fetch(isNew?"/api/about/experiences":`/api/about/experiences/${editing.id}`,{
+      const r = await fetch(isNew?"/api/about/experiences":`/api/about/experiences/${editing.id}`, {
         method:isNew?"POST":"PUT",
-        headers:{"Content-Type":"application/json","X-CSRF-TOKEN":CSRF()},
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
         body:JSON.stringify(editing),
       });
-      if(!r.ok) throw new Error();
+      if (!r.ok) {
+        const d = await r.json();
+        throw new Error(d.message || "Gagal menyimpan");
+      }
       toast(isNew?"Experience added!":"Experience updated!","ok");
       closeModal(); load();
-    } catch { toast("Failed to save","err"); }
+    } catch (err: any) {
+      toast(err.message || "Failed to save","err");
+    }
     setSaving(false);
   };
 
   const del = async (id:number) => {
     if(!confirm("Delete this experience?")) return;
     try {
-      await fetch(`/api/about/experiences/${id}`,{method:"DELETE",headers:{"X-CSRF-TOKEN":CSRF()}});
+      const r = await fetch(`/api/about/experiences/${id}`, {
+        method:"DELETE",
+        headers:{"X-CSRF-TOKEN":CSRF(), "Accept":"application/json"}
+      });
+      if (!r.ok) {
+        const d = await r.json();
+        throw new Error(d.message || "Gagal menghapus");
+      }
       toast("Deleted!","ok"); load();
-    } catch { toast("Failed to delete","err"); }
+    } catch (err: any) {
+      toast(err.message || "Failed to delete","err");
+    }
   };
 
   const addHL    = () => { if(!newHL.trim()||!editing)return; setEditing({...editing,highlights:[...editing.highlights,newHL.trim()]}); setNewHL(""); };
@@ -797,24 +835,38 @@ function CaseStudiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     if(!editing) return; setSaving(true);
     try {
       const isNew = editing.id===0;
-      const r = await fetch(isNew?"/api/about/case-studies":`/api/about/case-studies/${editing.id}`,{
+      const r = await fetch(isNew?"/api/about/case-studies":`/api/about/case-studies/${editing.id}`, {
         method:isNew?"POST":"PUT",
-        headers:{"Content-Type":"application/json","X-CSRF-TOKEN":CSRF()},
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
         body:JSON.stringify(editing),
       });
-      if(!r.ok) throw new Error();
+      if (!r.ok) {
+        const d = await r.json();
+        throw new Error(d.message || "Gagal menyimpan");
+      }
       toast(isNew?"Case study added!":"Updated!","ok");
       closeModal(); load();
-    } catch { toast("Failed","err"); }
+    } catch (err: any) {
+      toast(err.message || "Failed","err");
+    }
     setSaving(false);
   };
 
   const del = async (id:number) => {
     if(!confirm("Delete?")) return;
     try {
-      await fetch(`/api/about/case-studies/${id}`,{method:"DELETE",headers:{"X-CSRF-TOKEN":CSRF()}});
+      const r = await fetch(`/api/about/case-studies/${id}`, {
+        method:"DELETE",
+        headers:{"X-CSRF-TOKEN":CSRF(), "Accept":"application/json"}
+      });
+      if (!r.ok) {
+        const d = await r.json();
+        throw new Error(d.message || "Gagal menghapus");
+      }
       toast("Deleted!","ok"); load();
-    } catch { toast("Failed","err"); }
+    } catch (err: any) {
+      toast(err.message || "Failed","err");
+    }
   };
 
   return (
@@ -923,13 +975,19 @@ function AvailabilityTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
   const save = async () => {
     setSaving(true);
     try {
-      const r = await fetch("/api/about/availability",{
-        method:"PUT",headers:{"Content-Type":"application/json","X-CSRF-TOKEN":CSRF()},
+      const r = await fetch("/api/about/availability", {
+        method:"PUT",
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
         body:JSON.stringify({status,freelance,remote,collaboration:collab,timezone}),
       });
-      if(!r.ok) throw new Error();
+      if (!r.ok) {
+        const d = await r.json();
+        throw new Error(d.message || "Gagal menyimpan");
+      }
       toast("Availability saved!","ok");
-    } catch { toast("Failed","err"); }
+    } catch (err: any) {
+      toast(err.message || "Failed","err");
+    }
     setSaving(false);
   };
 
@@ -1075,13 +1133,19 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     if(invalid){ toast("Label & Value harus diisi semua!","err"); return; }
     setSaving(true);
     try {
-      const r = await fetch("/api/about/stats",{
-        method:"PUT",headers:{"Content-Type":"application/json","X-CSRF-TOKEN":CSRF()},
+      const r = await fetch("/api/about/stats", {
+        method:"PUT",
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
         body:JSON.stringify({stats}),
       });
-      if(!r.ok) throw new Error();
+      if (!r.ok) {
+        const d = await r.json();
+        throw new Error(d.message || "Gagal menyimpan");
+      }
       toast("Stats saved!","ok");
-    } catch { toast("Failed to save stats","err"); }
+    } catch (err: any) {
+      toast(err.message || "Failed to save stats","err");
+    }
     setSaving(false);
   };
 

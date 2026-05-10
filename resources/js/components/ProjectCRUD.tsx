@@ -48,8 +48,12 @@ const STATUS_CFG: Record<string,{bg:string;fg:string}> = {
 
 const FALLBACK_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3C/svg%3E";
 
-const getCsrf = (): string =>
-  document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ?? "";
+const getCsrf = (): string => {
+  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
+  if (meta?.content) return meta.content;
+  const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : "";
+};
 
 // ── Global Styles ─────────────────────────────────────────────────────────────
 const STYLES = `
@@ -317,6 +321,15 @@ function ProjectCard({ p, index, onToggle, onEdit, onDelete }: {
   );
 }
 
+// ── Input helper (Moved outside to prevent focus loss) ──
+const Field = ({label,err,children}:{label:string;err?:string;children:React.ReactNode}) => (
+  <div style={{display:"flex",flexDirection:"column",gap:4}}>
+    <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957"}}>{label}</label>
+    {children}
+    {err&&<span style={{fontSize:11,fontWeight:800,color:"#e53e3e",textTransform:"uppercase",letterSpacing:"0.05em"}}>↑ {err}</span>}
+  </div>
+);
+
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function ProjectCRUD() {
   const [projects,   setProjects]   = useState<ProjectRow[]>([]);
@@ -409,8 +422,19 @@ export default function ProjectCRUD() {
   };
 
   const handleDelete = async (id:number) => {
-    try { await fetch(`/api/admin/projects/${id}`,{method:"DELETE",headers:{"X-CSRF-TOKEN":getCsrf()}}); showToast("Project dihapus!"); fetchAll(); }
-    catch { showToast("Gagal hapus",false); }
+    try {
+      const r = await fetch(`/api/admin/projects/${id}`, {
+        method:"DELETE",
+        headers:{"X-CSRF-TOKEN":getCsrf(), "Accept":"application/json"}
+      });
+      if (!r.ok) {
+        const d = await r.json();
+        throw new Error(d.message || "Gagal hapus");
+      }
+      showToast("Project dihapus!");
+      fetchAll();
+    }
+    catch (err: any) { showToast(err.message || "Gagal hapus", false); }
     finally { setDeleteId(null); }
   };
 
@@ -431,17 +455,7 @@ export default function ProjectCRUD() {
   const hiddenCount  = projects.filter(p=>!p.visible).length;
   const filtered     = projects.filter(p=>filterTab==="visible"?p.visible:filterTab==="hidden"?!p.visible:true);
 
-  // ── Input helper ──
-  const Field = ({label,err,children}:{label:string;err?:string;children:React.ReactNode}) => (
-    <div style={{display:"flex",flexDirection:"column",gap:4}}>
-      <label style={{fontWeight:900,fontSize:11,textTransform:"uppercase",letterSpacing:"0.12em",color:"#0B1957"}}>{label}</label>
-      {children}
-      {err&&<span style={{fontSize:11,fontWeight:800,color:"#e53e3e",textTransform:"uppercase",letterSpacing:"0.05em"}}>↑ {err}</span>}
-    </div>
-  );
-
   return (
-    <>
       <style>{STYLES}</style>
 
       {/* ── Page Header ── */}

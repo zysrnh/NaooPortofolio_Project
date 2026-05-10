@@ -50,25 +50,43 @@ const API = {
   getAll: () =>
     fetch("/api/tech-stacks").then(r => r.json()),
 
-  create: (data: Omit<TechStack, "id" | "created_at">) =>
-    fetch("/api/tech-stacks", {
+  create: async (data: Omit<TechStack, "id" | "created_at">) => {
+    const r = await fetch("/api/tech-stacks", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrf() },
+      headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrf(), "Accept": "application/json" },
       body: JSON.stringify(data),
-    }).then(r => r.json()),
+    });
+    if (!r.ok) {
+      const d = await r.json();
+      throw new Error(d.message || "Gagal membuat");
+    }
+    return r.json();
+  },
 
-  update: (id: number, data: Omit<TechStack, "id" | "created_at">) =>
-    fetch(`/api/tech-stacks/${id}`, {
+  update: async (id: number, data: Omit<TechStack, "id" | "created_at">) => {
+    const r = await fetch(`/api/tech-stacks/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrf() },
+      headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrf(), "Accept": "application/json" },
       body: JSON.stringify(data),
-    }).then(r => r.json()),
+    });
+    if (!r.ok) {
+      const d = await r.json();
+      throw new Error(d.message || "Gagal mengupdate");
+    }
+    return r.json();
+  },
 
-  delete: (id: number) =>
-    fetch(`/api/tech-stacks/${id}`, {
+  delete: async (id: number) => {
+    const r = await fetch(`/api/tech-stacks/${id}`, {
       method: "DELETE",
-      headers: { "X-CSRF-TOKEN": getCsrf() },
-    }),
+      headers: { "X-CSRF-TOKEN": getCsrf(), "Accept": "application/json" },
+    });
+    if (!r.ok) {
+      const d = await r.json();
+      throw new Error(d.message || "Gagal menghapus");
+    }
+    return r.json();
+  },
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
