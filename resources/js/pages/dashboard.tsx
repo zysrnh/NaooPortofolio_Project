@@ -9,6 +9,7 @@ import VisitorStats from "@/components/VisitorStats";
 import GuestbookManager from "@/components/GuestbookManager";
 import SupporterManager from "@/components/SupporterManager";
 import UserManager from "@/components/UserManager";
+import SavedColorsManager from "@/components/SavedColorsManager";
 
 // ── SVG Icons ─────────────────────────────────────────────────────────────────
 const IconFolder    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
@@ -83,6 +84,7 @@ const NAV_ITEMS = [
   { key: "about",     label: "About Page", icon: <IconInfo size={18} /> },
   { key: "messages",  label: "Messages",   icon: <IconMail size={18} /> },
   { key: "guestbook", label: "Guestbook",  icon: <IconMessage size={18} /> },
+  { key: "colors",    label: "Saved Colors", icon: <IconPalette size={18} /> },
   { key: "profile",   label: "Profile",    icon: <IconUser /> },
 ];
 
@@ -1505,12 +1507,12 @@ export default function Dashboard() {
   // Filter nav items based on role
   const filteredNavItems = isAdmin 
     ? NAV_ITEMS 
-    : NAV_ITEMS.filter(item => ["profile"].includes(item.key));
+    : NAV_ITEMS.filter(item => ["profile", "colors"].includes(item.key));
 
   const NAV_GROUPS = [
     { label: "Main", items: ["supporters", "overview", "visitors", "users"] },
     { label: "Content", items: ["projects", "stacks", "homepage", "about"] },
-    { label: "Interactions", items: ["messages", "guestbook"] },
+    { label: "Interactions", items: ["messages", "guestbook", "colors"] },
     { label: "System", items: ["profile"] },
   ].map(g => ({
     ...g,
@@ -1633,13 +1635,12 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
   </div>
 );
 
-  const BOTTOM_NAV = [
     { key: "overview",  label: "Home",     icon: <IconGrid size={18} /> },
     { key: "projects",  label: "Projects", icon: <IconFolder size={18} /> },
-    { key: "users",     label: "Users",    icon: <IconUsersNav size={18} /> },
+    { key: "colors",    label: "Colors",   icon: <IconPalette size={18} /> },
     { key: "messages",  label: "Messages", icon: <IconMail size={18} /> },
     { key: "profile",   label: "Profile",  icon: <IconUser size={18} /> },
-  ].filter(item => isAdmin || ["profile"].includes(item.key));
+  ].filter(item => isAdmin || ["profile", "colors"].includes(item.key));
 
   return (
     <>
@@ -1901,6 +1902,12 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
             {activeNav === "supporters" && (
               <div className="content-fade">
                 <SupporterManager />
+              </div>
+            )}
+
+            {activeNav === "colors" && (
+              <div className="content-fade">
+                <SavedColorsManager />
               </div>
             )}
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\GuestbookController;
 use App\Http\Controllers\SupporterController;
+use App\Http\Controllers\SavedColorController;
 
 // ── Public Pages ──────────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -38,6 +39,10 @@ Route::get('/projects/{projectId}', function ($projectId) {
 Route::get('/about', function () {
     return Inertia::render('About');
 })->name('about');
+
+Route::get('/tools', function () {
+    return Inertia::render('Tools');
+})->name('tools');
 
 Route::get('/resume', function () {
     return Inertia::render('Resume');
@@ -168,6 +173,13 @@ Route::prefix('api')->group(function () {
         Route::post  ('/admin/supporters',               [SupporterController::class, 'store']);
         Route::post  ('/admin/supporters/{supporter}',   [SupporterController::class, 'update']); // Use POST for multipart update
         Route::delete('/admin/supporters/{supporter}',   [SupporterController::class, 'destroy']);
+    });
+
+    // ── Protected (For all logged in users) ───────────────────────────────────
+    Route::middleware(['auth'])->group(function () {
+        Route::get   ('/saved-colors',         [SavedColorController::class, 'index']);
+        Route::post  ('/saved-colors',         [SavedColorController::class, 'store']);
+        Route::delete('/saved-colors/{id}',    [SavedColorController::class, 'destroy']);
     });
 });
 

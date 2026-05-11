@@ -7,6 +7,7 @@ const navLinks = [
   { label: "Home",     href: "hero" },
   { label: "Projects", href: "projects" },
   { label: "About",    href: "about" },
+  { label: "Tools",    href: "tools" },
   { label: "Contact",  href: "contact" },
 ];
 
@@ -39,6 +40,12 @@ export default function Navbar() {
     // "Contact" selalu ke halaman /contact
     if (href === "contact") {
       router.visit("/contact");
+      return;
+    }
+
+    // "Tools" selalu ke halaman /tools
+    if (href === "tools") {
+      router.visit("/tools");
       return;
     }
 
@@ -113,6 +120,7 @@ export default function Navbar() {
     if (href === "projects") return currentUrl.startsWith("/projects");
     if (href === "contact")  return isContactPage;
     if (href === "about")    return isAboutPage;
+    if (href === "tools")    return currentUrl.startsWith("/tools");
     if (isHome) return activeSection === href;
     return false;
   };
