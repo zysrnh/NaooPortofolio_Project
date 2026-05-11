@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import { useVisitorTracker } from "@/hooks/useVisitorTracker";
 import { useEffect, useState, useRef } from "react";
 import { router, Head } from "@inertiajs/react";
+import Magnetic from "@/components/Magnetic";
 
 // ── Scroll Reveal ─────────────────────────────────────────────────────────────
 function useScrollReveal(ready: boolean) {
@@ -796,9 +797,19 @@ function Availability() {
           ))}
           {avail.timezone && (
             <div style={{border:"3px solid var(--nb-accent),0.4)",padding:"8px 18px"}}>
-              <p className="font-black text-xs uppercase tracking-widest text-[var(--nb-accent)] opacity-70">WIB · {avail.timezone}</p>
+              <p className="font-black text-xs uppercase tracking-widest text-[var(--nb-accent)] opacity-70">{avail.timezone}</p>
             </div>
           )}
+        </div>
+        <div className="mt-4 sm:mt-0">
+          <Magnetic>
+            <button 
+              onClick={() => router.visit("/resume")}
+              className="btn-brutal border-4 border-[var(--nb-bg)] px-8 py-4 font-black uppercase shadow-[6px_6px_0_var(--nb-accent)] bg-[var(--nb-accent)] text-[var(--nb-primary)] text-sm sm:text-base hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all active:translate-x-[4px] active:translate-y-[4px]"
+            >
+              Lihat Resume →
+            </button>
+          </Magnetic>
         </div>
       </div>
     </section>

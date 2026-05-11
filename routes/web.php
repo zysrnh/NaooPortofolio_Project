@@ -35,6 +35,10 @@ Route::get('/about', function () {
     return Inertia::render('About');
 })->name('about');
 
+Route::get('/resume', function () {
+    return Inertia::render('Resume');
+})->name('resume');
+
 // Public API for Supporters
 Route::get('/api/supporters', [SupporterController::class, 'index']);
 

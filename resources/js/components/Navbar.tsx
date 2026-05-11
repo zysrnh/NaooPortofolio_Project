@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
 import ThemeToggle from "./ThemeToggle";
-import GuestbookWidget from "./GuestbookWidget";
+import Magnetic from "./Magnetic";
 
 const navLinks = [
   { label: "Home",     href: "hero" },
@@ -175,14 +175,18 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:flex gap-3 items-center">
-            <button onClick={handlePrimaryBtn}
-              className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)]">
-              {isLoggedIn ? "Dashboard" : "Login"}
-            </button>
-            <button onClick={handleContactBtn}
-              className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)]">
-              Contact Me
-            </button>
+            <Magnetic>
+              <button onClick={handlePrimaryBtn}
+                className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)]">
+                {isLoggedIn ? "Dashboard" : "Login"}
+              </button>
+            </Magnetic>
+            <Magnetic>
+              <button onClick={handleContactBtn}
+                className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)]">
+                Contact Me
+              </button>
+            </Magnetic>
             <ThemeToggle />
           </div>
 
@@ -217,7 +221,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <GuestbookWidget />
+      <div className="md:hidden"></div>
     </>
   );
 }

@@ -274,7 +274,45 @@
     --sidebar-border: #dc3c24; --sidebar-ring: #dc3c24;
 }
 
-/* ── COLD — #EBEDE0 · #31394C · #7A7F84 ── */
+/* ── DARK (Deep Sea) — Palette from Image ── */
+[data-theme='dark'] {
+    --nb-bg: #0A0E14;
+    --nb-primary: #F4FEFE;
+    --nb-accent: #1E3A46;
+    --nb-accent-light: #182B31;
+    --nb-secondary: #58717D;
+    --nb-shadow: #F4FEFE;
+    --nb-text: #F4FEFE;
+    --nb-text-inv: #0A0E14;
+
+    --background: var(--nb-bg);
+    --foreground: var(--nb-text);
+    --card: #0E141B;
+    --card-foreground: var(--nb-text);
+    --popover: #0E141B;
+    --popover-foreground: var(--nb-text);
+    --primary: var(--nb-primary);
+    --primary-foreground: var(--nb-bg);
+    --secondary: var(--nb-secondary);
+    --secondary-foreground: var(--nb-bg);
+    --muted: var(--nb-accent-light);
+    --muted-foreground: var(--nb-text);
+    --accent: var(--nb-accent);
+    --accent-foreground: var(--nb-primary);
+    --border: var(--nb-primary);
+    --input: #0E141B;
+    --ring: var(--nb-accent);
+
+    --sidebar: #0A0E14;
+    --sidebar-foreground: #F4FEFE;
+    --sidebar-primary: #F4FEFE;
+    --sidebar-primary-foreground: #0A0E14;
+    --sidebar-accent: #1E3A46;
+    --sidebar-accent-foreground: #F4FEFE;
+    --sidebar-border: #F4FEFE;
+    --sidebar-ring: #F4FEFE;
+}
+
 [data-theme='cold'] {
     --nb-bg: #EBEDE0; --nb-primary: #31394C; --nb-accent: #7A7F84;
     --nb-accent-light: #d8dbd0; --nb-secondary: #5a6170;
@@ -326,4 +364,27 @@
     [class*="border-[var(--nb"] {
         border-color: var(--nb-primary);
     }
+
+    /* Scroll Reveal Variants */
+    .reveal.from-bottom { transform: translateY(40px); }
+    .reveal.from-left   { transform: translateX(-40px); }
+    .reveal.from-right  { transform: translateX(40px); }
+    .reveal.from-scale  { transform: scale(0.95); }
+
+    /* Magnetic Container Utility */
+    .magnetic-wrap {
+        display: inline-block;
+        transition: transform 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+}
+
+@keyframes statIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Selection */
+::selection {
+    background: var(--nb-accent);
+    color: var(--nb-primary);
 }

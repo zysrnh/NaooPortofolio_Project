@@ -2,6 +2,8 @@ import Navbar from "@/components/Navbar";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { router, Head } from "@inertiajs/react";
 import { useVisitorTracker } from "@/hooks/useVisitorTracker";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import Magnetic from "@/components/Magnetic";
 
 // ── Scroll reveal hook ────────────────────────────────────────────────────────
 function useScrollReveal(ready: boolean) {
@@ -717,8 +719,12 @@ export default function Home() {
                 </>
               )}
               <div className="flex gap-3 sm:gap-4 flex-wrap">
-                <button onClick={()=>scrollTo("about")} className="btn-brutal border-4 border-[var(--nb-primary)] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)] text-sm sm:text-base">About</button>
-                <button onClick={()=>scrollTo("contact")} className="btn-brutal border-4 border-[var(--nb-primary)] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)] text-sm sm:text-base">Contact</button>
+                <Magnetic>
+                  <button onClick={()=>scrollTo("about")} className="btn-brutal border-4 border-[var(--nb-primary)] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_var(--nb-primary)] bg-[var(--nb-accent)] text-[var(--nb-primary)] text-sm sm:text-base">About</button>
+                </Magnetic>
+                <Magnetic>
+                  <button onClick={()=>scrollTo("contact")} className="btn-brutal border-4 border-[var(--nb-primary)] px-5 sm:px-6 py-2 sm:py-3 font-black uppercase shadow-[4px_4px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)] text-sm sm:text-base">Contact</button>
+                </Magnetic>
               </div>
             </div>
           </div>
@@ -919,6 +925,9 @@ export default function Home() {
         {/* PROJECT STATS */}
         <ProjectCount projects={projects}/>
 
+        {/* TESTIMONIALS */}
+        <TestimonialsSection />
+
         {/* FOOTER */}
         <footer className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] reveal">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
@@ -930,7 +939,7 @@ export default function Home() {
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[var(--nb-accent)] tracking-widest mb-1">Quick Links</p>
                 <div className="flex flex-wrap gap-x-6 gap-y-1">
-                  {[{label:"Home",id:"hero"},{label:"Projects",id:"projects"},{label:"About",id:"about"},{label:"Contact",id:"contact"}].map(l=>(
+                  {[{label:"Home",id:"hero"},{label:"Projects",id:"projects"},{label:"About",id:"about"},{label:"Contact",id:"contact"},{label:"Testimonials",id:"testimonials"}].map(l=>(
                     <a key={l.id} onClick={()=>scrollTo(l.id)} className="font-bold text-sm text-[var(--nb-primary)] uppercase cursor-pointer hover:underline">{l.label}</a>
                   ))}
                 </div>
