@@ -99,7 +99,7 @@ Route::prefix('api')->group(function () {
     Route::post('/guestbook', [GuestbookController::class, 'store']);
 
     // ── Protected ─────────────────────────────────────────────────────────────
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth', 'admin'])->group(function () {
 
         // Tech Stack
         Route::post  ('/tech-stacks',                    [TechStackController::class, 'store']);
@@ -158,6 +158,10 @@ Route::prefix('api')->group(function () {
         Route::get   ('/admin/guestbook',                [GuestbookController::class, 'adminIndex']);
         Route::patch ('/admin/guestbook/{guestbook}',    [GuestbookController::class, 'toggleVisibility']);
         Route::delete('/admin/guestbook/{guestbook}',    [GuestbookController::class, 'destroy']);
+
+        // Users (admin only)
+        Route::get   ('/admin/users',                    [\App\Http\Controllers\UserController::class, 'index']);
+        Route::delete('/admin/users/{user}',             [\App\Http\Controllers\UserController::class, 'destroy']);
 
         // Supporters (admin only)
         Route::get   ('/admin/supporters',               [SupporterController::class, 'adminIndex']);

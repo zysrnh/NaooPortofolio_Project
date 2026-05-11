@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             'name'     => 'Zaki Yusron',
             'email'    => 'yusron@dev.com',
             'password' => Hash::make('password'),
+            'role'     => 'admin',
         ]);
     }
 }

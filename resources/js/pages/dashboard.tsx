@@ -8,6 +8,7 @@ import ThemeToggle from "../components/ThemeToggle";
 import VisitorStats from "@/components/VisitorStats";
 import GuestbookManager from "@/components/GuestbookManager";
 import SupporterManager from "@/components/SupporterManager";
+import UserManager from "@/components/UserManager";
 
 // ── SVG Icons ─────────────────────────────────────────────────────────────────
 const IconFolder    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
@@ -73,12 +74,13 @@ const STATUS_STYLE: Record<string, string> = {
 
 const NAV_ITEMS = [
   { key: "overview",  label: "Overview",   icon: <IconGrid /> },
+  { key: "visitors",  label: "Visitors",   icon: <IconUsersNav size={18} /> },
+  { key: "users",     label: "Users List", icon: <IconUsersNav size={18} /> },
   { key: "projects",  label: "Projects",   icon: <IconFolder size={18} /> },
   { key: "stacks",    label: "Tech Stack", icon: <IconLayers size={18} /> },
   { key: "homepage",  label: "Homepage",   icon: <IconGlobe size={18} /> },
   { key: "about",     label: "About Page", icon: <IconInfo size={18} /> },
   { key: "messages",  label: "Messages",   icon: <IconMail size={18} /> },
-  { key: "visitors",  label: "Visitors",   icon: <IconUsersNav size={18} /> },
   { key: "guestbook", label: "Guestbook",  icon: <IconMessage size={18} /> },
   { key: "supporters", label: "Supporters", icon: <IconUsersNav size={18} /> },
   { key: "profile",   label: "Profile",    icon: <IconUser /> },
@@ -1493,11 +1495,27 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
 // ── DASHBOARD (Main) ──────────────────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════════════════════
 export default function Dashboard() {
-  const { auth } = usePage<{ auth: { user: { name: string; email: string } } }>().props;
+  const { auth } = usePage<{ auth: { user: { name: string; email: string; role: string } } }>().props;
   const user = auth?.user;
+  const isAdmin = user?.role === 'admin';
+
+  // Filter nav items based on role
+  const filteredNavItems = isAdmin 
+    ? NAV_ITEMS 
+    : NAV_ITEMS.filter(item => ["profile"].includes(item.key));
+
+  const NAV_GROUPS = [
+    { label: "Main", items: ["overview", "visitors", "users"] },
+    { label: "Content", items: ["projects", "stacks", "homepage", "about"] },
+    { label: "Interactions", items: ["messages", "guestbook", "supporters"] },
+    { label: "System", items: ["profile"] },
+  ].map(g => ({
+    ...g,
+    items: filteredNavItems.filter(i => g.items.includes(i.key))
+  })).filter(g => g.items.length > 0);
 
   const [visible,     setVisible]     = useState(false);
-  const [activeNav,   setActiveNav]   = useState("overview");
+  const [activeNav,   setActiveNav]   = useState(isAdmin ? "overview" : "profile");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [time,        setTime]        = useState(new Date());
   const [unreadCount, setUnreadCount] = useState(0);
@@ -1519,43 +1537,54 @@ export default function Dashboard() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-const NavItems = ({ activeNav, unreadCount, onNavClick, onClose }: { activeNav: string; unreadCount: number; onNavClick: (key: string) => void; onClose?: () => void }) => (
-  <>
-    {NAV_ITEMS.map((item, idx) => (
-      <div key={item.key}
-        className={`nav-item ${activeNav === item.key ? "active" : ""}`}
-        style={{ animationDelay: `${idx * 0.04}s` }}
-        onClick={() => { onNavClick(item.key); onClose?.(); }}>
-        {item.icon}
-        {item.label}
-        {item.key === "messages" && unreadCount > 0 ? (
-          <span style={{ marginLeft: "auto", background: "var(--nb-accent)", color: "var(--nb-primary)", border: "2px solid var(--nb-accent)", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
-        ) : activeNav === item.key ? (
-          <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "var(--nb-accent)", display: "inline-block", flexShrink: 0 }} />
-        ) : null}
+const NavItems = ({ activeNav, unreadCount, onNavClick, onClose, groups }: { activeNav: string; unreadCount: number; onNavClick: (key: string) => void; onClose?: () => void; groups: any[] }) => (
+  <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    {groups.map((group, gIdx) => (
+      <div key={gIdx} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <p style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.2em", color: "var(--nb-accent)", opacity: 0.4, padding: "0 16px", marginBottom: 4 }}>{group.label}</p>
+        {group.items.map((item: any, idx: number) => (
+          <div key={item.key}
+            className={`nav-item ${activeNav === item.key ? "active" : ""}`}
+            style={{ animationDelay: `${(gIdx * 5 + idx) * 0.03}s` }}
+            onClick={() => { onNavClick(item.key); onClose?.(); }}>
+            {item.icon}
+            {item.label}
+            {item.key === "messages" && unreadCount > 0 ? (
+              <span style={{ marginLeft: "auto", background: "var(--nb-accent)", color: "var(--nb-primary)", border: "2px solid var(--nb-accent)", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
+            ) : activeNav === item.key ? (
+              <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "var(--nb-accent)", display: "inline-block", flexShrink: 0 }} />
+            ) : null}
+          </div>
+        ))}
       </div>
     ))}
-  </>
+  </div>
 );
 
-const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => void; onLogout: () => void }) => (
-  <div style={{ borderTop: "4px solid var(--nb-accent)", padding: "20px", position: "relative", zIndex: 10 }}>
-    <div style={{ marginBottom: 12 }}>
-      <p style={{ fontWeight: 900, fontSize: 11, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
-      <p style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: "2px 0 0" }}>{user?.email ?? "yusron@dev.com"}</p>
+const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) => (
+  <div style={{ borderTop: "4px solid var(--nb-accent)", padding: "16px", background: "rgba(0,0,0,0.2)", position: "relative", zIndex: 10 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+       <div style={{ width: 32, height: 32, background: "var(--nb-accent)", color: "var(--nb-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 14, border: "2px solid var(--nb-primary)", boxShadow: "2px 2px 0 var(--nb-primary)" }}>
+         {(user?.name ?? "Y")[0]}
+       </div>
+       <div style={{ minWidth: 0 }}>
+         <p style={{ fontWeight: 900, fontSize: 10, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.05em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
+         <p style={{ fontWeight: 600, fontSize: 8, color: "var(--nb-accent-light)", opacity: 0.5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.email ?? "yusron@dev.com"}</p>
+       </div>
     </div>
-    <button className="home-btn-sidebar" onClick={onHome}><IconHome size={13} /> Homepage</button>
-    <button className="logout-btn" style={{ width: "100%" }} onClick={onLogout}><IconLogOut /> Logout</button>
+    <button className="logout-btn" style={{ width: "100%", fontSize: 10, padding: "6px 12px" }} onClick={onLogout}>
+      <IconLogOut size={12} /> Logout System
+    </button>
   </div>
 );
 
   const BOTTOM_NAV = [
     { key: "overview",  label: "Home",     icon: <IconGrid size={18} /> },
     { key: "projects",  label: "Projects", icon: <IconFolder size={18} /> },
+    { key: "users",     label: "Users",    icon: <IconUsersNav size={18} /> },
     { key: "messages",  label: "Messages", icon: <IconMail size={18} /> },
-    { key: "homepage",  label: "Site",     icon: <IconGlobe size={18} /> },
     { key: "profile",   label: "Profile",  icon: <IconUser size={18} /> },
-  ];
+  ].filter(item => isAdmin || ["profile"].includes(item.key));
 
   return (
     <>
@@ -1580,15 +1609,30 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
         .anim-content { animation:slideUp    0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
 
         .nav-item {
-          display:flex; align-items:center; gap:10px;
-          padding:12px 16px; font-weight:800; font-size:13px;
-          text-transform:uppercase; letter-spacing:0.08em;
-          color: var(--nb-accent); cursor:pointer; border-left:4px solid transparent;
-          transition:background 0.12s ease, color 0.12s ease, border-color 0.12s ease, padding-left 0.15s ease;
+          display:flex; align-items:center; gap:12px;
+          padding:10px 16px; font-weight:900; font-size:12px;
+          text-transform:uppercase; letter-spacing:0.06em;
+          color: var(--nb-accent); cursor:pointer; 
+          transition: all 0.15s cubic-bezier(0.16,1,0.3,1);
           animation: slideLeft 0.4s cubic-bezier(0.16,1,0.3,1) both;
+          border: 2px solid transparent;
+          margin: 0 8px;
         }
-        .nav-item:hover  { background: rgba(255,255,255,0.1); color: var(--nb-accent); border-left-color: var(--nb-accent); padding-left:22px; }
-        .nav-item.active { background: rgba(255,255,255,0.15); color: var(--nb-accent); border-left-color:var(--nb-accent); padding-left:22px; }
+        .nav-item:hover  { 
+          background: rgba(255,255,255,0.08); 
+          color: #fff;
+          transform: translateX(4px);
+        }
+        .nav-item.active { 
+          background: var(--nb-accent); 
+          color: var(--nb-primary); 
+          border: 2px solid var(--nb-primary);
+          box-shadow: 4px 4px 0 var(--nb-primary);
+          transform: translate(-2px, -2px);
+        }
+        .nav-item svg { opacity: 0.7; transition: opacity 0.15s; }
+        .nav-item.active svg { opacity: 1; stroke: var(--nb-primary); }
+        .nav-item:hover svg { opacity: 1; }
 
         .home-btn-sidebar {
           display:flex; align-items:center; gap:8px; width:100%;
@@ -1681,10 +1725,10 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
             <div style={{ fontWeight: 900, fontSize: 20, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
             <div style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Dashboard</div>
           </div>
-          <nav style={{ flex: 1, paddingTop: 16, paddingBottom: 16, position: "relative" }}>
-            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} />
+          <nav style={{ flex: 1, paddingTop: 16, paddingBottom: 16, position: "relative", overflowY: "auto" }}>
+            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} groups={NAV_GROUPS} />
           </nav>
-          <SidebarBottom user={user} onHome={handleHome} onLogout={handleLogout} />
+          <SidebarBottom user={user} onLogout={handleLogout} />
         </aside>
 
         {/* SIDEBAR Mobile Overlay */}
@@ -1702,9 +1746,9 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
             <button style={{ border: "2px solid var(--nb-accent)", padding: 8, color: "var(--nb-accent)", background: "transparent", cursor: "pointer", display: "flex" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>
           </div>
           <nav style={{ flex: 1, paddingTop: 12, paddingBottom: 12, position: "relative", zIndex: 10, overflowY: "auto" }}>
-            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} onClose={() => setSidebarOpen(false)} />
+            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} onClose={() => setSidebarOpen(false)} groups={NAV_GROUPS} />
           </nav>
-          <SidebarBottom user={user} onHome={handleHome} onLogout={handleLogout} />
+          <SidebarBottom user={user} onLogout={handleLogout} />
         </aside>
 
         {/* MAIN */}
@@ -1751,7 +1795,13 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
 
             {activeNav === "overview" && (
               <div className="content-fade">
-                <OverviewSection unreadCount={unreadCount} onNavClick={handleNavClick} />
+                {isAdmin ? (
+                  <OverviewSection unreadCount={unreadCount} onNavClick={handleNavClick} />
+                ) : (
+                  <div className="py-20 text-center border-4 border-dashed border-[var(--nb-primary)] opacity-30">
+                    <p className="font-black uppercase text-sm tracking-[0.3em]">Dashboard is empty for regular users</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -1770,6 +1820,12 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
               <div className="content-fade">
                 <h2 className="font-black text-2xl uppercase text-[var(--nb-primary)] mb-6">Visitor Analytics</h2>
                 <VisitorStats />
+              </div>
+            )}
+
+            {activeNav === "users" && (
+              <div className="content-fade">
+                <UserManager />
               </div>
             )}
 
@@ -1799,7 +1855,10 @@ const SidebarBottom = ({ user, onHome, onLogout }: { user: any; onHome: () => vo
                     <h3 className="font-black text-xl sm:text-2xl uppercase text-[var(--nb-bg)] mb-1">{user?.name ?? "Zaki Yusron"}</h3>
                     <p className="font-semibold text-xs sm:text-sm text-[var(--nb-accent-light)] mb-5 sm:mb-6">{user?.email ?? "yusron@dev.com"}</p>
                     <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                      {[{ label: "Role", value: "IT Programmer" }, { label: "Focus", value: "Fullstack Web" }, { label: "Stack", value: "React + Laravel" }, { label: "Status", value: "Open to Work" }].map((item, i) => (
+                      {(isAdmin 
+                        ? [{ label: "Role", value: "IT Programmer" }, { label: "Focus", value: "Fullstack Web" }, { label: "Stack", value: "React + Laravel" }, { label: "Status", value: "Open to Work" }]
+                        : [{ label: "Account Type", value: "Regular User" }, { label: "Status", value: "Authenticated" }, { label: "Joined", value: new Date().toLocaleDateString() }, { label: "Permissions", value: "View Only" }]
+                      ).map((item, i) => (
                         <div key={i} className="border-2 border-[var(--nb-accent)] p-2 sm:p-3" style={{ animation: `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${0.2 + i * 0.06}s both` }}>
                           <p className="font-black text-xs text-[var(--nb-accent)] uppercase tracking-widest mb-1">{item.label}</p>
                           <p className="font-bold text-xs sm:text-sm text-[var(--nb-bg)]">{item.value}</p>
