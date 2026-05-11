@@ -77,7 +77,7 @@ function FloatingBlocks() {
 
 // ── getCsrfToken ──────────────────────────────────────────────────────────────
 function getCsrfToken(): string {
-  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
+  const meta = null;
   if (meta?.content) return meta.content;
   const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : "";
@@ -127,7 +127,7 @@ export default function Contact() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": getCsrfToken(),
+          "X-XSRF-TOKEN": getCsrfToken(),
         },
         body: JSON.stringify(form),
       });

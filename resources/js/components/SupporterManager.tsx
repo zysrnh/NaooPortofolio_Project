@@ -11,8 +11,8 @@ interface Supporter {
 }
 
 function getCsrfToken(): string {
-    const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null;
-    if (meta?.content) return meta.content;
+    const meta = null;
+    if (meta) return '';
     const m = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
     return m ? decodeURIComponent(m[1]) : '';
 }
@@ -265,7 +265,7 @@ export default function SupporterManager() {
         const url    = supporter ? `/api/admin/supporters/${supporter.id}` : '/api/admin/supporters';
         const res    = await fetch(url, {
             method:  'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': getCsrfToken() },
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-XSRF-TOKEN': getCsrfToken() },
             body:    fd,
         });
 
@@ -285,7 +285,7 @@ export default function SupporterManager() {
         setDeleting(true);
         await fetch(`/api/admin/supporters/${supporter.id}`, {
             method:  'DELETE',
-            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': getCsrfToken() },
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-XSRF-TOKEN': getCsrfToken() },
         });
         setDeleting(false);
         setSupporter(null);

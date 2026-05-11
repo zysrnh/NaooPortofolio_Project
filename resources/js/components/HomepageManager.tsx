@@ -74,8 +74,6 @@ const CROP_ASPECT_W = 4;
 const CROP_ASPECT_H = 5;
 
 function getCsrfToken(): string {
-  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
-  if (meta?.content) return meta.content;
   const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : "";
 }
@@ -684,7 +682,7 @@ function TechStackVisibility() {
     try {
       const res = await fetch(`/api/tech-stacks/${stack.id}/toggle`, {
         method:"PATCH",
-        headers:{"X-CSRF-TOKEN":getCsrfToken(), "Accept":"application/json"}
+        headers:{"X-XSRF-TOKEN":getCsrfToken(), "Accept":"application/json"}
       });
       if (!res.ok) {
         const d = await res.json();
@@ -706,7 +704,7 @@ function TechStackVisibility() {
     try {
       const res = await fetch(`/api/tech-stacks/${stack.id}/toggle`, {
         method:"PATCH",
-        headers:{"X-CSRF-TOKEN":getCsrfToken(), "Accept":"application/json"}
+        headers:{"X-XSRF-TOKEN":getCsrfToken(), "Accept":"application/json"}
       });
       if (!res.ok) {
         const d = await res.json();
@@ -838,7 +836,7 @@ function HeroSection() {
     try{
       const res=await fetch("/api/hero", {
         method:"PUT",
-        headers:{"Content-Type":"application/json","X-CSRF-TOKEN":getCsrfToken(), "Accept":"application/json"},
+        headers:{"Content-Type":"application/json","X-XSRF-TOKEN":getCsrfToken(), "Accept":"application/json"},
         body:JSON.stringify(form)
       });
       if (!res.ok) {
@@ -1125,7 +1123,7 @@ function ContactSection() {
     try {
       const res = await fetch("/api/contact", {
         method:"PUT",
-        headers:{"Content-Type":"application/json","X-CSRF-TOKEN":getCsrfToken(), "Accept":"application/json"},
+        headers:{"Content-Type":"application/json","X-XSRF-TOKEN":getCsrfToken(), "Accept":"application/json"},
         body:JSON.stringify(contacts.map((c,i)=>({...c,sort_order:i})))
       });
       if (!res.ok) {
@@ -1361,7 +1359,7 @@ function ProjectsSection() {
 
   useEffect(() => { const t = setTimeout(() => setHeaderIn(true), 60); return () => clearTimeout(t); }, []);
   useEffect(() => {
-    fetch("/api/admin/projects", { headers: { "X-CSRF-TOKEN": getCsrfToken() } })
+    fetch("/api/admin/projects", { headers: { "X-XSRF-TOKEN": getCsrfToken() } })
       .then(r => r.json()).then(d => { setProjects(Array.isArray(d) ? d : []); setLoading(false); }).catch(() => setLoading(false));
   }, []);
 
@@ -1370,7 +1368,7 @@ function ProjectsSection() {
     try {
       const res = await fetch(`/api/admin/projects/${p.id}/toggle`, {
         method: "PATCH",
-        headers: { "X-CSRF-TOKEN": getCsrfToken(), "Accept": "application/json" }
+        headers: { "X-XSRF-TOKEN": getCsrfToken(), "Accept": "application/json" }
       });
       if (!res.ok) {
         const d = await res.json();
@@ -1534,7 +1532,7 @@ function AboutSection() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch("/api/about", { method:"PUT", headers:{"Content-Type":"application/json","X-CSRF-TOKEN":getCsrfToken()}, body:JSON.stringify(form) });
+      const res = await fetch("/api/about", { method:"PUT", headers:{"Content-Type":"application/json","X-XSRF-TOKEN":getCsrfToken()}, body:JSON.stringify(form) });
       const updated = await res.json();
       if (updated?.id || updated?.tagline) { setDirty(false); showToast("About section berhasil disimpan!"); }
       else showToast("Gagal menyimpan!", false);

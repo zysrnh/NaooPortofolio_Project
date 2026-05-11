@@ -25,8 +25,8 @@ interface StatItem   { label: string; value: string; icon_key: string; }
 type TabKey = "hero" | "capabilities" | "experience" | "casestudies" | "availability" | "stats";
 
 const CSRF = () => {
-  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
-  if (meta?.content) return meta.content;
+  const meta = null;
+  if (meta) return "";
   const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : "";
 };
@@ -279,7 +279,7 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     try {
       const rText = await fetch("/api/hero", {
         method:"PUT",
-        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-XSRF-TOKEN":CSRF()},
         body:JSON.stringify({name,title,bio,remove_photo2: !prev2 && !photo2}),
       });
       if (!rText.ok) {
@@ -293,7 +293,7 @@ function HeroTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
         if(photo2) fd.append("photo2", photo2);
         const rPhoto = await fetch("/api/hero/photo", {
           method:"POST",
-          headers:{"X-CSRF-TOKEN":CSRF(), "Accept":"application/json"},
+          headers:{"X-XSRF-TOKEN":CSRF(), "Accept":"application/json"},
           body:fd
         });
         if (!rPhoto.ok) {
@@ -449,7 +449,7 @@ function CapabilitiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     try {
       const r = await fetch("/api/about", {
         method:"PUT",
-        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-XSRF-TOKEN":CSRF()},
         body:JSON.stringify({bio,info_cards:infoCards,highlights,featured_stack_ids:selected}),
       });
       if (!r.ok) {
@@ -630,7 +630,7 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
       const isNew = editing.id===0;
       const r = await fetch(isNew?"/api/about/experiences":`/api/about/experiences/${editing.id}`, {
         method:isNew?"POST":"PUT",
-        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-XSRF-TOKEN":CSRF()},
         body:JSON.stringify(editing),
       });
       if (!r.ok) {
@@ -650,7 +650,7 @@ function ExperienceTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     try {
       const r = await fetch(`/api/about/experiences/${id}`, {
         method:"DELETE",
-        headers:{"X-CSRF-TOKEN":CSRF(), "Accept":"application/json"}
+        headers:{"X-XSRF-TOKEN":CSRF(), "Accept":"application/json"}
       });
       if (!r.ok) {
         const d = await r.json();
@@ -837,7 +837,7 @@ function CaseStudiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
       const isNew = editing.id===0;
       const r = await fetch(isNew?"/api/about/case-studies":`/api/about/case-studies/${editing.id}`, {
         method:isNew?"POST":"PUT",
-        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-XSRF-TOKEN":CSRF()},
         body:JSON.stringify(editing),
       });
       if (!r.ok) {
@@ -857,7 +857,7 @@ function CaseStudiesTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     try {
       const r = await fetch(`/api/about/case-studies/${id}`, {
         method:"DELETE",
-        headers:{"X-CSRF-TOKEN":CSRF(), "Accept":"application/json"}
+        headers:{"X-XSRF-TOKEN":CSRF(), "Accept":"application/json"}
       });
       if (!r.ok) {
         const d = await r.json();
@@ -977,7 +977,7 @@ function AvailabilityTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     try {
       const r = await fetch("/api/about/availability", {
         method:"PUT",
-        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-XSRF-TOKEN":CSRF()},
         body:JSON.stringify({status,freelance,remote,collaboration:collab,timezone}),
       });
       if (!r.ok) {
@@ -1135,7 +1135,7 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
     try {
       const r = await fetch("/api/about/stats", {
         method:"PUT",
-        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-CSRF-TOKEN":CSRF()},
+        headers:{"Content-Type":"application/json", "Accept":"application/json", "X-XSRF-TOKEN":CSRF()},
         body:JSON.stringify({stats}),
       });
       if (!r.ok) {

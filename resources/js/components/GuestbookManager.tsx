@@ -10,6 +10,11 @@ interface GuestbookEntry {
   created_at: string;
 }
 
+function getCsrfToken(): string {
+  const m = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : '';
+}
+
 export default function GuestbookManager() {
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +38,7 @@ export default function GuestbookManager() {
     try {
       const res = await fetch(`/api/admin/guestbook/${id}`, { 
         method: "PATCH",
-        headers: { "X-CSRF-TOKEN": (document.querySelector('meta[name="csrf-token"]') as any)?.content }
+        headers: { "X-XSRF-TOKEN": getCsrfToken() }
       });
       if (res.ok) fetchEntries();
     } catch (e) { console.error(e); }
@@ -44,7 +49,7 @@ export default function GuestbookManager() {
     try {
       const res = await fetch(`/api/admin/guestbook/${id}`, { 
         method: "DELETE",
-        headers: { "X-CSRF-TOKEN": (document.querySelector('meta[name="csrf-token"]') as any)?.content }
+        headers: { "X-XSRF-TOKEN": getCsrfToken() }
       });
       if (res.ok) fetchEntries();
     } catch (e) { console.error(e); }

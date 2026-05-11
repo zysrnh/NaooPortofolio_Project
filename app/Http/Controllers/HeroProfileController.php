@@ -100,14 +100,14 @@ class HeroProfileController extends Controller
         // Foto primary
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
             $this->deleteOldFile($hero->photo);
-            $path        = $request->file('photo')->store('public/profile');
+            $path        = $request->file('photo')->store('profile', 'public');
             $hero->photo = Storage::url($path);
         }
 
         // Foto secondary / decorative
         if ($request->hasFile('photo2') && $request->file('photo2')->isValid()) {
             $this->deleteOldFile($hero->photo2);
-            $path         = $request->file('photo2')->store('public/profile');
+            $path         = $request->file('photo2')->store('profile', 'public');
             $hero->photo2 = Storage::url($path);
         }
 
@@ -126,7 +126,7 @@ class HeroProfileController extends Controller
     private function deleteOldFile(?string $url): void
     {
         if ($url && str_starts_with($url, '/storage/')) {
-            Storage::delete(str_replace('/storage/', 'public/', $url));
+            Storage::disk('public')->delete(str_replace('/storage/', '', $url));
         }
     }
 }

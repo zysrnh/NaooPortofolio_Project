@@ -39,8 +39,8 @@ const getCategoryStyle = (cat: string) =>
 
 // ── CSRF Helper ──────────────────────────────────────────────────────────────
 function getCsrf(): string {
-  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
-  if (meta?.content) return meta.content;
+  const meta = null;
+  if (meta) return "";
   const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : "";
 }
@@ -53,7 +53,7 @@ const API = {
   create: async (data: Omit<TechStack, "id" | "created_at">) => {
     const r = await fetch("/api/tech-stacks", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrf(), "Accept": "application/json" },
+      headers: { "Content-Type": "application/json", "X-XSRF-TOKEN": getCsrf(), "Accept": "application/json" },
       body: JSON.stringify(data),
     });
     if (!r.ok) {
@@ -66,7 +66,7 @@ const API = {
   update: async (id: number, data: Omit<TechStack, "id" | "created_at">) => {
     const r = await fetch(`/api/tech-stacks/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrf(), "Accept": "application/json" },
+      headers: { "Content-Type": "application/json", "X-XSRF-TOKEN": getCsrf(), "Accept": "application/json" },
       body: JSON.stringify(data),
     });
     if (!r.ok) {
@@ -79,7 +79,7 @@ const API = {
   delete: async (id: number) => {
     const r = await fetch(`/api/tech-stacks/${id}`, {
       method: "DELETE",
-      headers: { "X-CSRF-TOKEN": getCsrf(), "Accept": "application/json" },
+      headers: { "X-XSRF-TOKEN": getCsrf(), "Accept": "application/json" },
     });
     if (!r.ok) {
       const d = await r.json();

@@ -85,8 +85,6 @@ const NAV_ITEMS = [
 ];
 
 function getCsrfToken(): string {
-  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
-  if (meta?.content) return meta.content;
   const m = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
   return m ? decodeURIComponent(m[1]) : "";
 }
@@ -933,7 +931,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
   const [loading,      setLoading]      = useState(true);
 
   useEffect(() => {
-    const headers = { "X-CSRF-TOKEN": getCsrfToken() };
+    const headers = { "X-XSRF-TOKEN": getCsrfToken() };
     Promise.all([
       fetch("/api/admin/projects",     { headers }).then(r => r.json()).catch(() => []),
       fetch("/api/tech-stacks",        { headers }).then(r => r.json()).catch(() => []),
@@ -1217,8 +1215,8 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
     setLoading(true);
     try {
       const [msgRes, statsRes] = await Promise.all([
-        fetch("/api/messages",       { headers: { "X-CSRF-TOKEN": getCsrfToken() } }),
-        fetch("/api/messages/stats", { headers: { "X-CSRF-TOKEN": getCsrfToken() } }),
+        fetch("/api/messages",       { headers: { "X-XSRF-TOKEN": getCsrfToken() } }),
+        fetch("/api/messages/stats", { headers: { "X-XSRF-TOKEN": getCsrfToken() } }),
       ]);
       const msgData   = await msgRes.json();
       const statsData = await statsRes.json();
@@ -1235,7 +1233,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
   const handleMarkRead = async (msg: Message) => {
     if (msg.is_read) return;
     try {
-      const res     = await fetch(`/api/messages/${msg.id}/read`, { method: "PATCH", headers: { "X-CSRF-TOKEN": getCsrfToken() } });
+      const res     = await fetch(`/api/messages/${msg.id}/read`, { method: "PATCH", headers: { "X-XSRF-TOKEN": getCsrfToken() } });
       const updated = await res.json();
       setMessages(p => p.map(m => m.id === msg.id ? updated : m));
       setStats(s => { const next = { ...s, unread: Math.max(0, s.unread - 1) }; onUnreadChange?.(next.unread); return next; });
@@ -1246,7 +1244,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
   const handleDelete = async (id: number) => {
     setDeleting(id);
     try {
-      await fetch(`/api/messages/${id}`, { method: "DELETE", headers: { "X-CSRF-TOKEN": getCsrfToken() } });
+      await fetch(`/api/messages/${id}`, { method: "DELETE", headers: { "X-XSRF-TOKEN": getCsrfToken() } });
       setMessages(p => p.filter(m => m.id !== id));
       setStats(s => ({ ...s, total: Math.max(0, s.total - 1) }));
       if (selected?.id === id) { setSelected(null); setShowDetailMobile(false); }
@@ -1258,7 +1256,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
   const handleMarkAllRead = async () => {
     setMarkingAll(true);
     try {
-      await fetch("/api/messages/read-all", { method: "PATCH", headers: { "X-CSRF-TOKEN": getCsrfToken() } });
+      await fetch("/api/messages/read-all", { method: "PATCH", headers: { "X-XSRF-TOKEN": getCsrfToken() } });
       setMessages(p => p.map(m => ({ ...m, is_read: true })));
       setStats(s => { onUnreadChange?.(0); return { ...s, unread: 0 }; });
       showToast("Semua pesan ditandai terbaca");
@@ -1275,7 +1273,7 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
     setSending(true);
     try {
       const res  = await fetch(`/api/messages/${selected.id}/reply`, {
-        method: "POST", headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": getCsrfToken() },
+        method: "POST", headers: { "Content-Type": "application/json", "X-XSRF-TOKEN": getCsrfToken() },
         body: JSON.stringify({ body: replyBody }),
       });
       const data = await res.json();
@@ -1508,7 +1506,7 @@ export default function Dashboard() {
   useEffect(() => { setTimeout(() => { setVisible(true); setNavReady(true); }, 50); }, []);
   useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
   useEffect(() => {
-    fetch("/api/messages/stats", { headers: { "X-CSRF-TOKEN": getCsrfToken() } })
+    fetch("/api/messages/stats", { headers: { "X-XSRF-TOKEN": getCsrfToken() } })
       .then(r => r.json()).then(d => setUnreadCount(d.unread ?? 0)).catch(() => {});
   }, []);
 

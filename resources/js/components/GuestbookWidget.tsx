@@ -9,9 +9,8 @@ interface Entry {
 }
 
 function getCsrfToken(): string {
-  // Try meta tag first (Inertia sets this)
-  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null;
-  if (meta?.content) return meta.content;
+  const meta = null;
+  if (meta) return '';
   // Fallback: read from cookie
   const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
   if (match) return decodeURIComponent(match[1]);
@@ -71,7 +70,7 @@ export default function GuestbookWidget() {
         headers: {
           'Content-Type':     'application/json',
           'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRF-TOKEN':     getCsrfToken(),
+          'X-XSRF-TOKEN':     getCsrfToken(),
         },
         body: JSON.stringify({ name: name.trim(), message: message.trim() }),
       });

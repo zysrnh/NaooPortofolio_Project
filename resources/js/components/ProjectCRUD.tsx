@@ -83,8 +83,8 @@ function base64ToBlob(b64: string): Blob {
 }
 
 const getCsrf = (): string => {
-  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
-  if (meta?.content) return meta.content;
+  const meta = null;
+  if (meta) return "";
   const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : "";
 };
@@ -650,7 +650,7 @@ export default function ProjectCRUD() {
     const blob = base64ToBlob(b64);
     const fd = new FormData(); fd.append("image", blob, "upload.jpg");
     try {
-      const r = await fetch("/api/admin/projects/upload-image",{method:"POST",headers:{"X-CSRF-TOKEN":getCsrf()},body:fd});
+      const r = await fetch("/api/admin/projects/upload-image",{method:"POST",headers:{"X-XSRF-TOKEN":getCsrf()},body:fd});
       const d = await r.json();
       if(d.url){
         if(cropTarget==="project") setForm(f=>({...f,images:[...f.images,d.url]}));
@@ -687,7 +687,7 @@ export default function ProjectCRUD() {
     try {
       const isEdit = !!editTarget;
       const url    = isEdit ? `/api/admin/projects/${editTarget!.id}` : "/api/admin/projects";
-      const r = await fetch(url,{method:isEdit?"PUT":"POST",headers:{"Content-Type":"application/json","Accept":"application/json","X-CSRF-TOKEN":getCsrf()},body:JSON.stringify({...form,demo_url:form.demo_url||null,github_url:form.github_url||null})});
+      const r = await fetch(url,{method:isEdit?"PUT":"POST",headers:{"Content-Type":"application/json","Accept":"application/json","X-XSRF-TOKEN":getCsrf()},body:JSON.stringify({...form,demo_url:form.demo_url||null,github_url:form.github_url||null})});
       if(!r.ok){const d=await r.json();if(d.errors)setErrors(Object.fromEntries(Object.entries(d.errors).map(([k,v])=>[k,(v as string[])[0]])));else showToast(d.message||"Gagal menyimpan",false);return;}
       showToast(isEdit?"Project diupdate!":"Project ditambah!");
       closeModal(); fetchAll();
@@ -699,7 +699,7 @@ export default function ProjectCRUD() {
     try {
       const r = await fetch(`/api/admin/projects/${id}`, {
         method:"DELETE",
-        headers:{"X-CSRF-TOKEN":getCsrf(), "Accept":"application/json"}
+        headers:{"X-XSRF-TOKEN":getCsrf(), "Accept":"application/json"}
       });
       if (!r.ok) {
         const d = await r.json();
@@ -714,7 +714,7 @@ export default function ProjectCRUD() {
 
   const handleToggle = async (id:number) => {
     try {
-      const r = await fetch(`/api/admin/projects/${id}/toggle`,{method:"PATCH",headers:{"X-CSRF-TOKEN":getCsrf()}});
+      const r = await fetch(`/api/admin/projects/${id}/toggle`,{method:"PATCH",headers:{"X-XSRF-TOKEN":getCsrf()}});
       const d = await r.json();
       setProjects(ps=>ps.map(p=>p.id===id?{...p,visible:d.visible}:p));
     } catch { showToast("Gagal toggle",false); }
