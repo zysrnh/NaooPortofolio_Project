@@ -11,12 +11,10 @@ function useScrollReveal(ready: boolean) {
   useEffect(() => {
     if (!ready) return;
     let lastScrollY = window.scrollY;
-    const getTransform = (el: HTMLElement, directionDown: boolean) => {
-      if (el.classList.contains("from-left"))  return "translateX(-50px)";
-      if (el.classList.contains("from-right")) return "translateX(50px)";
-      if (el.classList.contains("from-scale")) return "scale(0.92)";
-      return directionDown ? "translateY(48px)" : "translateY(-48px)";
-    };
+      const getTransform = (el: HTMLElement, directionDown: boolean) => {
+        if (el.classList.contains("from-scale")) return "scale(0.92)";
+        return directionDown ? "translateY(32px)" : "translateY(-32px)";
+      };
     const els = Array.from(document.querySelectorAll(".reveal")) as HTMLElement[];
     els.forEach((el) => {
       el.style.opacity = "0";
@@ -161,7 +159,7 @@ function TechStack() {
   const currentTechs=stacks.filter(s=>s.category===categories[activeTab]);
   const tabLabels=categories.length>0?categories:["Frontend","Backend","Tools","AI Tools"];
   return ( 
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal">
       <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] relative z-10">Tech Stack</h2>
       <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
         <div className="flex border-b-4 border-[var(--nb-primary)] overflow-x-auto">
@@ -230,7 +228,7 @@ function ProjectCount({projects}:{projects:Project[]}) {
     return ()=>observer.disconnect();
   },[projects.length]);
   return (
-    <section ref={sectionRef} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
+    <section ref={sectionRef} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal">
       <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] relative z-10">Project Stats</h2>
       <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
         <div className="grid grid-cols-2 md:grid-cols-4">
@@ -608,13 +606,12 @@ export default function Home() {
     <>
       <style>{`
         @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes slideLeft{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
-        @keyframes slideRight{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         @keyframes shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
         body{background-color:var(--nb-bg); color:var(--nb-primary);}
         .anim-navbar{animation:slideDown 0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both;}
-        .anim-hero-img{animation:slideLeft 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both;}
-        .anim-hero-text{animation:slideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s both;}
+        .anim-hero-img{animation:slideUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both;}
+        .anim-hero-text{animation:slideUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s both;}
         .btn-brutal{transition:transform 0.08s ease,box-shadow 0.08s ease;}
         .btn-brutal:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--nb-primary) !important;}
         .btn-brutal:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--nb-primary) !important;}
@@ -734,7 +731,7 @@ export default function Home() {
         </section>
 
         {/* CONTACT */}
-        <section id="contact" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left" data-delay="0">
+        <section id="contact" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal" data-delay="0">
           <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] relative z-10">Contact</h2>
 
           {contactsLoading && (
@@ -801,7 +798,7 @@ export default function Home() {
         </section>
 
         {/* PROJECTS */}
-        <section id="projects" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right" data-delay="0">
+        <section id="projects" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal" data-delay="0">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-black uppercase text-[var(--nb-primary)] relative z-10">Projects</h2>
             {!projectsLoading&&totalSlides>0&&<div className="text-sm font-bold text-[var(--nb-primary)] uppercase tracking-widest">{currentSlide+1} / {totalSlides}</div>}

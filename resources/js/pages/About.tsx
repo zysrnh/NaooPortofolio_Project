@@ -11,8 +11,8 @@ function useScrollReveal(ready: boolean) {
     if (!ready) return; 
     let lastScrollY = window.scrollY;
     const getTransform = (el: HTMLElement, directionDown: boolean) => {
-      if (el.classList.contains("from-left"))  return "translateX(-50px)";
-      if (el.classList.contains("from-right")) return "translateX(50px)";
+      if (el.classList.contains("from-left"))  return "translateX(-30px)";
+      if (el.classList.contains("from-right")) return "translateX(30px)";
       if (el.classList.contains("from-scale")) return "scale(0.92)";
       return directionDown ? "translateY(48px)" : "translateY(-48px)";
     };
@@ -334,7 +334,7 @@ function Stats() {
   if (!loading && stats.length === 0) return null;
 
   return (
-    <section ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
+    <section ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal">
       <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">By the Numbers</h2>
       <div className={`grid gap-4`} style={{gridTemplateColumns:`repeat(${loading?5:Math.min(stats.length,5)},1fr)`}}>
         {loading && Array.from({length:5}).map((_,i)=>(
@@ -445,7 +445,7 @@ function Capabilities() {
   }, []);
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal">
       <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">What I Do Best</h2>
       <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] overflow-hidden">
         <div className="p-7 sm:p-10">
@@ -511,7 +511,7 @@ function ExperienceTimeline() {
   }, []);
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left">
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal">
       <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">Experience</h2>
       {loading && (
         <div className="flex flex-col gap-4">
@@ -747,16 +747,15 @@ export default function About() {
     <>
       <style>{`
         @keyframes slideDown  { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes slideLeft  { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
-        @keyframes slideRight { from{opacity:0;transform:translateX( 40px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes slideUp    { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         @keyframes shimmer    { from{background-position:-200% 0} to{background-position:200% 0} }
         @keyframes statIn     { from{opacity:0;transform:translateY(10px) scale(0.9)} to{opacity:1;transform:translateY(0) scale(1)} }
         @keyframes ping       { 0%{transform:scale(1);opacity:0.4} 70%,100%{transform:scale(2.4);opacity:0} }
         body { background-color:var(--nb-accent-light); }
 
         .anim-navbar    { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
-        .anim-hero-text { animation: slideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
-        .anim-hero-img  { animation: slideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.10s both; }
+        .anim-hero-text { animation: slideUp    0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+        .anim-hero-img  { animation: slideUp    0.7s cubic-bezier(0.16,1,0.3,1) 0.10s both; }
 
         .btn-brutal { transition:transform 0.08s ease,box-shadow 0.08s ease; }
         .btn-brutal:hover  { transform:translate(2px,2px);  box-shadow:2px 2px 0 var(--nb-primary) !important; }

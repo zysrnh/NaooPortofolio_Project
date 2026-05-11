@@ -31,8 +31,8 @@ export default function SupportersSection() {
   if (loading || supporters.length === 0) return null;
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-24 reveal from-left mt-12 overflow-visible">
-      <div className="flex items-center gap-3 mb-8 sm:mb-12 px-2">
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-24 reveal mt-20 overflow-visible">
+      <div className="flex items-center gap-4 mb-8 sm:mb-12">
         <h2 className="text-3xl sm:text-5xl font-black uppercase text-[var(--nb-primary)] tracking-tight whitespace-nowrap relative z-10">
           VIP Area
         </h2>
@@ -95,7 +95,7 @@ export default function SupportersSection() {
 
             
             <div className="flex-1 text-center lg:text-left pt-2 lg:pt-8 z-10 w-full overflow-hidden">
-              <h3 className="font-black text-2xl sm:text-5xl lg:text-7xl uppercase text-[var(--nb-primary)] mb-6 leading-[0.9] break-words" style={{ textShadow: "1px 1px 0 var(--nb-bg), 3px 3px 0 var(--nb-accent)" }}>
+              <h3 className="font-black text-2xl sm:text-5xl lg:text-7xl uppercase text-[var(--nb-primary)] mb-6 leading-[0.9] break-words" style={{ textShadow: "2px 2px 0 var(--nb-accent)" }}>
                 {s.name}
               </h3>
               
