@@ -3,6 +3,7 @@ import { useVisitorTracker } from "@/hooks/useVisitorTracker";
 import { useEffect, useState, useRef } from "react";
 import { router, Head } from "@inertiajs/react";
 import Magnetic from "@/components/Magnetic";
+import SupportersSection from "@/components/SupportersSection";
 
 // ── Scroll Reveal ─────────────────────────────────────────────────────────────
 function useScrollReveal(ready: boolean) {
@@ -176,7 +177,7 @@ function GitHubContributions({ username = "zysrnh" }: { username?: string }) {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">GitHub Activity</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">GitHub Activity</h2>
       <div className="border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
         <div className="bg-[var(--nb-primary)] px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -334,7 +335,7 @@ function Stats() {
 
   return (
     <section ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">By the Numbers</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">By the Numbers</h2>
       <div className={`grid gap-4`} style={{gridTemplateColumns:`repeat(${loading?5:Math.min(stats.length,5)},1fr)`}}>
         {loading && Array.from({length:5}).map((_,i)=>(
           <div key={i} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] p-6 flex flex-col items-center">
@@ -384,7 +385,7 @@ function TechStack() {
   };
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Tech Stack</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">Tech Stack</h2>
       <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
         <div className="flex border-b-4 border-[var(--nb-primary)] overflow-x-auto">
           {tabLabels.map((label, i) => (
@@ -417,124 +418,7 @@ function TechStack() {
   );
 }
 
-// ── Supporters ────────────────────────────────────────────────────────────────
-function SupportersSection() {
-  const [supporters, setSupporters] = useState<Supporter[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [swappedPhotos, setSwappedPhotos] = useState<Record<number, boolean>>({});
-
-  useEffect(() => {
-    fetch("/api/supporters")
-      .then(r => r.json())
-      .then(d => {
-        setSupporters(Array.isArray(d) ? d : []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
-  const toggleSwap = (id: number) => {
-    setSwappedPhotos(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  if (loading || supporters.length === 0) return null;
-
-  return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-24 reveal active from-left mt-8">
-      <div className="flex items-center gap-4 mb-8 sm:mb-12">
-        <h2 className="text-3xl sm:text-5xl font-black uppercase text-[var(--nb-primary)] tracking-tight">
-          VIP Area
-        </h2>
-        <div className="flex-1 h-2 sm:h-3 bg-[var(--nb-primary)] mt-1 sm:mt-2"></div>
-        <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[var(--nb-accent)] border-4 border-[var(--nb-primary)] rounded-full hidden sm:block"></div>
-      </div>
-      
-      <div className="grid grid-cols-1 gap-6 relative">
-        {supporters.map(s => {
-          const isSwapped = swappedPhotos[s.id] || false;
-          const hasPhoto2 = !!s.photo2;
-          const frontPhoto = isSwapped && hasPhoto2 ? s.photo2 : s.image;
-          const backPhoto = isSwapped ? s.image : (hasPhoto2 ? s.photo2 : null);
-
-          return (
-          <div key={s.id} className="relative bg-[var(--nb-accent-light)] border-4 border-[var(--nb-primary)] shadow-[12px_12px_0_var(--nb-primary)] sm:shadow-[20px_20px_0_var(--nb-primary)] p-6 sm:p-12 flex flex-col lg:flex-row gap-10 sm:gap-20 items-center lg:items-start group">
-            
-            {/* Background Dot Pattern */}
-            <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: "radial-gradient(var(--nb-primary) 2px, transparent 2px)", backgroundSize: "24px 24px" }}></div>
-            
-            {/* Dual Polaroid Photo Frames */}
-            <div className="relative z-10 w-56 sm:w-72 flex-shrink-0 min-h-[250px] sm:min-h-[320px] aspect-square mx-auto lg:mx-0">
-              {hasPhoto2 && (
-                <div 
-                  onClick={() => toggleSwap(s.id)}
-                  className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
-                    isSwapped 
-                    ? "z-20 w-full left-0 top-0 p-4 pb-12 sm:pb-16 shadow-[8px_8px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
-                    : "z-0 w-[85%] right-[-15%] top-[-10%] p-3 pb-12 shadow-[8px_8px_0_var(--nb-primary)] rotate-[10deg] hover:rotate-[15deg] hover:scale-105"
-                  }`}
-                >
-                  <div className="absolute -top-3 right-4 w-12 h-6 bg-white/70 border-2 border-[var(--nb-primary)] -rotate-6 z-30 shadow-sm backdrop-blur-sm"></div>
-                  <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden">
-                    <img src={s.photo2!} className="w-full h-full object-cover" alt="secondary" />
-                  </div>
-                </div>
-              )}
-
-              <div 
-                onClick={() => hasPhoto2 && toggleSwap(s.id)}
-                className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${hasPhoto2 ? 'cursor-pointer' : ''} bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
-                  isSwapped && hasPhoto2
-                  ? "z-0 w-[85%] right-[-15%] top-[-10%] p-3 pb-12 shadow-[8px_8px_0_var(--nb-primary)] rotate-[10deg] hover:rotate-[15deg] hover:scale-105"
-                  : "z-10 w-full left-0 top-0 p-4 pb-12 sm:pb-16 shadow-[8px_8px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
-                }`}
-              >
-                 {/* Tape Element */}
-                 <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-20 sm:w-24 h-8 sm:h-10 bg-white/70 border-2 border-[var(--nb-primary)] rotate-2 z-30 shadow-sm backdrop-blur-md"></div>
-                 
-                 <div className="w-full aspect-square border-4 border-[var(--nb-primary)] overflow-hidden bg-[var(--nb-primary)]">
-                   {s.image ? (
-                     <img src={s.image} className="w-full h-full object-cover" alt={s.name} />
-                   ) : (
-                     <div className="w-full h-full flex items-center justify-center font-black text-[var(--nb-bg)] opacity-50">NO PIC</div>
-                   )}
-                 </div>
-                 
-                 {/* Polaroid Caption */}
-                 <div className="absolute bottom-3 sm:bottom-4 left-0 right-0 text-center font-black text-xs sm:text-sm uppercase text-[var(--nb-primary)] opacity-90 tracking-[0.2em] px-2 truncate">
-                   #1 Supporter
-                 </div>
-              </div>
-            </div>
-
-            
-            <div className="flex-1 text-center lg:text-left pt-2 lg:pt-8 z-10 w-full">
-              {/* Massive Name */}
-              <h3 className="font-black text-4xl sm:text-6xl lg:text-7xl uppercase text-[var(--nb-primary)] mb-6 leading-[0.9]" style={{ textShadow: "3px 3px 0 var(--nb-bg), 6px 6px 0 var(--nb-accent)" }}>
-                {s.name}
-              </h3>
-              
-              {/* Role Badge */}
-              <div className="inline-block bg-[var(--nb-primary)] text-[var(--nb-bg)] px-6 py-3 border-2 sm:border-4 border-[var(--nb-primary)] font-black text-xs sm:text-sm uppercase tracking-widest mb-10 shadow-[6px_6px_0_var(--nb-accent)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all cursor-default">
-                {s.role}
-              </div>
-              
-              {/* Quotation Box */}
-              <div className="relative bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 sm:p-10 shadow-[8px_8px_0_var(--nb-primary)] mx-4 sm:mx-0 lg:mr-10">
-                <span className="absolute -top-8 -left-4 sm:-left-6 text-7xl sm:text-8xl text-[var(--nb-accent)] font-serif leading-none select-none" style={{ textShadow: "3px 3px 0 var(--nb-primary)" }}>&ldquo;</span>
-                <p className="font-bold text-base sm:text-xl text-[var(--nb-primary)] leading-relaxed relative z-10">
-                  {s.description}
-                </p>
-                <span className="absolute -bottom-14 -right-4 sm:-right-6 text-7xl sm:text-8xl text-[var(--nb-accent)] font-serif leading-none select-none" style={{ textShadow: "3px 3px 0 var(--nb-primary)" }}>&rdquo;</span>
-              </div>
-            </div>
-            
-          </div>
-        );
-        })}
-      </div>
-    </section>
-  );
-}
+// ── Capabilities (API-driven, with featured tech stack icons) ─────────────────
 
 // ── Capabilities (API-driven, with featured tech stack icons) ─────────────────
 function Capabilities() {
@@ -562,7 +446,7 @@ function Capabilities() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">What I Do Best</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">What I Do Best</h2>
       <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] overflow-hidden">
         <div className="p-7 sm:p-10">
           <p className="font-bold text-[var(--nb-accent-light)] text-base sm:text-lg leading-relaxed mb-8 max-w-2xl border-l-4 border-[var(--nb-accent)] pl-4">
@@ -628,7 +512,7 @@ function ExperienceTimeline() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Experience</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">Experience</h2>
       {loading && (
         <div className="flex flex-col gap-4">
           {[1,2,3].map(i => (
@@ -720,7 +604,7 @@ function CaseStudies() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-scale">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Case Studies</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">Case Studies</h2>
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {[1,2,3,4].map(i=>(
@@ -770,7 +654,7 @@ function Availability() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Availability</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">Availability</h2>
       <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] p-7 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="relative flex-shrink-0" style={{width:16,height:16}}>

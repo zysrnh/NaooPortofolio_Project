@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { router, Head } from "@inertiajs/react";
 import { useVisitorTracker } from "@/hooks/useVisitorTracker";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import SupportersSection from "@/components/SupportersSection";
 import Magnetic from "@/components/Magnetic";
 
 // ── Scroll reveal hook ────────────────────────────────────────────────────────
@@ -60,7 +61,7 @@ function FloatingBlocks() {
   return (
     <>
       <style>{`@keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}`}</style>
-      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,overflow:"hidden"}} aria-hidden="true">
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:-1,overflow:"hidden"}} aria-hidden="true">
         {BLOCK_CONFIGS.map((cfg,i)=>(
           <div key={i} style={{position:"absolute",top:cfg.top,left:cfg.left,width:cfg.size,height:cfg.size,
             background:cfg.type==="filled"?cfg.color:"transparent",
@@ -161,7 +162,7 @@ function TechStack() {
   const tabLabels=categories.length>0?categories:["Frontend","Backend","Tools","AI Tools"];
   return ( 
     <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20 reveal from-left">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Tech Stack</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] relative z-10">Tech Stack</h2>
       <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
         <div className="flex border-b-4 border-[var(--nb-primary)] overflow-x-auto">
           {tabLabels.map((label,i)=>(
@@ -230,11 +231,11 @@ function ProjectCount({projects}:{projects:Project[]}) {
   },[projects.length]);
   return (
     <section ref={sectionRef} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right">
-      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Project Stats</h2>
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] relative z-10">Project Stats</h2>
       <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
         <div className="grid grid-cols-2 md:grid-cols-4">
           {STATS.map((stat,i)=>(
-            <div key={i} className="relative flex flex-col items-center justify-center py-10 px-4 text-center overflow-hidden group border-b-4 border-[var(--nb-primary)] [&:nth-child(odd)]:border-r-4 [&:nth-child(odd)]:border-r-[var(--nb-primary)] md:[&:nth-child(n)]:border-r-4 md:[&:nth-child(n)]:border-r-[var(--nb-primary)] md:[&:last-child]:border-r-0 [&:nth-child(3)]:border-b-0 [&:nth-child(4)]:border-b-0 md:[&:nth-child(3)]:border-b-4 md:[&:nth-child(4)]:border-b-4">
+            <div key={i} className="relative flex flex-col items-center justify-center py-10 px-4 text-center overflow-hidden group border-b-4 border-[var(--nb-primary)] [&:nth-child(odd)]:border-r-4 [&:nth-child(odd)]:border-r-[var(--nb-primary)] md:[&:nth-child(n)]:border-r-4 md:[&:nth-child(n)]:border-r-[var(--nb-primary)] md:[&:last-child]:border-r-0 [&:nth-child(3)]:border-b-0 [&:nth-child(4)]:border-b-0 md:[&:nth-child(3)]:border-b-4 md:[&:nth-child(4)]:border-b-4 xs:border-r-0 xs:[&:nth-child(odd)]:border-r-0">
               <div className="absolute inset-0 bg-[var(--nb-primary)] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"/>
               <div className="absolute top-0 left-0 border-t-[18px] border-l-[18px] border-t-[var(--nb-accent)] border-l-transparent"/>
               <span className="relative z-10 font-black tabular-nums leading-none text-[var(--nb-primary)] group-hover:text-[var(--nb-accent)] transition-colors duration-300" style={{fontSize:"clamp(2.8rem,7vw,4.5rem)"}}>
@@ -633,7 +634,9 @@ export default function Home() {
         .contact-card:hover .contact-icon{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--nb-primary);}
         .contact-icon{transition:transform 0.15s ease,box-shadow 0.15s ease;}
         .tech-chip{display:inline-flex;align-items:center;gap:8px;border:3px solid var(--nb-primary);padding:7px 14px 7px 7px;background:var(--nb-bg);font-size:11px;font-weight:800;text-transform:uppercase;color:var(--nb-primary);letter-spacing:0.06em;transition:transform 0.12s ease,box-shadow 0.12s ease,background 0.12s ease;cursor:default;box-shadow:3px 3px 0 var(--nb-primary);flex:0 0 calc(25% - 15px);justify-content:flex-start;box-sizing:border-box;}
-        @media(max-width:640px){.tech-chip{flex:0 0 calc(50% - 6px);}}
+        @media(max-width:1024px){.tech-chip{flex:0 0 calc(33.33% - 12px);}}
+        @media(max-width:768px){.tech-chip{flex:0 0 calc(50% - 8px);}}
+        @media(max-width:480px){.tech-chip{flex:0 0 100%;}}
         .tech-chip:hover{background:var(--nb-accent);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--nb-primary);}
         .tech-chip img{width:26px;height:26px;object-fit:cover;border:2px solid var(--nb-primary);flex-shrink:0;}
         .stack-icon{display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--nb-primary);padding:3px;background:var(--nb-accent-light);transition:transform 0.1s ease,box-shadow 0.1s ease,background 0.1s ease;cursor:default;}
@@ -713,9 +716,9 @@ export default function Home() {
                 </div>
               ):(
                 <>
-                  <h1 className="text-4xl sm:text-5xl font-black uppercase mb-3 text-[var(--nb-primary)]">{hero.name}</h1>
-                  <p className="font-bold uppercase mb-4 sm:mb-5 text-[var(--nb-accent)] tracking-wider text-sm border-l-4 border-[var(--nb-accent)] pl-3">{hero.title}</p>
-                  <p className="font-semibold text-[var(--nb-primary)] text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-md">{hero.bio}</p>
+                  <h1 className="font-black uppercase mb-3 text-[var(--nb-primary)] leading-tight" style={{ fontSize: "clamp(1.75rem, 8vw, 3rem)" }}>{hero.name}</h1>
+                  <p className="font-bold uppercase mb-4 sm:mb-5 text-[var(--nb-accent)] tracking-wider text-xs sm:text-sm border-l-4 border-[var(--nb-accent)] pl-3">{hero.title}</p>
+                  <p className="font-semibold text-[var(--nb-primary)] text-sm sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-md">{hero.bio}</p>
                 </>
               )}
               <div className="flex gap-3 sm:gap-4 flex-wrap">
@@ -732,7 +735,7 @@ export default function Home() {
 
         {/* CONTACT */}
         <section id="contact" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-left" data-delay="0">
-          <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">Contact</h2>
+          <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] relative z-10">Contact</h2>
 
           {contactsLoading && (
             <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] flex flex-col md:flex-row overflow-hidden">
@@ -800,7 +803,7 @@ export default function Home() {
         {/* PROJECTS */}
         <section id="projects" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-right" data-delay="0">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-black uppercase text-[var(--nb-primary)]">Projects</h2>
+            <h2 className="text-2xl font-black uppercase text-[var(--nb-primary)] relative z-10">Projects</h2>
             {!projectsLoading&&totalSlides>0&&<div className="text-sm font-bold text-[var(--nb-primary)] uppercase tracking-widest">{currentSlide+1} / {totalSlides}</div>}
           </div>
 
@@ -878,7 +881,7 @@ export default function Home() {
 
         {/* ABOUT */}
         <section id="about" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-scale">
-          <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)]">About</h2>
+          <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">About</h2>
           <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] flex flex-col md:flex-row overflow-hidden">
             <div className="flex-1 p-8 sm:p-10 flex flex-col justify-center">
               <p className="font-black uppercase text-xs text-[var(--nb-accent)] tracking-[0.3em] mb-3">Who am I</p>
@@ -927,6 +930,9 @@ export default function Home() {
 
         {/* TESTIMONIALS */}
         <TestimonialsSection />
+
+        {/* SUPPORTERS */}
+        <SupportersSection />
 
         {/* FOOTER */}
         <footer className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] reveal">

@@ -988,7 +988,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
 
       {/* ── Stat Cards ─────────────────────────────────────────────────────── */}
       <div ref={secStats.ref} className={secStats.className} style={secStats.style}>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {loading
             ? [0,1,2,3].map(i => (
               <div key={i} style={{ border: "4px solid var(--nb-primary)", boxShadow: "6px 6px 0 var(--nb-primary)", height: 150, ...shimmer }} />
@@ -1062,7 +1062,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
 
       {/* ── Bottom Grid: Recent Projects + Activity Feed — SYMMETRIC ────────── */}
       <div ref={secBottom.ref} className={secBottom.className} style={secBottom.style}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }} className="overview-bottom-grid">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 overview-bottom-grid">
 
         {/* Recent Projects */}
         <div>
@@ -1547,31 +1547,35 @@ export default function Dashboard() {
   };
 
 const NavItems = ({ activeNav, unreadCount, onNavClick, onClose, groups, openGroups, onToggle }: { activeNav: string; unreadCount: number; onNavClick: (key: string) => void; onClose?: () => void; groups: any[]; openGroups: string[]; onToggle: (l: string) => void }) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+  <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingBottom: 20 }}>
     {groups.map((group, gIdx) => {
       const isOpen = openGroups.includes(group.label);
       return (
-        <div key={gIdx} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <div key={gIdx} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           <div 
             onClick={() => onToggle(group.label)}
             className="group-header"
             style={{ 
               display: "flex", alignItems: "center", justifyContent: "space-between", 
-              cursor: "pointer", padding: "8px 16px",
-              background: isOpen ? "rgba(255,255,255,0.03)" : "transparent",
-              transition: "all 0.2s ease",
-              margin: "0 8px",
-              borderRadius: 4
+              cursor: "pointer", padding: "10px 20px",
+              background: isOpen ? "rgba(255,255,255,0.04)" : "transparent",
+              transition: "all 0.2s cubic-bezier(0.16,1,0.3,1)",
+              margin: "0 10px",
+              borderRadius: "8px",
+              border: isOpen ? "2px solid rgba(255,255,255,0.1)" : "2px solid transparent"
             }}>
-            <p style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.25em", color: "var(--nb-accent)", opacity: isOpen ? 0.8 : 0.35, margin: 0, transition: "opacity 0.2s" }}>{group.label}</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--nb-accent)", opacity: isOpen ? 1 : 0.3 }} />
+              <p style={{ fontWeight: 900, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.2em", color: "var(--nb-accent)", opacity: isOpen ? 0.9 : 0.4, margin: 0 }}>{group.label}</p>
+            </div>
             <div style={{ 
               color: "var(--nb-accent)", 
-              opacity: 0.3, 
+              opacity: 0.4, 
               transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", 
-              transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.2s",
+              transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)",
               display: "flex"
             }}>
-              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </div>
           </div>
           
@@ -1582,22 +1586,23 @@ const NavItems = ({ activeNav, unreadCount, onNavClick, onClose, groups, openGro
             opacity: isOpen ? 1 : 0,
             transform: isOpen ? "translateY(0)" : "translateY(-10px)",
             pointerEvents: isOpen ? "auto" : "none"
-          }} className="dropdown-container">
-            <div style={{ transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)", transform: isOpen ? "translateY(0)" : "translateY(-10px)" }}>
+          }}>
+            <div style={{ padding: "4px 0" }}>
               {group.items.map((item: any, idx: number) => (
                 <div key={item.key}
                   className={`nav-item ${activeNav === item.key ? "active" : ""}`}
                   style={{ 
                     animation: isOpen ? `slideLeft 0.4s cubic-bezier(0.16,1,0.3,1) ${idx * 0.05}s both` : "none",
-                    marginBottom: 4 
+                    marginBottom: 6,
+                    paddingLeft: 36
                   }}
                   onClick={() => { onNavClick(item.key); onClose?.(); }}>
-                  {item.icon}
-                  {item.label}
+                  <div style={{ opacity: activeNav === item.key ? 1 : 0.7 }}>{item.icon}</div>
+                  <span style={{ flex: 1 }}>{item.label}</span>
                   {item.key === "messages" && unreadCount > 0 ? (
-                    <span style={{ marginLeft: "auto", background: "var(--nb-accent)", color: "var(--nb-primary)", border: "2px solid var(--nb-accent)", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
+                    <span style={{ background: "var(--nb-accent)", color: "var(--nb-primary)", border: "2px solid var(--nb-accent)", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0, boxShadow: "2px 2px 0 var(--nb-primary)" }}>{unreadCount}</span>
                   ) : activeNav === item.key ? (
-                    <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "var(--nb-accent)", display: "inline-block", flexShrink: 0 }} />
+                    <IconArrow size={12} />
                   ) : null}
                 </div>
               ))}
@@ -1610,19 +1615,21 @@ const NavItems = ({ activeNav, unreadCount, onNavClick, onClose, groups, openGro
 );
 
 const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) => (
-  <div style={{ borderTop: "4px solid var(--nb-accent)", padding: "16px", background: "rgba(0,0,0,0.2)", position: "relative", zIndex: 10 }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-       <div style={{ width: 32, height: 32, background: "var(--nb-accent)", color: "var(--nb-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 14, border: "2px solid var(--nb-primary)", boxShadow: "2px 2px 0 var(--nb-primary)" }}>
+  <div style={{ borderTop: "4px solid var(--nb-accent)", padding: "20px", background: "rgba(0,0,0,0.3)", position: "relative", zIndex: 10, boxShadow: "0 -10px 20px rgba(0,0,0,0.2)" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+       <div style={{ width: 40, height: 40, background: "var(--nb-accent)", color: "var(--nb-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 16, border: "3px solid var(--nb-primary)", boxShadow: "3px 3px 0 var(--nb-primary)" }}>
          {(user?.name ?? "Y")[0]}
        </div>
-       <div style={{ minWidth: 0 }}>
-         <p style={{ fontWeight: 900, fontSize: 10, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.05em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
-         <p style={{ fontWeight: 600, fontSize: 8, color: "var(--nb-accent-light)", opacity: 0.5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.email ?? "yusron@dev.com"}</p>
+       <div style={{ minWidth: 0, flex: 1 }}>
+         <p style={{ fontWeight: 900, fontSize: 11, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
+         <p style={{ fontWeight: 600, fontSize: 9, color: "var(--nb-accent-light)", opacity: 0.6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0, marginTop: 2 }}>{user?.email ?? "yusron@dev.com"}</p>
        </div>
     </div>
-    <button className="logout-btn" style={{ width: "100%", fontSize: 10, padding: "6px 12px" }} onClick={onLogout}>
-      <IconLogOut size={12} /> Logout System
-    </button>
+    <div style={{ display: "flex", gap: 8 }}>
+      <button className="logout-btn" style={{ flex: 1, fontSize: 10, padding: "10px 0" }} onClick={onLogout}>
+        <IconLogOut size={14} /> Logout
+      </button>
+    </div>
   </div>
 );
 
@@ -1761,6 +1768,15 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
         /* Symmetric bottom grid */
         .overview-bottom-grid { grid-template-columns: 1fr 1fr; }
         @media (max-width:1023px) { .overview-bottom-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 639px) {
+          .stat-card-value { font-size: 28px !important; }
+          .stat-card-label { font-size: 8px !important; }
+          .anim-topbar { padding: 0 12px !important; }
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: var(--nb-bg); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--nb-primary); border-radius: 10px; }
       `}</style>
 
       <div className="min-h-screen bg-[var(--nb-bg)] flex" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
@@ -1802,7 +1818,7 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
         <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
 
           {/* TOPBAR */}
-          <header className="anim-topbar bg-[var(--nb-bg)] border-b-4 border-[var(--nb-primary)] shadow-[0_4px_0_var(--nb-primary)] px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between gap-3 flex-shrink-0 sticky top-0 z-[100]">
+          <header className="anim-topbar bg-[var(--nb-bg)] border-b-4 border-[var(--nb-primary)] shadow-[0_4px_0_var(--nb-primary)] px-3 sm:px-8 py-3 sm:py-4 flex items-center justify-between gap-3 flex-shrink-0 sticky top-0 z-[100]">
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <button className="md:hidden p-2 border-4 border-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)]" onClick={() => setSidebarOpen(!sidebarOpen)}>
                 <IconMenu />

@@ -327,7 +327,7 @@ export default function SupporterManager() {
 
                 <form onSubmit={handleSave} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[8px_8px_0_var(--nb-primary)] overflow-hidden">
                     {/* Photo Area */}
-                    <div className="bg-[var(--nb-primary)] p-6 flex flex-col sm:flex-row items-center gap-6">
+                    <div className="bg-[var(--nb-primary)] p-4 sm:p-6 flex flex-col items-center gap-6">
                         
                         <div className="flex gap-4 flex-shrink-0">
                             {/* Avatar Preview */}

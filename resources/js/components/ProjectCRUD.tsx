@@ -478,21 +478,21 @@ function ProjectCard({ p, index, onToggle, onEdit, onDelete }: {
         transform: entered ? "translateY(0) scale(1)" : "translateY(24px) scale(0.97)",
         transition:"opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.22s cubic-bezier(0.16,1,0.3,1)",
       }}>
-      <div style={{display:"flex",alignItems:"flex-start",gap:20}}>
+      <div className="flex flex-col sm:flex-row items-start gap-5">
 
-        {/* ── Thumbnail — landscape on left ── */}
+        {/* ── Thumbnail — landscape ── */}
         {p.images?.[0] ? (
-          <div className="pc2-thumb" style={{width:220,height:140,flexShrink:0}}>
+          <div className="pc2-thumb w-full sm:w-[220px] h-[180px] sm:h-[140px] flex-shrink-0">
             <img src={p.images[0]} alt={p.title} style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top"}}/>
           </div>
         ) : (
-          <div style={{width:220,height:140,flexShrink:0,border:"3px solid var(--nb-primary)",background:"var(--nb-accent-light)",boxShadow:"3px 3px 0 var(--nb-primary)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div className="w-full sm:w-[220px] h-[140px] flex-shrink-0 border-[3px] border-[var(--nb-primary)] bg-[var(--nb-accent-light)] shadow-[3px_3px_0_var(--nb-primary)] flex items-center justify-center">
             <span style={{fontSize:40,opacity:0.15}}>🗂</span>
           </div>
         )}
 
         {/* ── Info + Actions ── */}
-        <div style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",gap:0,minHeight:140}}>
+        <div style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",gap:0,minHeight:140, width: "100%"}}>
           {/* Title row */}
           <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:4}}>
             <span style={{fontWeight:900,fontSize:15,textTransform:"uppercase",color:"var(--nb-primary)",letterSpacing:"0.05em"}}>{p.title}</span>
@@ -535,32 +535,24 @@ function ProjectCard({ p, index, onToggle, onEdit, onDelete }: {
           </div>
 
           {/* Actions */}
-          <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",borderTop:"3px solid var(--nb-primary)",paddingTop:12,marginTop:"auto"}}>
-            <button className="pc2-action" onClick={onToggle}
-              style={{background:p.visible?"var(--nb-bg)":"var(--nb-primary)",color:p.visible?"var(--nb-primary)":"var(--nb-accent)"}}
-              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 var(--nb-primary)";}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="2px 2px 0 var(--nb-primary)";}}>
+          <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",borderTop:"3px solid var(--nb-primary)",paddingTop:12,marginTop:12}}>
+            <button className="pc2-action flex-1 sm:flex-initial" onClick={onToggle}
+              style={{background:p.visible?"var(--nb-bg)":"var(--nb-primary)",color:p.visible?"var(--nb-primary)":"var(--nb-accent)"}}>
               {p.visible?<><IconEye/><span>Tampil</span></>:<><IconEyeOff/><span>Hidden</span></>}
             </button>
             {p.demoUrl&&(
-              <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" className="pc2-action"
-                style={{background:"var(--nb-accent-light)",color:"var(--nb-primary)",textDecoration:"none"}}
-                onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 var(--nb-primary)";}}
-                onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="2px 2px 0 var(--nb-primary)";}}>
+              <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" className="pc2-action flex-1 sm:flex-initial"
+                style={{background:"var(--nb-accent-light)",color:"var(--nb-primary)",textDecoration:"none"}}>
                 <IconExternal/><span>Demo</span>
               </a>
             )}
-            <div style={{flex:1}}/>
-            <button className="pc2-action" onClick={onEdit}
-              style={{background:"var(--nb-bg)",color:"var(--nb-primary)"}}
-              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-primary)";(e.currentTarget as HTMLElement).style.color="var(--nb-accent)";(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";(e.currentTarget as HTMLElement).style.boxShadow="3px 3px 0 var(--nb-primary)";}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.color="var(--nb-primary)";(e.currentTarget as HTMLElement).style.transform="";(e.currentTarget as HTMLElement).style.boxShadow="2px 2px 0 var(--nb-primary)";}}>
+            <div className="hidden sm:block sm:flex-1"/>
+            <button className="pc2-action flex-1 sm:flex-initial" onClick={onEdit}
+              style={{background:"var(--nb-bg)",color:"var(--nb-primary)"}}>
               <IconEdit/><span>Edit</span>
             </button>
-            <button className="pc2-action" onClick={onDelete}
-              style={{background:"var(--nb-bg)",color:"var(--nb-primary)"}}
-              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ef4444";(e.currentTarget as HTMLElement).style.color="white";(e.currentTarget as HTMLElement).style.borderColor="#ef4444";(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="var(--nb-bg)";(e.currentTarget as HTMLElement).style.color="var(--nb-primary)";(e.currentTarget as HTMLElement).style.borderColor="var(--nb-primary)";(e.currentTarget as HTMLElement).style.transform="";}}>
+            <button className="pc2-action flex-1 sm:flex-initial" onClick={onDelete}
+              style={{background:"var(--nb-bg)",color:"var(--nb-primary)"}}>
               <IconTrash/><span>Hapus</span>
             </button>
           </div>
