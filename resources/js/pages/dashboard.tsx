@@ -1635,6 +1635,7 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
   </div>
 );
 
+  const BOTTOM_NAV = [
     { key: "overview",  label: "Home",     icon: <IconGrid size={18} /> },
     { key: "projects",  label: "Projects", icon: <IconFolder size={18} /> },
     { key: "colors",    label: "Colors",   icon: <IconPalette size={18} /> },
