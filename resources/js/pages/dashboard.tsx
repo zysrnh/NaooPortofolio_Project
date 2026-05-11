@@ -73,6 +73,7 @@ const STATUS_STYLE: Record<string, string> = {
 };
 
 const NAV_ITEMS = [
+  { key: "supporters", label: "Supporters", icon: <IconUsersNav size={18} /> },
   { key: "overview",  label: "Overview",   icon: <IconGrid /> },
   { key: "visitors",  label: "Visitors",   icon: <IconUsersNav size={18} /> },
   { key: "users",     label: "Users List", icon: <IconUsersNav size={18} /> },
@@ -82,7 +83,6 @@ const NAV_ITEMS = [
   { key: "about",     label: "About Page", icon: <IconInfo size={18} /> },
   { key: "messages",  label: "Messages",   icon: <IconMail size={18} /> },
   { key: "guestbook", label: "Guestbook",  icon: <IconMessage size={18} /> },
-  { key: "supporters", label: "Supporters", icon: <IconUsersNav size={18} /> },
   { key: "profile",   label: "Profile",    icon: <IconUser /> },
 ];
 
@@ -930,6 +930,7 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
   const [projects,     setProjects]     = useState<ProjectItem[]>([]);
   const [stacks,       setStacks]       = useState<{ id: number; name: string; icon: string; is_visible: boolean; category?: string }[]>([]);
   const [availability, setAvailability] = useState<Availability | null>(null);
+  const [userCount,    setUserCount]    = useState(0);
   const [loading,      setLoading]      = useState(true);
 
   useEffect(() => {
@@ -938,10 +939,12 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
       fetch("/api/admin/projects",     { headers }).then(r => r.json()).catch(() => []),
       fetch("/api/tech-stacks",        { headers }).then(r => r.json()).catch(() => []),
       fetch("/api/about/availability", { headers }).then(r => r.json()).catch(() => null),
-    ]).then(([proj, stk, avail]) => {
+      fetch("/api/admin/users",        { headers }).then(r => r.json()).catch(() => ({})),
+    ]).then(([proj, stk, avail, users]) => {
       setProjects(Array.isArray(proj) ? proj : (proj.data ?? []));
       setStacks(Array.isArray(stk) ? stk : []);
       setAvailability(avail);
+      setUserCount(users.total ?? 0);
       setLoading(false);
     });
   }, []);
@@ -951,8 +954,8 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
 
   const STAT_CARDS = [
     { icon: <IconFolder size={22} />,  value: String(projects.length), label: "Total Projects", color: "var(--nb-accent)",  sparkData: [1,2,1,3,2,4,3, projects.length], trend: 12,  delay: 0.15 },
-    { icon: <IconRocket size={22} />,  value: String(live),            label: "Live Projects",  color: "#4ade80",  sparkData: [0,1,1,2,1,2,live,live],           trend: 8,   delay: 0.22 },
-    { icon: <IconGear   size={22} />,  value: String(inProg),          label: "In Progress",    color: "var(--nb-accent-light)",  sparkData: [0,1,0,2,1,inProg,inProg,inProg],  trend: -5,  delay: 0.29 },
+    { icon: <IconUsersNav size={22} />, value: String(userCount),      label: "Total Users",    color: "#9ECCFA",  sparkData: [0,1,1,2,1,2,userCount,userCount], trend: 0,   delay: 0.22 },
+    { icon: <IconRocket size={22} />,  value: String(live),            label: "Live Projects",  color: "#4ade80",  sparkData: [0,1,1,2,1,2,live,live],           trend: 8,   delay: 0.29 },
     { icon: <IconLayers size={22} />,  value: String(stacks.length),   label: "Tech Stacks",    color: "var(--nb-accent)",  sparkData: [1,2,3,4,5,6,stacks.length,stacks.length], trend: 20, delay: 0.36 },
   ];
 
@@ -1505,14 +1508,20 @@ export default function Dashboard() {
     : NAV_ITEMS.filter(item => ["profile"].includes(item.key));
 
   const NAV_GROUPS = [
-    { label: "Main", items: ["overview", "visitors", "users"] },
+    { label: "Main", items: ["supporters", "overview", "visitors", "users"] },
     { label: "Content", items: ["projects", "stacks", "homepage", "about"] },
-    { label: "Interactions", items: ["messages", "guestbook", "supporters"] },
+    { label: "Interactions", items: ["messages", "guestbook"] },
     { label: "System", items: ["profile"] },
   ].map(g => ({
     ...g,
     items: filteredNavItems.filter(i => g.items.includes(i.key))
   })).filter(g => g.items.length > 0);
+
+  const [openGroups, setOpenGroups] = useState<string[]>(NAV_GROUPS.map(g => g.label));
+
+  const toggleGroup = (label: string) => {
+    setOpenGroups(prev => prev.includes(label) ? prev.filter(l => l !== label) : [...prev, label]);
+  };
 
   const [visible,     setVisible]     = useState(false);
   const [activeNav,   setActiveNav]   = useState(isAdmin ? "overview" : "profile");
@@ -1537,27 +1546,66 @@ export default function Dashboard() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-const NavItems = ({ activeNav, unreadCount, onNavClick, onClose, groups }: { activeNav: string; unreadCount: number; onNavClick: (key: string) => void; onClose?: () => void; groups: any[] }) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-    {groups.map((group, gIdx) => (
-      <div key={gIdx} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <p style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.2em", color: "var(--nb-accent)", opacity: 0.4, padding: "0 16px", marginBottom: 4 }}>{group.label}</p>
-        {group.items.map((item: any, idx: number) => (
-          <div key={item.key}
-            className={`nav-item ${activeNav === item.key ? "active" : ""}`}
-            style={{ animationDelay: `${(gIdx * 5 + idx) * 0.03}s` }}
-            onClick={() => { onNavClick(item.key); onClose?.(); }}>
-            {item.icon}
-            {item.label}
-            {item.key === "messages" && unreadCount > 0 ? (
-              <span style={{ marginLeft: "auto", background: "var(--nb-accent)", color: "var(--nb-primary)", border: "2px solid var(--nb-accent)", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
-            ) : activeNav === item.key ? (
-              <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "var(--nb-accent)", display: "inline-block", flexShrink: 0 }} />
-            ) : null}
+const NavItems = ({ activeNav, unreadCount, onNavClick, onClose, groups, openGroups, onToggle }: { activeNav: string; unreadCount: number; onNavClick: (key: string) => void; onClose?: () => void; groups: any[]; openGroups: string[]; onToggle: (l: string) => void }) => (
+  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    {groups.map((group, gIdx) => {
+      const isOpen = openGroups.includes(group.label);
+      return (
+        <div key={gIdx} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <div 
+            onClick={() => onToggle(group.label)}
+            className="group-header"
+            style={{ 
+              display: "flex", alignItems: "center", justifyContent: "space-between", 
+              cursor: "pointer", padding: "8px 16px",
+              background: isOpen ? "rgba(255,255,255,0.03)" : "transparent",
+              transition: "all 0.2s ease",
+              margin: "0 8px",
+              borderRadius: 4
+            }}>
+            <p style={{ fontWeight: 900, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.25em", color: "var(--nb-accent)", opacity: isOpen ? 0.8 : 0.35, margin: 0, transition: "opacity 0.2s" }}>{group.label}</p>
+            <div style={{ 
+              color: "var(--nb-accent)", 
+              opacity: 0.3, 
+              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", 
+              transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.2s",
+              display: "flex"
+            }}>
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
           </div>
-        ))}
-      </div>
-    ))}
+          
+          <div style={{ 
+            maxHeight: isOpen ? "1000px" : "0", 
+            overflow: "hidden", 
+            transition: isOpen ? "max-height 0.8s cubic-bezier(0.16,1,0.3,1)" : "max-height 0.3s ease-in",
+            opacity: isOpen ? 1 : 0,
+            transform: isOpen ? "translateY(0)" : "translateY(-10px)",
+            pointerEvents: isOpen ? "auto" : "none"
+          }} className="dropdown-container">
+            <div style={{ transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)", transform: isOpen ? "translateY(0)" : "translateY(-10px)" }}>
+              {group.items.map((item: any, idx: number) => (
+                <div key={item.key}
+                  className={`nav-item ${activeNav === item.key ? "active" : ""}`}
+                  style={{ 
+                    animation: isOpen ? `slideLeft 0.4s cubic-bezier(0.16,1,0.3,1) ${idx * 0.05}s both` : "none",
+                    marginBottom: 4 
+                  }}
+                  onClick={() => { onNavClick(item.key); onClose?.(); }}>
+                  {item.icon}
+                  {item.label}
+                  {item.key === "messages" && unreadCount > 0 ? (
+                    <span style={{ marginLeft: "auto", background: "var(--nb-accent)", color: "var(--nb-primary)", border: "2px solid var(--nb-accent)", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0 }}>{unreadCount}</span>
+                  ) : activeNav === item.key ? (
+                    <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "var(--nb-accent)", display: "inline-block", flexShrink: 0 }} />
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    })}
   </div>
 );
 
@@ -1614,7 +1662,6 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
           text-transform:uppercase; letter-spacing:0.06em;
           color: var(--nb-accent); cursor:pointer; 
           transition: all 0.15s cubic-bezier(0.16,1,0.3,1);
-          animation: slideLeft 0.4s cubic-bezier(0.16,1,0.3,1) both;
           border: 2px solid transparent;
           margin: 0 8px;
         }
@@ -1726,7 +1773,7 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
             <div style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Dashboard</div>
           </div>
           <nav style={{ flex: 1, paddingTop: 16, paddingBottom: 16, position: "relative", overflowY: "auto" }}>
-            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} groups={NAV_GROUPS} />
+            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} groups={NAV_GROUPS} openGroups={openGroups} onToggle={toggleGroup} />
           </nav>
           <SidebarBottom user={user} onLogout={handleLogout} />
         </aside>
@@ -1746,7 +1793,7 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
             <button style={{ border: "2px solid var(--nb-accent)", padding: 8, color: "var(--nb-accent)", background: "transparent", cursor: "pointer", display: "flex" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>
           </div>
           <nav style={{ flex: 1, paddingTop: 12, paddingBottom: 12, position: "relative", zIndex: 10, overflowY: "auto" }}>
-            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} onClose={() => setSidebarOpen(false)} groups={NAV_GROUPS} />
+            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} onClose={() => setSidebarOpen(false)} groups={NAV_GROUPS} openGroups={openGroups} onToggle={toggleGroup} />
           </nav>
           <SidebarBottom user={user} onLogout={handleLogout} />
         </aside>
