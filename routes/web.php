@@ -23,6 +23,10 @@ Route::get('/login', function () {
     return Inertia::render('Login');
 })->middleware('guest')->name('login');
 
+Route::get('/register', function () {
+    return Inertia::render('Register');
+})->middleware('guest')->name('register');
+
 Route::get('/projects', function () {
     return Inertia::render('Projects');
 })->name('projects.index');

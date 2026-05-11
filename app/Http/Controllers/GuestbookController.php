@@ -21,8 +21,12 @@ class GuestbookController extends Controller
     // Simpan pesan dari publik
     public function store(Request $request)
     {
+        if (!auth()->check()) {
+            return response()->json(['message' => 'Kamu harus login dulu untuk kirim testimonial!'], 401);
+        }
+
         $validator = Validator::make($request->all(), [
-            'name'    => 'required|string|max:50',
+            'name'    => 'nullable|string|max:50',
             'message' => 'required|string|max:500',
         ]);
 
@@ -42,9 +46,10 @@ class GuestbookController extends Controller
         }
 
         $colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7D794'];
+        $user   = auth()->user();
 
         $guestbook = Guestbook::create([
-            'name'         => $request->name,
+            'name'         => $user->name ?? $request->name ?? 'Anonymous',
             'message'      => $request->message,
             'avatar_color' => $colors[array_rand($colors)],
             'ip_address'   => $request->ip(),

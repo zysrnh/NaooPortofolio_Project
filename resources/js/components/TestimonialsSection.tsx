@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { usePage, router } from '@inertiajs/react';
 
 interface Entry {
   id: number;
@@ -31,7 +32,11 @@ export default function TestimonialsSection() {
     } catch { /* silent */ } finally { setLoading(false); }
   };
 
+  const { auth } = usePage().props as any;
+  const user = auth?.user;
+
   useEffect(() => { fetchEntries(); }, []);
+  useEffect(() => { if(user) setName(user.name); }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,42 +89,66 @@ export default function TestimonialsSection() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[8px_8px_0_var(--nb-primary)] space-y-4">
-            <div>
-              <label className="block font-black text-[10px] uppercase tracking-[0.2em] text-[var(--nb-primary)] mb-2">Nama Lengkap</label>
-              <input
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="Ex: John Doe"
-                className="w-full bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] p-3 text-sm font-bold outline-none focus:bg-[var(--nb-accent-light)] transition-colors"
-                style={{ border: '3px solid var(--nb-primary)' }}
-                required
-              />
+          {!user ? (
+            <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] p-8 shadow-[8px_8px_0_var(--nb-accent)] text-center space-y-6">
+              <div className="w-16 h-16 bg-[var(--nb-accent)] border-4 border-[var(--nb-primary)] mx-auto flex items-center justify-center">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="3" strokeLinecap="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <div className="space-y-2">
+                <p className="font-black text-[var(--nb-bg)] uppercase text-sm tracking-widest">Wajib Login Bang!</p>
+                <p className="font-bold text-[var(--nb-accent)] opacity-70 uppercase text-[10px] tracking-widest leading-relaxed">
+                  Daftar dulu biar testimonial kamu resmi dan tercatat di sistem
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={() => router.visit('/login')}
+                  className="w-full bg-[var(--nb-accent)] text-[var(--nb-primary)] font-black uppercase text-xs py-3 border-4 border-[var(--nb-primary)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+                >
+                  Masuk Sekarang →
+                </button>
+                <button 
+                  onClick={() => router.visit('/register')}
+                  className="w-full bg-[var(--nb-bg)] text-[var(--nb-primary)] font-black uppercase text-xs py-3 border-4 border-[var(--nb-primary)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+                >
+                  Belum Punya Akun? Daftar
+                </button>
+              </div>
             </div>
-            <div>
-              <label className="block font-black text-[10px] uppercase tracking-[0.2em] text-[var(--nb-primary)] mb-2">Pesan / Testimonial</label>
-              <textarea
-                value={message}
-                onChange={e => setMessage(e.target.value)}
-                placeholder="Tulis kesan Anda..."
-                className="w-full bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] p-3 text-sm font-bold outline-none focus:bg-[var(--nb-accent-light)] transition-colors resize-none h-32"
-                style={{ border: '3px solid var(--nb-primary)' }}
-                required
-              />
-            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[8px_8px_0_var(--nb-primary)] space-y-4">
+              <div>
+                <label className="block font-black text-[10px] uppercase tracking-[0.2em] text-[var(--nb-primary)] mb-2">Nama Kamu (Otomatis)</label>
+                <div className="w-full bg-[var(--nb-accent-light)] border-3 border-[var(--nb-primary)] p-3 text-sm font-black text-[var(--nb-primary)] opacity-80" style={{ border: '3px solid var(--nb-primary)' }}>
+                  {user.name}
+                </div>
+              </div>
+              <div>
+                <label className="block font-black text-[10px] uppercase tracking-[0.2em] text-[var(--nb-primary)] mb-2">Pesan / Testimonial</label>
+                <textarea
+                  value={message}
+                  onChange={e => setMessage(e.target.value)}
+                  placeholder="Tulis kesan Anda..."
+                  className="w-full bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] p-3 text-sm font-bold outline-none focus:bg-[var(--nb-accent-light)] transition-colors resize-none h-32"
+                  style={{ border: '3px solid var(--nb-primary)' }}
+                  required
+                />
+              </div>
 
-            {error && <p className="text-red-500 font-black text-[10px] uppercase">{error}</p>}
-            {success && <p className="text-green-600 font-black text-[10px] uppercase">✓ Testimonial dikirim! Menunggu moderasi.</p>}
+              {error && <p className="text-red-500 font-black text-[10px] uppercase">{error}</p>}
+              {success && <p className="text-green-600 font-black text-[10px] uppercase">✓ Testimonial dikirim! Menunggu moderasi.</p>}
 
-            <button
-              type="submit"
-              disabled={sending}
-              className="w-full bg-[var(--nb-primary)] text-[var(--nb-accent)] font-black uppercase text-xs py-4 border-4 border-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-accent)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all disabled:opacity-50"
-            >
-              {sending ? 'Mengirim...' : 'Kirim Testimonial →'}
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={sending}
+                className="w-full bg-[var(--nb-primary)] text-[var(--nb-accent)] font-black uppercase text-xs py-4 border-4 border-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-accent)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all disabled:opacity-50"
+              >
+                {sending ? 'Mengirim...' : 'Kirim Testimonial →'}
+              </button>
+            </form>
+          )}
         </div>
 
         {/* Right: List of Testimonials */}
