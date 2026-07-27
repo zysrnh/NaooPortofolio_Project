@@ -65,6 +65,14 @@ const IconFile = () => (
   </svg>
 );
 
+const IconDownload = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </svg>
+);
+
 const IconClose = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
     <line x1="18" y1="6" x2="6" y2="18" />
@@ -84,6 +92,7 @@ export default function DirectChatManager() {
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<{ url: string; name: string; isImage: boolean } | null>(null);
+  const [previewModalImg, setPreviewModalImg] = useState<string | null>(null);
 
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingChat, setLoadingChat] = useState(false);
@@ -331,7 +340,7 @@ export default function DirectChatManager() {
                         className={`flex gap-3 items-start ${isMe ? "flex-row-reverse" : "flex-row"}`}
                       >
                         {/* Profile Avatar Badge */}
-                        <div className="w-8 h-8 border-2 border-[var(--nb-primary)] bg-[var(--nb-accent)] flex items-center justify-center font-black text-xs text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)] flex-shrink-0 overflow-hidden">
+                        <div className="w-8 h-8 border-2 border-[var(--nb-primary)] bg-[var(--nb-accent)] flex items-center justify-center font-black text-xs text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)] flex-shrink-0 overflow-hidden mt-0.5">
                           {avatar ? (
                             <img src={avatar} alt={senderName} className="w-full h-full object-cover" />
                           ) : (
@@ -354,8 +363,8 @@ export default function DirectChatManager() {
                                 <img
                                   src={msg.attachment}
                                   alt="Attached Photo"
-                                  className="max-w-full max-h-[280px] object-cover border-2 border-[var(--nb-primary)] cursor-pointer shadow-[2px_2px_0_var(--nb-primary)]"
-                                  onClick={() => window.open(msg.attachment, "_blank")}
+                                  className="max-w-full max-h-[280px] object-cover border-2 border-[var(--nb-primary)] cursor-pointer shadow-[2px_2px_0_var(--nb-primary)] hover:opacity-95 transition-opacity"
+                                  onClick={() => setPreviewModalImg(msg.attachment!)}
                                 />
                               </div>
                             )}
@@ -462,6 +471,47 @@ export default function DirectChatManager() {
         </div>
 
       </div>
+
+      {/* Lightbox Photo Preview Modal */}
+      {previewModalImg && (
+        <div
+          className="fixed inset-0 z-[99999] bg-[var(--nb-primary)] bg-opacity-80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setPreviewModalImg(null)}
+        >
+          <div
+            className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[12px_12px_0_var(--nb-accent)] max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden p-4 space-y-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b-4 border-[var(--nb-primary)] pb-3">
+              <span className="font-black text-xs uppercase tracking-wider text-[var(--nb-primary)]">
+                Pratinjau Foto
+              </span>
+              <div className="flex items-center gap-2">
+                <a
+                  href={previewModalImg}
+                  download="chat_photo.png"
+                  className="bg-[var(--nb-accent)] text-[var(--nb-primary)] border-2 border-[var(--nb-primary)] px-3 py-1 font-black text-xs uppercase shadow-[2px_2px_0_var(--nb-primary)] hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer flex items-center gap-1.5"
+                >
+                  <IconDownload /> Unduh Foto
+                </a>
+                <button
+                  onClick={() => setPreviewModalImg(null)}
+                  className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-2 border-[var(--nb-primary)] p-1.5 font-black cursor-pointer"
+                >
+                  <IconClose />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-auto flex items-center justify-center bg-[var(--nb-accent-light)] border-2 border-[var(--nb-primary)] p-2">
+              <img
+                src={previewModalImg}
+                alt="Full Preview"
+                className="max-w-full max-h-[75vh] object-contain border-2 border-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-primary)]"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

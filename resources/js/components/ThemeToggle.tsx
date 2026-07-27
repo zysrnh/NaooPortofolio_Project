@@ -136,14 +136,24 @@ export default function ThemeToggle() {
     return (
         <>
             <style>{`.nb-tog{transition:transform .08s ease,box-shadow .08s ease}.nb-tog:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--nb-shadow,var(--nb-primary))!important}.nb-tog:active{transform:translate(1px,1px)}`}</style>
-            <button ref={btnRef} onClick={toggle} title="Ganti Tema" className="nb-tog"
-                style={{ display:'flex', alignItems:'center', gap:6, padding:'6px 10px', border:'3px solid var(--nb-primary)', background:'var(--nb-bg)', boxShadow:'3px 3px 0 var(--nb-shadow,var(--nb-primary))', cursor:'pointer', outline:'none' }}>
-                <div style={{ display:'flex', gap:2 }}>
-                    <div style={{ width:8, height:20, background:current.primary }} />
-                    <div style={{ width:8, height:20, background:current.bg, border:'1.5px solid rgba(0,0,0,0.12)' }} />
-                    <div style={{ width:8, height:20, background:current.accent }} />
+            <button ref={btnRef} onClick={toggle} title="Ganti Tema Warna" className="nb-tog"
+                style={{ display:'flex', alignItems:'center', gap:7, padding:'6px 10px', border:'3px solid var(--nb-primary)', background:'var(--nb-bg)', color:'var(--nb-primary)', boxShadow:'3px 3px 0 var(--nb-shadow,var(--nb-primary))', cursor:'pointer', outline:'none' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+                    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+                    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+                    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.7-.75 1.7-1.7 0-.42-.16-.8-.43-1.07-.27-.27-.44-.66-.44-1.09 0-.85.69-1.54 1.54-1.54h1.79c3.24 0 5.84-2.6 5.84-5.84 0-5.38-4.32-9.76-9.7-9.76z"/>
+                </svg>
+                <div style={{ display:'flex', gap:2.5, alignItems:'center' }}>
+                    <div style={{ width:7, height:16, background:current.primary, border:'1px solid var(--nb-primary)' }} />
+                    <div style={{ width:7, height:16, background:current.bg, border:'1px solid var(--nb-primary)' }} />
+                    <div style={{ width:7, height:16, background:current.accent, border:'1px solid var(--nb-primary)' }} />
                 </div>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+                <span style={{ fontWeight: 900, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="hidden sm:inline">
+                    {current.label}
+                </span>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
                     style={{ transition:'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}>
                     <polyline points="6 9 12 15 18 9"/>
                 </svg>

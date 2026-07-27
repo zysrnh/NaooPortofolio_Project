@@ -1529,7 +1529,21 @@ export default function Dashboard() {
   };
 
   const [visible,     setVisible]     = useState(false);
-  const [activeNav,   setActiveNav]   = useState(isAdmin ? "overview" : "profile");
+  const [unreadChatCount, setUnreadChatCount] = useState(0);
+
+  const [activeNav,   setActiveNav]   = useState(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      let navParam = urlParams.get("tab") || localStorage.getItem("naoo_dashboard_nav");
+      if (navParam) {
+        navParam = navParam.trim().toLowerCase().replace(/[\s_]+/g, "-");
+        if (filteredNavItems.some((i) => i.key === navParam)) {
+          return navParam;
+        }
+      }
+    }
+    return isAdmin ? "overview" : "profile";
+  });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [time,        setTime]        = useState(new Date());
   const [unreadCount, setUnreadCount] = useState(0);
@@ -1542,16 +1556,34 @@ export default function Dashboard() {
       .then(r => r.json()).then(d => setUnreadCount(d.unread ?? 0)).catch(() => {});
   }, []);
 
+  useEffect(() => {
+    const fetchUnreadChat = () => {
+      fetch("/api/user-chats/unread-count", { headers: { "X-XSRF-TOKEN": getCsrfToken() } })
+        .then(r => r.json()).then(d => setUnreadChatCount(d.unread ?? 0)).catch(() => {});
+    };
+    fetchUnreadChat();
+    const interval = setInterval(fetchUnreadChat, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleLogout = () => router.post("/logout");
   const handleHome   = () => router.visit("/");
   const greeting = () => { const h = time.getHours(); return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening"; };
 
   const handleNavClick = (key: string) => {
-    setActiveNav(key); setSidebarOpen(false);
+    const cleanKey = key.trim().toLowerCase().replace(/[\s_]+/g, "-");
+    setActiveNav(cleanKey);
+    setSidebarOpen(false);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("naoo_dashboard_nav", cleanKey);
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", cleanKey);
+      window.history.replaceState({}, "", url.toString());
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-const NavItems = ({ activeNav, unreadCount, onNavClick, onClose, groups, openGroups, onToggle }: { activeNav: string; unreadCount: number; onNavClick: (key: string) => void; onClose?: () => void; groups: any[]; openGroups: string[]; onToggle: (l: string) => void }) => (
+const NavItems = ({ activeNav, unreadCount, unreadChatCount, onNavClick, onClose, groups, openGroups, onToggle }: { activeNav: string; unreadCount: number; unreadChatCount: number; onNavClick: (key: string) => void; onClose?: () => void; groups: any[]; openGroups: string[]; onToggle: (l: string) => void }) => (
   <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingBottom: 20 }}>
     {groups.map((group, gIdx) => {
       const isOpen = openGroups.includes(group.label);
@@ -1606,6 +1638,8 @@ const NavItems = ({ activeNav, unreadCount, onNavClick, onClose, groups, openGro
                   <span style={{ flex: 1 }}>{item.label}</span>
                   {item.key === "messages" && unreadCount > 0 ? (
                     <span style={{ background: "var(--nb-accent)", color: "var(--nb-primary)", border: "2px solid var(--nb-accent)", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0, boxShadow: "2px 2px 0 var(--nb-primary)" }}>{unreadCount}</span>
+                  ) : item.key === "user-chat" && unreadChatCount > 0 ? (
+                    <span style={{ background: "var(--nb-accent)", color: "var(--nb-primary)", border: "2px solid var(--nb-accent)", fontSize: 10, fontWeight: 900, padding: "1px 7px", minWidth: 20, textAlign: "center", flexShrink: 0, boxShadow: "2px 2px 0 var(--nb-primary)" }}>{unreadChatCount}</span>
                   ) : activeNav === item.key ? (
                     <IconArrow size={12} />
                   ) : null}
@@ -1798,7 +1832,7 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
             <div style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Dashboard</div>
           </div>
           <nav style={{ flex: 1, paddingTop: 16, paddingBottom: 16, position: "relative", overflowY: "auto" }}>
-            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} groups={NAV_GROUPS} openGroups={openGroups} onToggle={toggleGroup} />
+            <NavItems activeNav={activeNav} unreadCount={unreadCount} unreadChatCount={unreadChatCount} onNavClick={handleNavClick} groups={NAV_GROUPS} openGroups={openGroups} onToggle={toggleGroup} />
           </nav>
           <SidebarBottom user={user} onLogout={handleLogout} />
         </aside>
@@ -1818,7 +1852,7 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
             <button style={{ border: "2px solid var(--nb-accent)", padding: 8, color: "var(--nb-accent)", background: "transparent", cursor: "pointer", display: "flex" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>
           </div>
           <nav style={{ flex: 1, paddingTop: 12, paddingBottom: 12, position: "relative", zIndex: 10, overflowY: "auto" }}>
-            <NavItems activeNav={activeNav} unreadCount={unreadCount} onNavClick={handleNavClick} onClose={() => setSidebarOpen(false)} groups={NAV_GROUPS} openGroups={openGroups} onToggle={toggleGroup} />
+            <NavItems activeNav={activeNav} unreadCount={unreadCount} unreadChatCount={unreadChatCount} onNavClick={handleNavClick} onClose={() => setSidebarOpen(false)} groups={NAV_GROUPS} openGroups={openGroups} onToggle={toggleGroup} />
           </nav>
           <SidebarBottom user={user} onLogout={handleLogout} />
         </aside>
@@ -1838,6 +1872,14 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {unreadChatCount > 0 && (
+                <button onClick={() => handleNavClick("user-chat")}
+                  style={{ display: "flex", alignItems: "center", gap: 5, border: "3px solid var(--nb-primary)", background: "var(--nb-accent)", color: "var(--nb-primary)", padding: "6px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0 var(--nb-primary)", fontFamily: "inherit", animation: "pulse 2s ease infinite" }}>
+                  <IconMessage size={12} />
+                  <span className="hidden xs:inline">{unreadChatCount} Chat Baru</span>
+                  <span className="xs:hidden">{unreadChatCount}</span>
+                </button>
+              )}
               {unreadCount > 0 && (
                 <button onClick={() => handleNavClick("messages")}
                   style={{ display: "flex", alignItems: "center", gap: 5, border: "3px solid var(--nb-primary)", background: "var(--nb-accent)", color: "var(--nb-primary)", padding: "6px 10px", fontWeight: 900, fontSize: 10, textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0 var(--nb-primary)", fontFamily: "inherit", animation: "pulse 2s ease infinite" }}>

@@ -189,6 +189,7 @@ Route::prefix('api')->group(function () {
         Route::delete('/saved-colors/{id}',    [\App\Http\Controllers\ColorPaletteController::class, 'destroy']);
 
         // Direct User-to-User Chat
+        Route::get   ('/user-chats/unread-count',  [\App\Http\Controllers\UserChatController::class, 'unreadCount']);
         Route::get   ('/user-chats/users',         [\App\Http\Controllers\UserChatController::class, 'users']);
         Route::get   ('/user-chats/{receiverId}',  [\App\Http\Controllers\UserChatController::class, 'index']);
         Route::post  ('/user-chats',               [\App\Http\Controllers\UserChatController::class, 'store']);

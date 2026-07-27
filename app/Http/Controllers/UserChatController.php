@@ -90,4 +90,14 @@ class UserChatController extends Controller
 
         return response()->json($chat, 201);
     }
+
+    // Total pesan unread untuk user saat ini
+    public function unreadCount()
+    {
+        $count = UserChat::where('receiver_id', Auth::id())
+            ->where('is_read', false)
+            ->count();
+
+        return response()->json(['unread' => $count]);
+    }
 }
