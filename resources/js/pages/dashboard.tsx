@@ -10,6 +10,8 @@ import GuestbookManager from "@/components/GuestbookManager";
 import SupporterManager from "@/components/SupporterManager";
 import UserManager from "@/components/UserManager";
 import SavedColorsManager from "@/components/SavedColorsManager";
+import DirectChatManager from "@/components/DirectChatManager";
+import UserProfileManager from "@/components/UserProfileManager";
 
 // ── SVG Icons ─────────────────────────────────────────────────────────────────
 const IconFolder    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
@@ -82,6 +84,7 @@ const NAV_ITEMS = [
   { key: "stacks",    label: "Tech Stack", icon: <IconLayers size={18} /> },
   { key: "homepage",  label: "Homepage",   icon: <IconGlobe size={18} /> },
   { key: "about",     label: "About Page", icon: <IconInfo size={18} /> },
+  { key: "user-chat", label: "User Chat",  icon: <IconMessage size={18} /> },
   { key: "messages",  label: "Messages",   icon: <IconMail size={18} /> },
   { key: "guestbook", label: "Guestbook",  icon: <IconMessage size={18} /> },
   { key: "colors",    label: "Saved Colors", icon: <IconPalette size={18} /> },
@@ -1507,12 +1510,12 @@ export default function Dashboard() {
   // Filter nav items based on role
   const filteredNavItems = isAdmin 
     ? NAV_ITEMS 
-    : NAV_ITEMS.filter(item => ["profile", "colors"].includes(item.key));
+    : NAV_ITEMS.filter(item => ["profile", "colors", "user-chat"].includes(item.key));
 
   const NAV_GROUPS = [
     { label: "Main", items: ["supporters", "overview", "visitors", "users"] },
     { label: "Content", items: ["projects", "stacks", "homepage", "about"] },
-    { label: "Interactions", items: ["messages", "guestbook", "colors"] },
+    { label: "Interactions", items: ["user-chat", "messages", "guestbook", "colors"] },
     { label: "System", items: ["profile"] },
   ].map(g => ({
     ...g,
@@ -1619,8 +1622,12 @@ const NavItems = ({ activeNav, unreadCount, onNavClick, onClose, groups, openGro
 const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) => (
   <div style={{ borderTop: "4px solid var(--nb-accent)", padding: "20px", background: "rgba(0,0,0,0.3)", position: "relative", zIndex: 10, boxShadow: "0 -10px 20px rgba(0,0,0,0.2)" }}>
     <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-       <div style={{ width: 40, height: 40, background: "var(--nb-accent)", color: "var(--nb-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 16, border: "3px solid var(--nb-primary)", boxShadow: "3px 3px 0 var(--nb-primary)" }}>
-         {(user?.name ?? "Y")[0]}
+       <div style={{ width: 40, height: 40, background: "var(--nb-accent)", color: "var(--nb-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 16, border: "3px solid var(--nb-primary)", boxShadow: "3px 3px 0 var(--nb-primary)", overflow: "hidden" }}>
+         {user?.avatar ? (
+           <img src={user.avatar} alt={user.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+         ) : (
+           (user?.name ?? "Y")[0]
+         )}
        </div>
        <div style={{ minWidth: 0, flex: 1 }}>
          <p style={{ fontWeight: 900, fontSize: 11, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.1em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0 }}>{user?.name ?? "Yusron"}</p>
@@ -1903,6 +1910,12 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
             {activeNav === "supporters" && (
               <div className="content-fade">
                 <SupporterManager />
+              </div>
+            )}
+
+            {activeNav === "user-chat" && (
+              <div className="content-fade">
+                <DirectChatManager />
               </div>
             )}
 

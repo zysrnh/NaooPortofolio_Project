@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 interface Message {
   id: string;
@@ -8,208 +8,487 @@ interface Message {
   timestamp: string;
 }
 
-const INITIAL_MESSAGES: Message[] = [
-  {
-    id: "1",
-    sender: "bot",
-    text: "Halo! 👋 Saya Naoo AI Assistant. Ada yang bisa saya bantu terkait profil, portofolio proyek, atau kontak Zaki Yusron Hasyimmi?",
-    timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-  },
-];
+interface DirectUser {
+  id: number;
+  name: string;
+  email: string;
+  role?: string;
+}
 
-const SUGGESTIONS = [
-  "🚀 Apa saja proyek terbarunya?",
-  "🛠️ Apa tech stack utamanya?",
-  "💼 Apakah sedang open for hire?",
-  "✉️ Bagaimana cara menghubungi?",
-];
+interface DirectMessage {
+  id: number;
+  sender_id: number;
+  receiver_id: number;
+  message: string;
+  created_at: string;
+  sender?: { id: number; name: string };
+  receiver?: { id: number; name: string };
+}
+
+function getCsrfToken(): string {
+  const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+  if (match) return decodeURIComponent(match[1]);
+  return "";
+}
+
+// --- SVG Icons ---
+const IconBot = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="10" rx="2" />
+    <circle cx="12" cy="5" r="2" />
+    <path d="M12 7v4" />
+    <line x1="8" y1="16" x2="8.01" y2="16" />
+    <line x1="16" y1="16" x2="16.01" y2="16" />
+  </svg>
+);
+
+const IconUsers = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
+const IconSend = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="22" y1="2" x2="11" y2="13" />
+    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+  </svg>
+);
+
+const IconMessage = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+const IconClose = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+const IconExternalLink = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    <polyline points="15 3 21 3 21 9" />
+    <line x1="10" y1="14" x2="21" y2="3" />
+  </svg>
+);
+
+const IconBack = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 18 9 12 15 6" />
+  </svg>
+);
 
 export default function ChatbotWidget() {
+  const props = usePage().props as any;
+  const user = props.auth?.user;
+
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
-  const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [activeTab, setActiveTab] = useState<"ai" | "community">("ai");
+
+  // AI Chat state
+  const [aiMessages, setAiMessages] = useState<Message[]>([
+    {
+      id: "1",
+      sender: "bot",
+      text: "Halo! Aku Naoo Helper. Ada yang bisa aku bantu seputar proyek, keahlian, atau pengalaman web development Zaki? Silakan tanya saja ya!",
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    },
+  ]);
+  const [aiInput, setAiInput] = useState("");
+  const [isAiTyping, setIsAiTyping] = useState(false);
+
+  // Direct User Chat state
+  const [userList, setUserList] = useState<DirectUser[]>([]);
+  const [selectedUser, setSelectedUser] = useState<DirectUser | null>(null);
+  const [directMessages, setDirectMessages] = useState<DirectMessage[]>([]);
+  const [directInput, setDirectInput] = useState("");
+  const [isSendingDirect, setIsSendingDirect] = useState(false);
+
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, isOpen]);
+  }, [aiMessages, directMessages, isOpen, activeTab, selectedUser]);
 
-  const handleSend = (textToSend?: string) => {
-    const query = (textToSend || input).trim();
-    if (!query) return;
+  useEffect(() => {
+    if (isOpen && activeTab === "community" && user) {
+      fetchUserList();
+    }
+  }, [isOpen, activeTab, user]);
+
+  useEffect(() => {
+    if (selectedUser) {
+      fetchDirectMessages(selectedUser.id);
+    }
+  }, [selectedUser]);
+
+  const fetchUserList = async () => {
+    try {
+      const res = await fetch("/api/user-chats/users");
+      if (res.ok) {
+        const data = await res.json();
+        setUserList(data);
+      }
+    } catch (e) {}
+  };
+
+  const fetchDirectMessages = async (receiverId: number) => {
+    try {
+      const res = await fetch(`/api/user-chats/${receiverId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setDirectMessages(data);
+      }
+    } catch (e) {}
+  };
+
+  const handleSendAi = async () => {
+    const text = aiInput.trim();
+    if (!text || isAiTyping) return;
 
     const userMsg: Message = {
       id: Date.now().toString(),
       sender: "user",
-      text: query,
+      text: text,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
-    if (!textToSend) setInput("");
-    setIsTyping(true);
+    setAiMessages((prev) => [...prev, userMsg]);
+    setAiInput("");
+    setIsAiTyping(true);
 
-    // Smart Bot Responses
-    setTimeout(() => {
-      let reply = "Terima kasih sudah bertanya! Zaki adalah seorang Fullstack Web Developer yang berpengalaman membangun aplikasi modern dengan React, Laravel, dan TypeScript.";
-      const lower = query.toLowerCase();
+    try {
+      const res = await fetch("/api/chatbot", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-XSRF-TOKEN": getCsrfToken(),
+        },
+        body: JSON.stringify({
+          message: text,
+          history: aiMessages.map((m) => ({ sender: m.sender, text: m.text })),
+        }),
+      });
 
-      if (lower.includes("proyek") || lower.includes("project") || lower.includes("portofolio")) {
-        reply = "Zaki telah mengerjakan berbagai proyek full-stack seperti Web Portfolio CMS, Smart Color Picker, Sistem Informasi Geografis, hingga Dashboard Admin. Kamu bisa melihat selengkapnya di halaman /projects !";
-      } else if (lower.includes("stack") || lower.includes("skill") || lower.includes("keahlian") || lower.includes("bahasa")) {
-        reply = "Tech Stack utama Zaki meliputi: React 19, TypeScript, Laravel 12, Tailwind CSS v4, Inertia.js, Node.js, REST API, dan SQLite/MySQL.";
-      } else if (lower.includes("hire") || lower.includes("kerja") || lower.includes("job") || lower.includes("freelance") || lower.includes("open")) {
-        reply = "Ya! Zaki sedang *Open for Work & Freelance Projects*. Silakan kirim pesan melalui halaman Contact atau via email!";
-      } else if (lower.includes("kontak") || lower.includes("hubungi") || lower.includes("email") || lower.includes("contact")) {
-        reply = "Kamu bisa menghubungi Zaki melalui halaman /contact atau langsung via email dan media sosial di bagian footer website.";
-      } else if (lower.includes("halo") || lower.includes("hai") || lower.includes("hi") || lower.includes("pagi") || lower.includes("malam")) {
-        reply = "Halo! Senang bisa menyapa kamu. Ada informasi khusus tentang Zaki yang ingin kamu ketahui?";
-      }
+      const data = await res.json();
+      const replyText = data.reply || "Maaf ya, ada sedikit kendala koneksi.";
 
       const botMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: "bot",
-        text: reply,
+        text: replyText,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
 
-      setMessages((prev) => [...prev, botMsg]);
-      setIsTyping(false);
-    }, 800);
+      setAiMessages((prev) => [...prev, botMsg]);
+    } catch (e) {
+      setAiMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          sender: "bot",
+          text: "Maaf ya, gagal terhubung ke server Naoo Helper.",
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+    } finally {
+      setIsAiTyping(false);
+    }
   };
+
+  const handleSendDirect = async () => {
+    const text = directInput.trim();
+    if (!text || !selectedUser || isSendingDirect) return;
+
+    setIsSendingDirect(true);
+    try {
+      const res = await fetch("/api/user-chats", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-XSRF-TOKEN": getCsrfToken(),
+        },
+        body: JSON.stringify({ receiver_id: selectedUser.id, message: text }),
+      });
+
+      if (res.ok) {
+        setDirectInput("");
+        fetchDirectMessages(selectedUser.id);
+      }
+    } catch (e) {
+    } finally {
+      setIsSendingDirect(false);
+    }
+  };
+
+  const fmtTime = (d: string) =>
+    new Date(d).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
   return (
     <>
-      {/* Floating Chat Button (Placed beside Back-To-Top button) */}
+      {/* Floating Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-[28px] right-[88px] z-[99] w-[48px] h-[48px] border-4 border-[var(--nb-primary)] bg-[var(--nb-accent)] shadow-[4px_4px_0_var(--nb-primary)] flex items-center justify-center cursor-pointer transition-all duration-150 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_var(--nb-primary)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-        aria-label="Open Chatbot Assistant"
-        title="Naoo AI Assistant Chatbot"
+        className="fixed bottom-[28px] right-[88px] z-[99] w-[48px] h-[48px] border-4 border-[var(--nb-primary)] bg-[var(--nb-accent)] shadow-[4px_4px_0_var(--nb-primary)] flex items-center justify-center cursor-pointer transition-all duration-150 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_var(--nb-primary)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-[var(--nb-primary)]"
+        aria-label="Toggle Assistant Chat"
+        title="Naoo Helper & User Chat"
       >
-        {isOpen ? (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="3" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        ) : (
-          <div className="relative">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--nb-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg>
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-500 border-2 border-[var(--nb-primary)] rounded-full animate-ping" />
-          </div>
-        )}
+        {isOpen ? <IconClose /> : <IconMessage />}
       </button>
 
-      {/* Floating Chat Popup Drawer */}
+      {/* Floating Popup Drawer */}
       {isOpen && (
-        <div className="fixed bottom-[90px] right-[16px] sm:right-[28px] z-[9999] w-[calc(100vw-32px)] sm:w-[380px] h-[500px] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
+        <div className="fixed bottom-[90px] right-[16px] sm:right-[28px] z-[9999] w-[calc(100vw-32px)] sm:w-[400px] h-[520px] bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
           
-          {/* Header */}
-          <div className="bg-[var(--nb-primary)] text-[var(--nb-bg)] p-4 border-b-4 border-[var(--nb-primary)] flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          {/* Top Header */}
+          <div className="bg-[var(--nb-primary)] text-[var(--nb-bg)] p-3.5 border-b-4 border-[var(--nb-primary)] flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 bg-[var(--nb-accent)] border-2 border-[var(--nb-bg)] flex items-center justify-center font-black text-[var(--nb-primary)] text-xs">
-                AI
+                {activeTab === "ai" ? <IconBot /> : <IconUsers />}
               </div>
               <div>
                 <h4 className="font-black uppercase text-xs tracking-wider text-[var(--nb-bg)] leading-none">
-                  Naoo Assistant
+                  {activeTab === "ai" ? "Naoo Helper" : selectedUser ? selectedUser.name : "User Chat"}
                 </h4>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-[9px] font-bold uppercase opacity-80 text-[var(--nb-accent)]">Online</span>
-                </div>
+                <p className="text-[9px] font-bold uppercase text-[var(--nb-accent)] opacity-90 mt-0.5">
+                  {activeTab === "ai" ? "AI Assistant" : selectedUser ? "Direct Chat" : "Pilih Akun User"}
+                </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={() => router.visit("/chatbot")}
-                className="text-[10px] font-black uppercase bg-[var(--nb-accent)] text-[var(--nb-primary)] border-2 border-[var(--nb-bg)] px-2 py-1 hover:opacity-90 cursor-pointer"
-                title="Buka halaman penuh"
+                className="text-[9px] font-black uppercase bg-[var(--nb-accent)] text-[var(--nb-primary)] border-2 border-[var(--nb-bg)] px-2 py-1 hover:opacity-90 cursor-pointer flex items-center gap-1"
+                title="Buka Halaman Penuh"
               >
-                Expand ↗
+                Expand <IconExternalLink />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-[var(--nb-bg)] font-black text-lg hover:text-[var(--nb-accent)] px-1 cursor-pointer"
+                className="text-[var(--nb-bg)] font-black hover:text-[var(--nb-accent)] px-1 cursor-pointer"
               >
-                ✕
+                <IconClose />
               </button>
             </div>
           </div>
 
-          {/* Chat Body */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[var(--nb-bg)] text-sm font-sans">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] p-3 border-3 border-[var(--nb-primary)] text-xs font-bold ${
-                    msg.sender === "user"
-                      ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]"
-                      : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]"
-                  }`}
-                >
-                  <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                </div>
-                <span className="text-[8px] font-black uppercase opacity-40 mt-1 px-1 text-[var(--nb-primary)]">
-                  {msg.timestamp}
-                </span>
-              </div>
-            ))}
-
-            {isTyping && (
-              <div className="flex items-center gap-2 p-3 bg-[var(--nb-accent-light)] border-3 border-[var(--nb-primary)] w-fit text-xs font-black uppercase text-[var(--nb-primary)] animate-pulse">
-                <span>Naoo AI mengetik...</span>
-              </div>
-            )}
-            <div ref={chatEndRef} />
+          {/* Mode Selector Tabs */}
+          <div className="flex border-b-4 border-[var(--nb-primary)] bg-[var(--nb-accent-light)]">
+            <button
+              onClick={() => setActiveTab("ai")}
+              className={`flex-1 py-2 font-black uppercase text-[10px] tracking-wider border-r-2 border-[var(--nb-primary)] flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
+                activeTab === "ai"
+                  ? "bg-[var(--nb-primary)] text-[var(--nb-bg)]"
+                  : "bg-[var(--nb-bg)] text-[var(--nb-primary)] hover:bg-[var(--nb-accent)]"
+              }`}
+            >
+              <IconBot /> Naoo Helper
+            </button>
+            <button
+              onClick={() => setActiveTab("community")}
+              className={`flex-1 py-2 font-black uppercase text-[10px] tracking-wider flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
+                activeTab === "community"
+                  ? "bg-[var(--nb-primary)] text-[var(--nb-bg)]"
+                  : "bg-[var(--nb-bg)] text-[var(--nb-primary)] hover:bg-[var(--nb-accent)]"
+              }`}
+            >
+              <IconUsers /> User Chat
+            </button>
           </div>
 
-          {/* Suggestions Quick Buttons */}
-          {messages.length <= 2 && (
-            <div className="p-2 border-t-2 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] flex flex-wrap gap-1.5">
-              {SUGGESTIONS.map((s, idx) => (
+          {/* TAB 1: NAOO HELPER AI */}
+          {activeTab === "ai" && (
+            <>
+              <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[var(--nb-bg)] text-xs">
+                {aiMessages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}
+                  >
+                    <div
+                      className={`max-w-[88%] p-3 border-3 border-[var(--nb-primary)] font-semibold leading-relaxed ${
+                        msg.sender === "user"
+                          ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]"
+                          : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]"
+                      }`}
+                    >
+                      <p className="whitespace-pre-wrap">{msg.text}</p>
+                    </div>
+                    <span className="text-[8px] font-black uppercase opacity-40 mt-1 px-1 text-[var(--nb-primary)]">
+                      {msg.timestamp}
+                    </span>
+                  </div>
+                ))}
+
+                {isAiTyping && (
+                  <div className="flex items-center gap-2 p-2.5 bg-[var(--nb-accent-light)] border-3 border-[var(--nb-primary)] w-fit text-[10px] font-black uppercase text-[var(--nb-primary)] animate-pulse">
+                    <span>Naoo Helper sedang memproses...</span>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSendAi();
+                }}
+                className="p-3 border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex gap-2"
+              >
+                <input
+                  type="text"
+                  value={aiInput}
+                  onChange={(e) => setAiInput(e.target.value)}
+                  placeholder="Tanya Naoo Helper..."
+                  className="flex-1 bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-3 py-2 text-xs font-bold outline-none focus:bg-[var(--nb-accent-light)]"
+                />
                 <button
-                  key={idx}
-                  onClick={() => handleSend(s)}
-                  className="text-[9px] font-black uppercase bg-[var(--nb-bg)] border-2 border-[var(--nb-primary)] px-2 py-1 text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)] hover:bg-[var(--nb-accent)] transition-colors cursor-pointer"
+                  type="submit"
+                  disabled={isAiTyping}
+                  className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-4 font-black uppercase text-xs shadow-[2px_2px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 cursor-pointer flex items-center gap-1"
                 >
-                  {s}
+                  <IconSend />
                 </button>
-              ))}
-            </div>
+              </form>
+            </>
           )}
 
-          {/* Input Form */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-            className="p-3 border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex gap-2"
-          >
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Tanya sesuatu ke Naoo AI..."
-              className="flex-1 bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-3 py-2 text-xs font-bold outline-none focus:bg-[var(--nb-accent-light)]"
-            />
-            <button
-              type="submit"
-              className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-4 font-black uppercase text-xs shadow-[2px_2px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer active:translate-x-0 active:translate-y-0"
-            >
-              Kirim
-            </button>
-          </form>
+          {/* TAB 2: DIRECT USER CHAT */}
+          {activeTab === "community" && (
+            <>
+              {!user ? (
+                <div className="flex-1 p-6 flex flex-col items-center justify-center text-center space-y-3 bg-[var(--nb-accent-light)]">
+                  <div className="w-12 h-12 bg-[var(--nb-accent)] border-3 border-[var(--nb-primary)] flex items-center justify-center text-[var(--nb-primary)]">
+                    <IconUsers />
+                  </div>
+                  <p className="font-black uppercase text-xs text-[var(--nb-primary)]">
+                    Login dulu untuk berkirim pesan dengan user lain!
+                  </p>
+                  <button
+                    onClick={() => router.visit("/login")}
+                    className="bg-[var(--nb-accent)] text-[var(--nb-primary)] border-3 border-[var(--nb-primary)] px-6 py-2 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-primary)] cursor-pointer"
+                  >
+                    Masuk Sekarang →
+                  </button>
+                </div>
+              ) : !selectedUser ? (
+                /* User Contacts List */
+                <div className="flex-1 p-4 overflow-y-auto space-y-2.5 bg-[var(--nb-bg)] text-xs">
+                  <p className="font-black uppercase text-[10px] opacity-50 text-[var(--nb-primary)] mb-2">
+                    Pilih akun user untuk diajak chat:
+                  </p>
+                  {userList.length === 0 ? (
+                    <div className="py-12 text-center opacity-40 font-black uppercase text-[10px]">
+                      Belum ada akun user terdaftar lain.
+                    </div>
+                  ) : (
+                    userList.map((u) => (
+                      <div
+                        key={u.id}
+                        onClick={() => setSelectedUser(u)}
+                        className="bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] p-3 shadow-[3px_3px_0_var(--nb-primary)] hover:bg-[var(--nb-accent-light)] hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer transition-all flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 bg-[var(--nb-accent)] border-2 border-[var(--nb-primary)] flex items-center justify-center font-black text-[var(--nb-primary)] text-xs">
+                            {u.name[0]?.toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-black text-xs uppercase text-[var(--nb-primary)] leading-tight">{u.name}</p>
+                            <p className="text-[9px] font-semibold text-[var(--nb-primary)] opacity-50">{u.email}</p>
+                          </div>
+                        </div>
+                        <span className="text-[9px] font-black uppercase bg-[var(--nb-primary)] text-[var(--nb-bg)] px-2 py-0.5">
+                          Chat →
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              ) : (
+                /* 1-on-1 Direct Chat Window */
+                <>
+                  <div className="bg-[var(--nb-accent-light)] border-b-3 border-[var(--nb-primary)] p-2.5 flex items-center justify-between">
+                    <button
+                      onClick={() => setSelectedUser(null)}
+                      className="font-black text-[10px] uppercase text-[var(--nb-primary)] border-2 border-[var(--nb-primary)] px-2 py-1 bg-[var(--nb-bg)] flex items-center gap-1 shadow-[2px_2px_0_var(--nb-primary)] cursor-pointer"
+                    >
+                      <IconBack /> Kembali ke Daftar User
+                    </button>
+                    <span className="font-black text-xs uppercase text-[var(--nb-primary)] truncate max-w-[150px]">
+                      {selectedUser.name}
+                    </span>
+                  </div>
+
+                  <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[var(--nb-bg)] text-xs">
+                    {directMessages.length === 0 ? (
+                      <div className="py-12 text-center opacity-40 font-black uppercase text-[10px]">
+                        Belum ada percakapan dengan {selectedUser.name}. Mulai sapa sekarang!
+                      </div>
+                    ) : (
+                      directMessages.map((msg) => {
+                        const isMe = msg.sender_id === user.id;
+                        return (
+                          <div
+                            key={msg.id}
+                            className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}
+                          >
+                            <div
+                              className={`max-w-[85%] p-3 border-3 border-[var(--nb-primary)] font-semibold leading-relaxed ${
+                                isMe
+                                  ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]"
+                                  : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]"
+                              }`}
+                            >
+                              <p className="whitespace-pre-wrap">{msg.message}</p>
+                            </div>
+                            <span className="text-[8px] font-black uppercase opacity-40 mt-1 px-1 text-[var(--nb-primary)]">
+                              {isMe ? "Kamu" : msg.sender?.name} • {fmtTime(msg.created_at)}
+                            </span>
+                          </div>
+                        );
+                      })
+                    )}
+                    <div ref={chatEndRef} />
+                  </div>
+
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSendDirect();
+                    }}
+                    className="p-3 border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex gap-2"
+                  >
+                    <input
+                      type="text"
+                      value={directInput}
+                      onChange={(e) => setDirectInput(e.target.value)}
+                      placeholder={`Pesan untuk ${selectedUser.name}...`}
+                      className="flex-1 bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-3 py-2 text-xs font-bold outline-none focus:bg-[var(--nb-accent-light)]"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isSendingDirect}
+                      className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-4 font-black uppercase text-xs shadow-[2px_2px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 cursor-pointer flex items-center gap-1"
+                    >
+                      <IconSend />
+                    </button>
+                  </form>
+                </>
+              )}
+            </>
+          )}
 
         </div>
       )}

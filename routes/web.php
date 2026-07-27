@@ -107,6 +107,9 @@ Route::prefix('api')->group(function () {
     Route::get ('/guestbook', [GuestbookController::class, 'index']);
     Route::post('/guestbook', [GuestbookController::class, 'store']);
 
+    // ── AI Chatbot (public) ───────────────────────────────────────────────────
+    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'ask']);
+
     // ── Protected ─────────────────────────────────────────────────────────────
     Route::middleware(['auth', 'admin'])->group(function () {
 
@@ -184,6 +187,14 @@ Route::prefix('api')->group(function () {
         Route::get   ('/saved-colors',         [\App\Http\Controllers\ColorPaletteController::class, 'index']);
         Route::post  ('/saved-colors',         [\App\Http\Controllers\ColorPaletteController::class, 'store']);
         Route::delete('/saved-colors/{id}',    [\App\Http\Controllers\ColorPaletteController::class, 'destroy']);
+
+        // Direct User-to-User Chat
+        Route::get   ('/user-chats/users',         [\App\Http\Controllers\UserChatController::class, 'users']);
+        Route::get   ('/user-chats/{receiverId}',  [\App\Http\Controllers\UserChatController::class, 'index']);
+        Route::post  ('/user-chats',               [\App\Http\Controllers\UserChatController::class, 'store']);
+
+        // Profile Update (Avatar photo & info)
+        Route::post  ('/user/profile-update',      [\App\Http\Controllers\UserProfileController::class, 'update']);
     });
 });
 
