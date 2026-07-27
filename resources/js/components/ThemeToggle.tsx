@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { soundFx } from '../utils/soundEffects';
 
 type Theme = 'naoo' | 'dark' | 'retro' | 'christmas' | 'luxe' | 'euro' | 'cold';
 
@@ -82,7 +83,7 @@ export default function ThemeToggle() {
                 {visible.map(t => {
                     const isActive = theme === t.id;
                     return (
-                        <button key={t.id} onClick={() => { setTheme(t.id); setOpen(false); }}
+                        <button key={t.id} onClick={() => { soundFx.playTheme(); setTheme(t.id); setOpen(false); }}
                             style={{
                                 display:'flex', alignItems:'center', gap:10, padding:'10px 12px',
                                 border: isActive ? `3px solid ${t.primary}` : `2px solid ${t.primary}55`,
