@@ -83,7 +83,7 @@ export default function TestimonialsSection() {
         {/* Left: Info & Form */}
         <div className="md:w-1/3 space-y-6">
           <div>
-            <h2 className="text-4xl font-black uppercase text-[var(--nb-primary)] mb-4 leading-none">Testimonials</h2>
+            <h2 className="text-4xl font-black uppercase text-[var(--nb-primary)] mb-4 leading-none">Leave a Message</h2>
             <p className="font-bold text-[var(--nb-primary)] opacity-70 uppercase tracking-wide text-sm">
               Apa kata mereka tentang project atau kerjasama dengan saya? Tinggalkan pesan atau kesan Anda di sini!
             </p>
@@ -99,7 +99,7 @@ export default function TestimonialsSection() {
               <div className="space-y-2">
                 <p className="font-black text-[var(--nb-bg)] uppercase text-sm tracking-widest">Wajib Login Bang!</p>
                 <p className="font-bold text-[var(--nb-accent)] opacity-70 uppercase text-[10px] tracking-widest leading-relaxed">
-                  Daftar dulu biar testimonial kamu resmi dan tercatat di sistem
+                  Daftar dulu biar pesan kamu resmi dan tercatat di sistem
                 </p>
               </div>
               <div className="flex flex-col gap-3">
@@ -126,7 +126,7 @@ export default function TestimonialsSection() {
                 </div>
               </div>
               <div>
-                <label className="block font-black text-[10px] uppercase tracking-[0.2em] text-[var(--nb-primary)] mb-2">Pesan / Testimonial</label>
+                <label className="block font-black text-[10px] uppercase tracking-[0.2em] text-[var(--nb-primary)] mb-2">Pesan Anda</label>
                 <textarea
                   value={message}
                   onChange={e => setMessage(e.target.value)}
@@ -138,20 +138,20 @@ export default function TestimonialsSection() {
               </div>
 
               {error && <p className="text-red-500 font-black text-[10px] uppercase">{error}</p>}
-              {success && <p className="text-green-600 font-black text-[10px] uppercase">✓ Testimonial dikirim! Menunggu moderasi.</p>}
+              {success && <p className="text-green-600 font-black text-[10px] uppercase">✓ Pesan dikirim! Menunggu moderasi.</p>}
 
               <button
                 type="submit"
                 disabled={sending}
                 className="w-full bg-[var(--nb-primary)] text-[var(--nb-accent)] font-black uppercase text-xs py-4 border-4 border-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-accent)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all disabled:opacity-50"
               >
-                {sending ? 'Mengirim...' : 'Kirim Testimonial →'}
+                {sending ? 'Mengirim...' : 'Kirim Pesan →'}
               </button>
             </form>
           )}
         </div>
 
-        {/* Right: List of Testimonials */}
+        {/* Right: List of Messages */}
         <div className="md:w-2/3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {loading ? (
@@ -160,7 +160,7 @@ export default function TestimonialsSection() {
               ))
             ) : entries.length === 0 ? (
               <div className="col-span-full py-20 text-center border-4 border-dashed border-[var(--nb-primary)] opacity-20">
-                <p className="font-black uppercase text-sm tracking-[0.3em]">Belum ada testimonial</p>
+                <p className="font-black uppercase text-sm tracking-[0.3em]">Belum ada pesan</p>
               </div>
             ) : entries.map(entry => (
               <div key={entry.id} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[6px_6px_0_var(--nb-primary)] hover:-translate-y-1 transition-transform group">

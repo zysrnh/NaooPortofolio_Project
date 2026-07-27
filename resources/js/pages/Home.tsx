@@ -3,7 +3,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { router, Head } from "@inertiajs/react";
 import { useVisitorTracker } from "@/hooks/useVisitorTracker";
 import TestimonialsSection from "@/components/TestimonialsSection";
-import SupportersSection from "@/components/SupportersSection";
+import ChatbotWidget from "@/components/ChatbotWidget";
 import Magnetic from "@/components/Magnetic";
 
 // ── Scroll reveal hook ────────────────────────────────────────────────────────
@@ -925,11 +925,8 @@ export default function Home() {
         {/* PROJECT STATS */}
         <ProjectCount projects={projects}/>
 
-        {/* TESTIMONIALS */}
+        {/* LEAVE A MESSAGE */}
         <TestimonialsSection />
-
-        {/* SUPPORTERS */}
-        <SupportersSection />
 
         {/* FOOTER */}
         <footer className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] reveal">
@@ -942,7 +939,7 @@ export default function Home() {
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[var(--nb-accent)] tracking-widest mb-1">Quick Links</p>
                 <div className="flex flex-wrap gap-x-6 gap-y-1">
-                  {[{label:"Home",id:"hero"},{label:"Projects",id:"projects"},{label:"About",id:"about"},{label:"Contact",id:"contact"},{label:"Testimonials",id:"testimonials"}].map(l=>(
+                  {[{label:"Home",id:"hero"},{label:"Projects",id:"projects"},{label:"About",id:"about"},{label:"Contact",id:"contact"},{label:"Leave a Message",id:"testimonials"}].map(l=>(
                     <a key={l.id} onClick={()=>scrollTo(l.id)} className="font-bold text-sm text-[var(--nb-primary)] uppercase cursor-pointer hover:underline">{l.label}</a>
                   ))}
                 </div>
@@ -976,7 +973,8 @@ export default function Home() {
           </div>
         </footer> 
 
-        {/* BACK TO TOP */}
+        {/* FLOATING CHATBOT & BACK TO TOP */}
+        <ChatbotWidget />
         <button className="back-to-top" style={{opacity:showTop?1:0,visibility:showTop?"visible":"hidden"}}
           onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} aria-label="Back to top">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--nb-accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">

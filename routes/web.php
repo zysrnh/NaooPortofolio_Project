@@ -56,6 +56,10 @@ Route::get('/contact', function () {
     return Inertia::render('Contact');
 })->name('contact.page');
 
+Route::get('/chatbot', function () {
+    return Inertia::render('Chatbot');
+})->name('chatbot');
+
 // ── Protected Pages ───────────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
@@ -177,9 +181,9 @@ Route::prefix('api')->group(function () {
 
     // ── Protected (For all logged in users) ───────────────────────────────────
     Route::middleware(['auth'])->group(function () {
-        Route::get   ('/saved-colors',         [SavedColorController::class, 'index']);
-        Route::post  ('/saved-colors',         [SavedColorController::class, 'store']);
-        Route::delete('/saved-colors/{id}',    [SavedColorController::class, 'destroy']);
+        Route::get   ('/saved-colors',         [\App\Http\Controllers\ColorPaletteController::class, 'index']);
+        Route::post  ('/saved-colors',         [\App\Http\Controllers\ColorPaletteController::class, 'store']);
+        Route::delete('/saved-colors/{id}',    [\App\Http\Controllers\ColorPaletteController::class, 'destroy']);
     });
 });
 

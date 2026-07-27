@@ -62,60 +62,62 @@ export default function SavedColorsManager() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
           {palettes.map((p) => (
             <div key={p.id} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[8px_8px_0_var(--nb-primary)] group transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[12px_12px_0_var(--nb-primary)] overflow-hidden">
-              {/* Palette Preview */}
-              <div className="flex h-32 border-b-4 border-[var(--nb-primary)]">
+              {/* Palette Preview with HEX Labels */}
+              <div className="flex flex-col border-b-4 border-[var(--nb-primary)] bg-[var(--nb-bg-alt)]">
                 {p.colors.map((c: string, idx: number) => (
                   <div 
                     key={idx} 
-                    className="flex-1 h-full relative group/color cursor-pointer"
-                    style={{ background: c }}
-                    onClick={() => navigator.clipboard.writeText(c)}
+                    className="flex items-center gap-4 p-3 border-b-2 border-[var(--nb-primary)] last:border-b-0 group/color cursor-pointer hover:bg-white/50 transition-colors"
+                    onClick={() => {
+                        navigator.clipboard.writeText(c);
+                        setCopiedId(p.id + idx);
+                        setTimeout(() => setCopiedId(null), 1000);
+                    }}
                   >
-                    <div className="absolute inset-0 bg-black opacity-0 group-hover/color:opacity-20 transition-opacity flex items-center justify-center">
-                        <span className="text-[8px] font-black text-white bg-black/50 px-1">{c}</span>
+                    <div className="w-10 h-10 border-2 border-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)]" style={{ background: c }} />
+                    <span className="font-mono font-black text-xs uppercase text-[var(--nb-primary)]">{c}</span>
+                    <div className="ml-auto opacity-0 group-hover/color:opacity-100 transition-opacity">
+                        <span className="text-[8px] font-black uppercase bg-[var(--nb-primary)] text-[var(--nb-bg)] px-2 py-1">
+                            {copiedId === p.id + idx ? "COPIED!" : "COPY"}
+                        </span>
                     </div>
                   </div>
                 ))}
               </div>
               
-              {/* Meta */}
-              <div className="p-6">
+              {/* Meta & Actions */}
+              <div className="p-6 bg-[var(--nb-bg)]">
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex-1 pr-4">
-                    <h3 className="font-black text-xl uppercase leading-none truncate mb-2" title={p.name}>
+                    <h3 className="font-black text-lg uppercase leading-none truncate mb-2" title={p.name}>
                       {p.name || "Unnamed Box"}
                     </h3>
-                    <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest">
-                      Saved {new Date(p.created_at).toLocaleDateString()} • {p.colors.length} Colors
-                    </p>
+                    <div className="flex items-center gap-2">
+                        <p className="text-[8px] font-bold opacity-40 uppercase tracking-widest">
+                          {new Date(p.created_at).toLocaleDateString()} • {p.colors.length} COLORS
+                        </p>
+                    </div>
                   </div>
                   <button 
                     onClick={() => deletePalette(p.id)}
-                    className="p-3 border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-[3px_3px_0_var(--nb-primary)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                    className="w-10 h-10 border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-[3px_3px_0_var(--nb-primary)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center"
                   >
                     <IconTrash size={16} />
                   </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <button 
-                        onClick={() => copyPaletteHex(p.colors, p.id)}
-                        className={`flex items-center justify-center gap-3 border-4 border-[var(--nb-primary)] py-3 font-black uppercase text-xs transition-all shadow-[4px_4px_0_var(--nb-primary)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
-                        ${copiedId === p.id ? "bg-green-500 text-white" : "bg-[var(--nb-accent-light)] text-[var(--nb-primary)] hover:bg-[var(--nb-accent)]"}`}
-                    >
-                        {copiedId === p.id ? "COPIED ALL!" : (
-                            <>
-                            <IconCopy size={14} />
-                            COPY HEX
-                            </>
-                        )}
-                    </button>
-                    <div className="flex flex-wrap gap-1 items-center justify-end">
-                         {p.colors.map((c: string, idx: number) => (
-                            <div key={idx} className="w-4 h-4 border-2 border-[var(--nb-primary)]" style={{ background: c }} />
-                         ))}
-                    </div>
-                </div>
+                <button 
+                    onClick={() => copyPaletteHex(p.colors, p.id)}
+                    className={`w-full flex items-center justify-center gap-3 border-4 border-[var(--nb-primary)] py-3 font-black uppercase text-xs transition-all shadow-[4px_4px_0_var(--nb-primary)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
+                    ${copiedId === p.id ? "bg-green-500 text-white" : "bg-[var(--nb-accent-light)] text-[var(--nb-primary)] hover:bg-[var(--nb-accent)]"}`}
+                >
+                    {copiedId === p.id ? "ALL COPIED! 🔥" : (
+                        <>
+                        <IconCopy size={14} />
+                        COPY ALL HEX
+                        </>
+                    )}
+                </button>
               </div>
             </div>
           ))}

@@ -1,31 +1,73 @@
 import { useState, useEffect, useRef } from "react";
 import { Head, usePage, router } from "@inertiajs/react";
 import Navbar from "../components/Navbar";
+import ChatbotWidget from "../components/ChatbotWidget";
 import axios from "axios";
 
 // --- Icons ---
-const IconCamera = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>;
-const IconSparkles = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.912 5.885L20 10.8l-5.088 1.915L13 18.6l-1.912-5.885L6 10.8l5.088-1.915z"/><path d="M5 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/><path d="M19 17l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></svg>;
-const IconKey = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3m-3-3l-2.5-2.5"/></svg>;
-const IconRefresh = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>;
-const IconTrash = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>;
-const IconPalette = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125 0-.937.75-1.688 1.688-1.688h1.937c3.063 0 5.625-2.5 5.625-5.625 0-4.82-4.114-8.75-9.063-8.75z"/></svg>;
-const IconPlus = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>;
+const IconCamera = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+    <circle cx="12" cy="13" r="4"/>
+  </svg>
+);
+const IconPipette = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M2 22s3-1 5-3l11-11a2.828 2.828 0 10-4-4L3 15c-2 2-3 5-3 5z"/>
+    <path d="M15 6l3 3"/>
+  </svg>
+);
+const IconRefresh = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M23 4v6h-6"/>
+    <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
+  </svg>
+);
+const IconTrash = ({ size = 14 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="3 6 5 6 21 6"/>
+    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+  </svg>
+);
+const IconPlus = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"/>
+    <line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+);
+const IconKey = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3m-3-3l-2.5-2.5"/>
+  </svg>
+);
+const IconCopy = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+  </svg>
+);
+const IconSparkles = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3l1.912 5.885L20 10.8l-5.088 1.915L13 18.6l-1.912-5.885L6 10.8l5.088-1.915z"/>
+  </svg>
+);
 
-// --- Tool Components ---
+export default function Tools() {
+  const props = usePage().props as any;
+  const auth = props.auth || { user: null };
 
-function ColorPicker() {
-  const { auth } = usePage<{ auth: { user: any | null } }>().props;
   const [image, setImage] = useState<string | null>(null);
-  const [pickedColor, setPickedColor] = useState("#4ade80");
+  const [pickedColor, setPickedColor] = useState("#4ADE80");
+  const [manualHex, setManualHex] = useState("#4ADE80");
   const [autoPalette, setAutoPalette] = useState<string[]>([]);
-  const [playlist, setPlaylist] = useState<string[]>([]); // "Playlist" wadah warna
+  const [playlist, setPlaylist] = useState<string[]>([]);
   const [savedPalettes, setSavedPalettes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [processing, setProcessing] = useState(false);
   const [paletteName, setPaletteName] = useState("");
-  const [copiedId, setCopiedId] = useState<number | null>(null);
-  
+  const [copiedHex, setCopiedHex] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -36,32 +78,38 @@ function ColorPicker() {
   const fetchSavedPalettes = async () => {
     try {
       const res = await axios.get("/api/saved-colors");
-      setSavedPalettes(res.data);
+      if (Array.isArray(res.data)) {
+        setSavedPalettes(res.data);
+      }
     } catch (e) {}
+  };
+
+  const handleImageFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setImage(event.target?.result as string);
+      setAutoPalette([]);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 8 * 1024 * 1024) {
-        alert("Gambar terlalu besar bang! Maksimal 8MB.");
-        return;
-      }
-      setProcessing(true);
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setImage(event.target?.result as string);
-        setAutoPalette([]);
-        setPlaylist([]);
-        setProcessing(false);
-      };
-      reader.readAsDataURL(file);
-    }
+    if (file) handleImageFile(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleImageFile(file);
   };
 
   const resetPicker = () => {
     setImage(null);
-    setPickedColor("#4ade80");
+    setPickedColor("#4ADE80");
+    setManualHex("#4ADE80");
     setAutoPalette([]);
     setPlaylist([]);
     setPaletteName("");
@@ -75,46 +123,32 @@ function ColorPicker() {
       if (ctx) {
         const maxWidth = 1600;
         const scale = Math.min(1, maxWidth / img.naturalWidth);
-        canvas.width = img.naturalWidth * scale;
-        canvas.height = img.naturalHeight * scale;
+        canvas.width = Math.round(img.naturalWidth * scale);
+        canvas.height = Math.round(img.naturalHeight * scale);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        setTimeout(extractPalette, 200);
+        setTimeout(extractPalette, 150);
       }
     }
   };
 
-  const pickColor = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const pickColorFromCanvas = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (canvas) {
-      const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
-      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        const pixel = ctx.getImageData(x, y, 1, 1).data;
-        const hex = "#" + ((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1);
-        setPickedColor(hex);
-        addToPlaylist(hex);
-      }
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) * (canvas.width / rect.width));
+    const y = Math.floor((e.clientY - rect.top) * (canvas.height / rect.height));
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+      const hex = "#" + ((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1).toUpperCase();
+      setPickedColor(hex);
+      setManualHex(hex);
+      addColorToStaging(hex);
     }
-  };
-
-  const addToPlaylist = (hex: string) => {
-    if (playlist.length >= 6) {
-       // Auto replace last or just ignore? Let's limit to 6
-       return;
-    }
-    if (!playlist.includes(hex)) {
-      setPlaylist(prev => [...prev, hex]);
-    }
-  };
-
-  const removeFromPlaylist = (hex: string) => {
-    setPlaylist(prev => prev.filter(c => c !== hex));
   };
 
   const rgbToHex = (r: number, g: number, b: number) => {
-    return ((r << 16) | (g << 8) | b).toString(16).padStart(6, "0");
+    return ((r << 16) | (g << 8) | b).toString(16).padStart(6, "0").toUpperCase();
   };
 
   const extractPalette = () => {
@@ -125,333 +159,447 @@ function ColorPicker() {
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
     const colorCounts: Record<string, number> = {};
-    const step = 30; // Better sampling
-
-    for (let i = 0; i < imageData.length; i += 4 * step) {
-      const r = imageData[i], g = imageData[i+1], b = imageData[i+2];
-      // Skip extremes (too dark or too light)
-      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-      if (brightness < 15 || brightness > 240) continue;
-
-      const hex = "#" + rgbToHex(r, g, b);
+    const step = Math.max(1, Math.floor((canvas.width * canvas.height) / 3000));
+    
+    for (let i = 0; i < imageData.length; i += step * 4) {
+      const a = imageData[i + 3];
+      if (a < 128) continue; // Skip transparent
+      const hex = "#" + rgbToHex(imageData[i], imageData[i + 1], imageData[i + 2]);
       colorCounts[hex] = (colorCounts[hex] || 0) + 1;
     }
 
     const sorted = Object.entries(colorCounts)
-      .sort((a, b) => b[1] - a[1]);
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(entry => entry[0]);
 
-    const final: string[] = [];
-    const threshold = 40; // Diff threshold to keep colors distinct
+    setAutoPalette(sorted);
+  };
 
-    const getDiff = (c1: string, c2: string) => {
-        const r1 = parseInt(c1.substring(1,3), 16), g1 = parseInt(c1.substring(3,5), 16), b1 = parseInt(c1.substring(5,7), 16);
-        const r2 = parseInt(c2.substring(1,3), 16), g2 = parseInt(c2.substring(3,5), 16), b2 = parseInt(c2.substring(5,7), 16);
-        return Math.sqrt(Math.pow(r1-r2, 2) + Math.pow(g1-g2, 2) + Math.pow(b1-b2, 2));
-    };
-
-    for (const [hex] of sorted) {
-        if (final.length >= 5) break;
-        if (final.every(c => getDiff(c, hex) > threshold)) {
-            final.push(hex);
-        }
+  const addColorToStaging = (hex: string) => {
+    const cleanHex = hex.toUpperCase();
+    if (playlist.length < 6 && !playlist.includes(cleanHex)) {
+      setPlaylist(prev => [...prev, cleanHex]);
     }
+  };
 
-    setAutoPalette(final);
-    // Auto add all extracted to playlist? No, let user pick
+  const addAllAutoToStaging = () => {
+    const remainingSlots = 6 - playlist.length;
+    if (remainingSlots <= 0) return;
+    const newColors = autoPalette.filter(c => !playlist.includes(c)).slice(0, remainingSlots);
+    setPlaylist(prev => [...prev, ...newColors]);
+  };
+
+  const handleNativeEyedropper = async () => {
+    if ("EyeDropper" in window) {
+      try {
+        const eyeDropper = new (window as any).EyeDropper();
+        const result = await eyeDropper.open();
+        if (result?.sRGBHex) {
+          const hex = result.sRGBHex.toUpperCase();
+          setPickedColor(hex);
+          setManualHex(hex);
+          addColorToStaging(hex);
+        }
+      } catch (e) {
+        // User canceled eyedropper
+      }
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedHex(text);
+    setTimeout(() => setCopiedHex(null), 1500);
   };
 
   const savePalette = async () => {
     if (!auth?.user || playlist.length === 0) return;
     setLoading(true);
     try {
-      await axios.post("/api/saved-colors", { 
-        colors: playlist, 
-        name: paletteName || "My Awesome Palette",
-        source_image: image // Optional: we could save the base64 but it's large
+      await axios.post("/api/saved-colors", {
+        colors: playlist,
+        name: paletteName.trim() || "My Color Box"
       });
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 2000);
       setPaletteName("");
       setPlaylist([]);
       fetchSavedPalettes();
     } catch (e) {
-      alert("Gagal simpan palet!");
+      alert("Gagal menyimpan palet!");
     } finally {
       setLoading(false);
     }
   };
 
-  const copyPalette = (colors: string[], id: number) => {
-    navigator.clipboard.writeText(colors.join(", "));
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
+  const deleteSavedPalette = async (id: number) => {
+    try {
+      await axios.delete(`/api/saved-colors/${id}`);
+      setSavedPalettes(prev => prev.filter(p => p.id !== id));
+    } catch (e) {
+      alert("Gagal menghapus palet.");
+    }
   };
 
   return (
-    <div className="space-y-10">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        
-        {/* Left: Picker & Playlist Staging */}
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <div 
-                className={`aspect-video border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex items-center justify-center transition-all relative overflow-hidden ${!image ? "border-dashed cursor-pointer hover:bg-[var(--nb-accent-light)]" : "shadow-[8px_8px_0_var(--nb-primary)]"}`}
-                onClick={!image ? () => document.getElementById("img-upload")?.click() : undefined}
-            >
-                {image ? (
-                <div className="w-full h-full relative">
-                    <img 
-                    ref={imgRef} src={image} alt="Upload" 
-                    className="hidden" onLoad={drawImageOnCanvas} 
-                    />
-                    <canvas 
-                    ref={canvasRef} 
-                    onClick={pickColor}
-                    className="w-full h-full object-contain cursor-crosshair"
-                    />
-                </div>
-                ) : (
-                <div className="text-center p-6">
-                    <div className="w-16 h-16 bg-[var(--nb-accent)] border-4 border-[var(--nb-primary)] flex items-center justify-center mx-auto mb-4 rotate-3 shadow-[4px_4px_0_var(--nb-primary)] text-[var(--nb-primary)]">
-                    <IconCamera />
-                    </div>
-                    <p className="font-black uppercase text-[var(--nb-primary)] text-sm sm:text-base tracking-tighter">Upload Photo</p>
-                    <p className="text-[10px] font-bold opacity-50 uppercase mt-1 tracking-widest">Select file to start picking</p>
-                </div>
-                )}
-                <input 
-                id="img-upload" type="file" accept="image/*" className="hidden" 
-                onChange={handleImageUpload} 
-                />
-            </div>
-
-            {/* Controls relocated below image as requested */}
-            {image && (
-                <div className="flex gap-3 justify-center">
-                    <button 
-                        onClick={() => document.getElementById("img-upload")?.click()}
-                        className="flex-1 bg-[var(--nb-bg)] border-2 border-[var(--nb-primary)] py-2 font-black uppercase text-[10px] shadow-[4px_4px_0_var(--nb-primary)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_var(--nb-primary)] transition-all flex items-center justify-center gap-2"
-                    >
-                        <IconRefresh /> Change Photo
-                    </button>
-                    <button 
-                        onClick={resetPicker}
-                        className="flex-1 bg-red-500 text-white border-2 border-[var(--nb-primary)] py-2 font-black uppercase text-[10px] shadow-[4px_4px_0_var(--nb-primary)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_var(--nb-primary)] transition-all flex items-center justify-center gap-2"
-                    >
-                        <IconTrash /> Reset Tool
-                    </button>
-                </div>
-            )}
-          </div>
-
-          {/* Staging Area: Your Playlist */}
-          <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[10px_10px_0_var(--nb-accent-light)]">
-             <div className="flex items-center justify-between mb-6">
-                <h4 className="font-black uppercase text-sm tracking-widest text-[var(--nb-primary)]">Staging Palette</h4>
-                <span className="text-[10px] font-black opacity-40 uppercase">{playlist.length}/6 Colors</span>
-             </div>
-             
-             <div className="flex flex-wrap gap-4 mb-8 min-h-[60px] items-center">
-                {playlist.length === 0 ? (
-                    <p className="text-[11px] font-bold opacity-30 uppercase italic">Click image to add colors to playlist...</p>
-                ) : (
-                    playlist.map((c, i) => (
-                        <div key={i} className="group relative">
-                            <div className="w-14 h-14 border-4 border-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]" style={{ background: c }} />
-                            <button 
-                                onClick={() => removeFromPlaylist(c)}
-                                className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 border-2 border-[var(--nb-primary)] text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                                <IconTrash size={10} />
-                            </button>
-                            <p className="mt-2 text-[8px] font-black text-center">{c}</p>
-                        </div>
-                    ))
-                )}
-                {image && playlist.length < 6 && (
-                    <div className="w-14 h-14 border-4 border-dashed border-[var(--nb-primary)] flex items-center justify-center opacity-20">
-                        <IconPlus />
-                    </div>
-                )}
-             </div>
-
-             {playlist.length > 0 && (
-                <div className="flex gap-2">
-                    <input 
-                        type="text" value={paletteName} onChange={e => setPaletteName(e.target.value)}
-                        placeholder="Name your playlist (e.g. Vintage Mood)"
-                        className="flex-1 bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] px-4 py-2 font-bold text-xs uppercase placeholder:opacity-30 focus:outline-none"
-                    />
-                    <button 
-                        onClick={savePalette} disabled={loading}
-                        className="btn-brutal border-4 border-[var(--nb-primary)] px-8 py-2 font-black uppercase bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-primary)] text-xs"
-                    >
-                        {loading ? "..." : "Save Box"}
-                    </button>
-                </div>
-             )}
-          </div>
-
-          {autoPalette.length > 0 && (
-            <div className="space-y-4">
-              <p className="text-[10px] font-black uppercase opacity-40 tracking-[0.2em]">Smart Suggested Palette</p>
-              <div className="flex gap-3">
-                {autoPalette.map((c, i) => (
-                  <div 
-                    key={i} onClick={() => addToPlaylist(c)}
-                    className="flex-1 aspect-square border-4 border-[var(--nb-primary)] cursor-pointer transition-all hover:scale-105 shadow-[4px_4px_0_var(--nb-primary)] hover:shadow-[6px_6px_0_var(--nb-primary)] flex items-end justify-center pb-1"
-                    style={{ background: c }}
-                  >
-                     <span className="bg-[var(--nb-bg)] border border-[var(--nb-primary)] px-1 font-black text-[7px] uppercase">{c}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right: History / Login Prompt */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="font-black uppercase text-xl text-[var(--nb-primary)] tracking-tighter">
-              Saved Palettes
-            </h3>
-            {auth?.user && <span className="text-[10px] font-black px-3 py-1 bg-[var(--nb-primary)] text-[var(--nb-bg)] uppercase">{savedPalettes.length} Box</span>}
-          </div>
-          
-          {!auth?.user ? (
-            <div className="relative overflow-hidden border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[10px_10px_0_var(--nb-primary)]">
-               <div className="p-10 text-center space-y-8">
-                  <div className="w-16 h-16 bg-[var(--nb-accent)] border-4 border-[var(--nb-primary)] flex items-center justify-center mx-auto shadow-[4px_4px_0_var(--nb-primary)] text-[var(--nb-primary)]">
-                     <IconKey />
-                  </div>
-                  <div>
-                    <h4 className="font-black uppercase text-2xl text-[var(--nb-primary)] leading-tight tracking-tighter">Vault Locked</h4>
-                    <p className="text-[10px] font-bold opacity-50 uppercase mt-2 leading-relaxed px-6 tracking-[0.2em]">
-                      Unlock the ability to save custom playlists and categorize your design inspirations.
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <button onClick={() => router.visit("/login")} className="btn-brutal border-4 border-[var(--nb-primary)] py-4 font-black uppercase bg-[var(--nb-primary)] text-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-accent)] text-xs">
-                      Login Now
-                    </button>
-                    <button onClick={() => router.visit("/register")} className="btn-brutal border-4 border-[var(--nb-primary)] py-4 font-black uppercase bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] text-xs">
-                      Join Community
-                    </button>
-                  </div>
-               </div>
-            </div>
-          ) : savedPalettes.length === 0 ? (
-            <div className="p-16 border-4 border-dashed border-[var(--nb-primary)] opacity-20 text-center bg-[var(--nb-bg)]">
-              <p className="font-black uppercase text-xs tracking-widest leading-relaxed">No palettes in vault.</p>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {savedPalettes.slice(0, 5).map((p) => (
-                <div 
-                    key={p.id} 
-                    onClick={() => copyPalette(p.colors, p.id)}
-                    className={`group border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] p-4 shadow-[6px_6px_0_var(--nb-primary)] transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[9px_9px_0_var(--nb-primary)] cursor-pointer
-                    ${copiedId === p.id ? "bg-green-50" : ""}`}
-                >
-                    <div className="flex justify-between items-start mb-3">
-                        <h5 className="font-black uppercase text-xs text-[var(--nb-primary)] truncate flex-1 pr-4">{p.name}</h5>
-                        <span className="text-[8px] font-bold opacity-30 uppercase">{p.colors.length} Colors</span>
-                    </div>
-                    <div className="flex h-10 border-2 border-[var(--nb-primary)] overflow-hidden">
-                        {p.colors.map((c: string, idx: number) => (
-                            <div key={idx} className="flex-1 h-full" style={{ background: c }} />
-                        ))}
-                    </div>
-                    <div className="mt-2 flex justify-between items-center">
-                        <p className="text-[8px] font-black opacity-40 uppercase">
-                            {copiedId === p.id ? "Copied All HEX!" : "Click to Copy HEX List"}
-                        </p>
-                        <div className="flex gap-1">
-                            {p.colors.map((c: string, idx: number) => (
-                                <div key={idx} className="w-1.5 h-1.5 rounded-full" style={{ background: c }} />
-                            ))}
-                        </div>
-                    </div>
-                </div>
-              ))}
-              {savedPalettes.length > 5 && (
-                <button onClick={() => router.visit("/dashboard")} className="w-full border-4 border-dashed border-[var(--nb-primary)] py-4 font-black uppercase text-xs opacity-50 hover:opacity-100 hover:bg-[var(--nb-accent-light)] transition-all">
-                  View {savedPalettes.length - 5} More Palettes in Dashboard →
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const TOOLS_CONFIG = [
-  { id: "picker", title: "Smart Color Picker", desc: "Extract colors from your favorite photos.", component: ColorPicker, icon: <IconPalette /> },
-];
-
-export default function Tools() {
-  const [activeTool, setActiveTool] = useState(TOOLS_CONFIG[0].id);
-  const ActiveComp = TOOLS_CONFIG.find(t => t.id === activeTool)?.component;
-
-  return (
     <>
-      <Head title="Tools - Developer Utilities" />
+      <Head title="Smart Color Picker - Developer Tools" />
       <Navbar />
 
       <main className="min-h-screen bg-[var(--nb-bg)] pt-24 pb-20 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           
+          {/* Header */}
           <div className="mb-12 text-center reveal">
-            <h1 className="text-4xl sm:text-6xl font-black uppercase text-[var(--nb-primary)] mb-4 tracking-tighter leading-none">
-              Dev <span className="text-[var(--nb-accent)]">Tools</span>
+            <h1 className="text-4xl sm:text-6xl font-black uppercase text-[var(--nb-primary)] mb-3 tracking-tighter leading-none">
+              Smart <span className="text-[var(--nb-accent)]">Color Picker</span>
             </h1>
             <p className="font-bold text-[var(--nb-primary)] opacity-70 max-w-2xl mx-auto text-[10px] sm:text-xs uppercase tracking-[0.3em]">
-              Professional utilities for modern creators
+              Extract, generate, and save color palettes from images or pick any color code
             </p>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
-            <div className="lg:w-1/4 space-y-4">
-              {TOOLS_CONFIG.map((tool) => (
-                <button
-                  key={tool.id}
-                  onClick={() => setActiveTool(tool.id)}
-                  className={`w-full text-left p-6 border-4 border-[var(--nb-primary)] transition-all duration-150 flex items-center gap-4
-                    ${activeTool === tool.id 
-                      ? "bg-[var(--nb-accent)] shadow-none translate-x-[4px] translate-y-[4px]" 
-                      : "bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0_var(--nb-primary)]"}`}
-                >
-                  <div className={`w-12 h-12 flex-shrink-0 flex items-center justify-center border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] font-black text-lg ${activeTool === tool.id ? "bg-[var(--nb-bg)]" : ""}`}>
-                    {tool.icon}
+            {/* Left Column: Image Canvas & Color Picker Tools (7 cols) */}
+            <div className="lg:col-span-7 space-y-8">
+              
+              {/* Image Upload / Drop Area */}
+              <div 
+                className={`aspect-video border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex items-center justify-center relative overflow-hidden transition-all duration-200 ${
+                  !image 
+                    ? `border-dashed cursor-pointer ${isDragging ? "bg-[var(--nb-accent-light)] border-dashed scale-[1.01]" : "hover:bg-[var(--nb-accent-light)]"}` 
+                    : "shadow-[8px_8px_0_var(--nb-primary)]"
+                }`}
+                onClick={!image ? () => document.getElementById("img-upload")?.click() : undefined}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={handleDrop}
+              >
+                {image ? (
+                  <>
+                    <img ref={imgRef} src={image} className="hidden" onLoad={drawImageOnCanvas} alt="Uploaded source" />
+                    <canvas 
+                      ref={canvasRef} 
+                      onClick={pickColorFromCanvas} 
+                      className="w-full h-full object-contain cursor-crosshair" 
+                      title="Klik pada gambar untuk mengambil warna!"
+                    />
+                  </>
+                ) : (
+                  <div className="text-center p-6 space-y-3 pointer-events-none">
+                    <div className="w-16 h-16 bg-[var(--nb-accent)] border-4 border-[var(--nb-primary)] flex items-center justify-center mx-auto rotate-3 shadow-[4px_4px_0_var(--nb-primary)] text-[var(--nb-primary)] transition-transform hover:rotate-0">
+                      <IconCamera />
+                    </div>
+                    <div>
+                      <p className="font-black uppercase text-[var(--nb-primary)] text-sm tracking-tight">Upload or Drop Photo Here</p>
+                      <p className="text-[10px] font-bold opacity-50 uppercase mt-1 tracking-widest">Supports PNG, JPG, WEBP formats</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-black uppercase text-xs text-[var(--nb-primary)] tracking-widest leading-tight">{tool.title}</h3>
-                  </div>
-                </button>
-              ))}
-              <div className="p-6 border-4 border-dashed border-[var(--nb-primary)] opacity-10 text-center">
-                <p className="font-black uppercase text-[8px] tracking-[0.4em]">Next Module Coming Soon</p>
+                )}
+                <input id="img-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
               </div>
+
+              {/* Action buttons if image uploaded */}
+              {image && (
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => document.getElementById("img-upload")?.click()} 
+                    className="flex-1 bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] py-2.5 font-black uppercase text-xs shadow-[4px_4px_0_var(--nb-primary)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_var(--nb-primary)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <IconRefresh /> Ganti Foto
+                  </button>
+                  <button 
+                    onClick={resetPicker} 
+                    className="bg-red-500 text-white border-3 border-[var(--nb-primary)] px-6 py-2.5 font-black uppercase text-xs shadow-[4px_4px_0_var(--nb-primary)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_var(--nb-primary)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <IconTrash /> Reset
+                  </button>
+                </div>
+              )}
+
+              {/* Manual Color Picker & EyeDropper Control Card */}
+              <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[8px_8px_0_var(--nb-primary)] space-y-4">
+                <h4 className="font-black uppercase text-xs tracking-widest text-[var(--nb-primary)] flex items-center gap-2">
+                  <IconPipette /> Color Selection & Pipette
+                </h4>
+
+                <div className="flex flex-wrap items-center gap-4">
+                  {/* Current Color Swatch */}
+                  <div className="flex items-center gap-3 bg-[var(--nb-accent-light)] border-3 border-[var(--nb-primary)] p-2 pr-4">
+                    <div 
+                      className="w-10 h-10 border-2 border-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)]" 
+                      style={{ backgroundColor: pickedColor }} 
+                    />
+                    <div>
+                      <p className="text-[9px] font-black uppercase opacity-40">Picked Color</p>
+                      <p className="font-black text-sm text-[var(--nb-primary)] tracking-wider">{pickedColor}</p>
+                    </div>
+                  </div>
+
+                  {/* Native Eyedropper API Button (if supported) */}
+                  {typeof window !== "undefined" && "EyeDropper" in window && (
+                    <button
+                      onClick={handleNativeEyedropper}
+                      className="bg-[var(--nb-accent)] text-[var(--nb-primary)] border-3 border-[var(--nb-primary)] px-4 py-3 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-primary)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0_var(--nb-primary)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2 cursor-pointer"
+                    >
+                      <IconPipette /> Pick From Screen
+                    </button>
+                  )}
+
+                  {/* Manual HEX Input & Color Wheel */}
+                  <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+                    <input 
+                      type="color" 
+                      value={manualHex} 
+                      onChange={e => {
+                        const val = e.target.value.toUpperCase();
+                        setManualHex(val);
+                        setPickedColor(val);
+                      }} 
+                      className="w-10 h-10 border-3 border-[var(--nb-primary)] cursor-pointer p-0 bg-transparent"
+                    />
+                    <input 
+                      type="text" 
+                      value={manualHex} 
+                      onChange={e => {
+                        const val = e.target.value.toUpperCase();
+                        setManualHex(val);
+                        if (/^#[0-9A-F]{6}$/i.test(val)) setPickedColor(val);
+                      }} 
+                      className="flex-1 bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-3 py-2 font-black text-xs uppercase focus:outline-none focus:bg-[var(--nb-accent-light)]" 
+                      placeholder="#HEX"
+                    />
+                    <button 
+                      onClick={() => addColorToStaging(pickedColor)} 
+                      disabled={playlist.length >= 6}
+                      className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-4 py-2 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all disabled:opacity-40 cursor-pointer flex items-center gap-1"
+                    >
+                      <IconPlus /> Add
+                    </button>
+                  </div>
+                </div>
+
+                {/* Copied Toast Banner */}
+                {copiedHex && (
+                  <div className="bg-[var(--nb-accent)] text-[var(--nb-primary)] border-2 border-[var(--nb-primary)] p-2 text-center text-xs font-black uppercase animate-bounce shadow-[2px_2px_0_var(--nb-primary)]">
+                    ✓ Copied {copiedHex} to clipboard!
+                  </div>
+                )}
+              </div>
+
+              {/* Auto Extracted Colors from Image */}
+              {autoPalette.length > 0 && (
+                <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[8px_8px_0_var(--nb-accent-light)] space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-black uppercase text-xs tracking-widest text-[var(--nb-primary)] flex items-center gap-2">
+                      <IconSparkles /> Dominant Colors Extracted
+                    </h4>
+                    <button
+                      onClick={addAllAutoToStaging}
+                      disabled={playlist.length >= 6}
+                      className="border-2 border-[var(--nb-primary)] bg-[var(--nb-accent)] px-3 py-1 font-black text-[10px] uppercase shadow-[2px_2px_0_var(--nb-primary)] hover:translate-x-[-1px] hover:translate-y-[-1px] disabled:opacity-40 cursor-pointer transition-all"
+                    >
+                      + Add All to Staging
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                    {autoPalette.map((color, idx) => (
+                      <div 
+                        key={idx}
+                        onClick={() => {
+                          copyToClipboard(color);
+                          addColorToStaging(color);
+                        }}
+                        className="group border-3 border-[var(--nb-primary)] p-2 text-center cursor-pointer bg-[var(--nb-bg)] shadow-[3px_3px_0_var(--nb-primary)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[5px_5px_0_var(--nb-primary)] transition-all"
+                      >
+                        <div className="w-full h-12 border-2 border-[var(--nb-primary)] mb-2" style={{ backgroundColor: color }} />
+                        <p className="font-black text-[9px] uppercase text-[var(--nb-primary)] truncate">{color}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Staging Palette Card */}
+              <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[10px_10px_0_var(--nb-primary)] space-y-6">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-black uppercase text-xs tracking-widest text-[var(--nb-primary)]">Staging Palette</h4>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-black opacity-50 uppercase">{playlist.length}/6 Colors</span>
+                    {playlist.length > 0 && (
+                      <button 
+                        onClick={() => setPlaylist([])} 
+                        className="text-red-500 font-black text-[10px] uppercase underline cursor-pointer hover:opacity-70"
+                      >
+                        Clear All
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Staging Colors Row */}
+                <div className="flex flex-wrap gap-4 min-h-[70px] items-center p-3 border-3 border-dashed border-[var(--nb-primary)] bg-[var(--nb-accent-light)]">
+                  {playlist.length === 0 ? (
+                    <p className="text-center w-full text-[10px] font-bold opacity-40 uppercase tracking-widest">
+                      Klik warna pada gambar, pipet, atau warna dominan untuk menambahkan ke sini...
+                    </p>
+                  ) : (
+                    playlist.map((c, i) => (
+                      <div key={i} className="group relative">
+                        <div 
+                          onClick={() => copyToClipboard(c)}
+                          className="w-14 h-14 border-3 border-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-primary)] transition-transform hover:scale-105 cursor-pointer flex items-end justify-center pb-1" 
+                          style={{ background: c }}
+                        >
+                          <span className="text-[8px] font-black text-white bg-black/80 px-1 py-0.5 uppercase opacity-0 group-hover:opacity-100 transition-opacity">
+                            COPY
+                          </span>
+                        </div>
+                        <button 
+                          onClick={() => setPlaylist(playlist.filter(x => x !== c))} 
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 border-2 border-[var(--nb-primary)] text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        >
+                          <IconTrash size={10} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Save Palette Form */}
+                {playlist.length > 0 && (
+                  <div className="flex flex-col gap-3 relative pt-2">
+                    {showSuccess && (
+                      <div className="absolute inset-0 bg-[var(--nb-accent)] border-4 border-[var(--nb-primary)] z-10 flex items-center justify-center animate-bounce shadow-[4px_4px_0_var(--nb-primary)]">
+                        <span className="font-black uppercase text-xs">PALETTE SAVED TO VAULT! 🔥</span>
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={paletteName} 
+                        onChange={e => setPaletteName(e.target.value)} 
+                        placeholder="Nama Palet Warna..." 
+                        className="flex-1 bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-4 py-2.5 font-bold text-xs uppercase placeholder:opacity-30 focus:outline-none" 
+                      />
+                      <button 
+                        onClick={savePalette} 
+                        disabled={loading || !auth?.user}
+                        className="border-3 border-[var(--nb-primary)] px-6 py-2.5 font-black uppercase bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-primary)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs disabled:opacity-50 cursor-pointer transition-all"
+                      >
+                        {loading ? "SAVING..." : "Save Box"}
+                      </button>
+                    </div>
+                    {!auth?.user && (
+                      <p className="text-[10px] font-bold text-red-500 uppercase text-center">
+                        * Silakan login untuk menyimpan palet warna ini ke akun kamu.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
             </div>
 
-            <div className="lg:flex-1">
-              <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] p-6 sm:p-12 reveal">
-                {ActiveComp ? <ActiveComp /> : null}
+            {/* Right Column: Saved Palettes Vault (5 cols) */}
+            <div className="lg:col-span-5 space-y-6">
+              
+              <div className="border-b-4 border-[var(--nb-primary)] pb-3">
+                <h3 className="font-black uppercase text-xl text-[var(--nb-primary)] tracking-tight">Saved Palettes Vault</h3>
+                <p className="text-[10px] font-bold opacity-60 uppercase">Koleksi palet warna yang sudah kamu simpan</p>
               </div>
+
+              {!auth?.user ? (
+                <div className="border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] p-8 text-center space-y-4 shadow-[8px_8px_0_var(--nb-accent)]">
+                  <div className="w-14 h-14 bg-[var(--nb-accent)] border-4 border-[var(--nb-primary)] flex items-center justify-center mx-auto text-[var(--nb-primary)] rotate-3">
+                    <IconKey />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-black uppercase text-sm tracking-wider">Login Required</p>
+                    <p className="text-[10px] font-bold opacity-60 uppercase leading-relaxed">
+                      Masuk ke akun kamu untuk menyimpan dan mengelola palet warna favorit.
+                    </p>
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <button 
+                      onClick={() => router.visit("/login")}
+                      className="flex-1 bg-[var(--nb-accent)] text-[var(--nb-primary)] border-3 border-[var(--nb-primary)] py-2 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-primary)] hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer transition-all"
+                    >
+                      Login
+                    </button>
+                    <button 
+                      onClick={() => router.visit("/register")}
+                      className="flex-1 bg-[var(--nb-bg)] text-[var(--nb-primary)] border-3 border-[var(--nb-primary)] py-2 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-primary)] hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer transition-all"
+                    >
+                      Daftar
+                    </button>
+                  </div>
+                </div>
+              ) : savedPalettes.length === 0 ? (
+                <div className="border-4 border-dashed border-[var(--nb-primary)] p-12 text-center opacity-40">
+                  <p className="font-black uppercase text-xs tracking-widest">Belum ada palet warna tersimpan.</p>
+                </div>
+              ) : (
+                <div className="space-y-6 max-h-[750px] overflow-y-auto pr-1">
+                  {savedPalettes.map((p) => (
+                    <div 
+                      key={p.id} 
+                      className="border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] overflow-hidden transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0_var(--nb-primary)]"
+                    >
+                      {/* Horizontal Color Bars */}
+                      <div className="flex h-24 border-b-4 border-[var(--nb-primary)]">
+                        {Array.isArray(p.colors) && p.colors.map((c: string, i: number) => (
+                          <div 
+                            key={i} 
+                            className="flex-1 h-full relative group/color cursor-pointer" 
+                            style={{ backgroundColor: c }}
+                            onClick={() => copyToClipboard(c)}
+                            title={`Klik untuk copy ${c}`}
+                          >
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/color:opacity-100 bg-black/40 transition-opacity">
+                              <span className="text-[9px] font-black text-white bg-black px-1.5 py-0.5 uppercase tracking-wider">{c}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Card Footer Info */}
+                      <div className="p-4 flex justify-between items-center bg-[var(--nb-accent-light)]">
+                        <div>
+                          <p className="font-black uppercase text-xs tracking-widest text-[var(--nb-primary)] mb-0.5">{p.name || "UNNAMED PALETTE"}</p>
+                          <p className="text-[9px] font-bold opacity-40 uppercase">{Array.isArray(p.colors) ? p.colors.length : 0} Colors Saved</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => copyToClipboard(Array.isArray(p.colors) ? p.colors.join(", ") : "")}
+                            className="border-2 border-[var(--nb-primary)] bg-[var(--nb-bg)] px-3 py-1 font-black uppercase text-[9px] hover:bg-[var(--nb-accent)] transition-colors shadow-[2px_2px_0_var(--nb-primary)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer flex items-center gap-1"
+                          >
+                            <IconCopy /> Copy All
+                          </button>
+                          <button 
+                            onClick={() => deleteSavedPalette(p.id)}
+                            className="border-2 border-[var(--nb-primary)] bg-red-500 text-white px-2 py-1 font-black uppercase text-[9px] shadow-[2px_2px_0_var(--nb-primary)] hover:bg-red-600 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer"
+                            title="Hapus Palet"
+                          >
+                            <IconTrash size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
             </div>
 
           </div>
 
         </div>
       </main>
-
-      <style>{`
-        .reveal { animation: revealUp 0.8s cubic-bezier(0.16,1,0.3,1) both; }
-        @keyframes revealUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-        .btn-brutal:active { transform: translate(4px, 4px); shadow: none; }
-      `}</style>
+      <ChatbotWidget />
     </>
   );
 }
