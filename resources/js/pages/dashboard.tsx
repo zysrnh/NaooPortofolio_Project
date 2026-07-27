@@ -1926,36 +1926,14 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
             )}
 
             {activeNav === "profile" && (
-              <div className="content-fade space-y-5 sm:space-y-6 max-w-2xl">
-                <h2 className="font-black text-2xl uppercase text-[var(--nb-primary)]">Profile</h2>
-                <div className="bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] overflow-hidden" style={{ animation: "slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both" }}>
-                  <div className="bg-[var(--nb-accent)] h-16 sm:h-20 border-b-4 border-[var(--nb-primary)] relative">
-                    <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(45deg,var(--nb-primary) 0,var(--nb-primary) 1px,transparent 1px,transparent 12px)" }} />
-                  </div>
-                  <div className="px-6 sm:px-8 pb-6 sm:pb-8 relative -mt-8">
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 border-4 border-[var(--nb-bg)] bg-[var(--nb-primary)] flex items-center justify-center font-black text-xl sm:text-2xl text-[var(--nb-accent)] mb-4" style={{ boxShadow: "4px 4px 0 var(--nb-accent)" }}>
-                      {(user?.name ?? "Y")[0]}
-                    </div>
-                    <h3 className="font-black text-xl sm:text-2xl uppercase text-[var(--nb-bg)] mb-1">{user?.name ?? "Zaki Yusron"}</h3>
-                    <p className="font-semibold text-xs sm:text-sm text-[var(--nb-accent-light)] mb-5 sm:mb-6">{user?.email ?? "yusron@dev.com"}</p>
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                      {(isAdmin 
-                        ? [{ label: "Role", value: "IT Programmer" }, { label: "Focus", value: "Fullstack Web" }, { label: "Stack", value: "React + Laravel" }, { label: "Status", value: "Open to Work" }]
-                        : [{ label: "Account Type", value: "Regular User" }, { label: "Status", value: "Authenticated" }, { label: "Joined", value: new Date().toLocaleDateString() }, { label: "Permissions", value: "View Only" }]
-                      ).map((item, i) => (
-                        <div key={i} className="border-2 border-[var(--nb-accent)] p-2 sm:p-3" style={{ animation: `slideUp 0.4s cubic-bezier(0.16,1,0.3,1) ${0.2 + i * 0.06}s both` }}>
-                          <p className="font-black text-xs text-[var(--nb-accent)] uppercase tracking-widest mb-1">{item.label}</p>
-                          <p className="font-bold text-xs sm:text-sm text-[var(--nb-bg)]">{item.value}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <button onClick={handleHome} className="flex-1 border-4 border-[#0B1957] py-3 sm:py-4 font-black text-xs sm:text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] flex items-center justify-center gap-2 sm:gap-3">
+              <div className="content-fade space-y-6">
+                <UserProfileManager />
+
+                <div className="flex gap-3 max-w-3xl">
+                  <button onClick={handleHome} className="flex-1 border-4 border-[#0B1957] py-3 sm:py-4 font-black text-xs sm:text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#9ECCFA] text-[#0B1957] flex items-center justify-center gap-2 sm:gap-3 cursor-pointer">
                     <IconHome size={15} /> Homepage
                   </button>
-                  <button onClick={handleLogout} className="flex-1 border-4 border-[#0B1957] py-3 sm:py-4 font-black text-xs sm:text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] flex items-center justify-center gap-2 sm:gap-3">
+                  <button onClick={handleLogout} className="flex-1 border-4 border-[#0B1957] py-3 sm:py-4 font-black text-xs sm:text-sm uppercase tracking-widest shadow-[6px_6px_0_#0B1957] bg-[#F8F3EA] text-[#0B1957] flex items-center justify-center gap-2 sm:gap-3 cursor-pointer">
                     <IconLogOut size={15} /> Logout
                   </button>
                 </div>

@@ -6,6 +6,7 @@ interface DirectUser {
   name: string;
   email: string;
   role?: string;
+  avatar?: string;
 }
 
 interface DirectMessage {
@@ -13,9 +14,12 @@ interface DirectMessage {
   sender_id: number;
   receiver_id: number;
   message: string;
+  attachment?: string;
+  attachment_type?: string;
+  attachment_name?: string;
   created_at: string;
-  sender?: { id: number; name: string };
-  receiver?: { id: number; name: string };
+  sender?: { id: number; name: string; avatar?: string };
+  receiver?: { id: number; name: string; avatar?: string };
 }
 
 function getCsrfToken(): string {
@@ -48,6 +52,26 @@ const IconSearch = () => (
   </svg>
 );
 
+const IconPaperclip = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+  </svg>
+);
+
+const IconFile = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+  </svg>
+);
+
+const IconClose = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
 export default function DirectChatManager() {
   const props = usePage().props as any;
   const currentUser = props.auth?.user;
@@ -57,11 +81,16 @@ export default function DirectChatManager() {
   const [selectedUser, setSelectedUser] = useState<DirectUser | null>(null);
   const [messages, setMessages] = useState<DirectMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
+  
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<{ url: string; name: string; isImage: boolean } | null>(null);
+
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingChat, setLoadingChat] = useState(false);
   const [sending, setSending] = useState(false);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -108,25 +137,53 @@ export default function DirectChatManager() {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Ukuran file maksimal 10MB!");
+      return;
+    }
+
+    setSelectedFile(file);
+    const isImg = file.type.startsWith("image/");
+    if (isImg) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview({ url: reader.result as string, name: file.name, isImage: true });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFilePreview({ url: "", name: file.name, isImage: false });
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     const text = inputMessage.trim();
-    if (!text || !selectedUser || sending) return;
+    if ((!text && !selectedFile) || !selectedUser || sending) return;
 
     setSending(true);
     try {
+      const formData = new FormData();
+      formData.append("receiver_id", selectedUser.id.toString());
+      if (text) formData.append("message", text);
+      if (selectedFile) formData.append("file", selectedFile);
+
       const res = await fetch("/api/user-chats", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           "X-Requested-With": "XMLHttpRequest",
           "X-XSRF-TOKEN": getCsrfToken(),
         },
-        body: JSON.stringify({ receiver_id: selectedUser.id, message: text }),
+        body: formData,
       });
 
       if (res.ok) {
         setInputMessage("");
+        setSelectedFile(null);
+        setFilePreview(null);
         fetchChatHistory(selectedUser.id);
       }
     } catch (e) {
@@ -151,7 +208,7 @@ export default function DirectChatManager() {
           User Direct Chat
         </h2>
         <p className="font-bold text-xs text-[var(--nb-primary)] opacity-60 uppercase tracking-widest mt-1">
-          Berkirim pesan langsung 1-on-1 antar akun pengguna terdaftar
+          Berkirim pesan & lampiran file 1-on-1 antar akun pengguna terdaftar
         </p>
       </div>
 
@@ -203,8 +260,12 @@ export default function DirectChatManager() {
                         : "hover:bg-[var(--nb-bg)] text-[var(--nb-primary)]"
                     }`}
                   >
-                    <div className="w-10 h-10 border-3 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex items-center justify-center font-black text-sm text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)] flex-shrink-0">
-                      {u.name[0]?.toUpperCase()}
+                    <div className="w-10 h-10 border-3 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex items-center justify-center font-black text-sm text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)] flex-shrink-0 overflow-hidden">
+                      {u.avatar ? (
+                        <img src={u.avatar} alt={u.name} className="w-full h-full object-cover" />
+                      ) : (
+                        u.name[0]?.toUpperCase()
+                      )}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
@@ -231,8 +292,12 @@ export default function DirectChatManager() {
               {/* Active Chat Topbar */}
               <div className="p-4 border-b-4 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 border-3 border-[var(--nb-primary)] bg-[var(--nb-accent)] flex items-center justify-center font-black text-sm text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)]">
-                    {selectedUser.name[0]?.toUpperCase()}
+                  <div className="w-10 h-10 border-3 border-[var(--nb-primary)] bg-[var(--nb-accent)] flex items-center justify-center font-black text-sm text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)] overflow-hidden flex-shrink-0">
+                    {selectedUser.avatar ? (
+                      <img src={selectedUser.avatar} alt={selectedUser.name} className="w-full h-full object-cover" />
+                    ) : (
+                      selectedUser.name[0]?.toUpperCase()
+                    )}
                   </div>
                   <div>
                     <h4 className="font-black uppercase text-sm text-[var(--nb-primary)] leading-none">
@@ -258,23 +323,62 @@ export default function DirectChatManager() {
                 ) : (
                   messages.map((msg) => {
                     const isMe = msg.sender_id === currentUser?.id;
+                    const avatar = isMe ? currentUser?.avatar : msg.sender?.avatar;
+                    const senderName = isMe ? "Kamu" : msg.sender?.name;
                     return (
                       <div
                         key={msg.id}
-                        className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}
+                        className={`flex gap-3 items-start ${isMe ? "flex-row-reverse" : "flex-row"}`}
                       >
-                        <div
-                          className={`max-w-[80%] p-4 border-4 border-[var(--nb-primary)] font-bold text-sm leading-relaxed ${
-                            isMe
-                              ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-primary)]"
-                              : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-primary)]"
-                          }`}
-                        >
-                          <p className="whitespace-pre-wrap">{msg.message}</p>
+                        {/* Profile Avatar Badge */}
+                        <div className="w-8 h-8 border-2 border-[var(--nb-primary)] bg-[var(--nb-accent)] flex items-center justify-center font-black text-xs text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)] flex-shrink-0 overflow-hidden">
+                          {avatar ? (
+                            <img src={avatar} alt={senderName} className="w-full h-full object-cover" />
+                          ) : (
+                            (senderName || "U")[0]?.toUpperCase()
+                          )}
                         </div>
-                        <span className="text-[9px] font-black uppercase opacity-40 mt-1 px-1 text-[var(--nb-primary)]">
-                          {isMe ? "Kamu" : msg.sender?.name} • {fmtTime(msg.created_at)}
-                        </span>
+
+                        {/* Bubble Text & Attachments */}
+                        <div className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
+                          <div
+                            className={`max-w-[80vw] sm:max-w-[420px] p-3.5 border-3 border-[var(--nb-primary)] font-bold text-xs sm:text-sm leading-relaxed ${
+                              isMe
+                                ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-primary)]"
+                                : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-primary)]"
+                            }`}
+                          >
+                            {/* Image Attachment */}
+                            {msg.attachment && msg.attachment_type === "image" && (
+                              <div className="mb-2">
+                                <img
+                                  src={msg.attachment}
+                                  alt="Attached Photo"
+                                  className="max-w-full max-h-[280px] object-cover border-2 border-[var(--nb-primary)] cursor-pointer shadow-[2px_2px_0_var(--nb-primary)]"
+                                  onClick={() => window.open(msg.attachment, "_blank")}
+                                />
+                              </div>
+                            )}
+
+                            {/* File Attachment */}
+                            {msg.attachment && msg.attachment_type === "file" && (
+                              <div className="mb-2">
+                                <a
+                                  href={msg.attachment}
+                                  download={msg.attachment_name || "file_download"}
+                                  className="flex items-center gap-2 border-2 border-[var(--nb-primary)] p-2.5 bg-[var(--nb-accent-light)] hover:bg-[var(--nb-accent)] text-[var(--nb-primary)] font-black text-xs uppercase shadow-[2px_2px_0_var(--nb-primary)]"
+                                >
+                                  <IconFile /> {msg.attachment_name || "Unduh Dokumen"}
+                                </a>
+                              </div>
+                            )}
+
+                            {msg.message && <p className="whitespace-pre-wrap">{msg.message}</p>}
+                          </div>
+                          <span className="text-[9px] font-black uppercase opacity-40 mt-1 px-1 text-[var(--nb-primary)]">
+                            {senderName} • {fmtTime(msg.created_at)}
+                          </span>
+                        </div>
                       </div>
                     );
                   })
@@ -282,11 +386,54 @@ export default function DirectChatManager() {
                 <div ref={chatEndRef} />
               </div>
 
+              {/* File Preview Bar */}
+              {filePreview && (
+                <div className="bg-[var(--nb-accent-light)] border-t-3 border-[var(--nb-primary)] p-2.5 px-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {filePreview.isImage ? (
+                      <img src={filePreview.url} alt="Preview" className="w-10 h-10 object-cover border-2 border-[var(--nb-primary)]" />
+                    ) : (
+                      <div className="w-10 h-10 bg-[var(--nb-accent)] border-2 border-[var(--nb-primary)] flex items-center justify-center text-[var(--nb-primary)]">
+                        <IconFile />
+                      </div>
+                    )}
+                    <span className="font-black text-xs uppercase text-[var(--nb-primary)] truncate max-w-[250px]">
+                      {filePreview.name}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setFilePreview(null);
+                    }}
+                    className="p-1 text-[var(--nb-primary)] hover:text-red-500 cursor-pointer"
+                  >
+                    <IconClose />
+                  </button>
+                </div>
+              )}
+
               {/* Input Message Form */}
               <form
                 onSubmit={handleSendMessage}
-                className="p-4 border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex gap-3"
+                className="p-4 border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex gap-2 sm:gap-3 items-center"
               >
+                {/* File Upload Button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="bg-[var(--nb-accent-light)] text-[var(--nb-primary)] border-3 border-[var(--nb-primary)] p-3 hover:bg-[var(--nb-accent)] cursor-pointer shadow-[2px_2px_0_var(--nb-primary)]"
+                  title="Lampirkan Foto atau File"
+                >
+                  <IconPaperclip />
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+
                 <input
                   type="text"
                   value={inputMessage}
@@ -294,10 +441,11 @@ export default function DirectChatManager() {
                   placeholder={`Tulis pesan untuk ${selectedUser.name}...`}
                   className="flex-1 bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-4 py-3 font-bold text-xs outline-none focus:bg-[var(--nb-accent-light)]"
                 />
+
                 <button
                   type="submit"
                   disabled={sending}
-                  className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-6 py-3 font-black uppercase text-xs shadow-[4px_4px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer active:translate-x-0 active:translate-y-0 disabled:opacity-50 flex items-center gap-2"
+                  className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-5 sm:px-6 py-3 font-black uppercase text-xs shadow-[4px_4px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer active:translate-x-0 active:translate-y-0 disabled:opacity-50 flex items-center gap-2"
                 >
                   <IconSend /> Kirim
                 </button>

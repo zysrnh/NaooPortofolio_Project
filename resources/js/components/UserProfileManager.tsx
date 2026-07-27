@@ -75,7 +75,7 @@ export default function UserProfileManager() {
       if (password) formData.append("password", password);
       if (avatarFile) formData.append("avatar_file", avatarFile);
 
-      const res = await fetch("/user/profile-update", {
+      const res = await fetch("/api/user/profile-update", {
         method: "POST",
         headers: {
           "X-Requested-With": "XMLHttpRequest",
@@ -100,7 +100,7 @@ export default function UserProfileManager() {
   };
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6 max-w-4xl">
       <div>
         <h2 className="font-black text-2xl uppercase text-[var(--nb-primary)] leading-tight">
           Pengaturan Profil
@@ -122,9 +122,9 @@ export default function UserProfileManager() {
         </div>
       )}
 
-      <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] overflow-hidden">
+      <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)]">
         {/* Banner Header */}
-        <div className="bg-[var(--nb-accent)] h-24 border-b-4 border-[var(--nb-primary)] relative">
+        <div className="bg-[var(--nb-accent)] h-28 border-b-4 border-[var(--nb-primary)] relative">
           <div
             className="absolute inset-0 opacity-20"
             style={{
@@ -134,12 +134,16 @@ export default function UserProfileManager() {
           />
         </div>
 
-        <div className="p-6 sm:p-8 relative -mt-12">
+        {/* Main Body */}
+        <div className="p-6 sm:p-8 pt-4">
           <form onSubmit={handleSaveProfile} className="space-y-6">
-            {/* Avatar Photo Picker */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 pb-6 border-b-4 border-[var(--nb-primary)]">
-              <div className="relative group">
-                <div className="w-24 h-24 border-4 border-[var(--nb-primary)] bg-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-accent)] overflow-hidden flex items-center justify-center text-[var(--nb-accent)] font-black text-3xl">
+            
+            {/* Avatar & User Header Card */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 pb-6 border-b-4 border-[var(--nb-primary)]">
+              
+              {/* Avatar Photo Box (Negative margin ONLY on avatar square) */}
+              <div className="relative group flex-shrink-0 -mt-16 z-10">
+                <div className="w-28 h-28 border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] overflow-hidden flex items-center justify-center text-[var(--nb-primary)] font-black text-4xl">
                   {avatarPreview ? (
                     <img
                       src={avatarPreview}
@@ -154,7 +158,7 @@ export default function UserProfileManager() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 bg-[var(--nb-accent)] text-[var(--nb-primary)] border-2 border-[var(--nb-primary)] p-1.5 shadow-[2px_2px_0_var(--nb-primary)] hover:scale-110 transition-transform cursor-pointer"
+                  className="absolute bottom-1 right-1 bg-[var(--nb-accent)] text-[var(--nb-primary)] border-2 border-[var(--nb-primary)] p-2 shadow-[2px_2px_0_var(--nb-primary)] hover:scale-105 cursor-pointer"
                   title="Ganti Foto Profil"
                 >
                   <IconCamera />
@@ -169,76 +173,90 @@ export default function UserProfileManager() {
                 />
               </div>
 
-              <div className="space-y-1 text-center sm:text-left">
-                <h3 className="font-black text-lg uppercase text-[var(--nb-primary)]">
-                  {name || "User"}
-                </h3>
+              {/* User Info Text Block (Normal flow, never cut off) */}
+              <div className="flex-1 space-y-2 text-center sm:text-left pt-2 sm:pt-0">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <h3 className="font-black text-2xl uppercase text-[var(--nb-primary)] leading-tight">
+                    {name || "User"}
+                  </h3>
+                  <span className="text-[9px] font-black uppercase bg-[var(--nb-primary)] text-[var(--nb-accent)] px-2.5 py-1 w-fit mx-auto sm:mx-0 shadow-[2px_2px_0_var(--nb-accent)]">
+                    {user?.role === "admin" ? "ADMINISTRATOR" : "REGULAR USER"}
+                  </span>
+                </div>
                 <p className="font-bold text-xs text-[var(--nb-primary)] opacity-60">
                   Format gambar yang didukung: JPG, PNG, WEBP (Maks 5MB)
                 </p>
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="mt-2 bg-[var(--nb-accent-light)] text-[var(--nb-primary)] border-2 border-[var(--nb-primary)] px-3 py-1 font-black text-xs uppercase shadow-[2px_2px_0_var(--nb-primary)] hover:bg-[var(--nb-accent)] cursor-pointer"
+                  className="bg-[var(--nb-accent)] text-[var(--nb-primary)] border-3 border-[var(--nb-primary)] px-4 py-1.5 font-black text-xs uppercase shadow-[3px_3px_0_var(--nb-primary)] hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer inline-flex items-center gap-1.5"
                 >
-                  Upload Foto Baru
+                  <IconCamera /> Upload Foto Baru
                 </button>
               </div>
+
             </div>
 
-            {/* Input Form Fields */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="font-black text-xs uppercase text-[var(--nb-primary)] tracking-wider">
-                  Nama Lengkap
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-3 py-2.5 font-bold text-xs outline-none focus:bg-[var(--nb-accent-light)]"
-                />
+            {/* Form Fields Section */}
+            <div className="space-y-4 pt-2">
+              <h4 className="font-black text-sm uppercase text-[var(--nb-primary)] tracking-wider">
+                Informasi Akun
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="space-y-2">
+                  <label className="font-black text-xs uppercase text-[var(--nb-primary)] tracking-wider block">
+                    Nama Lengkap
+                  </label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    className="w-full bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-4 py-3 font-bold text-xs outline-none focus:bg-[var(--nb-accent-light)] shadow-[2px_2px_0_var(--nb-primary)]"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="font-black text-xs uppercase text-[var(--nb-primary)] tracking-wider block">
+                    Alamat Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-4 py-3 font-bold text-xs outline-none focus:bg-[var(--nb-accent-light)] shadow-[2px_2px_0_var(--nb-primary)]"
+                  />
+                </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="font-black text-xs uppercase text-[var(--nb-primary)] tracking-wider">
-                  Alamat Email
+              <div className="space-y-2 pt-2">
+                <label className="font-black text-xs uppercase text-[var(--nb-primary)] tracking-wider flex items-center justify-between">
+                  <span>Kata Sandi Baru</span>
+                  <span className="opacity-50 text-[10px] lowercase font-normal">(opsional)</span>
                 </label>
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-3 py-2.5 font-bold text-xs outline-none focus:bg-[var(--nb-accent-light)]"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Biarkan kosong jika tidak ingin mengganti password"
+                  className="w-full bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-4 py-3 font-bold text-xs outline-none focus:bg-[var(--nb-accent-light)] shadow-[2px_2px_0_var(--nb-primary)]"
                 />
               </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-black text-xs uppercase text-[var(--nb-primary)] tracking-wider flex items-center justify-between">
-                <span>Kata Sandi Baru</span>
-                <span className="opacity-50 text-[10px] lowercase font-normal">(opsional)</span>
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Biarkan kosong jika tidak ingin mengganti password"
-                className="w-full bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-3 py-2.5 font-bold text-xs outline-none focus:bg-[var(--nb-accent-light)]"
-              />
             </div>
 
             {/* Submit Button */}
-            <div className="pt-4 flex justify-end">
+            <div className="pt-4 border-t-3 border-[var(--nb-primary)] flex justify-end">
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-8 py-3 font-black uppercase text-xs shadow-[4px_4px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 cursor-pointer flex items-center gap-2"
+                className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-8 py-3.5 font-black uppercase text-xs shadow-[5px_5px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 cursor-pointer flex items-center gap-2"
               >
                 <IconSave /> {saving ? "Menyimpan..." : "Simpan Perubahan"}
               </button>
             </div>
+
           </form>
         </div>
       </div>

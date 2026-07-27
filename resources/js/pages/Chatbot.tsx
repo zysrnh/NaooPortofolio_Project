@@ -504,23 +504,35 @@ export default function ChatbotPage() {
                           ) : (
                             directMessages.map((msg) => {
                               const isMe = msg.sender_id === user.id;
+                              const avatar = isMe ? user?.avatar : msg.sender?.avatar;
+                              const senderName = isMe ? "Kamu" : msg.sender?.name;
                               return (
                                 <div
                                   key={msg.id}
-                                  className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}
+                                  className={`flex gap-3 items-start ${isMe ? "flex-row-reverse" : "flex-row"}`}
                                 >
-                                  <div
-                                    className={`max-w-[80%] p-4 border-4 border-[var(--nb-primary)] font-semibold leading-relaxed ${
-                                      isMe
-                                        ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[5px_5px_0_var(--nb-primary)]"
-                                        : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[5px_5px_0_var(--nb-primary)]"
-                                    }`}
-                                  >
-                                    <p className="whitespace-pre-wrap">{msg.message}</p>
+                                  <div className="w-8 h-8 border-2 border-[var(--nb-primary)] bg-[var(--nb-accent)] flex items-center justify-center font-black text-xs text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)] flex-shrink-0 overflow-hidden mt-0.5">
+                                    {avatar ? (
+                                      <img src={avatar} alt={senderName} className="w-full h-full object-cover" />
+                                    ) : (
+                                      (senderName || "U")[0]?.toUpperCase()
+                                    )}
                                   </div>
-                                  <span className="text-[9px] font-black uppercase opacity-40 mt-1.5 px-1 text-[var(--nb-primary)]">
-                                    {isMe ? "Kamu" : msg.sender?.name} • {fmtTime(msg.created_at)}
-                                  </span>
+
+                                  <div className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
+                                    <div
+                                      className={`max-w-[80%] p-4 border-4 border-[var(--nb-primary)] font-semibold leading-relaxed ${
+                                        isMe
+                                          ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[5px_5px_0_var(--nb-primary)]"
+                                          : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[5px_5px_0_var(--nb-primary)]"
+                                      }`}
+                                    >
+                                      <p className="whitespace-pre-wrap">{msg.message}</p>
+                                    </div>
+                                    <span className="text-[9px] font-black uppercase opacity-40 mt-1.5 px-1 text-[var(--nb-primary)]">
+                                      {senderName} • {fmtTime(msg.created_at)}
+                                    </span>
+                                  </div>
                                 </div>
                               );
                             })

@@ -44,18 +44,46 @@ class UserChatController extends Controller
         return response()->json($messages);
     }
 
-    // Kirim pesan direct 1-on-1 ke user lain
+    // Kirim pesan direct 1-on-1 ke user lain (bisa kirim pesan & lampiran foto/file)
     public function store(Request $request)
     {
         $request->validate([
             'receiver_id' => 'required|exists:users,id',
-            'message' => 'required|string|max:1000',
+            'message' => 'nullable|string|max:1000',
+            'file' => 'nullable|file|max:10240',
         ]);
+
+        $message = trim($request->input('message', ''));
+        if (empty($message) && !$request->hasFile('file')) {
+            return response()->json(['message' => 'Pesan atau file wajib diisi.'], 422);
+        }
+
+        $attachment = null;
+        $attachmentType = null;
+        $attachmentName = null;
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $attachmentName = $file->getClientOriginalName();
+            $mime = $file->getMimeType();
+
+            if (str_starts_with($mime, 'image/')) {
+                $attachmentType = 'image';
+            } else {
+                $attachmentType = 'file';
+            }
+
+            $base64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+            $attachment = $base64;
+        }
 
         $chat = UserChat::create([
             'sender_id' => Auth::id(),
             'receiver_id' => $request->receiver_id,
-            'message' => trim($request->message),
+            'message' => $message,
+            'attachment' => $attachment,
+            'attachment_type' => $attachmentType,
+            'attachment_name' => $attachmentName,
         ]);
 
         $chat->load(['sender:id,name,avatar', 'receiver:id,name,avatar']);

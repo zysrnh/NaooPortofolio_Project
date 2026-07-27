@@ -11,6 +11,9 @@ class UserChat extends Model
         'sender_id',
         'receiver_id',
         'message',
+        'attachment',
+        'attachment_type',
+        'attachment_name',
         'is_read',
     ];
 
