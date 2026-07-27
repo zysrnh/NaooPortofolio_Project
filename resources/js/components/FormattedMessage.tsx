@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-interface CopyButtonProps {
+interface CopySvgIconProps {
   text: string;
-  label?: string;
+  className?: string;
 }
 
-export function CopyButton({ text, label = "Salin" }: CopyButtonProps) {
+export function CopySvgIcon({ text, className = "" }: CopySvgIconProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = (e: React.MouseEvent) => {
@@ -21,24 +21,18 @@ export function CopyButton({ text, label = "Salin" }: CopyButtonProps) {
     <button
       onClick={handleCopy}
       type="button"
-      className="px-2 py-0.5 text-[9px] font-black uppercase border border-current transition-all cursor-pointer hover:opacity-80 flex items-center gap-1 bg-black/10 active:scale-95"
-      title="Salin Pesan / Kode"
+      className={`p-1 opacity-70 hover:opacity-100 hover:bg-black/10 rounded transition-all cursor-pointer inline-flex items-center justify-center ${className}`}
+      title={copied ? "Tersalin!" : "Salin Teks / Kode"}
     >
       {copied ? (
-        <>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-          Tersalin!
-        </>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-emerald-400">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
       ) : (
-        <>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-          </svg>
-          {label}
-        </>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
       )}
     </button>
   );
@@ -49,7 +43,7 @@ interface FormattedMessageProps {
   isUser?: boolean;
 }
 
-export function FormattedMessage({ text, isUser }: FormattedMessageProps) {
+export function FormattedMessage({ text }: FormattedMessageProps) {
   // Regex to split by ``` code blocks
   const parts = text.split(/(```[\s\S]*?```)/g);
 
@@ -84,7 +78,7 @@ export function FormattedMessage({ text, isUser }: FormattedMessageProps) {
                   </svg>
                   {lang}
                 </span>
-                <CopyButton text={code} label="Copy Code" />
+                <CopySvgIcon text={code} className="text-[#94a3b8]" />
               </div>
               {/* Code Body */}
               <pre className="p-3 overflow-x-auto text-[11px] leading-snug whitespace-pre font-mono selection:bg-cyan-600">
@@ -126,11 +120,6 @@ export function FormattedMessage({ text, isUser }: FormattedMessageProps) {
           </div>
         );
       })}
-
-      {/* Copy Message Button at bottom */}
-      <div className="flex justify-end mt-2 pt-1 border-t border-current/20">
-        <CopyButton text={text} label="Copy Text" />
-      </div>
     </div>
   );
 }

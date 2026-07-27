@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Head, usePage, router } from "@inertiajs/react";
 import Navbar from "../components/Navbar";
-import { FormattedMessage } from "../components/FormattedMessage";
+import { FormattedMessage, CopySvgIcon } from "../components/FormattedMessage";
 
 interface Message {
   id: string;
@@ -402,9 +402,12 @@ export default function ChatbotPage() {
                           >
                             <FormattedMessage text={msg.text} isUser={msg.sender === "user"} />
                           </div>
-                          <span className="text-[9px] font-black uppercase opacity-40 mt-1.5 px-1 text-[var(--nb-primary)]">
-                            {msg.sender === "user" ? "Kamu" : "Naoo Helper"} • {msg.timestamp}
-                          </span>
+                          <div className="flex items-center gap-1.5 mt-1.5 px-1">
+                            <span className="text-[9px] font-black uppercase opacity-50 text-[var(--nb-primary)]">
+                              {msg.sender === "user" ? "Kamu" : "Naoo Helper"} • {msg.timestamp}
+                            </span>
+                            <CopySvgIcon text={msg.text} />
+                          </div>
                         </div>
                       ))}
 
