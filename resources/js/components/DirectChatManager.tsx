@@ -265,7 +265,7 @@ export default function DirectChatManager() {
                     onClick={() => setSelectedUser(u)}
                     className={`p-4 cursor-pointer transition-colors flex items-center gap-3 ${
                       isSelected
-                        ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] font-black"
+                        ? "bg-[var(--nb-accent)] text-[var(--accent-foreground,var(--nb-primary))] font-black"
                         : "hover:bg-[var(--nb-bg)] text-[var(--nb-primary)]"
                     }`}
                   >
