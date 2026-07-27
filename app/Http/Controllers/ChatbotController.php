@@ -25,7 +25,7 @@ class ChatbotController extends Controller
 
         $apiKey = env('GEMINI_API_KEY');
 
-        $systemInstruction = "Kamu adalah Naoo Helper (asisten virtual yang mewakili Zaki Yusron Hasyimmi).
+        $systemInstruction = "Kamu adalah Naoo Helper (asisten virtual & AI coding assistant yang mewakili Zaki Yusron Hasyimmi).
 
 Konteks Latar Belakang Zaki (hanya gunakan jika pengguna bertanya tentang hal tersebut):
 - Nama Lengkap: Zaki Yusron Hasyimmi.
@@ -34,15 +34,17 @@ Konteks Latar Belakang Zaki (hanya gunakan jika pengguna bertanya tentang hal te
 - Pendidikan: Mahasiswa aktif Institut Digital Ekonomi (IDE) LPKIA tingkat 2 semester 1.
 - Organisasi: Anggota HIMA IF (Himpunan Mahasiswa Informatika LPKIA).
 - Asal Sekolah: Alumni SMKN 7 Baleendah.
-- Keahlian Teknis: Full Stack Web Development (React 19, TypeScript, Laravel 12, Tailwind CSS v4, Inertia.js, Vite, Node.js, SQL, REST API).
+- Keahlian Teknis & Noding: Full Stack Web Development & Software Engineering (Python, JavaScript, TypeScript, PHP, React 19, Laravel 12, Tailwind CSS v4, Inertia.js, Vite, Node.js, SQL, REST API).
 
 Gaya Komunikasi & Aturan:
 1. Nama kamu adalah Naoo Helper.
-2. Gunakan bahasa Indonesia santai, ramah, dan sopan seperti pengembang web muda (gunakan 'aku' dan 'kamu').
-3. JANGAN PERNAH memakai kata 'bro'!
-4. JANGAN sebutkan atau jabarkan semua latar belakang (sekolah, kampus, tempat kerja, pacar) di awal atau di setiap jawaban secara berlebihan. Informasi hanya dipakai bila relevan dengan pertanyaan user.
-5. JANGAN gunakan emoji! Hindari pemakaian emoji dalam jawaban.
-6. Jawab pertanyaan seputar proyek, keahlian, atau diskusi teknis dengan jelas, santai, dan to the point.";
+2. Kamu BISA dan SANGAT MAHIR dalam koding/noding (Python, JavaScript, PHP, React, Laravel, HTML/CSS, dll).
+3. Jika pengguna meminta dibuatkan program, kode, atau bantuan koding (seperti program Python, JS, PHP), berikan contoh kode yang bersih, jelas, dan siap dijalankan.
+4. Gunakan bahasa Indonesia santai, ramah, dan sopan seperti pengembang web muda (gunakan 'aku' dan 'kamu').
+5. JANGAN PERNAH memakai kata 'bro'!
+6. JANGAN sebutkan atau jabarkan semua latar belakang (sekolah, kampus, tempat kerja, pacar) di awal atau di setiap jawaban secara berlebihan. Informasi hanya dipakai bila relevan dengan pertanyaan user.
+7. JANGAN gunakan emoji! Hindari pemakaian emoji dalam jawaban.
+8. Jawab pertanyaan seputar koding, proyek, keahlian, atau diskusi teknis dengan jelas, santai, dan to the point.";
 
         $contents = [];
         $history = $request->input('history', []);
@@ -90,7 +92,13 @@ Gaya Komunikasi & Aturan:
         }
 
         // Smart Local Response Fallback
-        if (str_contains($lowerMsg, 'proyek') || str_contains($lowerMsg, 'project') || str_contains($lowerMsg, 'portofolio')) {
+        if (str_contains($lowerMsg, 'noding') || str_contains($lowerMsg, 'koding') || str_contains($lowerMsg, 'coding') || str_contains($lowerMsg, 'pemrograman') || str_contains($lowerMsg, 'bisa noding')) {
+            $reply = "Bisa banget! Aku Naoo Helper dan Zaki menguasai Full Stack Web Development & Software Engineering (Python, JavaScript, TypeScript, PHP, React, Laravel, Node.js, SQL). Mau kubuatkan program atau bantuan koding apa?";
+        } else if (str_contains($lowerMsg, 'python') || str_contains($lowerMsg, 'pyhton')) {
+            $reply = "Tentu! Ini contoh program Python sederhana buatan aku:\n\n```python\n# Program Sederhana Python\ndef sapa_user(nama):\n    print(f'Halo {nama}, selamat datang!')\n\ndef tambah(a, b):\n    return a + b\n\nname = 'Zaki'\nsapa_user(name)\nhasil = tambah(10, 25)\nprint(f'Hasil 10 + 25 = {hasil}')\n```\n\nKamu mau buat program Python spesifik seperti apa? Silakan beri tahu spesifikasinya ya!";
+        } else if (str_contains($lowerMsg, 'javascript') || str_contains($lowerMsg, 'js') || str_contains($lowerMsg, 'react') || str_contains($lowerMsg, 'php') || str_contains($lowerMsg, 'laravel')) {
+            $reply = "Zaki & Naoo Helper sangat menguasai JavaScript, TypeScript, React, PHP, dan Laravel! Butuh snippet atau bantuan koding tertentu? Tanyakan saja!";
+        } else if (str_contains($lowerMsg, 'proyek') || str_contains($lowerMsg, 'project') || str_contains($lowerMsg, 'portofolio')) {
             $reply = "Zaki sudah menggarap berbagai proyek web seperti Naoo Portfolio & CMS, Smart Color Picker Tool, Sistem Informasi Geografis, dan Dashboard Admin Analytics. Kamu bisa lihat lengkapnya di halaman Projects.";
         } else if (str_contains($lowerMsg, 'pendidikan') || str_contains($lowerMsg, 'kuliah') || str_contains($lowerMsg, 'lpkia')) {
             $reply = "Zaki adalah mahasiswa aktif tingkat 2 semester 1 di Institut Digital Ekonomi (IDE) LPKIA.";
@@ -101,9 +109,9 @@ Gaya Komunikasi & Aturan:
         } else if (str_contains($lowerMsg, 'alumni') || str_contains($lowerMsg, 'smk') || str_contains($lowerMsg, 'baleendah')) {
             $reply = "Zaki merupakan alumni dari SMKN 7 Baleendah.";
         } else if (str_contains($lowerMsg, 'halo') || str_contains($lowerMsg, 'hai') || str_contains($lowerMsg, 'hi')) {
-            $reply = "Halo! Aku Naoo Helper. Ada yang bisa aku bantu seputar proyek atau keahlian Zaki?";
+            $reply = "Halo! Aku Naoo Helper. Ada yang bisa aku bantu seputar proyek, keahlian noding, atau pengalaman Zaki?";
         } else {
-            $reply = "Aku Naoo Helper. Ada yang bisa aku bantu terkait proyek, keahlian, atau kontak Zaki?";
+            $reply = "Aku Naoo Helper! Aku bisa bantu jawab seputar proyek Zaki, keahlian Full Stack Web Dev, hingga membantu noding program Python, JS, PHP, atau React. Silakan tanya ya!";
         }
 
         return response()->json(['reply' => $reply]);
