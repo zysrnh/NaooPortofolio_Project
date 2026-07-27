@@ -274,43 +274,43 @@
     --sidebar-border: #dc3c24; --sidebar-ring: #dc3c24;
 }
 
-/* ── DARK (Deep Sea) — Palette from Image ── */
+/* ── DARK (Deep Sea Blue) — Ultra Sleek Dark Mode ── */
 [data-theme='dark'] {
-    --nb-bg: #0A0E14;
-    --nb-primary: #F4FEFE;
-    --nb-accent: #1E3A46;
-    --nb-accent-light: #182B31;
-    --nb-secondary: #58717D;
-    --nb-shadow: #F4FEFE;
-    --nb-text: #F4FEFE;
-    --nb-text-inv: #0A0E14;
+    --nb-bg: #0A0E1A;
+    --nb-primary: #121E2E;
+    --nb-accent: #38BDF8;
+    --nb-accent-light: #1E293B;
+    --nb-secondary: #0284C7;
+    --nb-shadow: #38BDF8;
+    --nb-text: #F8FAFC;
+    --nb-text-inv: #0A0E1A;
 
     --background: var(--nb-bg);
     --foreground: var(--nb-text);
-    --card: #0E141B;
+    --card: #121E2E;
     --card-foreground: var(--nb-text);
-    --popover: #0E141B;
+    --popover: #121E2E;
     --popover-foreground: var(--nb-text);
     --primary: var(--nb-primary);
-    --primary-foreground: var(--nb-bg);
+    --primary-foreground: #F8FAFC;
     --secondary: var(--nb-secondary);
-    --secondary-foreground: var(--nb-bg);
+    --secondary-foreground: #F8FAFC;
     --muted: var(--nb-accent-light);
     --muted-foreground: var(--nb-text);
     --accent: var(--nb-accent);
-    --accent-foreground: var(--nb-primary);
-    --border: var(--nb-primary);
-    --input: #0E141B;
+    --accent-foreground: #0A0E1A;
+    --border: var(--nb-accent);
+    --input: #1E293B;
     --ring: var(--nb-accent);
 
-    --sidebar: #0A0E14;
-    --sidebar-foreground: #F4FEFE;
-    --sidebar-primary: #F4FEFE;
-    --sidebar-primary-foreground: #0A0E14;
-    --sidebar-accent: #1E3A46;
-    --sidebar-accent-foreground: #F4FEFE;
-    --sidebar-border: #F4FEFE;
-    --sidebar-ring: #F4FEFE;
+    --sidebar: #121E2E;
+    --sidebar-foreground: #F8FAFC;
+    --sidebar-primary: #38BDF8;
+    --sidebar-primary-foreground: #0A0E1A;
+    --sidebar-accent: #1E293B;
+    --sidebar-accent-foreground: #38BDF8;
+    --sidebar-border: #38BDF8;
+    --sidebar-ring: #38BDF8;
 }
 
 [data-theme='cold'] {

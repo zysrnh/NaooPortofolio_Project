@@ -221,12 +221,12 @@ export default function DirectChatManager() {
         </p>
       </div>
 
-      {/* Main Grid */}
-      <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] grid grid-cols-1 lg:grid-cols-12 min-h-[580px] overflow-hidden">
+      {/* Main Grid with fixed height & internal scroll like WhatsApp */}
+      <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] grid grid-cols-1 lg:grid-cols-12 h-[580px] sm:h-[620px] overflow-hidden">
         
         {/* Left Contacts Sidebar (4 cols) */}
-        <div className="lg:col-span-4 border-b-4 lg:border-b-0 lg:border-r-4 border-[var(--nb-primary)] flex flex-col bg-[var(--nb-accent-light)]">
-          <div className="p-4 border-b-4 border-[var(--nb-primary)] bg-[var(--nb-primary)] text-[var(--nb-bg)]">
+        <div className="lg:col-span-4 border-b-4 lg:border-b-0 lg:border-r-4 border-[var(--nb-primary)] flex flex-col bg-[var(--nb-accent-light)] h-full min-h-0 overflow-hidden">
+          <div className="p-4 border-b-4 border-[var(--nb-primary)] bg-[var(--nb-primary)] text-[var(--nb-bg)] flex-shrink-0">
             <h3 className="font-black uppercase text-xs tracking-wider text-[var(--nb-accent)] mb-3 flex items-center gap-2">
               <IconUsers /> Daftar Pengguna ({userList.length})
             </h3>
@@ -247,7 +247,7 @@ export default function DirectChatManager() {
           </div>
 
           {/* User List */}
-          <div className="flex-1 overflow-y-auto divide-y-2 divide-[var(--nb-primary)]">
+          <div className="flex-1 min-h-0 overflow-y-auto divide-y-2 divide-[var(--nb-primary)]">
             {loadingUsers ? (
               <div className="p-8 text-center font-black uppercase text-xs opacity-50">
                 Memuat daftar user...
@@ -295,11 +295,11 @@ export default function DirectChatManager() {
         </div>
 
         {/* Right Chat Area (8 cols) */}
-        <div className="lg:col-span-8 flex flex-col bg-[var(--nb-bg)]">
+        <div className="lg:col-span-8 flex flex-col bg-[var(--nb-bg)] h-full min-h-0 overflow-hidden">
           {selectedUser ? (
             <>
               {/* Active Chat Topbar */}
-              <div className="p-4 border-b-4 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] flex items-center justify-between">
+              <div className="p-4 border-b-4 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 border-3 border-[var(--nb-primary)] bg-[var(--nb-accent)] flex items-center justify-center font-black text-sm text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)] overflow-hidden flex-shrink-0">
                     {selectedUser.avatar ? (
@@ -320,7 +320,7 @@ export default function DirectChatManager() {
               </div>
 
               {/* Chat Messages */}
-              <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-[var(--nb-bg)] text-xs">
+              <div className="flex-1 min-h-0 p-6 overflow-y-auto space-y-4 bg-[var(--nb-bg)] text-xs">
                 {loadingChat ? (
                   <div className="py-16 text-center font-black uppercase opacity-40">
                     Memuat percakapan...
