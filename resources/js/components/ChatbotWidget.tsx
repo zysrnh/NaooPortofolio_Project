@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
+import { FormattedMessage } from "./FormattedMessage";
 
 interface Message {
   id: string;
@@ -92,17 +93,32 @@ export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"ai" | "community">("ai");
 
-  // AI Chat state
-  const [aiMessages, setAiMessages] = useState<Message[]>([
-    {
-      id: "1",
-      sender: "bot",
-      text: "Halo! Aku Naoo Helper. Ada yang bisa aku bantu seputar proyek, keahlian, atau pengalaman web development Zaki? Silakan tanya saja ya!",
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    },
-  ]);
+  // AI Chat state with localStorage persistence
+  const [aiMessages, setAiMessages] = useState<Message[]>(() => {
+    try {
+      const saved = localStorage.getItem("naoo_ai_messages");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [
+      {
+        id: "1",
+        sender: "bot",
+        text: "Halo! Aku Naoo Helper. Ada yang bisa aku bantu seputar proyek, keahlian noding, atau materi web development Zaki? Silakan tanya ya!",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      },
+    ];
+  });
   const [aiInput, setAiInput] = useState("");
   const [isAiTyping, setIsAiTyping] = useState(false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("naoo_ai_messages", JSON.stringify(aiMessages));
+    } catch (e) {}
+  }, [aiMessages]);
 
   // Direct User Chat state
   const [userList, setUserList] = useState<DirectUser[]>([]);
@@ -324,7 +340,7 @@ export default function ChatbotWidget() {
                           : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]"
                       }`}
                     >
-                      <p className="whitespace-pre-wrap">{msg.text}</p>
+                      <FormattedMessage text={msg.text} isUser={msg.sender === "user"} />
                     </div>
                     <span className="text-[8px] font-black uppercase opacity-40 mt-1 px-1 text-[var(--nb-primary)]">
                       {msg.timestamp}

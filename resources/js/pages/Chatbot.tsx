@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Head, usePage, router } from "@inertiajs/react";
 import Navbar from "../components/Navbar";
+import { FormattedMessage } from "../components/FormattedMessage";
 
 interface Message {
   id: string;
@@ -92,17 +93,32 @@ export default function ChatbotPage() {
 
   const [activeTab, setActiveTab] = useState<"ai" | "community">("ai");
 
-  // AI Chat State
-  const [aiMessages, setAiMessages] = useState<Message[]>([
-    {
-      id: "1",
-      sender: "bot",
-      text: "Halo! Aku Naoo Helper. Selamat datang di Naoo Chat Hub. Ada yang ingin kamu tanyakan seputar portofolio proyek atau keahlian web development Zaki? Silakan tanya saja ya!",
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    },
-  ]);
+  // AI Chat State with localStorage persistence
+  const [aiMessages, setAiMessages] = useState<Message[]>(() => {
+    try {
+      const saved = localStorage.getItem("naoo_ai_messages");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [
+      {
+        id: "1",
+        sender: "bot",
+        text: "Halo! Aku Naoo Helper. Selamat datang di Naoo Chat Hub. Ada yang ingin kamu tanyakan seputar portofolio proyek atau keahlian web development Zaki? Silakan tanya saja ya!",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      },
+    ];
+  });
   const [aiInput, setAiInput] = useState("");
   const [isAiTyping, setIsAiTyping] = useState(false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("naoo_ai_messages", JSON.stringify(aiMessages));
+    } catch (e) {}
+  }, [aiMessages]);
 
   // Direct User Chat State
   const [userList, setUserList] = useState<DirectUser[]>([]);
@@ -231,6 +247,9 @@ export default function ChatbotPage() {
   };
 
   const resetAiChat = () => {
+    try {
+      localStorage.removeItem("naoo_ai_messages");
+    } catch (e) {}
     setAiMessages([
       {
         id: "1",
@@ -381,7 +400,7 @@ export default function ChatbotPage() {
                                 : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[5px_5px_0_var(--nb-primary)]"
                             }`}
                           >
-                            <p className="whitespace-pre-wrap">{msg.text}</p>
+                            <FormattedMessage text={msg.text} isUser={msg.sender === "user"} />
                           </div>
                           <span className="text-[9px] font-black uppercase opacity-40 mt-1.5 px-1 text-[var(--nb-primary)]">
                             {msg.sender === "user" ? "Kamu" : "Naoo Helper"} • {msg.timestamp}
