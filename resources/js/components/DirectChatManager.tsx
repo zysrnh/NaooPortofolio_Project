@@ -118,12 +118,16 @@ export default function DirectChatManager() {
   const fetchUsers = async () => {
     try {
       setLoadingUsers(true);
-      const res = await fetch("/user-chats/users");
+      const res = await fetch("/api/user-chats/users", {
+        headers: { "Accept": "application/json" },
+      });
       if (res.ok) {
         const data = await res.json();
-        setUserList(data);
-        if (data.length > 0 && !selectedUser) {
-          setSelectedUser(data[0]);
+        if (Array.isArray(data)) {
+          setUserList(data);
+          if (data.length > 0 && !selectedUser) {
+            setSelectedUser(data[0]);
+          }
         }
       }
     } catch (e) {
@@ -135,10 +139,16 @@ export default function DirectChatManager() {
   const fetchChatHistory = async (receiverId: number) => {
     try {
       setLoadingChat(true);
-      const res = await fetch(`/user-chats/${receiverId}`);
+      const res = await fetch(`/api/user-chats/${receiverId}`, {
+        headers: { "Accept": "application/json" },
+      });
       if (res.ok) {
         const data = await res.json();
-        setMessages(data);
+        if (Array.isArray(data)) {
+          setMessages(data);
+        } else {
+          setMessages([]);
+        }
       } else {
         setMessages([]);
       }
@@ -146,6 +156,21 @@ export default function DirectChatManager() {
       setMessages([]);
     } finally {
       setLoadingChat(false);
+    }
+  };
+
+  const fetchChatHistorySilent = async (receiverId: number) => {
+    try {
+      const res = await fetch(`/api/user-chats/${receiverId}`, {
+        headers: { "Accept": "application/json" },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setMessages(data);
+        }
+      }
+    } catch (e) {
     }
   };
 
@@ -183,9 +208,10 @@ export default function DirectChatManager() {
       if (text) formData.append("message", text);
       if (selectedFile) formData.append("file", selectedFile);
 
-      const res = await fetch("/user-chats", {
+      const res = await fetch("/api/user-chats", {
         method: "POST",
         headers: {
+          "Accept": "application/json",
           "X-Requested-With": "XMLHttpRequest",
           "X-XSRF-TOKEN": getCsrfToken(),
         },
@@ -193,10 +219,14 @@ export default function DirectChatManager() {
       });
 
       if (res.ok) {
+        const newChat = await res.json();
         setInputMessage("");
         setSelectedFile(null);
         setFilePreview(null);
-        fetchChatHistory(selectedUser.id);
+        if (newChat && newChat.id) {
+          setMessages((prev) => [...prev, newChat]);
+        }
+        fetchChatHistorySilent(selectedUser.id);
       }
     } catch (e) {
     } finally {

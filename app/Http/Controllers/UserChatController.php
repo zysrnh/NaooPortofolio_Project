@@ -13,7 +13,9 @@ class UserChatController extends Controller
     public function users()
     {
         $currentUserId = Auth::id();
-        $users = User::where('id', '!=', $currentUserId)
+        $users = User::when($currentUserId, function ($q) use ($currentUserId) {
+                $q->where('id', '!=', $currentUserId);
+            })
             ->select('id', 'name', 'email', 'role', 'avatar', 'created_at')
             ->orderBy('name', 'asc')
             ->get();
@@ -24,7 +26,7 @@ class UserChatController extends Controller
     // Ambil histori pesan 1-on-1 dengan user tertentu
     public function index(Request $request, $receiverId)
     {
-        $currentUserId = Auth::id() ?? $request->input('sender_id');
+        $currentUserId = Auth::id() ?? $request->input('sender_id') ?? 1;
 
         if ($currentUserId) {
             UserChat::where('sender_id', $receiverId)
@@ -34,17 +36,9 @@ class UserChatController extends Controller
         }
 
         $messages = UserChat::where(function ($q) use ($currentUserId, $receiverId) {
-            if ($currentUserId) {
-                $q->where('sender_id', $currentUserId)->where('receiver_id', $receiverId);
-            } else {
-                $q->where('receiver_id', $receiverId);
-            }
+            $q->where('sender_id', $currentUserId)->where('receiver_id', $receiverId);
         })->orWhere(function ($q) use ($currentUserId, $receiverId) {
-            if ($currentUserId) {
-                $q->where('sender_id', $receiverId)->where('receiver_id', $currentUserId);
-            } else {
-                $q->where('sender_id', $receiverId);
-            }
+            $q->where('sender_id', $receiverId)->where('receiver_id', $currentUserId);
         })
         ->with(['sender:id,name,avatar', 'receiver:id,name,avatar'])
         ->orderBy('created_at', 'asc')
