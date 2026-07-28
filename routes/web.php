@@ -78,6 +78,34 @@ Route::post('/logout', function () {
 // ── API ───────────────────────────────────────────────────────────────────────
 Route::prefix('api')->group(function () {
 
+    // ── Mobile Auth API ────────────────────────────────────────────────────────
+    Route::post('/mobile/login', function (\Illuminate\Http\Request $request) {
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        if (\Illuminate\Support\Facades\Auth::attempt($credentials)) {
+            $user = \Illuminate\Support\Facades\Auth::user();
+            return response()->json([
+                'ok' => true,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'avatar' => $user->avatar ?? null,
+                    'role' => $user->role ?? ($user->is_admin ? 'admin' : 'user'),
+                    'is_admin' => (bool) ($user->is_admin || ($user->role ?? '') === 'admin'),
+                ],
+            ]);
+        }
+
+        return response()->json([
+            'ok' => false,
+            'message' => 'Email atau Password salah.',
+        ], 401);
+    });
+
     // ── Public ────────────────────────────────────────────────────────────────
     Route::get('/tech-stacks/visible', [TechStackController::class,     'indexVisible']);
     Route::get('/tech-stacks',         [TechStackController::class,     'index']);
