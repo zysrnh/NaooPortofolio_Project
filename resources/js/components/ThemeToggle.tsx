@@ -2,16 +2,17 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { soundFx } from '../utils/soundEffects';
 
-type Theme = 'naoo' | 'dark' | 'retro' | 'christmas' | 'luxe' | 'euro' | 'cold';
+type Theme = 'maroon_blue' | 'naoo' | 'dark' | 'retro' | 'christmas' | 'luxe' | 'euro' | 'cold';
 
 const ALL_THEMES: { id: Theme; label: string; desc: string; bg: string; primary: string; accent: string }[] = [
-    { id: 'naoo',      label: 'Naoo',  desc: 'Classic Blue',     bg: '#F8F3EA', primary: '#0B1957', accent: '#9ECCFA' },
-    { id: 'dark',      label: 'Dark',  desc: 'Deep Sea Blue',    bg: '#0A0E14', primary: '#1E3A46', accent: '#F4FEFE' },
-    { id: 'retro',     label: 'Retro', desc: 'American Vintage', bg: '#e8d8c9', primary: '#4b607f', accent: '#f3701e' },
-    { id: 'christmas', label: 'Xmas',  desc: 'Christmas Color',  bg: '#F6E8DD', primary: '#193564', accent: '#DC3C24' },
-    { id: 'luxe',      label: 'Luxe',  desc: 'Caramel & Black',  bg: '#f7ece6', primary: '#0d0d0f', accent: '#caa07d' },
-    { id: 'euro',      label: 'Euro',  desc: 'European Retro',   bg: '#f4e5b2', primary: '#253054', accent: '#dc3c24' },
-    { id: 'cold',      label: 'Cold',  desc: 'Cold Color Match', bg: '#EBEDE0', primary: '#31394C', accent: '#7A7F84' },
+    { id: 'maroon_blue', label: 'Maroon & Blue', desc: 'Maroon & Deep Navy', bg: '#FDF0D5', primary: '#003049', accent: '#800000' },
+    { id: 'naoo',        label: 'Naoo',          desc: 'Classic Blue',       bg: '#F8F3EA', primary: '#0B1957', accent: '#9ECCFA' },
+    { id: 'dark',        label: 'Dark',          desc: 'Deep Sea Blue',      bg: '#0A0E14', primary: '#1E3A46', accent: '#F4FEFE' },
+    { id: 'retro',       label: 'Retro',         desc: 'American Vintage',   bg: '#e8d8c9', primary: '#4b607f', accent: '#f3701e' },
+    { id: 'christmas',   label: 'Xmas',          desc: 'Christmas Color',    bg: '#F6E8DD', primary: '#193564', accent: '#DC3C24' },
+    { id: 'luxe',        label: 'Luxe',          desc: 'Caramel & Black',    bg: '#f7ece6', primary: '#0d0d0f', accent: '#caa07d' },
+    { id: 'euro',        label: 'Euro',          desc: 'European Retro',     bg: '#f4e5b2', primary: '#253054', accent: '#dc3c24' },
+    { id: 'cold',        label: 'Cold',          desc: 'Cold Color Match',   bg: '#EBEDE0', primary: '#31394C', accent: '#7A7F84' },
 ];
 
 const PER_PAGE = 2;

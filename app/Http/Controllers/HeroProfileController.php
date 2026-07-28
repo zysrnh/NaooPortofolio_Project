@@ -57,13 +57,13 @@ class HeroProfileController extends Controller
         $hero = HeroProfile::first();
 
         if ($hero) {
-            $hero->update($request->only('name', 'title', 'bio'));
+            $hero->update($request->only('name', 'title', 'bio', 'photo'));
             if ($request->boolean('remove_photo2')) {
                 $this->deleteOldFile($hero->photo2);
                 $hero->update(['photo2' => null]);
             }
         } else {
-            $hero = HeroProfile::create($request->only('name', 'title', 'bio'));
+            $hero = HeroProfile::create($request->only('name', 'title', 'bio', 'photo'));
         }
 
         return response()->json([

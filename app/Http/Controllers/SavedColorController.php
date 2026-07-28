@@ -10,9 +10,22 @@ class SavedColorController extends Controller
 {
     public function index()
     {
-        return SavedColor::where('user_id', Auth::id())
+        $colors = SavedColor::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
+
+        if ($colors->isEmpty()) {
+            return response()->json([
+                [
+                    'id' => 999,
+                    'title' => 'Maroon and Blue Palette',
+                    'colors' => ['#003049', '#800000', '#FDF0D5'],
+                    'created_at' => now()->toIso8601String(),
+                ]
+            ]);
+        }
+
+        return response()->json($colors);
     }
 
     public function store(Request $request)

@@ -839,11 +839,17 @@ function HeroSection() {
         headers:{"Content-Type":"application/json","X-XSRF-TOKEN":getCsrfToken(), "Accept":"application/json"},
         body:JSON.stringify(form)
       });
-      if (!res.ok) {
-        const d = await res.json();
-        throw new Error(d.message || "Gagal menyimpan");
+      const contentType = res.headers.get("content-type");
+      let u: any = {};
+      if (contentType && contentType.includes("application/json")) {
+        u = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error("Server error (Non-JSON response)");
       }
-      const u=await res.json();
+      if (!res.ok) {
+        throw new Error(u.message || (u.errors ? JSON.stringify(u.errors) : "Gagal menyimpan"));
+      }
       if(u?.id||u?.name){
         setForm({name:u.name,title:u.title,bio:u.bio??"",photo:u.photo});
         setPreview(u.photo);

@@ -657,7 +657,7 @@ export default function Home() {
       <div className="min-h-screen relative" style={{opacity:visible?1:0,transition:"opacity 0.3s ease"}}>
         <Head title="Home - Web Developer Portfolio" />
         <FloatingBlocks/>
-        <div className="anim-navbar"><Navbar/></div>
+        <div className="anim-navbar sticky top-0 z-[99999]"><Navbar/></div>
 
         {/* HERO */}
         <section id="hero" className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-20">

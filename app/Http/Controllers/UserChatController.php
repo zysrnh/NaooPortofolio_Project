@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class UserChatController extends Controller
 {
     // List user terdaftar untuk diajak chat
-    public function users()
+    public function users(Request $request)
     {
-        $currentUserId = Auth::id();
+        $currentUserId = Auth::id() ?? $request->input('sender_id');
         $users = User::when($currentUserId, function ($q) use ($currentUserId) {
                 $q->where('id', '!=', $currentUserId);
             })
@@ -50,13 +50,15 @@ class UserChatController extends Controller
     // Kirim pesan direct 1-on-1 ke user lain (bisa kirim pesan & lampiran foto/file)
     public function store(Request $request)
     {
-        $request->validate([
-            'receiver_id' => 'required|exists:users,id',
-            'message' => 'nullable|string|max:1000',
-            'file' => 'nullable|file|max:10240',
-        ]);
+        $all = $request->all();
+        $receiverId = $all['receiver_id'] ?? $request->input('receiver_id') ?? $request->json('receiver_id');
+        $message = trim(($all['message'] ?? $request->input('message') ?? $request->json('message')) ?: '');
+        $senderId = Auth::id() ?? $all['sender_id'] ?? $request->input('sender_id') ?? $request->json('sender_id') ?? 1;
 
-        $message = trim($request->input('message', ''));
+        if (empty($receiverId)) {
+            return response()->json(['message' => 'Receiver ID is required.', 'errors' => ['receiver_id' => ['Receiver ID is required.']]], 422);
+        }
+
         if (empty($message) && !$request->hasFile('file')) {
             return response()->json(['message' => 'Pesan atau file wajib diisi.'], 422);
         }
@@ -80,11 +82,9 @@ class UserChatController extends Controller
             $attachment = $base64;
         }
 
-        $senderId = Auth::id() ?? $request->input('sender_id', 1);
-
         $chat = UserChat::create([
             'sender_id' => $senderId,
-            'receiver_id' => $request->receiver_id,
+            'receiver_id' => $receiverId,
             'message' => $message,
             'attachment' => $attachment,
             'attachment_type' => $attachmentType,
