@@ -22,20 +22,29 @@ class UserChatController extends Controller
     }
 
     // Ambil histori pesan 1-on-1 dengan user tertentu
-    public function index($receiverId)
+    public function index(Request $request, $receiverId)
     {
-        $currentUserId = Auth::id();
+        $currentUserId = Auth::id() ?? $request->input('sender_id');
 
-        // Tandai pesan terbaca
-        UserChat::where('sender_id', $receiverId)
-            ->where('receiver_id', $currentUserId)
-            ->where('is_read', false)
-            ->update(['is_read' => true]);
+        if ($currentUserId) {
+            UserChat::where('sender_id', $receiverId)
+                ->where('receiver_id', $currentUserId)
+                ->where('is_read', false)
+                ->update(['is_read' => true]);
+        }
 
         $messages = UserChat::where(function ($q) use ($currentUserId, $receiverId) {
-            $q->where('sender_id', $currentUserId)->where('receiver_id', $receiverId);
+            if ($currentUserId) {
+                $q->where('sender_id', $currentUserId)->where('receiver_id', $receiverId);
+            } else {
+                $q->where('receiver_id', $receiverId);
+            }
         })->orWhere(function ($q) use ($currentUserId, $receiverId) {
-            $q->where('sender_id', $receiverId)->where('receiver_id', $currentUserId);
+            if ($currentUserId) {
+                $q->where('sender_id', $receiverId)->where('receiver_id', $currentUserId);
+            } else {
+                $q->where('sender_id', $receiverId);
+            }
         })
         ->with(['sender:id,name,avatar', 'receiver:id,name,avatar'])
         ->orderBy('created_at', 'asc')
@@ -77,8 +86,10 @@ class UserChatController extends Controller
             $attachment = $base64;
         }
 
+        $senderId = Auth::id() ?? $request->input('sender_id', 1);
+
         $chat = UserChat::create([
-            'sender_id' => Auth::id(),
+            'sender_id' => $senderId,
             'receiver_id' => $request->receiver_id,
             'message' => $message,
             'attachment' => $attachment,

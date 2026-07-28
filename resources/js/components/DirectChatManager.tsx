@@ -118,7 +118,7 @@ export default function DirectChatManager() {
   const fetchUsers = async () => {
     try {
       setLoadingUsers(true);
-      const res = await fetch("/api/user-chats/users");
+      const res = await fetch("/user-chats/users");
       if (res.ok) {
         const data = await res.json();
         setUserList(data);
@@ -135,12 +135,15 @@ export default function DirectChatManager() {
   const fetchChatHistory = async (receiverId: number) => {
     try {
       setLoadingChat(true);
-      const res = await fetch(`/api/user-chats/${receiverId}`);
+      const res = await fetch(`/user-chats/${receiverId}`);
       if (res.ok) {
         const data = await res.json();
         setMessages(data);
+      } else {
+        setMessages([]);
       }
     } catch (e) {
+      setMessages([]);
     } finally {
       setLoadingChat(false);
     }
@@ -180,7 +183,7 @@ export default function DirectChatManager() {
       if (text) formData.append("message", text);
       if (selectedFile) formData.append("file", selectedFile);
 
-      const res = await fetch("/api/user-chats", {
+      const res = await fetch("/user-chats", {
         method: "POST",
         headers: {
           "X-Requested-With": "XMLHttpRequest",

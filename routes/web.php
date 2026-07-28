@@ -110,6 +110,11 @@ Route::prefix('api')->group(function () {
     Route::get('/mobile/messages', [\App\Http\Controllers\MessageController::class, 'index']);
     Route::post('/mobile/messages/{message}/reply', [\App\Http\Controllers\MessageController::class, 'reply']);
 
+    // Mobile Direct User-to-User Chat API (Sama dengan Web DirectChatManager)
+    Route::get ('/mobile/user-chats/users',        [\App\Http\Controllers\UserChatController::class, 'users']);
+    Route::get ('/mobile/user-chats/{receiverId}', [\App\Http\Controllers\UserChatController::class, 'index']);
+    Route::post('/mobile/user-chats',              [\App\Http\Controllers\UserChatController::class, 'store']);
+
     // ── Public ────────────────────────────────────────────────────────────────
     Route::get('/tech-stacks/visible', [TechStackController::class,     'indexVisible']);
     Route::get('/tech-stacks',         [TechStackController::class,     'index']);
