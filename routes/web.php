@@ -106,6 +106,9 @@ Route::prefix('api')->group(function () {
         ], 401);
     });
 
+    Route::post('/mobile/projects', [ProjectController::class, 'store']);
+    Route::get('/mobile/messages', [\App\Http\Controllers\MessageController::class, 'index']);
+
     // ── Public ────────────────────────────────────────────────────────────────
     Route::get('/tech-stacks/visible', [TechStackController::class,     'indexVisible']);
     Route::get('/tech-stacks',         [TechStackController::class,     'index']);
