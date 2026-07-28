@@ -6,6 +6,8 @@ import ProjectCRUD from "@/components/ProjectCRUD";
 import AboutManager from "@/components/AboutManager";
 import ThemeToggle from "../components/ThemeToggle";
 import VisitorStats from "@/components/VisitorStats";
+import LiveVisitorCounter from "@/components/LiveVisitorCounter";
+import { FormattedMessage } from "@/components/FormattedMessage";
 import GuestbookManager from "@/components/GuestbookManager";
 import SupporterManager from "@/components/SupporterManager";
 import UserManager from "@/components/UserManager";
@@ -75,6 +77,12 @@ const STATUS_STYLE: Record<string, string> = {
   "Planning":    "bg-[var(--nb-bg)] border-[var(--nb-primary)] text-[var(--nb-primary)]",
 };
 
+const IconSparklesNav = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3l1.912 5.885L20 10.8l-5.088 1.915L13 18.6l-1.912-5.885L6 10.8l5.088-1.915z" />
+  </svg>
+);
+
 const NAV_ITEMS = [
   { key: "supporters", label: "Supporters", icon: <IconUsersNav size={18} /> },
   { key: "overview",  label: "Overview",   icon: <IconGrid /> },
@@ -84,6 +92,7 @@ const NAV_ITEMS = [
   { key: "stacks",    label: "Tech Stack", icon: <IconLayers size={18} /> },
   { key: "homepage",  label: "Homepage",   icon: <IconGlobe size={18} /> },
   { key: "about",     label: "About Page", icon: <IconInfo size={18} /> },
+  { key: "ai-assistant", label: "AI Assistant", icon: <IconSparklesNav size={18} /> },
   { key: "user-chat", label: "User Chat",  icon: <IconMessage size={18} /> },
   { key: "messages",  label: "Messages",   icon: <IconMail size={18} /> },
   { key: "guestbook", label: "Guestbook",  icon: <IconMessage size={18} /> },
@@ -1003,6 +1012,11 @@ function OverviewSection({ unreadCount, onNavClick }: { unreadCount: number; onN
         </div>
       </div>
 
+      {/* ── Live Traffic Visitor Counter Widget (Admin Only) ───────────────── */}
+      <div className="my-1">
+        <LiveVisitorCounter />
+      </div>
+
       {/* ── Unread Banner ──────────────────────────────────────────────────── */}
       {unreadCount > 0 && (
         <div style={{ border: "4px solid var(--nb-primary)", background: "var(--nb-accent)", boxShadow: "6px 6px 0 var(--nb-primary)", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", animation: "bounceIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s both" }}>
@@ -1499,6 +1513,299 @@ function MessagesManager({ onUnreadChange }: { onUnreadChange?: (n: number) => v
   );
 }
 
+function UserOverviewSection({ user, onNavClick }: { user: any; onNavClick: (key: string) => void }) {
+  return (
+    <div className="space-y-8 max-w-6xl">
+      {/* Welcome Banner */}
+      <div className="bg-[var(--nb-primary)] text-[var(--nb-bg)] p-6 sm:p-8 border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] flex flex-col sm:flex-row items-center gap-6 justify-between">
+        <div className="flex items-center gap-5">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[var(--nb-accent)] border-4 border-[var(--nb-bg)] flex items-center justify-center font-black text-2xl text-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-bg)] overflow-hidden flex-shrink-0">
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              (user?.name ?? "U")[0]?.toUpperCase()
+            )}
+          </div>
+          <div className="space-y-1 text-center sm:text-left">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <h2 className="font-black text-xl sm:text-2xl uppercase tracking-wide text-[var(--nb-accent)]">
+                Selamat Datang, {user?.name}!
+              </h2>
+              <span className="bg-[var(--nb-accent)] text-[var(--nb-primary)] text-[9px] font-black uppercase px-2 py-0.5 border border-[var(--nb-bg)]">
+                MEMBER AKUN
+              </span>
+            </div>
+            <p className="text-xs font-semibold opacity-80 leading-relaxed max-w-lg">
+              {user?.email} — Akses cepat obrolan 1-on-1, asisten AI Naoo Helper, dan simpan palet warna favoritmu di dashboard pribadi.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => onNavClick("profile")}
+          className="bg-[var(--nb-accent)] text-[var(--nb-primary)] border-3 border-[var(--nb-bg)] px-6 py-2.5 font-black uppercase text-xs shadow-[4px_4px_0_var(--nb-bg)] hover:translate-x-[-2px] hover:translate-y-[-2px] cursor-pointer transition-all flex-shrink-0"
+        >
+          Edit Profil →
+        </button>
+      </div>
+
+      {/* Feature Action Grid */}
+      <div>
+        <h3 className="font-black text-lg uppercase text-[var(--nb-primary)] mb-4 tracking-wide">
+          Fitur Dashboard Kamu:
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Card 1: User Chat */}
+          <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[6px_6px_0_var(--nb-primary)] flex flex-col justify-between space-y-4 hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+            <div className="space-y-2">
+              <div className="w-10 h-10 bg-[var(--nb-accent)] border-3 border-[var(--nb-primary)] flex items-center justify-center font-black text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)]">
+                <IconMessage size={20} />
+              </div>
+              <h4 className="font-black uppercase text-sm text-[var(--nb-primary)]">User Direct Chat</h4>
+              <p className="text-xs font-semibold text-[var(--nb-primary)] opacity-70 leading-relaxed">
+                Kirim pesan langsung & lampiran file 1-on-1 antar sesama pengguna terdaftar.
+              </p>
+            </div>
+            <button
+              onClick={() => onNavClick("user-chat")}
+              className="w-full bg-[var(--nb-primary)] text-[var(--nb-accent)] border-2 border-[var(--nb-primary)] py-2 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-accent)] cursor-pointer hover:bg-[var(--nb-accent)] hover:text-[var(--nb-primary)] transition-all"
+            >
+              Buka User Chat →
+            </button>
+          </div>
+
+          {/* Card 2: AI Assistant */}
+          <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[6px_6px_0_var(--nb-primary)] flex flex-col justify-between space-y-4 hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+            <div className="space-y-2">
+              <div className="w-10 h-10 bg-[var(--nb-accent)] border-3 border-[var(--nb-primary)] flex items-center justify-center font-black text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)]">
+                <IconSparklesNav size={20} />
+              </div>
+              <h4 className="font-black uppercase text-sm text-[var(--nb-primary)]">AI Naoo Helper</h4>
+              <p className="text-xs font-semibold text-[var(--nb-primary)] opacity-70 leading-relaxed">
+                Tanya jawab materi noding, minta buatkan script Python/JS, atau info proyek Zaki.
+              </p>
+            </div>
+            <button
+              onClick={() => onNavClick("ai-assistant")}
+              className="w-full bg-[var(--nb-primary)] text-[var(--nb-accent)] border-2 border-[var(--nb-primary)] py-2 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-accent)] cursor-pointer hover:bg-[var(--nb-accent)] hover:text-[var(--nb-primary)] transition-all"
+            >
+              Mulai Chat AI →
+            </button>
+          </div>
+
+          {/* Card 3: Saved Colors */}
+          <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[6px_6px_0_var(--nb-primary)] flex flex-col justify-between space-y-4 hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+            <div className="space-y-2">
+              <div className="w-10 h-10 bg-[var(--nb-accent)] border-3 border-[var(--nb-primary)] flex items-center justify-center font-black text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)]">
+                <IconPalette size={20} />
+              </div>
+              <h4 className="font-black uppercase text-sm text-[var(--nb-primary)]">Saved Colors</h4>
+              <p className="text-xs font-semibold text-[var(--nb-primary)] opacity-70 leading-relaxed">
+                Koleksi dan kelola skema palet warna Neo-Brutalist favorit pilihanmu.
+              </p>
+            </div>
+            <button
+              onClick={() => onNavClick("colors")}
+              className="w-full bg-[var(--nb-primary)] text-[var(--nb-accent)] border-2 border-[var(--nb-primary)] py-2 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-accent)] cursor-pointer hover:bg-[var(--nb-accent)] hover:text-[var(--nb-primary)] transition-all"
+            >
+              Lihat Warna →
+            </button>
+          </div>
+
+          {/* Card 4: Account Settings */}
+          <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] p-6 shadow-[6px_6px_0_var(--nb-primary)] flex flex-col justify-between space-y-4 hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+            <div className="space-y-2">
+              <div className="w-10 h-10 bg-[var(--nb-accent)] border-3 border-[var(--nb-primary)] flex items-center justify-center font-black text-[var(--nb-primary)] shadow-[2px_2px_0_var(--nb-primary)]">
+                <IconUser size={20} />
+              </div>
+              <h4 className="font-black uppercase text-sm text-[var(--nb-primary)]">Profil & Akun</h4>
+              <p className="text-xs font-semibold text-[var(--nb-primary)] opacity-70 leading-relaxed">
+                Ganti foto profil avatar, ubah password, dan perbarui informasi pribadi.
+              </p>
+            </div>
+            <button
+              onClick={() => onNavClick("profile")}
+              className="w-full bg-[var(--nb-primary)] text-[var(--nb-accent)] border-2 border-[var(--nb-primary)] py-2 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-accent)] cursor-pointer hover:bg-[var(--nb-accent)] hover:text-[var(--nb-primary)] transition-all"
+            >
+              Kelola Akun →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UserAiAssistantTab() {
+  const [messages, setMessages] = useState<any[]>(() => {
+    try {
+      const saved = localStorage.getItem("naoo_ai_messages");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [
+      {
+        id: "1",
+        sender: "bot",
+        text: "Halo! Aku Naoo Helper. Ada yang bisa aku bantu seputar proyek, keahlian noding, atau materi web development Zaki? Silakan tanya ya!",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      },
+    ];
+  });
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("naoo_ai_messages", JSON.stringify(messages));
+    } catch (e) {}
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || isTyping) return;
+
+    const userMsg = {
+      id: Date.now().toString(),
+      sender: "user",
+      text,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setIsTyping(true);
+
+    try {
+      const res = await fetch("/api/chatbot", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-XSRF-TOKEN": getCsrfToken(),
+        },
+        body: JSON.stringify({
+          message: text,
+          history: messages.map((m) => ({ sender: m.sender, text: m.text })),
+        }),
+      });
+
+      const data = await res.json();
+      const botMsg = {
+        id: (Date.now() + 1).toString(),
+        sender: "bot",
+        text: data.reply || "Maaf ya, ada kendala koneksi.",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (e) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          sender: "bot",
+          text: "Gagal terhubung ke server Naoo Helper.",
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6 max-w-6xl">
+      <div>
+        <h2 className="font-black text-2xl uppercase text-[var(--nb-primary)] leading-tight">
+          AI Naoo Helper
+        </h2>
+        <p className="font-bold text-xs text-[var(--nb-primary)] opacity-60 uppercase tracking-widest mt-1">
+          Tanya jawab materi noding, minta buatkan script Python/JS, atau konsultasi web development
+        </p>
+      </div>
+
+      <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] flex flex-col h-[580px] overflow-hidden">
+        <div className="p-4 bg-[var(--nb-accent-light)] border-b-4 border-[var(--nb-primary)] flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-2 text-[var(--nb-primary)] font-black uppercase text-xs">
+            <IconSparklesNav size={18} /> Naoo Helper AI Assistant
+          </div>
+          <button
+            onClick={() => {
+              localStorage.removeItem("naoo_ai_messages");
+              setMessages([
+                {
+                  id: "1",
+                  sender: "bot",
+                  text: "Percakapan di-reset. Ada yang ingin kamu tanyakan?",
+                  timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                },
+              ]);
+            }}
+            className="bg-red-500 text-white border-2 border-[var(--nb-primary)] px-3 py-1 font-black text-[10px] uppercase shadow-[2px_2px_0_var(--nb-primary)] hover:bg-red-600 cursor-pointer"
+          >
+            Reset Chat
+          </button>
+        </div>
+
+        <div className="flex-1 min-h-0 p-6 overflow-y-auto space-y-4 bg-[var(--nb-bg)] text-xs">
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}
+            >
+              <div
+                className={`max-w-[80%] p-4 border-4 border-[var(--nb-primary)] font-semibold leading-relaxed ${
+                  msg.sender === "user"
+                    ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[5px_5px_0_var(--nb-primary)]"
+                    : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[5px_5px_0_var(--nb-primary)]"
+                }`}
+              >
+                <FormattedMessage text={msg.text} isUser={msg.sender === "user"} />
+              </div>
+              <span className="text-[9px] font-black uppercase opacity-50 mt-1 px-1 text-[var(--nb-primary)]">
+                {msg.sender === "user" ? "Kamu" : "Naoo Helper"} • {msg.timestamp}
+              </span>
+            </div>
+          ))}
+
+          {isTyping && (
+            <div className="p-3 bg-[var(--nb-accent-light)] border-3 border-[var(--nb-primary)] w-fit text-xs font-black uppercase text-[var(--nb-primary)] animate-pulse">
+              Naoo Helper sedang memproses...
+            </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+          className="p-4 border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex gap-3 flex-shrink-0"
+        >
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Tulis pertanyaan noding atau konsultasi..."
+            className="flex-1 bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-4 py-3 text-xs font-bold outline-none focus:bg-[var(--nb-accent-light)] text-[var(--nb-primary)]"
+          />
+          <button
+            type="submit"
+            disabled={isTyping}
+            className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-6 font-black uppercase text-xs shadow-[3px_3px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer"
+          >
+            Kirim →
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // ── DASHBOARD (Main) ──────────────────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1510,10 +1817,10 @@ export default function Dashboard() {
   // Filter nav items based on role
   const filteredNavItems = isAdmin 
     ? NAV_ITEMS 
-    : NAV_ITEMS.filter(item => ["profile", "colors", "user-chat"].includes(item.key));
+    : NAV_ITEMS.filter(item => ["overview", "ai-assistant", "user-chat", "colors", "profile"].includes(item.key));
 
   const NAV_GROUPS = [
-    { label: "Main", items: ["supporters", "overview", "visitors", "users"] },
+    { label: "Main", items: ["supporters", "overview", "visitors", "users", "ai-assistant"] },
     { label: "Content", items: ["projects", "stacks", "homepage", "about"] },
     { label: "Interactions", items: ["user-chat", "messages", "guestbook", "colors"] },
     { label: "System", items: ["profile"] },
@@ -1542,7 +1849,7 @@ export default function Dashboard() {
         }
       }
     }
-    return isAdmin ? "overview" : "profile";
+    return "overview";
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [time,        setTime]        = useState(new Date());
@@ -1552,13 +1859,13 @@ export default function Dashboard() {
   useEffect(() => { setTimeout(() => { setVisible(true); setNavReady(true); }, 50); }, []);
   useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
   useEffect(() => {
-    fetch("/api/messages/stats", { headers: { "X-XSRF-TOKEN": getCsrfToken() } })
+    fetch("/api/messages/stats", { headers: { "Accept": "application/json", "X-XSRF-TOKEN": getCsrfToken() } })
       .then(r => r.json()).then(d => setUnreadCount(d.unread ?? 0)).catch(() => {});
   }, []);
 
   useEffect(() => {
     const fetchUnreadChat = () => {
-      fetch("/api/user-chats/unread-count", { headers: { "X-XSRF-TOKEN": getCsrfToken() } })
+      fetch("/api/user-chats/unread-count", { headers: { "Accept": "application/json", "X-XSRF-TOKEN": getCsrfToken() } })
         .then(r => r.json()).then(d => setUnreadChatCount(d.unread ?? 0)).catch(() => {});
     };
     fetchUnreadChat();
@@ -1912,10 +2219,14 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
                 {isAdmin ? (
                   <OverviewSection unreadCount={unreadCount} onNavClick={handleNavClick} />
                 ) : (
-                  <div className="py-20 text-center border-4 border-dashed border-[var(--nb-primary)] opacity-30">
-                    <p className="font-black uppercase text-sm tracking-[0.3em]">Dashboard is empty for regular users</p>
-                  </div>
+                  <UserOverviewSection user={user} onNavClick={handleNavClick} />
                 )}
+              </div>
+            )}
+
+            {activeNav === "ai-assistant" && (
+              <div className="content-fade">
+                <UserAiAssistantTab />
               </div>
             )}
 

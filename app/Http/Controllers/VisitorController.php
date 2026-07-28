@@ -130,9 +130,9 @@ class VisitorController extends Controller
 
         $base  = VisitorLog::where('is_bot', false)->where('created_at', '>=', $since);
 
-        // Total unique sessions (= unique visitors)
-        $totalVisitors  = (clone $base)->distinct('session_id')->count('session_id');
-        $totalPageViews = (clone $base)->count();
+        // Total unique sessions (= unique visitors) & pageviews
+        $totalVisitors  = VisitorLog::where('is_bot', false)->distinct('session_id')->count('session_id');
+        $totalPageViews = VisitorLog::where('is_bot', false)->count();
 
         // Daily visits for chart (last N days)
         $daily = (clone $base)

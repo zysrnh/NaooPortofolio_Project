@@ -967,9 +967,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="mt-8">
-              <LiveVisitorCounter />
-            </div>
             <div className="border-t-4 border-[var(--nb-primary)] mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2">
               <p className="font-bold uppercase text-xs text-[var(--nb-primary)] tracking-widest">© {new Date().getFullYear()} Zaki Yusron Hasyimmi</p>
               <p className="font-bold uppercase text-xs text-[var(--nb-primary)] opacity-50 tracking-widest">Built with React + Vite + Tailwind</p>

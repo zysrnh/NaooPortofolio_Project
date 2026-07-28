@@ -102,6 +102,7 @@ Route::prefix('api')->group(function () {
 
     // ── Visitor Tracking (public — called from frontend) ─────────────────────
     Route::post('/track', [VisitorController::class, 'track']);
+    Route::get('/visitors/stats', [VisitorController::class, 'stats']);
 
     // ── Guestbook (public) ────────────────────────────────────────────────────
     Route::get ('/guestbook', [GuestbookController::class, 'index']);
@@ -163,7 +164,6 @@ Route::prefix('api')->group(function () {
         Route::patch ('/admin/projects/{project}/toggle', [ProjectController::class, 'toggleVisibility']);
 
         // Visitors (admin only)
-        Route::get   ('/visitors/stats',  [VisitorController::class, 'stats']);
         Route::delete('/visitors/clear',  [VisitorController::class, 'clear']);
 
         // Guestbook (admin only)

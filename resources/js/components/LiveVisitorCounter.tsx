@@ -8,15 +8,15 @@ interface VisitorStats {
 
 export default function LiveVisitorCounter() {
   const [stats, setStats] = useState<VisitorStats>({
-    total_visitors: 1420,
-    total_pageviews: 4890,
+    total_visitors: 0,
+    total_pageviews: 0,
   });
   const [isMuted, setIsMuted] = useState(soundFx.getMuted());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
-    const interval = setInterval(fetchStats, 30000); // refresh every 30s
+    const interval = setInterval(fetchStats, 10000); // refresh every 10s for real-time tracking
     return () => clearInterval(interval);
   }, []);
 
@@ -26,8 +26,8 @@ export default function LiveVisitorCounter() {
       if (res.ok) {
         const data = await res.json();
         setStats({
-          total_visitors: data.total_visitors || 1420,
-          total_pageviews: data.total_pageviews || 4890,
+          total_visitors: data.total_visitors ?? 0,
+          total_pageviews: data.total_pageviews ?? 0,
         });
       }
     } catch (e) {

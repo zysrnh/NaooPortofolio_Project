@@ -17,6 +17,19 @@ class HandleInertiaRequests extends Middleware
     protected $rootView = 'app';
 
     /**
+     * Handle the incoming request.
+     */
+    public function handle(Request $request, \Closure $next)
+    {
+        if ($request->is('api/*') || $request->wantsJson()) {
+            $request->headers->remove('X-Inertia');
+            return $next($request);
+        }
+
+        return parent::handle($request, $next);
+    }
+
+    /**
      * Determines the current asset version.
      *
      * @see https://inertiajs.com/asset-versioning
