@@ -14,6 +14,7 @@ import UserManager from "@/components/UserManager";
 import SavedColorsManager from "@/components/SavedColorsManager";
 import DirectChatManager from "@/components/DirectChatManager";
 import UserProfileManager from "@/components/UserProfileManager";
+import { soundFx } from "../utils/soundEffects";
 
 // ── SVG Icons ─────────────────────────────────────────────────────────────────
 const IconFolder    = ({ size = 20 }: { size?: number }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>;
@@ -1897,13 +1898,16 @@ const NavItems = ({ activeNav, unreadCount, unreadChatCount, onNavClick, onClose
       return (
         <div key={gIdx} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           <div 
-            onClick={() => onToggle(group.label)}
+            onClick={() => {
+              soundFx.playClick();
+              onToggle(group.label);
+            }}
             className="group-header"
             style={{ 
               display: "flex", alignItems: "center", justifyContent: "space-between", 
               cursor: "pointer", padding: "10px 20px",
               background: isOpen ? "rgba(255,255,255,0.04)" : "transparent",
-              transition: "all 0.2s cubic-bezier(0.16,1,0.3,1)",
+              transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
               margin: "0 10px",
               borderRadius: "8px",
               border: isOpen ? "2px solid rgba(255,255,255,0.1)" : "2px solid transparent"
@@ -1916,7 +1920,7 @@ const NavItems = ({ activeNav, unreadCount, unreadChatCount, onNavClick, onClose
               color: "var(--nb-accent)", 
               opacity: 0.4, 
               transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", 
-              transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)",
+              transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1)",
               display: "flex"
             }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -1924,11 +1928,11 @@ const NavItems = ({ activeNav, unreadCount, unreadChatCount, onNavClick, onClose
           </div>
           
           <div style={{ 
-            maxHeight: isOpen ? "1000px" : "0", 
+            maxHeight: isOpen ? "600px" : "0px", 
             overflow: "hidden", 
-            transition: isOpen ? "max-height 0.8s cubic-bezier(0.16,1,0.3,1)" : "max-height 0.3s ease-in",
+            transition: "max-height 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1)",
             opacity: isOpen ? 1 : 0,
-            transform: isOpen ? "translateY(0)" : "translateY(-10px)",
+            transform: isOpen ? "translateY(0)" : "translateY(-8px)",
             pointerEvents: isOpen ? "auto" : "none"
           }}>
             <div style={{ padding: "4px 0" }}>

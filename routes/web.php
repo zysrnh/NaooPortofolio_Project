@@ -98,7 +98,7 @@ Route::prefix('api')->group(function () {
     Route::get('/projects/{slug}',     [ProjectController::class,       'show']);
 
     // ── NEW: Messages (public — kirim pesan) ──────────────────────────────────
-    Route::post('/messages', [MessageController::class, 'store']);
+    Route::post('/messages', [MessageController::class, 'store'])->middleware('throttle:10,1');
 
     // ── Visitor Tracking (public — called from frontend) ─────────────────────
     Route::post('/track', [VisitorController::class, 'track']);
@@ -106,10 +106,10 @@ Route::prefix('api')->group(function () {
 
     // ── Guestbook (public) ────────────────────────────────────────────────────
     Route::get ('/guestbook', [GuestbookController::class, 'index']);
-    Route::post('/guestbook', [GuestbookController::class, 'store']);
+    Route::post('/guestbook', [GuestbookController::class, 'store'])->middleware('throttle:10,1');
 
     // ── AI Chatbot (public) ───────────────────────────────────────────────────
-    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'ask']);
+    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'ask'])->middleware('throttle:15,1');
 
     // ── Protected ─────────────────────────────────────────────────────────────
     Route::middleware(['auth', 'admin'])->group(function () {
