@@ -11,6 +11,7 @@ class Project extends Model
         'slug',
         'title',
         'subtitle',
+        'category',
         'desc',
         'long_desc',
         'status',

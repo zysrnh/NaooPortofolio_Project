@@ -64,6 +64,7 @@ interface ProjectData {
   slug: string;
   title: string;
   subtitle: string;
+  category?: string;
   desc: string;
   longDesc: string;
   status: "Hosted" | "In Progress" | "Planning";
@@ -153,6 +154,7 @@ function SpotlightCard({ children, className = "", style = {}, onClick }: {
     const rect = card.getBoundingClientRect();
     setSpotlight({ x: e.clientX - rect.left, y: e.clientY - rect.top, opacity: 1 });
   }, []);
+
   const handleMouseLeave = useCallback(() => {
     setSpotlight(prev => ({ ...prev, opacity: 0 }));
   }, []);
@@ -519,23 +521,6 @@ export default function ProjectDetail({ projectId }: Props) {
         .main-img-wrap:hover .zoom-badge { opacity: 1; }
 
         .thumb-item {
-          border: 3px solid var(--nb-primary); overflow: hidden; cursor: pointer;
-          transition: transform 0.15s ease, box-shadow 0.15s ease;
-          box-shadow: 3px 3px 0 var(--nb-primary);
-        }
-        .thumb-item:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--nb-primary); }
-        .thumb-item.active { box-shadow: 4px 4px 0 var(--nb-accent), 6px 6px 0 var(--nb-primary); }
-
-        .tech-card {
-          border: 4px solid var(--nb-primary); background: var(--nb-bg); box-shadow: 6px 6px 0 var(--nb-primary);
-          transition: transform 0.18s cubic-bezier(0.16,1,0.3,1), box-shadow 0.18s cubic-bezier(0.16,1,0.3,1);
-        }
-        .tech-card:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 var(--nb-accent), 11px 11px 0 var(--nb-primary); }
-
-        .feature-item {
-          border: 3px solid var(--nb-primary); background: var(--nb-bg); box-shadow: 4px 4px 0 var(--nb-primary);
-          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-        }
         .feature-item:hover { background: var(--nb-accent-light); transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--nb-primary); }
 
         .spotlight-card {

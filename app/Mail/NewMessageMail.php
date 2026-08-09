@@ -14,12 +14,12 @@ class NewMessageMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Message $message) {}
+    public function __construct(public Message $msgData) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '📩 Pesan Baru dari ' . $this->message->name . ' — ' . ($this->message->subject ?: 'Tanpa Subjek'),
+            subject: '📩 Pesan Baru dari ' . $this->msgData->name . ' — ' . ($this->msgData->subject ?: 'Tanpa Subjek'),
         );
     }
 
@@ -27,6 +27,9 @@ class NewMessageMail extends Mailable
     {
         return new Content(
             view: 'emails.new-message',
+            with: [
+                'msgData' => $this->msgData,
+            ],
         );
     }
 }

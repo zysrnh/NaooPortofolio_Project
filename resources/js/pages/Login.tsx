@@ -226,42 +226,8 @@ export default function Login() {
               {loading ? "Authenticating..." : "Login →"}
             </button>
 
-            {/* Divider */}
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-[3px] bg-[#0B1957]" />
-              <span className="font-black text-xs text-[#0B1957] uppercase tracking-widest">Demo</span>
-              <div className="flex-1 h-[3px] bg-[#0B1957]" />
-            </div>
 
-            {/* Seeded account hint */}
-            <div className="p-4" style={{ border: "3px solid var(--nb-primary)", background: "var(--nb-accent-light)", boxShadow: "4px 4px 0 var(--nb-primary)" }}>
-              <div className="flex items-center gap-2 mb-3">
-                <IconKey />
-                <p className="font-black uppercase text-xs text-[var(--nb-primary)] tracking-widest">Seeded Account</p>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: "Email",    value: "yusron@dev.com" },
-                  { label: "Password", value: "password" },
-                ].map((item, i) => (
-                  <div key={i} className="border-2 border-[var(--nb-primary)] bg-[var(--nb-bg)] p-2">
-                    <p className="font-black text-xs uppercase text-[var(--nb-accent)] tracking-wider">{item.label}</p>
-                    <p className="font-black text-sm text-[var(--nb-primary)]">{item.value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-2 text-center">
-              <p className="font-bold text-[10px] uppercase text-[var(--nb-primary)] opacity-50 mb-2">Belum punya akun?</p>
-              <button 
-                type="button"
-                onClick={() => router.visit('/register')}
-                className="font-black text-xs uppercase text-[var(--nb-primary)] border-b-2 border-[var(--nb-primary)] hover:text-[var(--nb-accent)] hover:border-[var(--nb-accent)] transition-all"
-              >
-                Daftar Sekarang →
-              </button>
-            </div>
           </form>
 
           {/* Bottom strip */}

@@ -43,6 +43,7 @@ class ProjectController extends Controller
         $data = $request->validate([
             'title'              => 'required|string|max:255',
             'subtitle'           => 'required|string|max:255',
+            'category'           => 'nullable|string|max:100',
             'desc'               => 'required|string',
             'long_desc'          => 'required|string',
             'status'             => 'required|in:Hosted,In Progress,Planning',
@@ -73,9 +74,10 @@ class ProjectController extends Controller
 
         $project = Project::create([
             ...$data,
-            'slug'    => $slug,
-            'order'   => $data['order']   ?? 0,
-            'visible' => $data['visible'] ?? true,
+            'slug'     => $slug,
+            'category' => $data['category'] ?? 'Web Application',
+            'order'    => $data['order']   ?? 0,
+            'visible'  => $data['visible'] ?? true,
         ]);
 
         return response()->json($this->formatProject($project), 201);
@@ -86,6 +88,7 @@ class ProjectController extends Controller
         $data = $request->validate([
             'title'              => 'sometimes|string|max:255',
             'subtitle'           => 'sometimes|string|max:255',
+            'category'           => 'nullable|string|max:100',
             'desc'               => 'sometimes|string',
             'long_desc'          => 'sometimes|string',
             'status'             => 'sometimes|in:Hosted,In Progress,Planning',
@@ -175,6 +178,7 @@ class ProjectController extends Controller
             'slug'           => $p->slug,
             'title'          => $p->title,
             'subtitle'       => $p->subtitle,
+            'category'       => $p->category ?? 'Web Application',
             'desc'           => $p->desc,
             'longDesc'       => $p->long_desc,
             'status'         => $p->status,

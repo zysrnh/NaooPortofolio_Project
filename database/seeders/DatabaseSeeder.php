@@ -13,10 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name'     => 'Zaki Yusron',
-            'email'    => 'yusron@dev.com',
-            'password' => Hash::make('password'),
+        // Hapus semua user lama
+        User::truncate();
+
+        // Buat akun admin utama
+        User::create([
+            'name'     => 'Zaki Yusron Hasyimmi',
+            'email'    => 'naooolaf@gmail.com',
+            'password' => Hash::make('Zakiyh782782?'),
             'role'     => 'admin',
         ]);
     }

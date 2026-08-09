@@ -91,7 +91,7 @@ export default function ChatbotPage() {
   const props = usePage().props as any;
   const user = props.auth?.user;
 
-  const [activeTab, setActiveTab] = useState<"ai" | "community">("ai");
+  const [activeTab, setActiveTab] = useState<"community">("community");
 
   // AI Chat State with localStorage persistence
   const [aiMessages, setAiMessages] = useState<Message[]>(() => {
@@ -347,41 +347,12 @@ export default function ChatbotPage() {
               <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-primary)] flex flex-col h-[650px] overflow-hidden">
                 
                 {/* Header & Mode Switcher */}
-                <div className="bg-[var(--nb-primary)] text-[var(--nb-bg)] p-4 border-b-4 border-[var(--nb-primary)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                  
-                  {/* Mode Tabs */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setActiveTab("ai")}
-                      className={`px-4 py-2 font-black uppercase text-xs border-3 border-[var(--nb-bg)] flex items-center gap-2 cursor-pointer transition-all ${
-                        activeTab === "ai"
-                          ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-none"
-                          : "bg-[var(--nb-primary)] text-[var(--nb-bg)] hover:bg-[var(--nb-accent)] hover:text-[var(--nb-primary)]"
-                      }`}
-                    >
-                      <IconBot /> Naoo Helper
-                    </button>
-
-                    <button
-                      onClick={() => setActiveTab("community")}
-                      className={`px-4 py-2 font-black uppercase text-xs border-3 border-[var(--nb-bg)] flex items-center gap-2 cursor-pointer transition-all ${
-                        activeTab === "community"
-                          ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-none"
-                          : "bg-[var(--nb-primary)] text-[var(--nb-bg)] hover:bg-[var(--nb-accent)] hover:text-[var(--nb-primary)]"
-                      }`}
-                    >
-                      <IconUsers /> User Chat
-                    </button>
+                <div className="bg-[var(--nb-primary)] text-[var(--nb-bg)] p-4 border-b-4 border-[var(--nb-primary)] flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <span className="px-4 py-2 font-black uppercase text-xs border-3 border-[var(--nb-bg)] bg-[var(--nb-accent)] text-[var(--nb-primary)] flex items-center gap-2">
+                      <IconUsers /> User Chat / Pesan
+                    </span>
                   </div>
-
-                  {activeTab === "ai" && (
-                    <button
-                      onClick={resetAiChat}
-                      className="border-2 border-[var(--nb-bg)] bg-red-500 text-white px-3 py-1 font-black text-[10px] uppercase hover:bg-red-600 shadow-[2px_2px_0_var(--nb-bg)] cursor-pointer flex items-center gap-1"
-                    >
-                      <IconTrash /> Reset Chat
-                    </button>
-                  )}
                 </div>
 
                 {/* TAB 1: NAOO HELPER AI */}

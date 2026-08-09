@@ -87,11 +87,12 @@ const IconBack = () => (
 );
 
 export default function ChatbotWidget() {
-  const props = usePage().props as any;
+  // Temporarily hidden
+  return null;
   const user = props.auth?.user;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"ai" | "community">("ai");
+  const [activeTab, setActiveTab] = useState<"community">("community");
 
   // AI Chat state with localStorage persistence
   const [aiMessages, setAiMessages] = useState<Message[]>(() => {
@@ -271,14 +272,14 @@ export default function ChatbotWidget() {
           <div className="bg-[var(--nb-primary)] text-[var(--nb-bg)] p-3.5 border-b-4 border-[var(--nb-primary)] flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 bg-[var(--nb-accent)] border-2 border-[var(--nb-bg)] flex items-center justify-center font-black text-[var(--nb-primary)] text-xs">
-                {activeTab === "ai" ? <IconBot /> : <IconUsers />}
+                <IconUsers />
               </div>
               <div>
                 <h4 className="font-black uppercase text-xs tracking-wider text-[var(--nb-bg)] leading-none">
-                  {activeTab === "ai" ? "Naoo Helper" : selectedUser ? selectedUser.name : "User Chat"}
+                  {selectedUser ? selectedUser.name : "User Chat"}
                 </h4>
                 <p className="text-[9px] font-bold uppercase text-[var(--nb-accent)] opacity-90 mt-0.5">
-                  {activeTab === "ai" ? "AI Assistant" : selectedUser ? "Direct Chat" : "Pilih Akun User"}
+                  {selectedUser ? "Direct Chat" : "Pilih Akun User"}
                 </p>
               </div>
             </div>
@@ -300,92 +301,10 @@ export default function ChatbotWidget() {
             </div>
           </div>
 
-          {/* Mode Selector Tabs */}
-          <div className="flex border-b-4 border-[var(--nb-primary)] bg-[var(--nb-accent-light)]">
-            <button
-              onClick={() => setActiveTab("ai")}
-              className={`flex-1 py-2 font-black uppercase text-[10px] tracking-wider border-r-2 border-[var(--nb-primary)] flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
-                activeTab === "ai"
-                  ? "bg-[var(--nb-primary)] text-[var(--nb-bg)]"
-                  : "bg-[var(--nb-bg)] text-[var(--nb-primary)] hover:bg-[var(--nb-accent)]"
-              }`}
-            >
-              <IconBot /> Naoo Helper
-            </button>
-            <button
-              onClick={() => setActiveTab("community")}
-              className={`flex-1 py-2 font-black uppercase text-[10px] tracking-wider flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
-                activeTab === "community"
-                  ? "bg-[var(--nb-primary)] text-[var(--nb-bg)]"
-                  : "bg-[var(--nb-bg)] text-[var(--nb-primary)] hover:bg-[var(--nb-accent)]"
-              }`}
-            >
-              <IconUsers /> User Chat
-            </button>
-          </div>
 
-          {/* TAB 1: NAOO HELPER AI */}
-          {activeTab === "ai" && (
-            <>
-              <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[var(--nb-bg)] text-xs">
-                {aiMessages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}
-                  >
-                    <div
-                      className={`max-w-[88%] p-3 border-3 border-[var(--nb-primary)] font-semibold leading-relaxed ${
-                        msg.sender === "user"
-                          ? "bg-[var(--nb-accent)] text-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]"
-                          : "bg-[var(--nb-bg)] text-[var(--nb-primary)] shadow-[3px_3px_0_var(--nb-primary)]"
-                      }`}
-                    >
-                      <FormattedMessage text={msg.text} isUser={msg.sender === "user"} />
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-1 px-1">
-                      <span className="text-[8px] font-black uppercase opacity-50 text-[var(--nb-primary)]">
-                        {msg.timestamp}
-                      </span>
-                      <CopySvgIcon text={msg.text} />
-                    </div>
-                  </div>
-                ))}
 
-                {isAiTyping && (
-                  <div className="flex items-center gap-2 p-2.5 bg-[var(--nb-accent-light)] border-3 border-[var(--nb-primary)] w-fit text-[10px] font-black uppercase text-[var(--nb-primary)] animate-pulse">
-                    <span>Naoo Helper sedang memproses...</span>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSendAi();
-                }}
-                className="p-3 border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] flex gap-2"
-              >
-                <input
-                  type="text"
-                  value={aiInput}
-                  onChange={(e) => setAiInput(e.target.value)}
-                  placeholder="Tanya Naoo Helper..."
-                  className="flex-1 bg-[var(--nb-bg)] border-3 border-[var(--nb-primary)] px-3 py-2 text-xs font-bold outline-none focus:bg-[var(--nb-accent-light)]"
-                />
-                <button
-                  type="submit"
-                  disabled={isAiTyping}
-                  className="bg-[var(--nb-primary)] text-[var(--nb-accent)] border-3 border-[var(--nb-primary)] px-4 font-black uppercase text-xs shadow-[2px_2px_0_var(--nb-accent)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 cursor-pointer flex items-center gap-1"
-                >
-                  <IconSend />
-                </button>
-              </form>
-            </>
-          )}
-
-          {/* TAB 2: DIRECT USER CHAT */}
-          {activeTab === "community" && (
+          {/* DIRECT USER CHAT */}
+          {true && (
             <>
               {!user ? (
                 <div className="flex-1 p-6 flex flex-col items-center justify-center text-center space-y-3 bg-[var(--nb-accent-light)]">

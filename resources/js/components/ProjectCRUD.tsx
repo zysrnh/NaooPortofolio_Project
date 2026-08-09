@@ -24,7 +24,7 @@ interface Feature         { title: string; desc: string; }
 interface SocialLink     { platform: string; url: string; }
 interface Collaborator   { name: string; role: string; origin: string; socials: SocialLink[]; photo: string; }
 interface ProjectData {
-  title: string; subtitle: string; desc: string; long_desc: string;
+  title: string; subtitle: string; category: string; desc: string; long_desc: string;
   status: "Hosted" | "In Progress" | "Planning";
   date: string; duration: string; images: string[];
   tech_stack_ids: number[]; features: Feature[];
@@ -34,7 +34,7 @@ interface ProjectData {
   collaborators: Collaborator[];
 }
 interface ProjectRow {
-  id: number; slug: string; title: string; subtitle: string; desc: string;
+  id: number; slug: string; title: string; subtitle: string; category: string; desc: string;
   longDesc: string; status: string; date: string; duration: string;
   images: string[]; stacks: { id: number; label: string; icon: string }[];
   tech_stack_ids: number[]; features: Feature[];
@@ -46,12 +46,15 @@ interface ProjectRow {
 }
 
 const EMPTY_FORM: ProjectData = {
-  title:"", subtitle:"", desc:"", long_desc:"",
+  title:"", subtitle:"", category:"Web Application", desc:"", long_desc:"",
   status:"Planning", date:"", duration:"",
   images:[], tech_stack_ids:[], features:[],
   demo_url:"", github_url:"", order:0, visible:true,
   work_type:"Solo", solo_role:"Fullstack Developer", collaborators:[],
 };
+const CATEGORY_PRESETS = [
+  "Web Application", "CRM", "LMS", "Marketplace", "Company Profile", "Mobile App", "SaaS", "IoT", "Other"
+] as const;
 const STATUS_OPTS = ["Hosted","In Progress","Planning"] as const;
 const STATUS_CFG: Record<string,{bg:string;fg:string}> = {
   "Hosted":      {bg:"var(--nb-accent)", fg:"var(--nb-primary)"},
@@ -496,6 +499,9 @@ function ProjectCard({ p, index, onToggle, onEdit, onDelete }: {
           {/* Title row */}
           <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:4}}>
             <span style={{fontWeight:900,fontSize:15,textTransform:"uppercase",color:"var(--nb-primary)",letterSpacing:"0.05em"}}>{p.title}</span>
+            <span style={{border:"2px solid var(--nb-primary)",background:"var(--nb-primary)",color:"var(--nb-accent)",padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.08em"}}>
+              🏷️ {p.category || "Web Application"}
+            </span>
             <span style={{border:"2px solid var(--nb-primary)",background:sc.bg,color:sc.fg,padding:"2px 9px",fontSize:10,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.08em",transition:"transform 0.12s ease"}}
               onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform="translate(-1px,-1px)";}}
               onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform="";}}>
@@ -615,7 +621,7 @@ export default function ProjectCRUD() {
   const openEdit = (p:ProjectRow) => {
     setEditTarget(p);
     setForm({
-      title:p.title, subtitle:p.subtitle, desc:p.desc, long_desc:p.longDesc,
+      title:p.title, subtitle:p.subtitle, category:p.category??"Web Application", desc:p.desc, long_desc:p.longDesc,
       status:p.status as ProjectData["status"], date:p.date, duration:p.duration,
       images:p.images??[], tech_stack_ids:p.tech_stack_ids??[], features:p.features??[],
       demo_url:p.demoUrl??"", github_url:p.githubUrl??"", order:p.order, visible:p.visible,
@@ -851,13 +857,19 @@ export default function ProjectCRUD() {
             {/* Modal Body */}
             <div style={{padding:"24px 28px",display:"flex",flexDirection:"column",gap:20,maxHeight:"72vh",overflowY:"auto"}}>
 
-              {/* Title + Subtitle */}
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,animation:"pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.05s both"}}>
+              {/* Title + Subtitle + Category */}
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:14,animation:"pcSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) 0.05s both"}}>
                 <Field label="Title *" err={errors.title}>
                   <input className={`pc2-input${errors.title?" err":""}`} placeholder="Nama project..." value={form.title} onChange={e=>setForm(f=>({...f,title:e.target.value}))}/>
                 </Field>
                 <Field label="Subtitle *" err={errors.subtitle}>
                   <input className={`pc2-input${errors.subtitle?" err":""}`} placeholder="Kalimat singkat..." value={form.subtitle} onChange={e=>setForm(f=>({...f,subtitle:e.target.value}))}/>
+                </Field>
+                <Field label="Kategori Project">
+                  <input className="pc2-input" placeholder="CRM, LMS, Marketplace..." value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} list="category-presets"/>
+                  <datalist id="category-presets">
+                    {CATEGORY_PRESETS.map(c=><option key={c} value={c}/>)}
+                  </datalist>
                 </Field>
               </div>
 

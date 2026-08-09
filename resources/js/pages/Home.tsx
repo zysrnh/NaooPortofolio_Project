@@ -96,6 +96,11 @@ interface Stack { id:number; label:string; icon:string; }
 interface Project { id:number; slug:string; title:string; desc:string; images:string[]; status:"Hosted"|"In Progress"|"Planning"; date:string; stacks:Stack[]; workType:"Solo"|"Collaboration"; soloRole:string; }
 interface TechStackItem { id:number; name:string; icon:string; category:string; }
 interface HeroProfile { name:string; title:string; bio:string; photo:string|null; photo2?:string|null; }
+interface ExperienceItem {
+  id: number; title: string; type: string; company: string;
+  description: string; start_date: string; end_date: string | null;
+  highlights: string[];
+}
 
 type ContactPlatform = "whatsapp"|"email"|"github"|"linkedin"|"twitter"|"instagram"|"telegram"|"custom";
 interface ContactItem {
@@ -117,6 +122,21 @@ const DEFAULT_HERO:HeroProfile = {
 };
 const FALLBACK_ICON="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%230B1957' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3C/svg%3E";
 const STATUS_DOT:Record<string,string> = {"Hosted":"#22c55e","In Progress":"#F59E0B","Planning":"var(--nb-accent)"};
+
+const TYPE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  internship: { bg: "var(--nb-primary)", text: "var(--nb-accent)", border: "var(--nb-accent)" },
+  freelance:  { bg: "var(--nb-accent)", text: "var(--nb-primary)", border: "var(--nb-primary)" },
+  learning:   { bg: "var(--nb-bg)", text: "var(--nb-primary)", border: "var(--nb-primary)" },
+  project:    { bg: "var(--nb-accent-light)", text: "var(--nb-primary)", border: "var(--nb-primary)" },
+  fulltime:   { bg: "var(--nb-primary)", text: "var(--nb-accent)", border: "var(--nb-accent)" },
+  parttime:   { bg: "var(--nb-secondary)", text: "var(--nb-primary)", border: "var(--nb-primary)" },
+};
+
+const fmtDate = (d: string | null) => {
+  if (!d) return "Present";
+  const [y, m] = d.split("-");
+  return `${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][Number(m)-1]} ${y}`;
+};
 
 // ── Platform SVG Icons ─────────────────────────────────────────────────────────
 function PlatformIcon({ platform }: { platform: ContactPlatform }) {
@@ -190,6 +210,95 @@ function TechStack() {
         </div>
         <div className="h-2 bg-[var(--nb-accent)] border-t-4 border-[var(--nb-primary)]"/>
       </div>
+    </section>
+  );
+}
+
+// ── ExperienceTimeline ────────────────────────────────────────────────────────
+function ExperienceTimeline() {
+  const [exps, setExps]       = useState<ExperienceItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/about/experiences").then(r => r.json())
+      .then(d => { setExps(Array.isArray(d) ? d : []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (!loading && exps.length === 0) return null;
+
+  return (
+    <section id="experience" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal">
+      <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">Career & Experience</h2>
+      {loading && (
+        <div className="flex flex-col gap-4">
+          {[1,2,3].map(i => (
+            <div key={i} className="flex gap-5 items-start">
+              <div className="w-10 flex justify-center mt-1"><div className="w-4 h-4 skeleton-shimmer"/></div>
+              <div className="flex-1 border-4 border-[var(--nb-primary)] p-5 bg-[var(--nb-bg)]">
+                <div className="skeleton-shimmer h-5 w-48 mb-2"/>
+                <div className="skeleton-shimmer h-3 w-32 mb-3"/>
+                <div className="skeleton-shimmer h-3 w-full mb-1"/>
+                <div className="skeleton-shimmer h-3 w-3/4"/>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {!loading && exps.length > 0 && (
+        <div className="relative">
+          <div className="absolute left-[19px] sm:left-[23px] top-0 bottom-0 w-[3px] bg-[var(--nb-primary)]" style={{zIndex:0}}/>
+          <div className="flex flex-col gap-6">
+            {exps.map((exp) => {
+              const tc = TYPE_COLORS[exp.type] ?? TYPE_COLORS.project;
+              const isCurrent = !exp.end_date;
+              return (
+                <div key={exp.id} className="relative flex gap-5 sm:gap-7 items-start group" style={{zIndex:1}}>
+                  <div className="flex-shrink-0 mt-1" style={{width:40,display:"flex",justifyContent:"center"}}>
+                    <div style={{width:16,height:16,background:isCurrent?"var(--nb-accent)":"var(--nb-primary)",border:"3px solid var(--nb-primary)",
+                      boxShadow:`3px 3px 0 ${isCurrent?"var(--nb-primary)":"var(--nb-accent)"}`,position:"relative",zIndex:2,transition:"transform 0.12s ease"}}
+                      className="group-hover:scale-125"/>
+                  </div>
+                  <div className="flex-1 bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] p-5 sm:p-6 group-hover:shadow-[8px_8px_0_var(--nb-primary)] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition-all duration-150">
+                    <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                      <div>
+                        <h3 className="font-black text-lg uppercase text-[var(--nb-primary)] leading-tight">{exp.title}</h3>
+                        <p className="font-bold text-xs uppercase tracking-widest text-[var(--nb-primary)] opacity-60 mt-0.5">{exp.company}</p>
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-black text-xs uppercase tracking-widest px-3 py-1"
+                          style={{border:`3px solid ${tc.border}`,background:tc.bg,color:tc.text,boxShadow:`2px 2px 0 ${tc.border}`}}>
+                          {exp.type}
+                        </span>
+                        <span className="font-bold text-xs uppercase tracking-wider text-[var(--nb-primary)] opacity-50 whitespace-nowrap">
+                          {fmtDate(exp.start_date)} — {fmtDate(exp.end_date)}
+                        </span>
+                        {isCurrent && (
+                          <span className="font-black text-xs uppercase tracking-widest px-2 py-0.5"
+                            style={{border:"2px solid var(--nb-accent)",background:"var(--nb-accent),0.15)",color:"var(--nb-primary)",boxShadow:"1px 1px 0 var(--nb-accent)"}}>
+                            ● Active
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <p className="font-semibold text-sm text-[var(--nb-primary)] leading-relaxed mb-3 opacity-80">{exp.description}</p>
+                    {exp.highlights && exp.highlights.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {exp.highlights.map((h, hi) => (
+                          <span key={hi} className="font-black text-xs uppercase px-2 py-1"
+                            style={{border:"2px solid var(--nb-accent)",color:"var(--nb-primary)",background:"var(--nb-accent),0.1)"}}>
+                            {h}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -278,190 +387,68 @@ function SkeletonCard() {
 
 // ── LoadingScreen ──────────────────────────────────────────────────────────────
 function LoadingScreen({ progress }: { progress: number }) {
-  const [glitchActive, setGlitchActive] = useState(false);
-  const [scanLine, setScanLine] = useState(0);
   const [dots, setDots] = useState("");
 
-  // Glitch effect at certain progress points
-  useEffect(() => {
-    if (progress === 30 || progress === 60 || progress === 90) {
-      setGlitchActive(true);
-      setTimeout(() => setGlitchActive(false), 300);
-    }
-  }, [Math.floor(progress / 30)]);
-
-  // Animated dots
   useEffect(() => {
     const interval = setInterval(() => {
-      setDots(d => d.length >= 3 ? "" : d + ".");
+      setDots(d => (d.length >= 3 ? "" : d + "."));
     }, 400);
     return () => clearInterval(interval);
   }, []);
 
-  // Scan line animation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setScanLine(p => (p + 2) % 100);
-    }, 16);
-    return () => clearInterval(interval);
-  }, []);
-
-  const phase =
-    progress < 25 ? { label: "LOADING ASSETS", code: "01" } :
-    progress < 50 ? { label: "BUILDING UI", code: "02" } :
-    progress < 75 ? { label: "COMPILING STYLES", code: "03" } :
-    progress < 95 ? { label: "ALMOST READY", code: "04" } :
-                   { label: "LAUNCHING", code: "05" };
-
-  const blocks = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+  const getStatusText = () => {
+    if (progress < 30) return "Memuat Komponen Utama";
+    if (progress < 60) return "Menyiapkan Data Portofolio";
+    if (progress < 90) return "Merapikan Tampilan";
+    return "Hampir Siap";
+  };
 
   return (
-    <div className="min-h-screen bg-[var(--nb-primary)] flex items-center justify-center px-6 overflow-hidden relative">
-      {/* Background grid */}
-      <div className="absolute inset-0 opacity-[0.04]" style={{
-        backgroundImage: "repeating-linear-gradient(0deg,var(--nb-accent) 0,var(--nb-accent) 1px,transparent 1px,transparent 48px),repeating-linear-gradient(90deg,var(--nb-accent) 0,var(--nb-accent) 1px,transparent 1px,transparent 48px)"
-      }}/>
+    <div className="min-h-screen bg-[var(--nb-primary)] flex items-center justify-center px-6 relative overflow-hidden">
+      {/* Background Subtle Grid */}
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, var(--nb-accent) 0, var(--nb-accent) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, var(--nb-accent) 0, var(--nb-accent) 1px, transparent 1px, transparent 40px)",
+        }}
+      />
 
-      {/* Scan line effect */}
-      <div className="absolute inset-x-0 pointer-events-none" style={{
-        top: `${scanLine}%`, height: "2px",
-        background: "linear-gradient(90deg, transparent, var(--nb-accent),0.15), transparent)",
-        transition: "top 0.016s linear"
-      }}/>
+      <div className="w-full max-w-md relative z-10">
+        {/* Main Branding Card */}
+        <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] p-8 sm:p-10 text-center">
+          <span className="inline-block bg-[var(--nb-primary)] text-[var(--nb-accent)] font-black text-xs uppercase px-3 py-1 mb-4 tracking-widest border border-[var(--nb-primary)]">
+            PORTFOLIO
+          </span>
 
-      {/* Floating corner decorations */}
-      <div className="absolute top-6 left-6 w-12 h-12 border-t-4 border-l-4 border-[var(--nb-accent)] opacity-40"/>
-      <div className="absolute top-6 right-6 w-12 h-12 border-t-4 border-r-4 border-[var(--nb-accent)] opacity-40"/>
-      <div className="absolute bottom-6 left-6 w-12 h-12 border-b-4 border-l-4 border-[var(--nb-accent)] opacity-40"/>
-      <div className="absolute bottom-6 right-6 w-12 h-12 border-b-4 border-r-4 border-[var(--nb-accent)] opacity-40"/>
+          <h1 className="text-4xl sm:text-5xl font-black uppercase text-[var(--nb-primary)] mb-2 tracking-tight">
+            NAOO<span className="text-[var(--nb-accent)]">.ID</span>
+          </h1>
 
-      {/* Phase code — top left */}
-      <div className="absolute top-8 left-8 hidden sm:flex items-center gap-2">
-        <div className="w-2 h-2 bg-[var(--nb-accent)] animate-pulse"/>
-        <span className="font-black text-[10px] uppercase tracking-[0.4em] text-[var(--nb-accent)] opacity-50">SYS/{phase.code}</span>
-      </div>
+          <p className="font-bold text-xs uppercase tracking-wider text-[var(--nb-primary)] opacity-70 mb-8">
+            Full-Stack Developer & Designer
+          </p>
 
-      {/* Version — top right */}
-      <div className="absolute top-8 right-8 hidden sm:block">
-        <span className="font-black text-[10px] uppercase tracking-[0.3em] text-[var(--nb-accent)] opacity-30">v2.0.0</span>
-      </div>
-
-      {/* Main content */}
-      <div className="w-full max-w-lg relative z-10">
-
-        {/* Logo / Title */}
-        <div className="mb-10">
-          <div className="flex items-end gap-4 mb-1">
-            <h1
-              className="text-6xl sm:text-7xl font-black uppercase text-[var(--nb-bg)] leading-none select-none"
-              style={{
-                textShadow: glitchActive
-                  ? "3px 0 var(--nb-accent), -3px 0 #F59E0B"
-                  : "4px 4px 0 var(--nb-accent),0.3)",
-                transition: "text-shadow 0.05s ease",
-                letterSpacing: "-0.02em"
-              }}
-            >
-              Naoo
-            </h1>
-            <span className="text-3xl sm:text-4xl font-black text-[var(--nb-accent)] mb-1 leading-none">.id</span>
+          {/* Progress Bar Container */}
+          <div className="mb-4">
+            <div className="w-full h-6 border-3 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] p-1 relative overflow-hidden">
+              <div
+                className="h-full bg-[var(--nb-primary)] transition-all duration-150 ease-out"
+                style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+              />
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="h-[3px] w-8 bg-[var(--nb-accent)]"/>
-            <p className="font-black uppercase text-[10px] tracking-[0.4em] text-[var(--nb-accent)] opacity-60">Portfolio System</p>
-          </div>
-        </div>
 
-        {/* Block progress bar */}
-        <div className="mb-4">
-          <div className="flex gap-1">
-            {blocks.map(i => {
-              const filled = progress >= (i + 1) * 5;
-              const active = !filled && progress >= i * 5;
-              return (
-                <div
-                  key={i}
-                  className="flex-1 h-7 border-2 border-[var(--nb-accent)] relative overflow-hidden"
-                  style={{ borderColor: filled ? "var(--nb-accent)" : "var(--nb-accent),0.2)" }}
-                >
-                  {filled && (
-                    <div className="absolute inset-0 bg-[var(--nb-accent)]"/>
-                  )}
-                  {active && (
-                    <div
-                      className="absolute inset-0 bg-[var(--nb-accent)]"
-                      style={{
-                        animation: "blockPulse 0.6s ease infinite",
-                        opacity: 0.6
-                      }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Progress info row */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <span
-              className="font-black text-4xl tabular-nums leading-none"
-              style={{
-                color: "var(--nb-accent)",
-                textShadow: glitchActive ? "2px 0 #F59E0B" : "none",
-                transition: "text-shadow 0.05s ease"
-              }}
-            >
-              {String(progress).padStart(3, "0")}
+          {/* Status Info */}
+          <div className="flex items-center justify-between font-black uppercase text-xs text-[var(--nb-primary)]">
+            <span className="tracking-wide">
+              {getStatusText()}
+              {dots}
             </span>
-            <span className="font-black text-xl text-[var(--nb-accent)] opacity-50">%</span>
-          </div>
-          <div className="text-right">
-            <p className="font-black uppercase text-xs tracking-widest text-[var(--nb-accent)]">{phase.label}{dots}</p>
-            <p className="font-bold text-[10px] text-[var(--nb-accent-light)] opacity-30 uppercase tracking-wider mt-0.5">Please wait</p>
+            <span className="text-sm tracking-wider font-extrabold">{Math.round(progress)}%</span>
           </div>
         </div>
-
-        {/* Terminal-style log lines */}
-        <div className="border-2 border-[var(--nb-accent)] border-opacity-20 bg-black bg-opacity-30 px-4 py-3 font-mono">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 rounded-full bg-red-400 opacity-70"/>
-            <div className="w-2 h-2 rounded-full bg-yellow-400 opacity-70"/>
-            <div className="w-2 h-2 rounded-full bg-green-400 opacity-70"/>
-            <span className="text-[10px] text-[var(--nb-accent)] opacity-30 ml-2 uppercase tracking-widest">terminal</span>
-          </div>
-          <div className="space-y-1">
-            {[
-              { threshold: 0,  text: "→ Initializing portfolio engine...", done: progress > 10 },
-              { threshold: 20, text: "→ Fetching project data...",          done: progress > 35 },
-              { threshold: 40, text: "→ Compiling components...",           done: progress > 60 },
-              { threshold: 65, text: "→ Applying styles...",                done: progress > 80 },
-              { threshold: 85, text: "→ Ready to launch!",                  done: progress >= 100 },
-            ].map((line, i) => (
-              progress >= line.threshold && (
-                <p key={i} className="text-[11px] font-bold" style={{
-                  color: line.done ? "var(--nb-accent)" : "var(--nb-accent-light)",
-                  opacity: line.done ? 1 : 0.5
-                }}>
-                  {line.text}
-                  {!line.done && progress >= line.threshold && <span className="animate-pulse"> _</span>}
-                </p>
-              )
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom hint */}
-        <p className="text-center font-bold text-[10px] uppercase tracking-[0.3em] text-[var(--nb-accent)] opacity-20 mt-6">
-          Best viewed on desktop
-        </p>
       </div>
-
-      <style>{`
-        @keyframes blockPulse { 0%,100%{opacity:0.3} 50%{opacity:0.8} }
-        @keyframes shimmer{from{transform:translateX(-200%)}to{transform:translateX(200%)}}
-      `}</style>
     </div>
   );
 }
@@ -622,7 +609,7 @@ export default function Home() {
         .card-img{transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);}
         .card-overlay{opacity:0;transition:opacity 0.2s ease;}
         .spotlight-card:hover .card-overlay{opacity:1;}
-        .spotlight-glow{position:absolute;width:300px;height:300px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at center,var(--nb-accent),0.25) 0%,var(--nb-accent),0.1) 40%,transparent 70%);pointer-events:none;z-index:10;transition:opacity 0.3s ease;mix-blend-mode:screen;}
+        .spotlight-glow{position:absolute;width:300px;height:300px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at center,color-mix(in srgb, var(--nb-accent) 25%, transparent) 0%,color-mix(in srgb, var(--nb-accent) 10%, transparent) 40%,transparent 70%);pointer-events:none;z-index:10;transition:opacity 0.3s ease;mix-blend-mode:screen;}
         .photo-wrap{position:relative;overflow:hidden;border:4px solid var(--nb-primary);box-shadow:10px 10px 0 var(--nb-primary);flex-shrink:0;transition:transform 0.15s ease,box-shadow 0.15s ease;}
         .photo-wrap:hover{transform:translate(-3px,-3px);box-shadow:13px 13px 0 var(--nb-primary);}
         .photo-wrap img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center center;}
@@ -843,6 +830,11 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="p-4 sm:p-5 relative z-20">
+                            <div className="mb-2">
+                              <span className="inline-block font-black uppercase text-[10px] bg-[var(--nb-primary)] text-[var(--nb-accent)] px-2 py-0.5 border border-[var(--nb-primary)] tracking-wider">
+                                🏷️ {p.category || "Web Application"}
+                              </span>
+                            </div>
                             <div className="flex items-start justify-between gap-2 mb-2">
                               <h3 className="font-black uppercase text-sm text-[var(--nb-primary)] leading-tight">{p.title}</h3>
                               <span className="font-bold text-xs text-[var(--nb-primary)] opacity-50 flex-shrink-0">{p.date}</span>
@@ -876,6 +868,9 @@ export default function Home() {
 
         {/* TECH STACK */}
         <TechStack/>
+
+        {/* CAREER & EXPERIENCE TIMELINE */}
+        <ExperienceTimeline/>
 
         {/* ABOUT */}
         <section id="about" className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal from-scale">
@@ -940,7 +935,7 @@ export default function Home() {
               <div className="flex flex-col gap-2">
                 <p className="font-black uppercase text-xs text-[var(--nb-accent)] tracking-widest mb-1">Quick Links</p>
                 <div className="flex flex-wrap gap-x-6 gap-y-1">
-                  {[{label:"Home",id:"hero"},{label:"Projects",id:"projects"},{label:"About",id:"about"},{label:"Contact",id:"contact"},{label:"Leave a Message",id:"testimonials"}].map(l=>(
+                  {[{label:"Home",id:"hero"},{label:"Projects",id:"projects"},{label:"Experience",id:"experience"},{label:"About",id:"about"},{label:"Contact",id:"contact"},{label:"Leave a Message",id:"testimonials"}].map(l=>(
                     <a key={l.id} onClick={()=>scrollTo(l.id)} className="font-bold text-sm text-[var(--nb-primary)] uppercase cursor-pointer hover:underline">{l.label}</a>
                   ))}
                 </div>

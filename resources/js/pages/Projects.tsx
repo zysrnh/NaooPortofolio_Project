@@ -14,6 +14,7 @@ interface Project {
   slug: string;
   title: string;
   subtitle: string;
+  category?: string;
   desc: string;
   images: string[];
   status: "Hosted" | "In Progress" | "Planning";
@@ -59,55 +60,7 @@ function useInView(options?: IntersectionObserverInit) {
   return { ref, inView };
 }
 
-// ── SpotlightCard ──────────────────────────────────────────────────────────────
-interface SpotlightCardProps {
-  children: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-  delay?: number;
-  visible?: boolean;
-}
 
-function SpotlightCard({ children, className = "", onClick, delay = 0, visible = true }: SpotlightCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [spotlight, setSpotlight] = useState({ x: 0, y: 0, opacity: 0 });
-  const [entered, setEntered] = useState(false);
-
-  useEffect(() => {
-    if (!visible) return;
-    const t = setTimeout(() => setEntered(true), delay);
-    return () => clearTimeout(t);
-  }, [visible, delay]);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    setSpotlight({ x: e.clientX - rect.left, y: e.clientY - rect.top, opacity: 1 });
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setSpotlight(prev => ({ ...prev, opacity: 0 }));
-  }, []);
-
-  return (
-    <div
-      ref={cardRef}
-      className={`spotlight-card ${className}`}
-      style={{
-        opacity: entered ? 1 : 0,
-        transform: entered ? "translateY(0) scale(1)" : "translateY(28px) scale(0.97)",
-        transition: `opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)`,
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-    >
-      <div className="spotlight-glow" style={{ left: spotlight.x, top: spotlight.y, opacity: spotlight.opacity }} />
-      {children}
-    </div>
-  );
-}
 
 // ── AnimBlock ──────────────────────────────────────────────────────────────────
 function AnimBlock({ children, delay = 0, from = "bottom", className = "" }: {
@@ -134,44 +87,68 @@ function AnimBlock({ children, delay = 0, from = "bottom", className = "" }: {
   );
 }
 
-// ── Skeleton Card ──────────────────────────────────────────────────────────────
+
+// ── SkeletonCard ───────────────────────────────────────────────────────────────
 function SkeletonCard({ delay = 0 }: { delay?: number }) {
   return (
     <div
-      style={{
-        border: "4px solid var(--nb-primary)",
-        background: "var(--nb-bg)",
-        boxShadow: "5px 5px 0 var(--nb-primary)",
-        opacity: 0,
-        animation: `skeletonFadeIn 0.4s ease ${delay}ms forwards`,
-      }}
+      className="border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[5px_5px_0_var(--nb-primary)] p-0 overflow-hidden"
+      style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="skeleton-shimmer" style={{ width: "100%", height: 176, borderBottom: "4px solid var(--nb-primary)" }} />
-      <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
-        <div className="skeleton-shimmer" style={{ height: 14, width: "70%", borderRadius: 0 }} />
-        <div className="skeleton-shimmer" style={{ height: 11, width: "90%", borderRadius: 0 }} />
-        <div className="skeleton-shimmer" style={{ height: 11, width: "60%", borderRadius: 0 }} />
-        <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-          <div className="skeleton-shimmer" style={{ width: 36, height: 36, border: "2px solid var(--nb-primary)" }} />
-          <div className="skeleton-shimmer" style={{ width: 36, height: 36, border: "2px solid var(--nb-primary)" }} />
+      <div className="w-full h-44 skeleton-shimmer border-b-4 border-[var(--nb-primary)]" />
+      <div className="p-5 flex flex-col gap-3">
+        <div className="skeleton-shimmer h-4 w-1/3" />
+        <div className="skeleton-shimmer h-6 w-3/4" />
+        <div className="skeleton-shimmer h-12 w-full" />
+        <div className="flex gap-2">
+          <div className="skeleton-shimmer h-8 w-8" />
+          <div className="skeleton-shimmer h-8 w-8" />
         </div>
       </div>
     </div>
   );
 }
 
+// ── SpotlightCard ──────────────────────────────────────────────────────────────
+function SpotlightCard({
+  children,
+  onClick,
+  delay = 0,
+  visible = true,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  delay?: number;
+  visible?: boolean;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className="spotlight-card rounded-none"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(16px)",
+        transition: `opacity 0.4s ease ${delay}ms, transform 0.4s ease ${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function Projects() {
   useVisitorTracker('/projects');
-  const [projects, setProjects]   = useState<Project[]>([]);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState(false);
-  const [filter, setFilter]       = useState("All");
-  const [page, setPage]           = useState(1);
-  const [gridKey, setGridKey]     = useState(0);
-  const [gridVisible, setGridVisible] = useState(true);
-  const [mounted, setMounted]     = useState(false);
+  const [projects, setProjects]             = useState<Project[]>([]);
+  const [loading, setLoading]               = useState(true);
+  const [error, setError]                   = useState(false);
+  const [filter, setFilter]                 = useState("All");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [page, setPage]                     = useState(1);
+  const [gridKey, setGridKey]               = useState(0);
+  const [gridVisible, setGridVisible]       = useState(true);
+  const [mounted, setMounted]               = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
-  const [heroOffset, setHeroOffset] = useState(0);
+  const [heroOffset, setHeroOffset]         = useState(0);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 60);
@@ -204,7 +181,14 @@ export default function Projects() {
     return () => window.removeEventListener("scroll", handle);
   }, []);
 
-  const filtered    = filter === "All" ? projects : projects.filter(p => p.status === filter);
+  const allCategories = ["All", ...Array.from(new Set(projects.map(p => p.category || "Web Application")))];
+
+  const filtered = projects.filter(p => {
+    const matchStatus = filter === "All" || p.status === filter;
+    const matchCat    = categoryFilter === "All" || (p.category || "Web Application") === categoryFilter;
+    return matchStatus && matchCat;
+  });
+
   const totalPages  = Math.ceil(filtered.length / PER_PAGE);
   const paginated   = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
@@ -212,6 +196,16 @@ export default function Projects() {
     setGridVisible(false);
     setTimeout(() => {
       setFilter(f);
+      setPage(1);
+      setGridKey(k => k + 1);
+      setGridVisible(true);
+    }, 220);
+  };
+
+  const handleCategoryFilter = (c: string) => {
+    setGridVisible(false);
+    setTimeout(() => {
+      setCategoryFilter(c);
       setPage(1);
       setGridKey(k => k + 1);
       setGridVisible(true);
@@ -255,40 +249,22 @@ export default function Projects() {
           0%, 100% { box-shadow: 0 0 0 0 rgba(158, 204, 250, 0); }
           50%       { box-shadow: 0 0 0 4px rgba(158, 204, 250, 0.25); }
         }
-        @keyframes skeletonFadeIn {
-          from { opacity: 0; transform: translateY(16px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
         @keyframes skeletonPulse {
           0%,100% { opacity: 0.5; }
           50%     { opacity: 1; }
         }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
 
-        .page-wrapper {
-          opacity: 0;
-          animation: pageIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.05s forwards;
+        .back-btn-wrap {
+          animation: slideDownFade 0.4s cubic-bezier(0.16,1,0.3,1) 0.05s both;
+        }
+        .filter-wrap {
+          animation: slideDownFade 0.5s cubic-bezier(0.16,1,0.3,1) 0.28s both;
         }
         .hero-block {
           animation: heroReveal 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;
         }
         .hero-stat {
-          opacity: 0;
-          animation: counterUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
-        }
-        .hero-stat:nth-child(1) { animation-delay: 0.35s; }
-        .hero-stat:nth-child(2) { animation-delay: 0.45s; }
-        .hero-stat:nth-child(3) { animation-delay: 0.55s; }
-
-        .back-btn-wrap {
-          opacity: 0;
-          animation: slideDownFade 0.4s cubic-bezier(0.16,1,0.3,1) 0.05s forwards;
-        }
-        .filter-wrap {
-          opacity: 0;
-          animation: slideDownFade 0.5s cubic-bezier(0.16,1,0.3,1) 0.28s forwards;
+          animation: counterUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
         }
 
         .grid-wrapper {
@@ -322,18 +298,6 @@ export default function Projects() {
         .card-img { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); }
         .card-overlay { opacity: 0; transition: opacity 0.25s ease; }
         .spotlight-card:hover .card-overlay { opacity: 1; }
-
-        .spotlight-glow {
-          position: absolute;
-          width: 320px; height: 320px;
-          border-radius: 50%;
-          transform: translate(-50%, -50%);
-          background: radial-gradient(circle at center, var(--nb-accent),0.28) 0%, var(--nb-accent),0.1) 40%, transparent 70%);
-          pointer-events: none;
-          z-index: 10;
-          transition: opacity 0.35s ease;
-          mix-blend-mode: screen;
-        }
 
         .filter-btn {
           border: 3px solid var(--nb-primary); padding: 8px 18px;
@@ -425,8 +389,7 @@ export default function Projects() {
         .retry-btn:hover  { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--nb-accent); }
         .retry-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 var(--nb-accent); }
       `}</style>
-
-      <div className="min-h-screen bg-[var(--nb-accent-light)] page-wrapper">
+      <div className="min-h-screen bg-[var(--nb-accent-light)]">
         <Head title="Projects - Portfolio" />
         <Navbar />
 
@@ -592,6 +555,11 @@ export default function Projects() {
 
                     {/* Content */}
                     <div className="p-5 relative z-20">
+                      <div className="mb-2">
+                        <span className="inline-block font-black uppercase text-[10px] bg-[var(--nb-primary)] text-[var(--nb-accent)] px-2 py-0.5 border border-[var(--nb-primary)] tracking-wider">
+                          🏷️ {p.category || "Web Application"}
+                        </span>
+                      </div>
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <h3 className="font-black uppercase text-sm text-[var(--nb-primary)] leading-tight">{p.title}</h3>
                         <span className="text-xs font-bold text-[var(--nb-primary)] opacity-50 flex-shrink-0">{p.date}</span>

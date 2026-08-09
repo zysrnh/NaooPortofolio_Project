@@ -34,27 +34,27 @@
       <div class="body">
         <div class="field">
           <div class="field-label">Dari</div>
-          <div class="field-value">{{ $message->name }}</div>
+          <div class="field-value">{{ $msgData->name }}</div>
         </div>
         <div class="field">
           <div class="field-label">Email</div>
-          <div class="field-value">{{ $message->email }}</div>
+          <div class="field-value">{{ $msgData->email }}</div>
         </div>
-        @if($message->subject)
+        @if($msgData->subject)
         <div class="field">
           <div class="field-label">Subjek</div>
-          <div class="field-value">{{ $message->subject }}</div>
+          <div class="field-value">{{ $msgData->subject }}</div>
         </div>
         @endif
         <div class="field">
           <div class="field-label">Pesan</div>
-          <div class="message-box">{{ $message->message }}</div>
+          <div class="message-box">{{ $msgData->message }}</div>
         </div>
         <div class="divider"></div>
         <div style="display:flex; gap:12px; flex-wrap:wrap;">
-          <span class="badge">📅 {{ $message->created_at->format('d M Y, H:i') }} WIB</span>
-          @if($message->ip_address)
-          <span class="badge">🌐 {{ $message->ip_address }}</span>
+          <span class="badge">📅 {{ $msgData->created_at->format('d M Y, H:i') }} WIB</span>
+          @if($msgData->ip_address)
+          <span class="badge">🌐 {{ $msgData->ip_address }}</span>
           @endif
         </div>
       </div>
