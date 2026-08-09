@@ -180,19 +180,19 @@ function FeatureItem({ title, desc, index }: { title: string; desc: string; inde
   return (
     <div
       ref={ref}
-      className="feature-item p-5 flex gap-4 items-start"
+      className="flex gap-3 items-start py-3 border-b-2 border-[var(--nb-primary)] border-opacity-10 last:border-b-0"
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateX(0)" : "translateX(-24px)",
-        transition: `opacity 0.6s cubic-bezier(0.16,1,0.3,1) ${index * 80}ms, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${index * 80}ms`,
+        transition: `opacity 0.5s ease ${index * 60}ms, transform 0.5s ease ${index * 60}ms`,
       }}
     >
-      <div className="flex-shrink-0 w-7 h-7 bg-[var(--nb-primary)] border-2 border-[var(--nb-primary)] flex items-center justify-center text-[var(--nb-accent)] mt-0.5">
+      <div className="flex-shrink-0 w-5 h-5 bg-[var(--nb-primary)] flex items-center justify-center text-[var(--nb-accent)] mt-0.5">
         <IconCheck />
       </div>
       <div>
-        <p className="font-black uppercase text-sm text-[var(--nb-primary)] mb-1 tracking-wide">{title}</p>
-        <p className="font-semibold text-sm text-[var(--nb-primary)] opacity-70 leading-relaxed">{desc}</p>
+        <p className="font-black uppercase text-xs text-[var(--nb-primary)] tracking-wide leading-tight">{title}</p>
+        {desc && <p className="font-medium text-xs text-[var(--nb-primary)] opacity-60 leading-relaxed mt-0.5">{desc}</p>}
       </div>
     </div>
   );
@@ -740,7 +740,7 @@ export default function ProjectDetail({ projectId }: Props) {
                 {project.features?.length > 0 && (
                   <AnimBlock from="bottom" delay={80}>
                     <SectionHeading>Fitur-Fitur</SectionHeading>
-                    <div className="space-y-3">
+                    <div className="border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] px-4 py-2">
                       {project.features.map((f, i) => (
                         <FeatureItem key={i} title={f.title} desc={f.desc} index={i} />
                       ))}
