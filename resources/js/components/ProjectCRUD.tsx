@@ -305,7 +305,7 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
     const img = imgRef.current; if(!img) return;
     const ec = document.createElement("canvas"); ec.width=CANVAS_W*2; ec.height=CANVAS_H*2;
     ec.getContext("2d")!.drawImage(img, stateRef.current.offsetX*2, stateRef.current.offsetY*2, img.naturalWidth*stateRef.current.scale*2, img.naturalHeight*stateRef.current.scale*2);
-    onConfirm(ec.toDataURL("image/jpeg",0.92));
+    onConfirm(ec.toDataURL("image/webp", 0.90));
   };
 
   return (
@@ -639,6 +639,7 @@ export default function ProjectCRUD() {
   const handleUpload = async (e:React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if(!file) return;
     if(!file.type.startsWith("image/")){showToast("File harus gambar!",false);return;}
+    // No size limit — semua ukuran diterima, crop akan compress
     setCropSrc(await toBase64(file));
   };
 
@@ -646,7 +647,7 @@ export default function ProjectCRUD() {
     setCropSrc(null);
     setUploading(true);
     const blob = base64ToBlob(b64);
-    const fd = new FormData(); fd.append("image", blob, "upload.jpg");
+    const fd = new FormData(); fd.append("image", blob, "upload.webp");
     try {
       const r = await fetch("/api/admin/projects/upload-image",{method:"POST",headers:{"X-XSRF-TOKEN":getCsrf()},body:fd});
       const d = await r.json();

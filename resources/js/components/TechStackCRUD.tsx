@@ -190,7 +190,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith("image/")) { setIconErr("File harus berupa gambar!"); return; }
-    if (file.size > 2 * 1024 * 1024)    { setIconErr("Ukuran max 2MB!"); return; }
+    // Tidak ada batasan ukuran — semua format diterima (WebP, PNG, SVG, dll)
     setIconErr("");
     const b64 = await toBase64(file);
     setIcon(b64);

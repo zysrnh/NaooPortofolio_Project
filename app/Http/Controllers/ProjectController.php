@@ -139,7 +139,7 @@ class ProjectController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'image' => 'required|file|mimes:jpeg,png,jpg,webp,gif,bmp,svg|max:10240',
         ]);
 
         $path = $request->file('image')->store('projects', 'public');
