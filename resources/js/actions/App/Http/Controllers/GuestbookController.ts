@@ -215,7 +215,7 @@ adminIndex.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
  * @see app/Http/Controllers/GuestbookController.php:69
  * @route '/api/admin/guestbook/{guestbook}'
  */
-export const toggleVisibility = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+export const toggleVisibility = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: toggleVisibility.url(args, options),
     method: 'patch',
 })
@@ -230,7 +230,7 @@ toggleVisibility.definition = {
  * @see app/Http/Controllers/GuestbookController.php:69
  * @route '/api/admin/guestbook/{guestbook}'
  */
-toggleVisibility.url = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+toggleVisibility.url = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { guestbook: args }
     }
@@ -263,7 +263,7 @@ toggleVisibility.url = (args: { guestbook: string | number | { id: string | numb
  * @see app/Http/Controllers/GuestbookController.php:69
  * @route '/api/admin/guestbook/{guestbook}'
  */
-toggleVisibility.patch = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+toggleVisibility.patch = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: toggleVisibility.url(args, options),
     method: 'patch',
 })
@@ -273,7 +273,7 @@ toggleVisibility.patch = (args: { guestbook: string | number | { id: string | nu
  * @see app/Http/Controllers/GuestbookController.php:69
  * @route '/api/admin/guestbook/{guestbook}'
  */
-    const toggleVisibilityForm = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const toggleVisibilityForm = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: toggleVisibility.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PATCH',
@@ -288,7 +288,7 @@ toggleVisibility.patch = (args: { guestbook: string | number | { id: string | nu
  * @see app/Http/Controllers/GuestbookController.php:69
  * @route '/api/admin/guestbook/{guestbook}'
  */
-        toggleVisibilityForm.patch = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        toggleVisibilityForm.patch = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: toggleVisibility.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',
@@ -304,7 +304,7 @@ toggleVisibility.patch = (args: { guestbook: string | number | { id: string | nu
  * @see app/Http/Controllers/GuestbookController.php:75
  * @route '/api/admin/guestbook/{guestbook}'
  */
-export const destroy = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -319,7 +319,7 @@ destroy.definition = {
  * @see app/Http/Controllers/GuestbookController.php:75
  * @route '/api/admin/guestbook/{guestbook}'
  */
-destroy.url = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { guestbook: args }
     }
@@ -352,7 +352,7 @@ destroy.url = (args: { guestbook: string | number | { id: string | number } } | 
  * @see app/Http/Controllers/GuestbookController.php:75
  * @route '/api/admin/guestbook/{guestbook}'
  */
-destroy.delete = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -362,7 +362,7 @@ destroy.delete = (args: { guestbook: string | number | { id: string | number } }
  * @see app/Http/Controllers/GuestbookController.php:75
  * @route '/api/admin/guestbook/{guestbook}'
  */
-    const destroyForm = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const destroyForm = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'DELETE',
@@ -377,7 +377,7 @@ destroy.delete = (args: { guestbook: string | number | { id: string | number } }
  * @see app/Http/Controllers/GuestbookController.php:75
  * @route '/api/admin/guestbook/{guestbook}'
  */
-        destroyForm.delete = (args: { guestbook: string | number | { id: string | number } } | [guestbook: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        destroyForm.delete = (args: { guestbook: number | { id: number } } | [guestbook: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',

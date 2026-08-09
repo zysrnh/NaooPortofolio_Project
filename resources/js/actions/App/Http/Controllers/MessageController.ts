@@ -166,7 +166,7 @@ export const index = {
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/mobile/messages/{message}/reply'
  */
-const replybc4d21d27919bc7c829527d8890b2203 = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+const replybc4d21d27919bc7c829527d8890b2203 = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: replybc4d21d27919bc7c829527d8890b2203.url(args, options),
     method: 'post',
 })
@@ -181,7 +181,7 @@ replybc4d21d27919bc7c829527d8890b2203.definition = {
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/mobile/messages/{message}/reply'
  */
-replybc4d21d27919bc7c829527d8890b2203.url = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+replybc4d21d27919bc7c829527d8890b2203.url = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { message: args }
     }
@@ -214,7 +214,7 @@ replybc4d21d27919bc7c829527d8890b2203.url = (args: { message: string | number | 
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/mobile/messages/{message}/reply'
  */
-replybc4d21d27919bc7c829527d8890b2203.post = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+replybc4d21d27919bc7c829527d8890b2203.post = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: replybc4d21d27919bc7c829527d8890b2203.url(args, options),
     method: 'post',
 })
@@ -224,7 +224,7 @@ replybc4d21d27919bc7c829527d8890b2203.post = (args: { message: string | number |
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/mobile/messages/{message}/reply'
  */
-    const replybc4d21d27919bc7c829527d8890b2203Form = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const replybc4d21d27919bc7c829527d8890b2203Form = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: replybc4d21d27919bc7c829527d8890b2203.url(args, options),
         method: 'post',
     })
@@ -234,7 +234,7 @@ replybc4d21d27919bc7c829527d8890b2203.post = (args: { message: string | number |
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/mobile/messages/{message}/reply'
  */
-        replybc4d21d27919bc7c829527d8890b2203Form.post = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        replybc4d21d27919bc7c829527d8890b2203Form.post = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: replybc4d21d27919bc7c829527d8890b2203.url(args, options),
             method: 'post',
         })
@@ -245,7 +245,7 @@ replybc4d21d27919bc7c829527d8890b2203.post = (args: { message: string | number |
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/messages/{message}/reply'
  */
-const replyd3f8f2413048dbd1cdd58eb2bd9cc81f = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+const replyd3f8f2413048dbd1cdd58eb2bd9cc81f = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: replyd3f8f2413048dbd1cdd58eb2bd9cc81f.url(args, options),
     method: 'post',
 })
@@ -260,7 +260,7 @@ replyd3f8f2413048dbd1cdd58eb2bd9cc81f.definition = {
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/messages/{message}/reply'
  */
-replyd3f8f2413048dbd1cdd58eb2bd9cc81f.url = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+replyd3f8f2413048dbd1cdd58eb2bd9cc81f.url = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { message: args }
     }
@@ -293,7 +293,7 @@ replyd3f8f2413048dbd1cdd58eb2bd9cc81f.url = (args: { message: string | number | 
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/messages/{message}/reply'
  */
-replyd3f8f2413048dbd1cdd58eb2bd9cc81f.post = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+replyd3f8f2413048dbd1cdd58eb2bd9cc81f.post = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: replyd3f8f2413048dbd1cdd58eb2bd9cc81f.url(args, options),
     method: 'post',
 })
@@ -303,7 +303,7 @@ replyd3f8f2413048dbd1cdd58eb2bd9cc81f.post = (args: { message: string | number |
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/messages/{message}/reply'
  */
-    const replyd3f8f2413048dbd1cdd58eb2bd9cc81fForm = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const replyd3f8f2413048dbd1cdd58eb2bd9cc81fForm = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: replyd3f8f2413048dbd1cdd58eb2bd9cc81f.url(args, options),
         method: 'post',
     })
@@ -313,7 +313,7 @@ replyd3f8f2413048dbd1cdd58eb2bd9cc81f.post = (args: { message: string | number |
  * @see app/Http/Controllers/MessageController.php:111
  * @route '/api/messages/{message}/reply'
  */
-        replyd3f8f2413048dbd1cdd58eb2bd9cc81fForm.post = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        replyd3f8f2413048dbd1cdd58eb2bd9cc81fForm.post = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: replyd3f8f2413048dbd1cdd58eb2bd9cc81f.url(args, options),
             method: 'post',
         })
@@ -528,7 +528,7 @@ markAllRead.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => (
  * @see app/Http/Controllers/MessageController.php:65
  * @route '/api/messages/{message}/read'
  */
-export const markRead = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+export const markRead = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: markRead.url(args, options),
     method: 'patch',
 })
@@ -543,7 +543,7 @@ markRead.definition = {
  * @see app/Http/Controllers/MessageController.php:65
  * @route '/api/messages/{message}/read'
  */
-markRead.url = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+markRead.url = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { message: args }
     }
@@ -576,7 +576,7 @@ markRead.url = (args: { message: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/MessageController.php:65
  * @route '/api/messages/{message}/read'
  */
-markRead.patch = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+markRead.patch = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: markRead.url(args, options),
     method: 'patch',
 })
@@ -586,7 +586,7 @@ markRead.patch = (args: { message: string | number | { id: string | number } } |
  * @see app/Http/Controllers/MessageController.php:65
  * @route '/api/messages/{message}/read'
  */
-    const markReadForm = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const markReadForm = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: markRead.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PATCH',
@@ -601,7 +601,7 @@ markRead.patch = (args: { message: string | number | { id: string | number } } |
  * @see app/Http/Controllers/MessageController.php:65
  * @route '/api/messages/{message}/read'
  */
-        markReadForm.patch = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        markReadForm.patch = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: markRead.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',
@@ -617,7 +617,7 @@ markRead.patch = (args: { message: string | number | { id: string | number } } |
  * @see app/Http/Controllers/MessageController.php:93
  * @route '/api/messages/{message}'
  */
-export const destroy = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -632,7 +632,7 @@ destroy.definition = {
  * @see app/Http/Controllers/MessageController.php:93
  * @route '/api/messages/{message}'
  */
-destroy.url = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { message: args }
     }
@@ -665,7 +665,7 @@ destroy.url = (args: { message: string | number | { id: string | number } } | [m
  * @see app/Http/Controllers/MessageController.php:93
  * @route '/api/messages/{message}'
  */
-destroy.delete = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -675,7 +675,7 @@ destroy.delete = (args: { message: string | number | { id: string | number } } |
  * @see app/Http/Controllers/MessageController.php:93
  * @route '/api/messages/{message}'
  */
-    const destroyForm = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const destroyForm = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'DELETE',
@@ -690,7 +690,7 @@ destroy.delete = (args: { message: string | number | { id: string | number } } |
  * @see app/Http/Controllers/MessageController.php:93
  * @route '/api/messages/{message}'
  */
-        destroyForm.delete = (args: { message: string | number | { id: string | number } } | [message: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        destroyForm.delete = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',

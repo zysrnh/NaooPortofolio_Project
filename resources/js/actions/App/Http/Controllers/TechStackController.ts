@@ -215,7 +215,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
  * @see app/Http/Controllers/TechStackController.php:45
  * @route '/api/tech-stacks/{techStack}'
  */
-export const update = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -230,7 +230,7 @@ update.definition = {
  * @see app/Http/Controllers/TechStackController.php:45
  * @route '/api/tech-stacks/{techStack}'
  */
-update.url = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+update.url = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { techStack: args }
     }
@@ -263,7 +263,7 @@ update.url = (args: { techStack: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/TechStackController.php:45
  * @route '/api/tech-stacks/{techStack}'
  */
-update.put = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -273,7 +273,7 @@ update.put = (args: { techStack: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/TechStackController.php:45
  * @route '/api/tech-stacks/{techStack}'
  */
-    const updateForm = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const updateForm = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PUT',
@@ -288,7 +288,7 @@ update.put = (args: { techStack: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/TechStackController.php:45
  * @route '/api/tech-stacks/{techStack}'
  */
-        updateForm.put = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.put = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PUT',
@@ -304,7 +304,7 @@ update.put = (args: { techStack: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/TechStackController.php:65
  * @route '/api/tech-stacks/{techStack}'
  */
-export const destroy = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -319,7 +319,7 @@ destroy.definition = {
  * @see app/Http/Controllers/TechStackController.php:65
  * @route '/api/tech-stacks/{techStack}'
  */
-destroy.url = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { techStack: args }
     }
@@ -352,7 +352,7 @@ destroy.url = (args: { techStack: string | number | { id: string | number } } | 
  * @see app/Http/Controllers/TechStackController.php:65
  * @route '/api/tech-stacks/{techStack}'
  */
-destroy.delete = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -362,7 +362,7 @@ destroy.delete = (args: { techStack: string | number | { id: string | number } }
  * @see app/Http/Controllers/TechStackController.php:65
  * @route '/api/tech-stacks/{techStack}'
  */
-    const destroyForm = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const destroyForm = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'DELETE',
@@ -377,7 +377,7 @@ destroy.delete = (args: { techStack: string | number | { id: string | number } }
  * @see app/Http/Controllers/TechStackController.php:65
  * @route '/api/tech-stacks/{techStack}'
  */
-        destroyForm.delete = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        destroyForm.delete = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',
@@ -393,7 +393,7 @@ destroy.delete = (args: { techStack: string | number | { id: string | number } }
  * @see app/Http/Controllers/TechStackController.php:58
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
-export const toggleVisibility = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+export const toggleVisibility = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: toggleVisibility.url(args, options),
     method: 'patch',
 })
@@ -408,7 +408,7 @@ toggleVisibility.definition = {
  * @see app/Http/Controllers/TechStackController.php:58
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
-toggleVisibility.url = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+toggleVisibility.url = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { techStack: args }
     }
@@ -441,7 +441,7 @@ toggleVisibility.url = (args: { techStack: string | number | { id: string | numb
  * @see app/Http/Controllers/TechStackController.php:58
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
-toggleVisibility.patch = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+toggleVisibility.patch = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: toggleVisibility.url(args, options),
     method: 'patch',
 })
@@ -451,7 +451,7 @@ toggleVisibility.patch = (args: { techStack: string | number | { id: string | nu
  * @see app/Http/Controllers/TechStackController.php:58
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
-    const toggleVisibilityForm = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const toggleVisibilityForm = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: toggleVisibility.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PATCH',
@@ -466,7 +466,7 @@ toggleVisibility.patch = (args: { techStack: string | number | { id: string | nu
  * @see app/Http/Controllers/TechStackController.php:58
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
-        toggleVisibilityForm.patch = (args: { techStack: string | number | { id: string | number } } | [techStack: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        toggleVisibilityForm.patch = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: toggleVisibility.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',

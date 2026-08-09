@@ -215,7 +215,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
  * @see app/Http/Controllers/SupporterController.php:46
  * @route '/api/admin/supporters/{supporter}'
  */
-export const update = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const update = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(args, options),
     method: 'post',
 })
@@ -230,7 +230,7 @@ update.definition = {
  * @see app/Http/Controllers/SupporterController.php:46
  * @route '/api/admin/supporters/{supporter}'
  */
-update.url = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+update.url = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { supporter: args }
     }
@@ -263,7 +263,7 @@ update.url = (args: { supporter: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/SupporterController.php:46
  * @route '/api/admin/supporters/{supporter}'
  */
-update.post = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+update.post = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(args, options),
     method: 'post',
 })
@@ -273,7 +273,7 @@ update.post = (args: { supporter: string | number | { id: string | number } } | 
  * @see app/Http/Controllers/SupporterController.php:46
  * @route '/api/admin/supporters/{supporter}'
  */
-    const updateForm = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const updateForm = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, options),
         method: 'post',
     })
@@ -283,7 +283,7 @@ update.post = (args: { supporter: string | number | { id: string | number } } | 
  * @see app/Http/Controllers/SupporterController.php:46
  * @route '/api/admin/supporters/{supporter}'
  */
-        updateForm.post = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.post = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, options),
             method: 'post',
         })
@@ -294,7 +294,7 @@ update.post = (args: { supporter: string | number | { id: string | number } } | 
  * @see app/Http/Controllers/SupporterController.php:79
  * @route '/api/admin/supporters/{supporter}'
  */
-export const destroy = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -309,7 +309,7 @@ destroy.definition = {
  * @see app/Http/Controllers/SupporterController.php:79
  * @route '/api/admin/supporters/{supporter}'
  */
-destroy.url = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { supporter: args }
     }
@@ -342,7 +342,7 @@ destroy.url = (args: { supporter: string | number | { id: string | number } } | 
  * @see app/Http/Controllers/SupporterController.php:79
  * @route '/api/admin/supporters/{supporter}'
  */
-destroy.delete = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -352,7 +352,7 @@ destroy.delete = (args: { supporter: string | number | { id: string | number } }
  * @see app/Http/Controllers/SupporterController.php:79
  * @route '/api/admin/supporters/{supporter}'
  */
-    const destroyForm = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const destroyForm = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'DELETE',
@@ -367,7 +367,7 @@ destroy.delete = (args: { supporter: string | number | { id: string | number } }
  * @see app/Http/Controllers/SupporterController.php:79
  * @route '/api/admin/supporters/{supporter}'
  */
-        destroyForm.delete = (args: { supporter: string | number | { id: string | number } } | [supporter: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        destroyForm.delete = (args: { supporter: number | { id: number } } | [supporter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',

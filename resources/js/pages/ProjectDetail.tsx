@@ -582,6 +582,14 @@ export default function ProjectDetail({ projectId }: Props) {
         }
         .section-heading.visible::after { width: 100%; }
 
+        .stack-chip {
+          transition: transform 0.15s cubic-bezier(0.16,1,0.3,1), box-shadow 0.15s cubic-bezier(0.16,1,0.3,1), background 0.15s ease;
+        }
+        .stack-chip:hover {
+          transform: translate(-2px,-2px);
+          box-shadow: 4px 4px 0 var(--nb-primary);
+        }
+
         /* Skeleton */
         .skeleton-shimmer {
           background: linear-gradient(90deg, var(--nb-accent-light) 25%, var(--nb-accent) 50%, var(--nb-accent-light) 75%);
@@ -784,15 +792,14 @@ export default function ProjectDetail({ projectId }: Props) {
                 {project.stacks?.length > 0 && (
                   <AnimBlock from="right" delay={100}>
                     <SectionHeading>Tech Stack</SectionHeading>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {project.stacks.map((tech, i) => (
                         <div
                           key={i}
-                          className="border-2 border-[var(--nb-primary)] bg-[var(--nb-bg)] p-2 flex flex-col items-center justify-center gap-1.5 hover:bg-[var(--nb-accent-light)] transition-colors cursor-default"
+                          className="stack-chip border-2 border-[var(--nb-primary)] bg-[var(--nb-bg)] p-2 flex items-center justify-center hover:bg-[var(--nb-accent-light)] cursor-default"
                           title={tech.label}
                         >
-                          <img src={tech.icon} alt={tech.label} className="w-8 h-8 object-contain" />
-                          <span className="font-black text-[9px] uppercase text-[var(--nb-primary)] tracking-wide text-center leading-tight">{tech.label}</span>
+                          <img src={tech.icon} alt={tech.label} className="w-7 h-7 object-contain" />
                         </div>
                       ))}
                     </div>
