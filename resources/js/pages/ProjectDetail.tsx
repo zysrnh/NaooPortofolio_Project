@@ -521,7 +521,20 @@ export default function ProjectDetail({ projectId }: Props) {
         .main-img-wrap:hover .zoom-badge { opacity: 1; }
 
         .thumb-item {
-        .feature-item:hover { background: var(--nb-accent-light); transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--nb-primary); }
+          border: 3px solid var(--nb-primary);
+          overflow: hidden;
+          cursor: pointer;
+          opacity: 0.55;
+          transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .thumb-item:hover {
+          opacity: 0.85;
+          transform: translateY(-2px);
+        }
+        .thumb-item.active {
+          opacity: 1;
+          box-shadow: 4px 4px 0 var(--nb-primary);
+        }
 
         .spotlight-card {
           position: relative; overflow: hidden; cursor: pointer;
@@ -541,13 +554,13 @@ export default function ProjectDetail({ projectId }: Props) {
         }
 
         .lightbox-overlay {
-          position: fixed; inset: 0; z-index: 100;
-          background: var(--nb-primary);
+          position: fixed; inset: 0; z-index: 1000;
+          background: rgba(0,0,0,0.92);
           display: flex; align-items: center; justify-content: center;
-          animation: fadeIn 0.2s ease; backdrop-filter: blur(6px);
+          animation: fadeIn 0.2s ease;
         }
         .lightbox-img {
-          max-width: 90vw; max-height: 85vh;
+          max-width: 90vw; max-height: 88vh;
           border: 4px solid var(--nb-accent);
           box-shadow: 0 0 0 4px var(--nb-primary), 10px 10px 0 var(--nb-accent);
           object-fit: contain; animation: scaleIn 0.3s cubic-bezier(0.16,1,0.3,1);
@@ -705,7 +718,7 @@ export default function ProjectDetail({ projectId }: Props) {
                         <img
                           src={project.images[activeImg]}
                           alt={`screenshot ${activeImg + 1}`}
-                          className="w-full h-64 sm:h-96 object-cover object-top"
+                          className="w-full h-64 sm:h-[420px] object-contain bg-[var(--nb-primary)]"
                         />
                         <div className="zoom-badge absolute top-3 right-3 bg-[var(--nb-primary)] border-2 border-[var(--nb-accent)] px-3 py-2 flex items-center gap-2">
                           <IconZoom />
