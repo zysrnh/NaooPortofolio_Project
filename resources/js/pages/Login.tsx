@@ -156,7 +156,7 @@ export default function Login() {
             onClick={() => router.visit('/')}
             className="cursor-pointer border-4 border-[var(--nb-primary)] bg-[var(--nb-primary)] px-6 py-3 shadow-[6px_6px_0_var(--nb-accent)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all active:translate-x-2 active:translate-y-2"
           >
-            <span className="font-black text-2xl text-[var(--nb-accent)] uppercase tracking-widest">Naoo.id</span>
+            <span className="font-black text-2xl text-[var(--nb-accent)] uppercase tracking-widest">ZYSRNH</span>
           </div>
         </div>
 
@@ -226,7 +226,16 @@ export default function Login() {
               {loading ? "Authenticating..." : "Login →"}
             </button>
 
-
+            <div className="mt-4 text-center">
+              <p className="font-bold text-[10px] uppercase text-[var(--nb-primary)] opacity-50 mb-2">Belum punya akun?</p>
+              <button 
+                type="button"
+                onClick={() => router.visit('/register')}
+                className="font-black text-xs uppercase text-[var(--nb-primary)] border-b-2 border-[var(--nb-primary)] hover:text-[var(--nb-accent)] hover:border-[var(--nb-accent)] transition-all"
+              >
+                Daftar Sekarang →
+              </button>
+            </div>
 
           </form>
 

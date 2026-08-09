@@ -133,7 +133,7 @@ export default function Register() {
             onClick={() => router.visit('/')}
             className="cursor-pointer border-4 border-[var(--nb-primary)] bg-[var(--nb-primary)] px-6 py-3 shadow-[6px_6px_0_var(--nb-accent)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all active:translate-x-2 active:translate-y-2"
           >
-            <span className="font-black text-2xl text-[var(--nb-accent)] uppercase tracking-widest">Naoo.id</span>
+            <span className="font-black text-2xl text-[var(--nb-accent)] uppercase tracking-widest">ZYSRNH</span>
           </div>
         </div>
 

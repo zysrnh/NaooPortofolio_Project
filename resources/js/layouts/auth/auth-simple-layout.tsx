@@ -29,7 +29,7 @@ export default function AuthSimpleLayout({
                             <div className="mb-2 flex h-14 w-14 items-center justify-center bg-[var(--nb-primary)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-accent)] group-hover:shadow-[8px_8px_0_var(--nb-accent)] transition-all">
                                 <AppLogoIcon className="size-8 fill-[var(--nb-accent)]" />
                             </div>
-                            <span className="font-black uppercase text-2xl tracking-widest text-[var(--nb-primary)]">NAOO.ID</span>
+                            <span className="font-black uppercase text-2xl tracking-widest text-[var(--nb-primary)]">ZYSRNH</span>
                         </Link>
 
                         <div className="space-y-3 text-center">
@@ -50,7 +50,7 @@ export default function AuthSimpleLayout({
                     </div>
 
                     <p className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-[var(--nb-primary)] opacity-20 mt-4">
-                        &copy; 2024 NAOO.ID — ALL RIGHTS RESERVED
+                        &copy; 2024 ZYSRNH — ALL RIGHTS RESERVED
                     </p>
                 </div>
             </div>

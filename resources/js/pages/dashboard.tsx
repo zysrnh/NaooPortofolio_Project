@@ -2139,7 +2139,7 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
         <aside className="anim-sidebar hidden md:flex flex-col w-64 bg-[var(--nb-primary)] border-r-4 border-[var(--nb-primary)] relative min-h-screen flex-shrink-0">
           <div className="grid-bg-dark" />
           <div className="border-b-4 border-[var(--nb-accent)] px-6 py-6 relative">
-            <div style={{ fontWeight: 900, fontSize: 20, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
+            <div style={{ fontWeight: 900, fontSize: 20, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.12em" }}>ZYSRNH</div>
             <div style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Dashboard</div>
           </div>
           <nav style={{ flex: 1, paddingTop: 16, paddingBottom: 16, position: "relative", overflowY: "auto" }}>
@@ -2157,7 +2157,7 @@ const SidebarBottom = ({ user, onLogout }: { user: any; onLogout: () => void }) 
           <div className="grid-bg-dark" />
           <div style={{ borderBottom: "4px solid var(--nb-accent)", padding: "20px 24px", position: "relative", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
-              <div style={{ fontWeight: 900, fontSize: 18, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.12em" }}>Naoo.id</div>
+              <div style={{ fontWeight: 900, fontSize: 18, color: "var(--nb-accent)", textTransform: "uppercase", letterSpacing: "0.12em" }}>ZYSRNH</div>
               <div style={{ fontWeight: 600, fontSize: 10, color: "var(--nb-accent-light)", opacity: 0.6, textTransform: "uppercase" }}>Dashboard</div>
             </div>
             <button style={{ border: "2px solid var(--nb-accent)", padding: 8, color: "var(--nb-accent)", background: "transparent", cursor: "pointer", display: "flex" }} onClick={() => setSidebarOpen(false)}><IconClose /></button>

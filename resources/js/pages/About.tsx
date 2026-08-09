@@ -922,7 +922,7 @@ export default function About() {
         <footer className="border-t-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] reveal">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="font-black text-xl text-[var(--nb-primary)] cursor-pointer" onClick={() => router.visit("/")}>Naoo.id</div>
+              <div className="font-black text-xl text-[var(--nb-primary)] cursor-pointer" onClick={() => router.visit("/")}>ZYSRNH</div>
               <p className="font-bold uppercase text-xs text-[var(--nb-primary)] opacity-50 tracking-widest">© {new Date().getFullYear()} Zaki Yusron Hasyimmi</p>
             </div>
           </div>

@@ -13,8 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Matikan sementara proteksi Foreign Key supaya bisa truncate
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+
         // Hapus semua user lama
         User::truncate();
+
+        // Nyalakan lagi proteksinya
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
         // Buat akun admin utama
         User::create([

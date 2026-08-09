@@ -929,7 +929,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
               <div>
-                <div className="font-black text-2xl text-[var(--nb-primary)] mb-1"> Naoo.id</div>
+                <div className="font-black text-2xl text-[var(--nb-primary)] mb-1">ZYSRNH</div>
                 <p className="font-semibold text-sm text-[var(--nb-primary)] opacity-70">Made with ☕ by Zaki Yusron Hasyimmi</p>
               </div>
               <div className="flex flex-col gap-2">
