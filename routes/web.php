@@ -152,6 +152,7 @@ Route::prefix('api')->group(function () {
     Route::middleware(['auth', 'admin'])->group(function () {
 
         // Tech Stack
+        Route::post  ('/tech-stacks/upload-icon',        [TechStackController::class, 'uploadIcon']);
         Route::post  ('/tech-stacks',                    [TechStackController::class, 'store']);
         Route::put   ('/tech-stacks/{techStack}',        [TechStackController::class, 'update']);
         Route::delete('/tech-stacks/{techStack}',        [TechStackController::class, 'destroy']);

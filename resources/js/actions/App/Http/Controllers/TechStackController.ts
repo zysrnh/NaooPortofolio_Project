@@ -156,8 +156,63 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     index.form = indexForm
 /**
-* @see \App\Http\Controllers\TechStackController::store
+* @see \App\Http\Controllers\TechStackController::uploadIcon
  * @see app/Http/Controllers/TechStackController.php:29
+ * @route '/api/tech-stacks/upload-icon'
+ */
+export const uploadIcon = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadIcon.url(options),
+    method: 'post',
+})
+
+uploadIcon.definition = {
+    methods: ["post"],
+    url: '/api/tech-stacks/upload-icon',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\TechStackController::uploadIcon
+ * @see app/Http/Controllers/TechStackController.php:29
+ * @route '/api/tech-stacks/upload-icon'
+ */
+uploadIcon.url = (options?: RouteQueryOptions) => {
+    return uploadIcon.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\TechStackController::uploadIcon
+ * @see app/Http/Controllers/TechStackController.php:29
+ * @route '/api/tech-stacks/upload-icon'
+ */
+uploadIcon.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadIcon.url(options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\TechStackController::uploadIcon
+ * @see app/Http/Controllers/TechStackController.php:29
+ * @route '/api/tech-stacks/upload-icon'
+ */
+    const uploadIconForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: uploadIcon.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\TechStackController::uploadIcon
+ * @see app/Http/Controllers/TechStackController.php:29
+ * @route '/api/tech-stacks/upload-icon'
+ */
+        uploadIconForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: uploadIcon.url(options),
+            method: 'post',
+        })
+    
+    uploadIcon.form = uploadIconForm
+/**
+* @see \App\Http\Controllers\TechStackController::store
+ * @see app/Http/Controllers/TechStackController.php:40
  * @route '/api/tech-stacks'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +227,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\TechStackController::store
- * @see app/Http/Controllers/TechStackController.php:29
+ * @see app/Http/Controllers/TechStackController.php:40
  * @route '/api/tech-stacks'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -181,7 +236,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\TechStackController::store
- * @see app/Http/Controllers/TechStackController.php:29
+ * @see app/Http/Controllers/TechStackController.php:40
  * @route '/api/tech-stacks'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -191,7 +246,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\TechStackController::store
- * @see app/Http/Controllers/TechStackController.php:29
+ * @see app/Http/Controllers/TechStackController.php:40
  * @route '/api/tech-stacks'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -201,7 +256,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\TechStackController::store
- * @see app/Http/Controllers/TechStackController.php:29
+ * @see app/Http/Controllers/TechStackController.php:40
  * @route '/api/tech-stacks'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -212,7 +267,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\TechStackController::update
- * @see app/Http/Controllers/TechStackController.php:45
+ * @see app/Http/Controllers/TechStackController.php:55
  * @route '/api/tech-stacks/{techStack}'
  */
 export const update = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -227,7 +282,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\TechStackController::update
- * @see app/Http/Controllers/TechStackController.php:45
+ * @see app/Http/Controllers/TechStackController.php:55
  * @route '/api/tech-stacks/{techStack}'
  */
 update.url = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -260,7 +315,7 @@ update.url = (args: { techStack: number | { id: number } } | [techStack: number 
 
 /**
 * @see \App\Http\Controllers\TechStackController::update
- * @see app/Http/Controllers/TechStackController.php:45
+ * @see app/Http/Controllers/TechStackController.php:55
  * @route '/api/tech-stacks/{techStack}'
  */
 update.put = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -270,7 +325,7 @@ update.put = (args: { techStack: number | { id: number } } | [techStack: number 
 
     /**
 * @see \App\Http\Controllers\TechStackController::update
- * @see app/Http/Controllers/TechStackController.php:45
+ * @see app/Http/Controllers/TechStackController.php:55
  * @route '/api/tech-stacks/{techStack}'
  */
     const updateForm = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -285,7 +340,7 @@ update.put = (args: { techStack: number | { id: number } } | [techStack: number 
 
             /**
 * @see \App\Http\Controllers\TechStackController::update
- * @see app/Http/Controllers/TechStackController.php:45
+ * @see app/Http/Controllers/TechStackController.php:55
  * @route '/api/tech-stacks/{techStack}'
  */
         updateForm.put = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -301,7 +356,7 @@ update.put = (args: { techStack: number | { id: number } } | [techStack: number 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\TechStackController::destroy
- * @see app/Http/Controllers/TechStackController.php:65
+ * @see app/Http/Controllers/TechStackController.php:75
  * @route '/api/tech-stacks/{techStack}'
  */
 export const destroy = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -316,7 +371,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\TechStackController::destroy
- * @see app/Http/Controllers/TechStackController.php:65
+ * @see app/Http/Controllers/TechStackController.php:75
  * @route '/api/tech-stacks/{techStack}'
  */
 destroy.url = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -349,7 +404,7 @@ destroy.url = (args: { techStack: number | { id: number } } | [techStack: number
 
 /**
 * @see \App\Http\Controllers\TechStackController::destroy
- * @see app/Http/Controllers/TechStackController.php:65
+ * @see app/Http/Controllers/TechStackController.php:75
  * @route '/api/tech-stacks/{techStack}'
  */
 destroy.delete = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -359,7 +414,7 @@ destroy.delete = (args: { techStack: number | { id: number } } | [techStack: num
 
     /**
 * @see \App\Http\Controllers\TechStackController::destroy
- * @see app/Http/Controllers/TechStackController.php:65
+ * @see app/Http/Controllers/TechStackController.php:75
  * @route '/api/tech-stacks/{techStack}'
  */
     const destroyForm = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -374,7 +429,7 @@ destroy.delete = (args: { techStack: number | { id: number } } | [techStack: num
 
             /**
 * @see \App\Http\Controllers\TechStackController::destroy
- * @see app/Http/Controllers/TechStackController.php:65
+ * @see app/Http/Controllers/TechStackController.php:75
  * @route '/api/tech-stacks/{techStack}'
  */
         destroyForm.delete = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -390,7 +445,7 @@ destroy.delete = (args: { techStack: number | { id: number } } | [techStack: num
     destroy.form = destroyForm
 /**
 * @see \App\Http\Controllers\TechStackController::toggleVisibility
- * @see app/Http/Controllers/TechStackController.php:58
+ * @see app/Http/Controllers/TechStackController.php:68
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
 export const toggleVisibility = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -405,7 +460,7 @@ toggleVisibility.definition = {
 
 /**
 * @see \App\Http\Controllers\TechStackController::toggleVisibility
- * @see app/Http/Controllers/TechStackController.php:58
+ * @see app/Http/Controllers/TechStackController.php:68
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
 toggleVisibility.url = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -438,7 +493,7 @@ toggleVisibility.url = (args: { techStack: number | { id: number } } | [techStac
 
 /**
 * @see \App\Http\Controllers\TechStackController::toggleVisibility
- * @see app/Http/Controllers/TechStackController.php:58
+ * @see app/Http/Controllers/TechStackController.php:68
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
 toggleVisibility.patch = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -448,7 +503,7 @@ toggleVisibility.patch = (args: { techStack: number | { id: number } } | [techSt
 
     /**
 * @see \App\Http\Controllers\TechStackController::toggleVisibility
- * @see app/Http/Controllers/TechStackController.php:58
+ * @see app/Http/Controllers/TechStackController.php:68
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
     const toggleVisibilityForm = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -463,7 +518,7 @@ toggleVisibility.patch = (args: { techStack: number | { id: number } } | [techSt
 
             /**
 * @see \App\Http\Controllers\TechStackController::toggleVisibility
- * @see app/Http/Controllers/TechStackController.php:58
+ * @see app/Http/Controllers/TechStackController.php:68
  * @route '/api/tech-stacks/{techStack}/toggle'
  */
         toggleVisibilityForm.patch = (args: { techStack: number | { id: number } } | [techStack: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -477,6 +532,6 @@ toggleVisibility.patch = (args: { techStack: number | { id: number } } | [techSt
         })
     
     toggleVisibility.form = toggleVisibilityForm
-const TechStackController = { indexVisible, index, store, update, destroy, toggleVisibility }
+const TechStackController = { indexVisible, index, uploadIcon, store, update, destroy, toggleVisibility }
 
 export default TechStackController

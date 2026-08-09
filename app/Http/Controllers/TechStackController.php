@@ -25,6 +25,17 @@ class TechStackController extends Controller
         );
     }
 
+    // ── Protected: upload icon (file → storage) ───────────────────────────────
+    public function uploadIcon(Request $request)
+    {
+        $request->validate([
+            'icon' => 'required|file|mimes:jpeg,png,jpg,webp,gif,svg,bmp|max:5120',
+        ]);
+
+        $path = $request->file('icon')->store('tech-stacks', 'public');
+        return response()->json(['url' => '/storage/' . $path]);
+    }
+
     // ── Protected: create ─────────────────────────────────────────────────────
     public function store(Request $request)
     {
@@ -34,7 +45,6 @@ class TechStackController extends Controller
             'icon'     => 'required|string',
         ]);
 
-        // Default false — harus di-toggle dulu di HomepageManager
         $validated['is_visible'] = false;
 
         $stack = TechStack::create($validated);

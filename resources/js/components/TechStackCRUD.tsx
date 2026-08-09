@@ -87,6 +87,22 @@ const API = {
     }
     return r.json();
   },
+
+  uploadIcon: async (file: File): Promise<string> => {
+    const fd = new FormData();
+    fd.append("icon", file);
+    const r = await fetch("/api/tech-stacks/upload-icon", {
+      method: "POST",
+      headers: { "X-XSRF-TOKEN": getCsrf(), "Accept": "application/json" },
+      body: fd,
+    });
+    if (!r.ok) {
+      const d = await r.json().catch(() => ({}));
+      throw new Error(d.message || "Upload icon gagal");
+    }
+    const d = await r.json();
+    return d.url as string;
+  },
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -169,6 +185,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
   const [icon,         setIcon]         = useState(initial?.icon ?? "");
   const [iconPreview,  setIconPreview]  = useState(initial?.icon ?? "");
   const [dragging,     setDragging]     = useState(false);
+  const [uploading,    setUploading]    = useState(false);
   const [nameErr,      setNameErr]      = useState("");
   const [iconErr,      setIconErr]      = useState("");
   const [catErr,       setCatErr]       = useState("");
@@ -192,9 +209,16 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
     if (!file.type.startsWith("image/")) { setIconErr("File harus berupa gambar!"); return; }
     // Tidak ada batasan ukuran — semua format diterima (WebP, PNG, SVG, dll)
     setIconErr("");
-    const b64 = await toBase64(file);
-    setIcon(b64);
-    setIconPreview(b64);
+    setUploading(true);
+    try {
+      const url = await API.uploadIcon(file);
+      setIcon(url);
+      setIconPreview(url);
+    } catch (e: any) {
+      setIconErr(e.message || "Upload gagal");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const validate = () => {
@@ -296,7 +320,12 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
               onDragLeave={() => setDragging(false)}
               onDrop={e => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
             >
-              {iconPreview ? (
+              {uploading ? (
+                <div className="flex flex-col items-center gap-3">
+                  <IconSpin />
+                  <span className="font-black text-xs text-[var(--nb-primary)] uppercase opacity-60">Mengupload...</span>
+                </div>
+              ) : iconPreview ? (
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-20 h-20 border-4 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] shadow-[4px_4px_0_var(--nb-primary)] overflow-hidden">
                     <img src={iconPreview} alt="preview"
@@ -311,7 +340,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
                   <div className="text-center">
                     <p className="font-black text-xs uppercase text-[var(--nb-primary)] tracking-wide">Drop icon di sini</p>
                     <p className="font-semibold text-xs text-[var(--nb-primary)] opacity-50 mt-1">atau klik untuk pilih file</p>
-                    <p className="font-bold text-xs text-[var(--nb-primary)] opacity-30 mt-1">PNG, JPG, SVG — Max 2MB</p>
+                    <p className="font-bold text-xs text-[var(--nb-primary)] opacity-30 mt-1">PNG, JPG, WebP, SVG — Format bebas</p>
                   </div>
                 </>
               )}
@@ -327,7 +356,7 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
               atau URL Icon
             </label>
             <input
-              value={icon.startsWith("data:") ? "" : icon}
+              value={icon.startsWith("data:") || icon.startsWith("/storage/") ? "" : icon}
               onChange={e => { setIcon(e.target.value); setIconPreview(e.target.value); setIconErr(""); }}
               placeholder="https://example.com/icon.png"
               className="w-full border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] px-4 py-3 font-bold text-sm text-[var(--nb-primary)] placeholder-[var(--nb-primary)] placeholder-opacity-30 focus:outline-none focus:shadow-[4px_4px_0_var(--nb-accent)] transition-shadow"
@@ -342,13 +371,13 @@ function FormModal({ mode, initial, loading, onSave, onClose }: FormModalProps) 
             onClick={onClose}>
             Batal
           </button>
-          <button disabled={loading}
+          <button disabled={loading || uploading}
             className="flex-1 border-4 border-[var(--nb-primary)] py-3 font-black uppercase text-sm text-[var(--nb-bg)] bg-[var(--nb-primary)] shadow-[4px_4px_0_var(--nb-accent)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--nb-accent)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             onClick={() => {
               if (validate()) onSave({ name: name.trim(), icon, category: finalCategory });
             }}>
-            {loading ? <IconSpin /> : null}
-            {loading ? "Menyimpan..." : mode === "add" ? "Tambah" : "Simpan"}
+            {(loading || uploading) ? <IconSpin /> : null}
+            {uploading ? "Upload icon..." : loading ? "Menyimpan..." : mode === "add" ? "Tambah" : "Simpan"}
           </button>
         </div>
       </div>
