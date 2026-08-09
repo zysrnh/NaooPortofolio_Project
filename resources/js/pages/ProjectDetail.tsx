@@ -784,17 +784,15 @@ export default function ProjectDetail({ projectId }: Props) {
                 {project.stacks?.length > 0 && (
                   <AnimBlock from="right" delay={100}>
                     <SectionHeading>Tech Stack</SectionHeading>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="grid grid-cols-3 gap-2">
                       {project.stacks.map((tech, i) => (
                         <div
                           key={i}
-                          className="tech-card p-4 flex flex-col items-center justify-center gap-2 w-[calc(50%-6px)]"
+                          className="border-2 border-[var(--nb-primary)] bg-[var(--nb-bg)] p-2 flex flex-col items-center justify-center gap-1.5 hover:bg-[var(--nb-accent-light)] transition-colors cursor-default"
                           title={tech.label}
                         >
-                          <div className="border-2 border-[var(--nb-primary)] p-2 bg-[var(--nb-accent-light)]">
-                            <img src={tech.icon} alt={tech.label} className="w-12 h-12 object-contain" />
-                          </div>
-                          <span className="font-black text-xs uppercase text-[var(--nb-primary)] tracking-wide text-center">{tech.label}</span>
+                          <img src={tech.icon} alt={tech.label} className="w-8 h-8 object-contain" />
+                          <span className="font-black text-[9px] uppercase text-[var(--nb-primary)] tracking-wide text-center leading-tight">{tech.label}</span>
                         </div>
                       ))}
                     </div>
