@@ -839,12 +839,7 @@ export default function Home() {
                               <h3 className="font-black uppercase text-sm text-[var(--nb-primary)] leading-tight">{p.title}</h3>
                               <span className="font-bold text-xs text-[var(--nb-primary)] opacity-50 flex-shrink-0">{p.date}</span>
                             </div>
-                            <p className="font-semibold text-xs sm:text-sm mb-4 text-[var(--nb-primary)] opacity-70">{p.desc}</p>
-                            <div className="flex flex-wrap gap-2">
-                              {p.stacks?.map((s,j)=>(
-                                <div key={j} className="stack-icon" title={s.label}><img src={s.icon} alt={s.label}/></div>
-                              ))}
-                            </div>
+                            <p className="font-semibold text-xs sm:text-sm text-[var(--nb-primary)] opacity-70">{p.desc}</p>
                           </div>
                         </SpotlightCard>
                       ))}

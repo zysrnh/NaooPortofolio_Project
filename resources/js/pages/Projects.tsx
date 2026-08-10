@@ -564,18 +564,7 @@ export default function Projects() {
                         <h3 className="font-black uppercase text-sm text-[var(--nb-primary)] leading-tight">{p.title}</h3>
                         <span className="text-xs font-bold text-[var(--nb-primary)] opacity-50 flex-shrink-0">{p.date}</span>
                       </div>
-                      <p className="font-semibold text-xs text-[var(--nb-primary)] opacity-70 mb-4 leading-relaxed">{p.desc}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {p.stacks?.map((s, j) => (
-                          <div
-                            key={j}
-                            title={s.label}
-                            className="stack-chip border-2 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] p-1.5"
-                          >
-                            <img src={s.icon} alt={s.label} className="w-6 h-6 object-contain" />
-                          </div>
-                        ))}
-                      </div>
+                      <p className="font-semibold text-xs text-[var(--nb-primary)] opacity-70 leading-relaxed">{p.desc}</p>
                     </div>
                   </SpotlightCard>
                 );

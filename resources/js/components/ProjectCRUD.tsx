@@ -325,9 +325,10 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
           </div>
           <button onClick={()=>{const img=imgRef.current;if(!img)return;const sc=Math.max(CANVAS_W/img.naturalWidth,CANVAS_H/img.naturalHeight);stateRef.current={scale:sc,offsetX:(CANVAS_W-img.naturalWidth*sc)/2,offsetY:(CANVAS_H-img.naturalWidth*sc)/2};requestDraw();}} style={{display:"flex",alignItems:"center",gap:6,border:"2px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",padding:"6px 12px",fontWeight:900,fontSize:11,textTransform:"uppercase",cursor:"pointer"}}><IconRefresh /> Reset</button>
         </div>
-        <div style={{padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"var(--nb-primary)"}}>
-          <button onClick={onCancel} style={{border:"4px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",padding:"10px 20px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer"}}>Batal</button>
-          <button onClick={handleConfirm} style={{display:"flex",alignItems:"center",gap:8,border:"4px solid var(--nb-accent)",background:"var(--nb-accent)",color:"var(--nb-primary)",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",cursor:"pointer"}}><IconCheck /> Selesai Crop</button>
+        <div style={{padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"var(--nb-primary)",gap:8}}>
+          <button onClick={onCancel} style={{border:"4px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",padding:"10px 16px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer"}}>Batal</button>
+          <button onClick={() => onConfirm(src)} style={{border:"4px solid var(--nb-accent)",background:"transparent",color:"var(--nb-accent)",padding:"10px 16px",fontWeight:900,fontSize:12,textTransform:"uppercase",cursor:"pointer"}}>Tanpa Crop</button>
+          <button onClick={handleConfirm} style={{display:"flex",alignItems:"center",gap:8,border:"4px solid var(--nb-accent)",background:"var(--nb-accent)",color:"var(--nb-primary)",padding:"10px 24px",fontWeight:900,fontSize:13,textTransform:"uppercase",cursor:"pointer"}}><IconCheck /> Crop Gambar</button>
         </div>
       </div>
     </div>
