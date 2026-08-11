@@ -1301,7 +1301,7 @@ function StatsTab({ toast }: { toast:(m:string,t:"ok"|"err")=>void }) {
             letterSpacing:"0.1em",color:"var(--nb-primary)",opacity:0.5,marginBottom:12}}>
             ↓ Preview (seperti tampilan di About page)
           </p>
-          <div style={{display:"grid",gridTemplateColumns:`repeat(${Math.min(stats.length,5)},1fr)`,gap:8}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(90px, 1fr))",gap:8}}>
             {stats.map((stat,i)=>(
               <div key={i} className="am-card"
                 style={{border:"3px solid var(--nb-primary)",background:"var(--nb-bg)",

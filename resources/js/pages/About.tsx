@@ -51,16 +51,16 @@ const BLOCK_CONFIGS = [
   { top:"55%", left:"2%",   size:20, color:"var(--nb-primary)", type:"outline", animDelay:"1.2s" },
   { top:"30%", left:"1.5%", size:14, color:"var(--nb-accent)", type:"filled",  animDelay:"2.4s" },
   { top:"75%", left:"4%",   size:40, color:"var(--nb-bg)", type:"outline", animDelay:"0.6s" },
-  { top:"12%", left:"92%",  size:28, color:"var(--nb-primary)", type:"filled",  animDelay:"1.8s" },
-  { top:"45%", left:"94%",  size:48, color:"var(--nb-accent)", type:"outline", animDelay:"0.3s" },
-  { top:"70%", left:"91%",  size:16, color:"var(--nb-bg)", type:"filled",  animDelay:"2.1s" },
-  { top:"85%", left:"93%",  size:36, color:"var(--nb-accent)", type:"outline", animDelay:"1.5s" },
+  { top:"12%", left:"84%",  size:28, color:"var(--nb-primary)", type:"filled",  animDelay:"1.8s" },
+  { top:"45%", left:"86%",  size:48, color:"var(--nb-accent)", type:"outline", animDelay:"0.3s" },
+  { top:"70%", left:"85%",  size:16, color:"var(--nb-bg)", type:"filled",  animDelay:"2.1s" },
+  { top:"85%", left:"86%",  size:36, color:"var(--nb-accent)", type:"outline", animDelay:"1.5s" },
 ];
 function FloatingBlocks() {
   return (
     <>
       <style>{`@keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}`}</style>
-      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,overflow:"hidden"}} aria-hidden="true">
+      <div className="hidden sm:block" style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,overflow:"hidden"}} aria-hidden="true">
         {BLOCK_CONFIGS.map((cfg,i)=>(
           <div key={i} style={{position:"absolute",top:cfg.top,left:cfg.left,width:cfg.size,height:cfg.size,
             background:cfg.type==="filled"?cfg.color:"transparent",
@@ -336,7 +336,7 @@ function Stats() {
   return (
     <section ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 reveal">
       <h2 className="text-2xl font-black uppercase mb-6 text-[var(--nb-primary)] px-1 sm:px-0 relative z-10">By the Numbers</h2>
-      <div className={`grid gap-4`} style={{gridTemplateColumns:`repeat(${loading?5:Math.min(stats.length,5)},1fr)`}}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
         {loading && Array.from({length:5}).map((_,i)=>(
           <div key={i} className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[6px_6px_0_var(--nb-primary)] p-6 flex flex-col items-center">
             <div className="skeleton-shimmer w-8 h-8 mb-3"/>
@@ -751,7 +751,7 @@ export default function About() {
         @keyframes shimmer    { from{background-position:-200% 0} to{background-position:200% 0} }
         @keyframes statIn     { from{opacity:0;transform:translateY(10px) scale(0.9)} to{opacity:1;transform:translateY(0) scale(1)} }
         @keyframes ping       { 0%{transform:scale(1);opacity:0.4} 70%,100%{transform:scale(2.4);opacity:0} }
-        body { background-color:var(--nb-accent-light); }
+        body { background-color:var(--nb-accent-light); overflow-x:hidden; }
 
         .anim-navbar    { animation: slideDown  0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .anim-hero-text { animation: slideUp    0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
@@ -786,7 +786,7 @@ export default function About() {
         .photo2-frame img { width:100%;height:100%;object-fit:cover;object-position:center top;display:block; }
       `}</style>
 
-      <div className="min-h-screen relative" style={{opacity:visible?1:0,transition:"opacity 0.3s ease"}}>
+      <div className="min-h-screen relative w-full max-w-full overflow-x-hidden" style={{opacity:visible?1:0,transition:"opacity 0.3s ease"}}>
         <Head title="About Me" />
         <FloatingBlocks/>
         <div className="anim-navbar"><Navbar/></div>
@@ -846,19 +846,19 @@ export default function About() {
             </div>
 
             {/* Photo RIGHT — Dual photo layout */}
-            <div className="anim-hero-img md:w-2/5 relative bg-[var(--nb-accent-light)] border-b-4 md:border-b-0 md:border-l-4 border-[var(--nb-primary)] flex items-center justify-center py-16 px-8 min-h-[350px] sm:min-h-[420px] order-1 md:order-2 overflow-hidden">
+            <div className="anim-hero-img md:w-2/5 relative bg-[var(--nb-accent-light)] border-b-4 md:border-b-0 md:border-l-4 border-[var(--nb-primary)] flex items-center justify-center py-12 sm:py-16 px-4 sm:px-8 min-h-[300px] sm:min-h-[420px] order-1 md:order-2 overflow-hidden">
               {/* Bold Grid bg */}
               <div className="absolute inset-0 opacity-20" style={{backgroundImage:"repeating-linear-gradient(0deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px),repeating-linear-gradient(90deg,var(--nb-primary) 0,var(--nb-primary) 2px,transparent 2px,transparent 40px)"}}/>
 
-              <div className="relative w-full max-w-[260px] aspect-[4/5] flex items-center justify-center">
+              <div className="relative w-full max-w-[200px] sm:max-w-[260px] aspect-[4/5] flex items-center justify-center">
                 {/* Secondary photo */}
                 {!heroLoading && hero.photo2 && (
                   <div 
                     onClick={() => setHeroSwapped(!heroSwapped)}
                     className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
                       heroSwapped
-                      ? "z-20 w-full left-[-5%] bottom-[-5%] p-3 pb-12 shadow-[12px_12px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
-                      : "z-0 w-[85%] right-[-15%] top-[-5%] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[8deg] hover:rotate-[12deg] hover:scale-105"
+                      ? "z-20 w-full left-0 bottom-0 p-3 pb-12 shadow-[12px_12px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
+                      : "z-0 w-[85%] right-[-6%] sm:right-[-15%] top-[-5%] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[8deg] hover:rotate-[12deg] hover:scale-105"
                     }`}
                   >
                     <div className="absolute -top-3 right-4 w-12 h-6 bg-white/70 border-2 border-[var(--nb-primary)] -rotate-6 z-30 shadow-sm backdrop-blur-sm"></div>
@@ -873,8 +873,8 @@ export default function About() {
                   onClick={() => hero.photo2 && setHeroSwapped(!heroSwapped)}
                   className={`absolute transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${hero.photo2 ? 'cursor-pointer' : ''} bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] ${
                     heroSwapped && hero.photo2
-                    ? "z-0 w-[85%] right-[-15%] top-[-5%] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[8deg] hover:rotate-[12deg] hover:scale-105"
-                    : "z-10 w-full left-[-5%] bottom-[-5%] p-3 pb-12 shadow-[12px_12px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
+                    ? "z-0 w-[85%] right-[-6%] sm:right-[-15%] top-[-5%] p-2 pb-8 shadow-[8px_8px_0_var(--nb-primary)] rotate-[8deg] hover:rotate-[12deg] hover:scale-105"
+                    : "z-10 w-full left-0 bottom-0 p-3 pb-12 shadow-[12px_12px_0_var(--nb-accent)] -rotate-3 hover:rotate-0 hover:scale-[1.02]"
                   }`}
                 >
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/80 border-2 border-[var(--nb-primary)] rotate-2 z-30 shadow-sm backdrop-blur-md"></div>
