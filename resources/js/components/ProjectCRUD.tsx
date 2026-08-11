@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const IconPlus    = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>;
@@ -336,9 +336,10 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
 }
 
 // ── CollaboratorModal ────────────────────────────────────────────────────────
-function CollaboratorModal({ item, index, onSave, onCancel, onUpload }: {
+function CollaboratorModal({ item, index, onSave, onCancel, onUpload, existingCollaborators = [] }: {
   item: Collaborator | null; index: number | null;
   onSave: (c: Collaborator) => void; onCancel: () => void; onUpload: () => void;
+  existingCollaborators?: Collaborator[];
 }) {
   const [form, setForm] = useState<Collaborator>(item ?? { name: "", role: "", origin: "", socials: [], photo: "" });
   const [newLink, setNewLink] = useState<SocialLink>({ platform: "instagram", url: "" });
@@ -361,6 +362,32 @@ function CollaboratorModal({ item, index, onSave, onCancel, onUpload }: {
           <button onClick={onCancel} style={{background:"transparent",border:"none",color:"var(--nb-accent)",cursor:"pointer"}}><IconClose/></button>
         </div>
         <div style={{padding:20,display:"flex",flexDirection:"column",gap:14}}>
+
+          {/* Quick Import from existing collaborators */}
+          {index === null && existingCollaborators.length > 0 && (
+            <div className="bg-[var(--nb-accent-light)] border-2 border-[var(--nb-primary)] p-3 shadow-[3px_3px_0_var(--nb-primary)]">
+              <label className="font-black text-[10px] uppercase text-[var(--nb-primary)] block mb-1.5 tracking-wider">
+                ⚡ Pilih dari Kolaborator yang Pernah Ditambahkan:
+              </label>
+              <select
+                className="pc2-input !py-1.5 !text-xs !font-bold"
+                defaultValue=""
+                onChange={(e) => {
+                  const selName = e.target.value;
+                  const found = existingCollaborators.find(c => c.name === selName);
+                  if (found) setForm({ ...found });
+                }}
+              >
+                <option value="" disabled>-- Pilih Kolaborator Tersimpan --</option>
+                {existingCollaborators.map((c, i) => (
+                  <option key={i} value={c.name}>
+                    👤 {c.name} ({c.role || 'Tanpa Role'}{c.origin ? ` · ${c.origin}` : ''})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div style={{display:"flex",justifyContent:"center",marginBottom:10}}>
             <div style={{position:"relative",width:80,height:80,border:"3px solid var(--nb-primary)",boxShadow:"4px 4px 0 var(--nb-primary)",background:"var(--nb-accent-light)"}}>
               {form.photo ? <img src={form.photo} style={{width:"100%",height:"100%",objectFit:"cover"}}/> : <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",fontSize:24}}>👤</div>}
@@ -600,6 +627,28 @@ export default function ProjectCRUD() {
   const fileRef  = useRef<HTMLInputElement>(null);
 
   const showToast = (msg:string, ok=true) => setToast({msg,ok});
+
+  // Unique list of previously added collaborators across all projects
+  const existingCollaborators = useMemo(() => {
+    const map = new Map<string, Collaborator>();
+    projects.forEach(p => {
+      (p.collaborators || []).forEach(c => {
+        if (c && c.name && c.name.trim()) {
+          const key = c.name.trim().toLowerCase();
+          if (!map.has(key)) {
+            map.set(key, {
+              name: c.name.trim(),
+              role: c.role || "",
+              origin: c.origin || "",
+              photo: c.photo || "",
+              socials: Array.isArray(c.socials) ? c.socials : [],
+            });
+          }
+        }
+      });
+    });
+    return Array.from(map.values());
+  }, [projects]);
 
   useEffect(()=>{ const t=setTimeout(()=>setHeaderIn(true),60); return()=>clearTimeout(t); },[]);
 
@@ -934,10 +983,38 @@ export default function ProjectCRUD() {
                   </div>
                 ) : (
                   <div style={{animation:"pcSlideUp 0.3s ease",display:"flex",flexDirection:"column",gap:12}}>
-                    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
                       <p style={{fontWeight:900,fontSize:10,textTransform:"uppercase",color:"var(--nb-primary)",opacity:0.6,margin:0}}>Daftar Kolaborator</p>
-                      <button onClick={()=>setCollabModal({open:true,index:null,item:null})}
-                        style={{border:"2px solid var(--nb-primary)",background:"var(--nb-primary)",color:"var(--nb-accent)",padding:"4px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",cursor:"pointer"}}>+ Tambah</button>
+                      <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                        {existingCollaborators.length > 0 && (
+                          <select
+                            className="pc2-input !py-1 !px-2 !text-[10px] !font-black uppercase !w-auto"
+                            defaultValue=""
+                            onChange={(e) => {
+                              const selName = e.target.value;
+                              const found = existingCollaborators.find(c => c.name === selName);
+                              if (found) {
+                                if (!form.collaborators.some(c => c.name.toLowerCase() === found.name.toLowerCase())) {
+                                  setForm(f => ({ ...f, collaborators: [...f.collaborators, found] }));
+                                  showToast(`Kolaborator ${found.name} ditambahkan!`);
+                                } else {
+                                  showToast(`Kolaborator ${found.name} sudah ada`, false);
+                                }
+                              }
+                              e.target.value = "";
+                            }}
+                          >
+                            <option value="" disabled>+ Pilih Kolaborator Tersimpan</option>
+                            {existingCollaborators.map((c, i) => (
+                              <option key={i} value={c.name}>
+                                👤 {c.name} ({c.role || 'Tanpa Role'})
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                        <button onClick={()=>setCollabModal({open:true,index:null,item:null})}
+                          style={{border:"2px solid var(--nb-primary)",background:"var(--nb-primary)",color:"var(--nb-accent)",padding:"4px 10px",fontWeight:900,fontSize:10,textTransform:"uppercase",cursor:"pointer",whiteSpace:"nowrap"}}>+ Baru</button>
+                      </div>
                     </div>
                     <div style={{display:"flex",flexDirection:"column",gap:8}}>
                       {form.collaborators.length===0 ? (
@@ -1097,6 +1174,7 @@ export default function ProjectCRUD() {
         <CollaboratorModal
           item={collabModal.item}
           index={collabModal.index}
+          existingCollaborators={existingCollaborators}
           onSave={(c)=>{
             if(collabModal.index!==null) setForm(f=>({...f, collaborators: f.collaborators.map((x,i)=>i===collabModal.index?c:x)}));
             else setForm(f=>({...f, collaborators: [...f.collaborators, c]}));
