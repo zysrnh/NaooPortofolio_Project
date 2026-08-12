@@ -670,10 +670,15 @@ export default function ProjectCRUD() {
   const openAdd  = () => { setEditTarget(null); setForm(EMPTY_FORM); setErrors({}); setModalOpen(true); };
   const openEdit = (p:ProjectRow) => {
     setEditTarget(p);
+    // Filter tech_stack_ids to only include IDs that still exist in the loaded tech stacks list
+    // This prevents "zombie" IDs (deleted tech stacks) from causing 422 validation errors
+    const validTechStackIds = (p.tech_stack_ids ?? []).filter(id =>
+      techStacks.some(ts => ts.id === id)
+    );
     setForm({
       title:p.title, subtitle:p.subtitle, category:p.category??"Web Application", desc:p.desc, long_desc:p.longDesc,
       status:p.status as ProjectData["status"], date:p.date, duration:p.duration,
-      images:p.images??[], tech_stack_ids:p.tech_stack_ids??[], features:p.features??[],
+      images:p.images??[], tech_stack_ids:validTechStackIds, features:p.features??[],
       demo_url:p.demoUrl??"", github_url:p.githubUrl??"", order:p.order, visible:p.visible,
       work_type:p.workType as any, solo_role:p.soloRole, collaborators:p.collaborators??[],
     });

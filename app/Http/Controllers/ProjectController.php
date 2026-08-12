@@ -52,7 +52,7 @@ class ProjectController extends Controller
             'images'             => 'nullable|array',
             'images.*'           => 'nullable|string',
             'tech_stack_ids'     => 'nullable|array',
-            'tech_stack_ids.*'   => 'nullable|integer|exists:tech_stacks,id',
+            'tech_stack_ids.*'   => 'nullable|integer', // filter invalid IDs below
             'features'           => 'nullable|array',
             'features.*.title'   => 'required_with:features|string',
             'features.*.desc'    => 'required_with:features|string',
@@ -69,6 +69,12 @@ class ProjectController extends Controller
             'collaborators.*.socials' => 'nullable|array',
             'collaborators.*.photo'  => 'nullable|string',
         ]);
+
+        // Filter out any tech_stack_ids that don't exist in DB (silently ignore invalid)
+        if (!empty($data['tech_stack_ids'])) {
+            $validIds = TechStack::whereIn('id', $data['tech_stack_ids'])->pluck('id')->toArray();
+            $data['tech_stack_ids'] = $validIds;
+        }
 
         $slug = $this->uniqueSlug(Str::slug($data['title']));
 
@@ -97,7 +103,7 @@ class ProjectController extends Controller
             'images'             => 'nullable|array',
             'images.*'           => 'nullable|string',
             'tech_stack_ids'     => 'nullable|array',
-            'tech_stack_ids.*'   => 'nullable|integer|exists:tech_stacks,id',
+            'tech_stack_ids.*'   => 'nullable|integer', // filter invalid IDs below
             'features'           => 'nullable|array',
             'features.*.title'   => 'required_with:features|string',
             'features.*.desc'    => 'required_with:features|string',
@@ -114,6 +120,12 @@ class ProjectController extends Controller
             'collaborators.*.socials' => 'nullable|array',
             'collaborators.*.photo'  => 'nullable|string',
         ]);
+
+        // Filter out any tech_stack_ids that don't exist in DB (silently ignore invalid)
+        if (!empty($data['tech_stack_ids'])) {
+            $validIds = TechStack::whereIn('id', $data['tech_stack_ids'])->pluck('id')->toArray();
+            $data['tech_stack_ids'] = $validIds;
+        }
 
         if (isset($data['title'])) {
             $data['slug'] = $this->uniqueSlug(Str::slug($data['title']), $project->id);
