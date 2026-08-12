@@ -422,11 +422,11 @@ function LoadingScreen({ progress }: { progress: number }) {
           </span>
 
           <h1 className="text-4xl sm:text-5xl font-black uppercase text-[var(--nb-primary)] mb-2 tracking-tight">
-            NAOO<span className="text-[var(--nb-accent)]">.ID</span>
+            ZYSRNH
           </h1>
 
           <p className="font-bold text-xs uppercase tracking-wider text-[var(--nb-primary)] opacity-70 mb-8">
-            Full-Stack Developer & Designer
+            Full-Stack Developer
           </p>
 
           {/* Progress Bar Container */}
