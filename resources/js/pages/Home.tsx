@@ -426,7 +426,7 @@ function LoadingScreen({ progress }: { progress: number }) {
           </h1>
 
           <p className="font-bold text-xs uppercase tracking-wider text-[var(--nb-primary)] opacity-70 mb-8">
-            Full-Stack Developer
+            Web Developer
           </p>
 
           {/* Progress Bar Container */}
