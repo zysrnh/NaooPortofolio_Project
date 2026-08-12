@@ -389,6 +389,7 @@ function SkeletonCard() {
 function LoadingScreen({ progress }: { progress: number }) {
   const [dots, setDots] = useState("");
   const [visible, setVisible] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 50);
@@ -396,10 +397,20 @@ function LoadingScreen({ progress }: { progress: number }) {
   }, []);
 
   useEffect(() => {
+    const img = new Image();
+    img.src = "/logo.png";
+    if (img.complete) {
+      setImgLoaded(true);
+    } else {
+      img.onload = () => setImgLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setDots(d => (d.length >= 3 ? "" : d + "."));
     }, 400);
-    return () => clearInterval(interval);
+    return () => clearTimeout(interval);
   }, []);
 
   const getStatusText = () => {
@@ -408,8 +419,6 @@ function LoadingScreen({ progress }: { progress: number }) {
     if (progress < 90) return "Merapikan Tampilan";
     return "Hampir Siap";
   };
-
-  const letters = "ZYSRNH".split("");
 
   return (
     <div className="min-h-screen bg-[var(--nb-primary)] flex items-center justify-center px-6 relative overflow-hidden">
@@ -423,15 +432,13 @@ function LoadingScreen({ progress }: { progress: number }) {
       />
 
       {/* Decorative accent blocks */}
-      <div className="absolute top-8 left-8 w-16 h-16 bg-[var(--nb-accent)] opacity-60"
-        style={{ animation: "lsPulse 3s ease-in-out infinite" }} />
+      <div className="absolute top-8 left-8 w-16 h-16 bg-[var(--nb-accent)] opacity-60" />
       <div className="absolute top-8 left-8 w-16 h-16 border-4 border-[var(--nb-accent)]"
-        style={{ transform: "translate(8px,8px)", animation: "lsPulse 3s ease-in-out infinite 0.5s" }} />
+        style={{ transform: "translate(8px,8px)" }} />
 
-      <div className="absolute bottom-8 right-8 w-12 h-12 bg-[var(--nb-accent)] opacity-40"
-        style={{ animation: "lsPulse 3s ease-in-out infinite 1s" }} />
+      <div className="absolute bottom-8 right-8 w-12 h-12 bg-[var(--nb-accent)] opacity-40" />
       <div className="absolute bottom-8 right-8 w-12 h-12 border-4 border-[var(--nb-accent)]"
-        style={{ transform: "translate(-8px,-8px)", animation: "lsPulse 3s ease-in-out infinite 1.5s" }} />
+        style={{ transform: "translate(-8px,-8px)" }} />
 
       {/* Corner accents */}
       <div className="absolute top-0 right-0 w-32 h-32 border-b-4 border-l-4 border-[var(--nb-accent)] opacity-30" />
@@ -445,41 +452,18 @@ function LoadingScreen({ progress }: { progress: number }) {
           transition: "opacity 0.6s ease, transform 0.6s ease",
         }}
       >
-        {/* Badge */}
+        {/* Logo Image */}
         <div className="flex justify-center mb-6">
-          <span
-            className="inline-block bg-[var(--nb-accent)] text-[var(--nb-primary)] font-black text-xs uppercase px-4 py-1.5 tracking-[0.3em] border-2 border-[var(--nb-accent)]"
-            style={{ boxShadow: "3px 3px 0 rgba(255,255,255,0.2)" }}
-          >
-            PORTFOLIO
-          </span>
+          <div className={`bg-[var(--nb-bg)] border-4 border-[var(--nb-accent)] p-4 shadow-[6px_6px_0_var(--nb-accent)] inline-block transition-opacity duration-300 ${imgLoaded ? "opacity-100" : "opacity-0"}`}>
+            <img 
+              src="/logo.png" 
+              alt="ZYSRNH Logo" 
+              className="w-20 h-20 object-contain"
+              loading="eager"
+              onLoad={() => setImgLoaded(true)}
+            />
+          </div>
         </div>
-
-        {/* Animated Letters */}
-        <div className="flex justify-center gap-1 mb-3">
-          {letters.map((letter, i) => (
-            <span
-              key={i}
-              className="text-5xl sm:text-6xl font-black text-[var(--nb-accent)] leading-none"
-              style={{
-                display: "inline-block",
-                animation: `lsBounce 0.6s ease both`,
-                animationDelay: `${i * 0.08}s`,
-                textShadow: "3px 3px 0 rgba(0,0,0,0.3)",
-              }}
-            >
-              {letter}
-            </span>
-          ))}
-        </div>
-
-        {/* Subtitle */}
-        <p
-          className="text-center font-bold text-xs uppercase tracking-[0.25em] text-[var(--nb-accent)] opacity-70 mb-8"
-          style={{ animation: "lsFadeIn 0.8s ease 0.5s both" }}
-        >
-          Web Developer
-        </p>
 
         {/* Progress Card */}
         <div
@@ -1028,7 +1012,10 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
               <div>
-                <div className="font-black text-2xl text-[var(--nb-primary)] mb-1">ZYSRNH</div>
+                <div className="flex items-center gap-2.5 font-black text-2xl text-[var(--nb-primary)] mb-1">
+                  <img src="/logo.png" alt="Logo" className="w-7 h-7 object-contain" />
+                  <span>ZYSRNH</span>
+                </div>
                 <p className="font-semibold text-sm text-[var(--nb-primary)] opacity-70">Made with ☕ by Zaki Yusron Hasyimmi</p>
               </div>
               <div className="flex flex-col gap-2">

@@ -140,7 +140,7 @@ export default function Navbar() {
         .nav-link:hover::after, .nav-link.active::after { width: 100%; }
         .nav-link.active { color: var(--nb-primary); font-weight: 900; }
 
-        .logo-hover { transition: transform 0.15s ease; display: inline-block; }
+        .logo-hover { transition: transform 0.15s ease; display: inline-flex; align-items: center; }
         .logo-hover:hover { transform: translate(-2px, -2px); }
 
         .btn-nav { transition: transform 0.08s ease, box-shadow 0.08s ease; }
@@ -169,8 +169,11 @@ export default function Navbar() {
       <div className="w-full border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] sticky top-0 z-[99999] pointer-events-auto">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
-          <div className="logo-hover font-black text-xl text-[var(--nb-primary)] cursor-pointer" onClick={() => router.visit("/")}>
-            Zyrsnh
+          <div className="logo-hover cursor-pointer flex items-center gap-2.5" onClick={() => router.visit("/")}>
+            <img src="/logo.png" alt="Zysrnh Logo" className="h-10 w-auto object-contain" />
+            <span className="font-black text-xl text-[var(--nb-primary)]">
+              Zysrnh
+            </span>
           </div>
 
           <div className="hidden md:flex gap-8 font-semibold text-[var(--nb-primary)]">
