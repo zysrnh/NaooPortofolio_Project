@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
 import ThemeToggle from "./ThemeToggle";
 import Magnetic from "./Magnetic";
+import logoImg from "../../images/logo.png";
 
 const navLinks = [
   { label: "Home",     href: "hero" },
@@ -170,7 +171,7 @@ export default function Navbar() {
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
           <div className="logo-hover cursor-pointer flex items-center gap-2.5" onClick={() => router.visit("/")}>
-            <img src="/logo.png" alt="Zysrnh Logo" className="h-10 w-auto object-contain" />
+            <img src={logoImg} alt="Zysrnh Logo" className="h-10 w-auto object-contain" />
             <span className="font-black text-xl text-[var(--nb-primary)]">
               Zysrnh
             </span>

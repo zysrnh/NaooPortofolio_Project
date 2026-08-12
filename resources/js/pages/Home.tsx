@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import logoImg from "../../images/logo.png";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { router, Head } from "@inertiajs/react";
 import { useVisitorTracker } from "@/hooks/useVisitorTracker";
@@ -456,7 +457,7 @@ function LoadingScreen({ progress }: { progress: number }) {
         <div className="flex justify-center mb-6">
           <div className={`bg-[var(--nb-bg)] border-4 border-[var(--nb-accent)] p-4 shadow-[6px_6px_0_var(--nb-accent)] inline-block transition-opacity duration-300 ${imgLoaded ? "opacity-100" : "opacity-0"}`}>
             <img 
-              src="/logo.png" 
+              src={logoImg} 
               alt="ZYSRNH Logo" 
               className="w-20 h-20 object-contain"
               loading="eager"
@@ -1013,7 +1014,7 @@ export default function Home() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
               <div>
                 <div className="flex items-center gap-2.5 font-black text-2xl text-[var(--nb-primary)] mb-1">
-                  <img src="/logo.png" alt="Logo" className="w-7 h-7 object-contain" />
+                  <img src={logoImg} alt="Logo" className="w-7 h-7 object-contain" />
                   <span>ZYSRNH</span>
                 </div>
                 <p className="font-semibold text-sm text-[var(--nb-primary)] opacity-70">Made with ☕ by Zaki Yusron Hasyimmi</p>
