@@ -370,7 +370,7 @@ adminIndex.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     adminIndex.form = adminIndexForm
 /**
 * @see \App\Http\Controllers\ProjectController::uploadImage
- * @see app/Http/Controllers/ProjectController.php:139
+ * @see app/Http/Controllers/ProjectController.php:151
  * @route '/api/admin/projects/upload-image'
  */
 export const uploadImage = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -385,7 +385,7 @@ uploadImage.definition = {
 
 /**
 * @see \App\Http\Controllers\ProjectController::uploadImage
- * @see app/Http/Controllers/ProjectController.php:139
+ * @see app/Http/Controllers/ProjectController.php:151
  * @route '/api/admin/projects/upload-image'
  */
 uploadImage.url = (options?: RouteQueryOptions) => {
@@ -394,7 +394,7 @@ uploadImage.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProjectController::uploadImage
- * @see app/Http/Controllers/ProjectController.php:139
+ * @see app/Http/Controllers/ProjectController.php:151
  * @route '/api/admin/projects/upload-image'
  */
 uploadImage.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -404,7 +404,7 @@ uploadImage.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\ProjectController::uploadImage
- * @see app/Http/Controllers/ProjectController.php:139
+ * @see app/Http/Controllers/ProjectController.php:151
  * @route '/api/admin/projects/upload-image'
  */
     const uploadImageForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -414,7 +414,7 @@ uploadImage.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\ProjectController::uploadImage
- * @see app/Http/Controllers/ProjectController.php:139
+ * @see app/Http/Controllers/ProjectController.php:151
  * @route '/api/admin/projects/upload-image'
  */
         uploadImageForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -425,7 +425,7 @@ uploadImage.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     uploadImage.form = uploadImageForm
 /**
 * @see \App\Http\Controllers\ProjectController::update
- * @see app/Http/Controllers/ProjectController.php:86
+ * @see app/Http/Controllers/ProjectController.php:92
  * @route '/api/admin/projects/{project}'
  */
 export const update = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -440,7 +440,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\ProjectController::update
- * @see app/Http/Controllers/ProjectController.php:86
+ * @see app/Http/Controllers/ProjectController.php:92
  * @route '/api/admin/projects/{project}'
  */
 update.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -473,7 +473,7 @@ update.url = (args: { project: number | { id: number } } | [project: number | { 
 
 /**
 * @see \App\Http\Controllers\ProjectController::update
- * @see app/Http/Controllers/ProjectController.php:86
+ * @see app/Http/Controllers/ProjectController.php:92
  * @route '/api/admin/projects/{project}'
  */
 update.put = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -483,7 +483,7 @@ update.put = (args: { project: number | { id: number } } | [project: number | { 
 
     /**
 * @see \App\Http\Controllers\ProjectController::update
- * @see app/Http/Controllers/ProjectController.php:86
+ * @see app/Http/Controllers/ProjectController.php:92
  * @route '/api/admin/projects/{project}'
  */
     const updateForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -498,7 +498,7 @@ update.put = (args: { project: number | { id: number } } | [project: number | { 
 
             /**
 * @see \App\Http\Controllers\ProjectController::update
- * @see app/Http/Controllers/ProjectController.php:86
+ * @see app/Http/Controllers/ProjectController.php:92
  * @route '/api/admin/projects/{project}'
  */
         updateForm.put = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -514,7 +514,7 @@ update.put = (args: { project: number | { id: number } } | [project: number | { 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\ProjectController::destroy
- * @see app/Http/Controllers/ProjectController.php:127
+ * @see app/Http/Controllers/ProjectController.php:139
  * @route '/api/admin/projects/{project}'
  */
 export const destroy = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -529,7 +529,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\ProjectController::destroy
- * @see app/Http/Controllers/ProjectController.php:127
+ * @see app/Http/Controllers/ProjectController.php:139
  * @route '/api/admin/projects/{project}'
  */
 destroy.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -562,7 +562,7 @@ destroy.url = (args: { project: number | { id: number } } | [project: number | {
 
 /**
 * @see \App\Http\Controllers\ProjectController::destroy
- * @see app/Http/Controllers/ProjectController.php:127
+ * @see app/Http/Controllers/ProjectController.php:139
  * @route '/api/admin/projects/{project}'
  */
 destroy.delete = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -572,7 +572,7 @@ destroy.delete = (args: { project: number | { id: number } } | [project: number 
 
     /**
 * @see \App\Http\Controllers\ProjectController::destroy
- * @see app/Http/Controllers/ProjectController.php:127
+ * @see app/Http/Controllers/ProjectController.php:139
  * @route '/api/admin/projects/{project}'
  */
     const destroyForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -587,7 +587,7 @@ destroy.delete = (args: { project: number | { id: number } } | [project: number 
 
             /**
 * @see \App\Http\Controllers\ProjectController::destroy
- * @see app/Http/Controllers/ProjectController.php:127
+ * @see app/Http/Controllers/ProjectController.php:139
  * @route '/api/admin/projects/{project}'
  */
         destroyForm.delete = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -603,7 +603,7 @@ destroy.delete = (args: { project: number | { id: number } } | [project: number 
     destroy.form = destroyForm
 /**
 * @see \App\Http\Controllers\ProjectController::toggleVisibility
- * @see app/Http/Controllers/ProjectController.php:133
+ * @see app/Http/Controllers/ProjectController.php:145
  * @route '/api/admin/projects/{project}/toggle'
  */
 export const toggleVisibility = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -618,7 +618,7 @@ toggleVisibility.definition = {
 
 /**
 * @see \App\Http\Controllers\ProjectController::toggleVisibility
- * @see app/Http/Controllers/ProjectController.php:133
+ * @see app/Http/Controllers/ProjectController.php:145
  * @route '/api/admin/projects/{project}/toggle'
  */
 toggleVisibility.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -651,7 +651,7 @@ toggleVisibility.url = (args: { project: number | { id: number } } | [project: n
 
 /**
 * @see \App\Http\Controllers\ProjectController::toggleVisibility
- * @see app/Http/Controllers/ProjectController.php:133
+ * @see app/Http/Controllers/ProjectController.php:145
  * @route '/api/admin/projects/{project}/toggle'
  */
 toggleVisibility.patch = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -661,7 +661,7 @@ toggleVisibility.patch = (args: { project: number | { id: number } } | [project:
 
     /**
 * @see \App\Http\Controllers\ProjectController::toggleVisibility
- * @see app/Http/Controllers/ProjectController.php:133
+ * @see app/Http/Controllers/ProjectController.php:145
  * @route '/api/admin/projects/{project}/toggle'
  */
     const toggleVisibilityForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -676,7 +676,7 @@ toggleVisibility.patch = (args: { project: number | { id: number } } | [project:
 
             /**
 * @see \App\Http\Controllers\ProjectController::toggleVisibility
- * @see app/Http/Controllers/ProjectController.php:133
+ * @see app/Http/Controllers/ProjectController.php:145
  * @route '/api/admin/projects/{project}/toggle'
  */
         toggleVisibilityForm.patch = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
