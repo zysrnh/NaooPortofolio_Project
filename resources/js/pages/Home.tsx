@@ -388,6 +388,12 @@ function SkeletonCard() {
 // ── LoadingScreen ──────────────────────────────────────────────────────────────
 function LoadingScreen({ progress }: { progress: number }) {
   const [dots, setDots] = useState("");
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 50);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -403,52 +409,150 @@ function LoadingScreen({ progress }: { progress: number }) {
     return "Hampir Siap";
   };
 
+  const letters = "ZYSRNH".split("");
+
   return (
     <div className="min-h-screen bg-[var(--nb-primary)] flex items-center justify-center px-6 relative overflow-hidden">
-      {/* Background Subtle Grid */}
+      {/* Animated Grid Background */}
       <div
-        className="absolute inset-0 opacity-10 pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, var(--nb-accent) 0, var(--nb-accent) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, var(--nb-accent) 0, var(--nb-accent) 1px, transparent 1px, transparent 40px)",
+            "repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 48px), repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 48px)",
         }}
       />
 
-      <div className="w-full max-w-md relative z-10">
-        {/* Main Branding Card */}
-        <div className="bg-[var(--nb-bg)] border-4 border-[var(--nb-primary)] shadow-[10px_10px_0_var(--nb-accent)] p-8 sm:p-10 text-center">
-          <span className="inline-block bg-[var(--nb-primary)] text-[var(--nb-accent)] font-black text-xs uppercase px-3 py-1 mb-4 tracking-widest border border-[var(--nb-primary)]">
+      {/* Decorative accent blocks */}
+      <div className="absolute top-8 left-8 w-16 h-16 bg-[var(--nb-accent)] opacity-60"
+        style={{ animation: "lsPulse 3s ease-in-out infinite" }} />
+      <div className="absolute top-8 left-8 w-16 h-16 border-4 border-[var(--nb-accent)]"
+        style={{ transform: "translate(8px,8px)", animation: "lsPulse 3s ease-in-out infinite 0.5s" }} />
+
+      <div className="absolute bottom-8 right-8 w-12 h-12 bg-[var(--nb-accent)] opacity-40"
+        style={{ animation: "lsPulse 3s ease-in-out infinite 1s" }} />
+      <div className="absolute bottom-8 right-8 w-12 h-12 border-4 border-[var(--nb-accent)]"
+        style={{ transform: "translate(-8px,-8px)", animation: "lsPulse 3s ease-in-out infinite 1.5s" }} />
+
+      {/* Corner accents */}
+      <div className="absolute top-0 right-0 w-32 h-32 border-b-4 border-l-4 border-[var(--nb-accent)] opacity-30" />
+      <div className="absolute bottom-0 left-0 w-32 h-32 border-t-4 border-r-4 border-[var(--nb-accent)] opacity-30" />
+
+      <div
+        className="w-full max-w-sm relative z-10"
+        style={{
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateY(0)" : "translateY(24px)",
+          transition: "opacity 0.6s ease, transform 0.6s ease",
+        }}
+      >
+        {/* Badge */}
+        <div className="flex justify-center mb-6">
+          <span
+            className="inline-block bg-[var(--nb-accent)] text-[var(--nb-primary)] font-black text-xs uppercase px-4 py-1.5 tracking-[0.3em] border-2 border-[var(--nb-accent)]"
+            style={{ boxShadow: "3px 3px 0 rgba(255,255,255,0.2)" }}
+          >
             PORTFOLIO
           </span>
+        </div>
 
-          <h1 className="text-4xl sm:text-5xl font-black uppercase text-[var(--nb-primary)] mb-2 tracking-tight">
-            ZYSRNH
-          </h1>
+        {/* Animated Letters */}
+        <div className="flex justify-center gap-1 mb-3">
+          {letters.map((letter, i) => (
+            <span
+              key={i}
+              className="text-5xl sm:text-6xl font-black text-[var(--nb-accent)] leading-none"
+              style={{
+                display: "inline-block",
+                animation: `lsBounce 0.6s ease both`,
+                animationDelay: `${i * 0.08}s`,
+                textShadow: "3px 3px 0 rgba(0,0,0,0.3)",
+              }}
+            >
+              {letter}
+            </span>
+          ))}
+        </div>
 
-          <p className="font-bold text-xs uppercase tracking-wider text-[var(--nb-primary)] opacity-70 mb-8">
-            Web Developer
-          </p>
+        {/* Subtitle */}
+        <p
+          className="text-center font-bold text-xs uppercase tracking-[0.25em] text-[var(--nb-accent)] opacity-70 mb-8"
+          style={{ animation: "lsFadeIn 0.8s ease 0.5s both" }}
+        >
+          Web Developer
+        </p>
 
-          {/* Progress Bar Container */}
-          <div className="mb-4">
-            <div className="w-full h-6 border-3 border-[var(--nb-primary)] bg-[var(--nb-accent-light)] p-1 relative overflow-hidden">
+        {/* Progress Card */}
+        <div
+          className="bg-[var(--nb-bg)] border-4 border-[var(--nb-accent)] p-6"
+          style={{
+            boxShadow: "6px 6px 0 var(--nb-accent)",
+            animation: "lsFadeIn 0.8s ease 0.3s both",
+          }}
+        >
+          {/* Progress Label */}
+          <div className="flex items-center justify-between mb-3">
+            <span className="font-black uppercase text-xs text-[var(--nb-primary)] tracking-wider">
+              {getStatusText()}{dots}
+            </span>
+            <span className="text-sm font-black text-[var(--nb-primary)] tabular-nums">
+              {Math.round(progress)}%
+            </span>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full h-5 border-3 border-[var(--nb-primary)] bg-[var(--nb-accent)] overflow-hidden relative">
+            <div
+              className="h-full bg-[var(--nb-primary)] transition-all duration-200 ease-out relative"
+              style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+            >
+              {/* Shimmer */}
               <div
-                className="h-full bg-[var(--nb-primary)] transition-all duration-150 ease-out"
-                style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+                className="absolute inset-0 opacity-30"
+                style={{
+                  background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)",
+                  backgroundSize: "200% 100%",
+                  animation: "lsShimmer 1.5s linear infinite",
+                }}
               />
             </div>
           </div>
 
-          {/* Status Info */}
-          <div className="flex items-center justify-between font-black uppercase text-xs text-[var(--nb-primary)]">
-            <span className="tracking-wide">
-              {getStatusText()}
-              {dots}
-            </span>
-            <span className="text-sm tracking-wider font-extrabold">{Math.round(progress)}%</span>
+          {/* Step dots */}
+          <div className="flex justify-between mt-3">
+            {[25, 50, 75, 100].map((step) => (
+              <div
+                key={step}
+                className="w-2 h-2 border-2 border-[var(--nb-primary)]"
+                style={{
+                  background: progress >= step ? "var(--nb-primary)" : "transparent",
+                  transition: "background 0.3s ease",
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>
+
+      {/* Keyframes injected */}
+      <style>{`
+        @keyframes lsBounce {
+          from { opacity: 0; transform: translateY(-20px) scale(0.8); }
+          60%  { transform: translateY(4px) scale(1.05); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes lsFadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes lsPulse {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50%      { opacity: 0.7; transform: scale(1.08); }
+        }
+        @keyframes lsShimmer {
+          from { background-position: -200% 0; }
+          to   { background-position: 200% 0; }
+        }
+      `}</style>
     </div>
   );
 }
