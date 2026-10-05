@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
 import ThemeToggle from "./ThemeToggle";
 import Magnetic from "./Magnetic";
+import HomeVersionSwitcher from "./HomeVersionSwitcher";
 import logoImg from "../../images/logo.png";
 
 const navLinks = [
@@ -17,7 +18,9 @@ export default function Navbar() {
   const isLoggedIn = !!auth?.user;
 
   const currentUrl = typeof window !== "undefined" ? window.location.pathname : "";
-  const isHome = currentUrl === "/" || currentUrl === "";
+  const isHomeV1 = currentUrl === "/" || currentUrl === "";
+  const isHomeV2 = currentUrl === "/v2";
+  const isHome = isHomeV1 || isHomeV2;
   const isContactPage = currentUrl === "/contact";
   const isAboutPage = currentUrl === "/about";
 
@@ -56,12 +59,12 @@ export default function Navbar() {
       return;
     }
 
-    // "Home" selalu ke /
+    // "Home"
     if (href === "hero") {
       if (isHome) {
         scrollToSection("hero");
       } else {
-        router.visit("/");
+        router.visit(isHomeV2 ? "/v2" : "/");
       }
       return;
     }
@@ -71,7 +74,7 @@ export default function Navbar() {
       scrollToSection(href);
     } else {
       sessionStorage.setItem("scrollTo", href);
-      router.visit("/");
+      router.visit(isHomeV2 ? "/v2" : "/");
     }
   };
 
@@ -170,7 +173,7 @@ export default function Navbar() {
       <div className="w-full border-4 border-[var(--nb-primary)] bg-[var(--nb-bg)] shadow-[6px_6px_0_var(--nb-primary)] sticky top-0 z-[99999] pointer-events-auto">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
-          <div className="logo-hover cursor-pointer flex items-center gap-2.5" onClick={() => router.visit("/")}>
+          <div className="logo-hover cursor-pointer flex items-center gap-2.5" onClick={() => router.visit(isHomeV2 ? "/v2" : "/")}>
             <img src={logoImg} alt="Zysrnh Logo" className="h-10 w-auto object-contain" />
             <span className="font-black text-xl text-[var(--nb-primary)]">
               Zysrnh
@@ -187,6 +190,7 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:flex gap-3 items-center">
+            <HomeVersionSwitcher />
             <Magnetic>
               <button onClick={handlePrimaryBtn}
                 className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)]">
@@ -218,8 +222,15 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
-          <div className="flex gap-3 p-4 items-center">
-            <div className="flex-1 flex gap-3">
+          <div className="flex flex-col gap-3 p-4">
+            <div className="flex items-center justify-between border-b-2 border-[var(--nb-primary)] pb-3">
+              <span className="font-extrabold text-xs uppercase tracking-wider text-[var(--nb-primary)]">Style Switcher:</span>
+              <div className="flex items-center gap-2">
+                <HomeVersionSwitcher />
+                <ThemeToggle />
+              </div>
+            </div>
+            <div className="flex gap-3">
               <button onClick={handlePrimaryBtn}
                 className="btn-nav flex-1 border-4 border-[var(--nb-primary)] py-3 font-black shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)] uppercase text-sm">
                 {isLoggedIn ? "Dashboard" : "Login"}
@@ -229,7 +240,6 @@ export default function Navbar() {
                 Contact Me
               </button>
             </div>
-            <ThemeToggle />
           </div>
         </div>
       </div>

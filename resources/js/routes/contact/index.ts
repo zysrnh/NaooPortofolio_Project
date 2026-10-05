@@ -1,6 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
- * @see routes/web.php:55
+ * @see routes/web.php:59
  * @route '/contact'
  */
 export const page = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -14,7 +14,7 @@ page.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:55
+ * @see routes/web.php:59
  * @route '/contact'
  */
 page.url = (options?: RouteQueryOptions) => {
@@ -22,7 +22,7 @@ page.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:55
+ * @see routes/web.php:59
  * @route '/contact'
  */
 page.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -30,7 +30,7 @@ page.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:55
+ * @see routes/web.php:59
  * @route '/contact'
  */
 page.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -39,7 +39,7 @@ page.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:55
+ * @see routes/web.php:59
  * @route '/contact'
  */
     const pageForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -48,7 +48,7 @@ page.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:55
+ * @see routes/web.php:59
  * @route '/contact'
  */
         pageForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -56,7 +56,7 @@ page.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:55
+ * @see routes/web.php:59
  * @route '/contact'
  */
         pageForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

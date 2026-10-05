@@ -20,6 +20,10 @@ Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
 
+Route::get('/v2', function () {
+    return Inertia::render('HomeV2');
+})->name('home.v2');
+
 Route::get('/login', function () {
     return Inertia::render('Login');
 })->middleware('guest')->name('login');

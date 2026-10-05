@@ -1,6 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
- * @see routes/web.php:31
+ * @see routes/web.php:35
  * @route '/projects'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -14,7 +14,7 @@ index.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:31
+ * @see routes/web.php:35
  * @route '/projects'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -22,7 +22,7 @@ index.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:31
+ * @see routes/web.php:35
  * @route '/projects'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -30,7 +30,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:31
+ * @see routes/web.php:35
  * @route '/projects'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -39,7 +39,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:31
+ * @see routes/web.php:35
  * @route '/projects'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -48,7 +48,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:31
+ * @see routes/web.php:35
  * @route '/projects'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -56,7 +56,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:31
+ * @see routes/web.php:35
  * @route '/projects'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -71,7 +71,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     index.form = indexForm
 /**
- * @see routes/web.php:35
+ * @see routes/web.php:39
  * @route '/projects/{projectId}'
  */
 export const show = (args: { projectId: string | number } | [projectId: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -85,7 +85,7 @@ show.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:35
+ * @see routes/web.php:39
  * @route '/projects/{projectId}'
  */
 show.url = (args: { projectId: string | number } | [projectId: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -112,7 +112,7 @@ show.url = (args: { projectId: string | number } | [projectId: string | number ]
 }
 
 /**
- * @see routes/web.php:35
+ * @see routes/web.php:39
  * @route '/projects/{projectId}'
  */
 show.get = (args: { projectId: string | number } | [projectId: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -120,7 +120,7 @@ show.get = (args: { projectId: string | number } | [projectId: string | number ]
     method: 'get',
 })
 /**
- * @see routes/web.php:35
+ * @see routes/web.php:39
  * @route '/projects/{projectId}'
  */
 show.head = (args: { projectId: string | number } | [projectId: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -129,7 +129,7 @@ show.head = (args: { projectId: string | number } | [projectId: string | number 
 })
 
     /**
- * @see routes/web.php:35
+ * @see routes/web.php:39
  * @route '/projects/{projectId}'
  */
     const showForm = (args: { projectId: string | number } | [projectId: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -138,7 +138,7 @@ show.head = (args: { projectId: string | number } | [projectId: string | number 
     })
 
             /**
- * @see routes/web.php:35
+ * @see routes/web.php:39
  * @route '/projects/{projectId}'
  */
         showForm.get = (args: { projectId: string | number } | [projectId: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -146,7 +146,7 @@ show.head = (args: { projectId: string | number } | [projectId: string | number 
             method: 'get',
         })
             /**
- * @see routes/web.php:35
+ * @see routes/web.php:39
  * @route '/projects/{projectId}'
  */
         showForm.head = (args: { projectId: string | number } | [projectId: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
