@@ -226,37 +226,37 @@ export default function HomeV2() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const resolvedPhoto = hero.photo
+    ? hero.photo.startsWith("data:") || hero.photo.startsWith("http") || hero.photo.startsWith("/")
+      ? hero.photo
+      : `data:image/jpeg;base64,${hero.photo}`
+    : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+
   return (
     <div className="min-h-screen bg-[#070709] text-[#e5e5e7] selection:bg-red-600 selection:text-white font-sans overflow-x-hidden relative">
-      <Head>
-        <title>Portfolio - {hero.name} | Editorial Dark Version</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-        <style>{`
-          .font-condensed { font-family: 'Anton', 'Impact', sans-serif; }
-          .font-cursive { font-family: 'Caveat', cursive; }
-          .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+      <Head title={`Portfolio - ${hero.name} | Editorial Dark Version`} />
 
-          /* Red glow spotlight effects */
-          .glow-red {
-            box-shadow: 0 0 50px rgba(220, 38, 38, 0.15);
-          }
-          .text-stroke-red {
-            -webkit-text-stroke: 1px rgba(220, 38, 38, 0.4);
-          }
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #27272a;
-            border-radius: 3px;
-          }
-        `}</style>
-      </Head>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        .font-condensed { font-family: 'Anton', 'Impact', sans-serif; }
+        .font-cursive { font-family: 'Caveat', cursive; }
+        .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* Red glow spotlight effects */
+        .glow-red {
+          box-shadow: 0 0 50px rgba(220, 38, 38, 0.15);
+        }
+        .text-stroke-red {
+          -webkit-text-stroke: 1px rgba(220, 38, 38, 0.4);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #27272a;
+          border-radius: 3px;
+        }
+      `}</style>
 
       {/* Floating Version Switcher */}
       <HomeVersionSwitcher variant="floating" />
@@ -333,10 +333,7 @@ export default function HomeV2() {
                 <div className="absolute -inset-4 bg-red-600/10 blur-2xl rounded-full -z-10" />
 
                 <img
-                  src={
-                    hero.photo ||
-                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
-                  }
+                  src={resolvedPhoto}
                   alt={hero.name}
                   className="w-full h-full object-cover object-top filter brightness-95 contrast-105 shadow-2xl rounded-sm"
                   style={{
@@ -486,7 +483,7 @@ export default function HomeV2() {
                               {exp.title}
                             </h4>
                             <span className="text-[10px] font-bold text-red-500 whitespace-nowrap">
-                              {exp.start_date?.split("-")[0]} - {exp.end_date?.split("-")[0] || "Present"}
+                              {exp.start_date ? exp.start_date.split("-")[0] : "2022"} - {exp.end_date ? exp.end_date.split("-")[0] : "Present"}
                             </span>
                           </div>
                           <p className="text-xs text-neutral-400 mt-0.5">{exp.company}</p>
