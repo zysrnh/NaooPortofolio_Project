@@ -258,9 +258,6 @@ export default function HomeV2() {
         }
       `}</style>
 
-      {/* Floating Version Switcher */}
-      <HomeVersionSwitcher variant="floating" />
-
       {/* Navbar Container */}
       <div className="sticky top-0 z-[99999] backdrop-blur-md bg-[#070709]/80 border-b border-white/5">
         <Navbar />

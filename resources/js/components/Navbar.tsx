@@ -190,7 +190,6 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:flex gap-3 items-center">
-            <HomeVersionSwitcher />
             <Magnetic>
               <button onClick={handlePrimaryBtn}
                 className="btn-nav border-4 border-[var(--nb-primary)] px-4 py-2 font-bold shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)]">
@@ -222,15 +221,8 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
-          <div className="flex flex-col gap-3 p-4">
-            <div className="flex items-center justify-between border-b-2 border-[var(--nb-primary)] pb-3">
-              <span className="font-extrabold text-xs uppercase tracking-wider text-[var(--nb-primary)]">Style Switcher:</span>
-              <div className="flex items-center gap-2">
-                <HomeVersionSwitcher />
-                <ThemeToggle />
-              </div>
-            </div>
-            <div className="flex gap-3">
+          <div className="flex gap-3 p-4 items-center">
+            <div className="flex-1 flex gap-3">
               <button onClick={handlePrimaryBtn}
                 className="btn-nav flex-1 border-4 border-[var(--nb-primary)] py-3 font-black shadow-[3px_3px_0_var(--nb-primary)] bg-[var(--nb-bg)] text-[var(--nb-primary)] uppercase text-sm">
                 {isLoggedIn ? "Dashboard" : "Login"}
@@ -240,6 +232,7 @@ export default function Navbar() {
                 Contact Me
               </button>
             </div>
+            <ThemeToggle />
           </div>
         </div>
       </div>
